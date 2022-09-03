@@ -1,0 +1,51 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "hiring_V1Context",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "Context",
+   "OutputPath": "Entities",
+   "ProjectRootNamespace": "WebApiHiringItm.CONTEXT",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[feasibilityRequest]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[folder]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Roll]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserT]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "DESKTOP-L2G9S2N.hiring_V1",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}
