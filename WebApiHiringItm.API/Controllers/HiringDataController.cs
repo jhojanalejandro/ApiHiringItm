@@ -5,13 +5,13 @@ using WebApiHiringItm.MODEL.Dto;
 
 namespace WebApiHiringItm.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class FeasibilityRequestController : ControllerBase
+    [Route("[controller]/[action]")]
+    public class HiringDataController : ControllerBase
     {
-        private readonly IFeasibilityRequestCore _feasibility;
+        private readonly IHiringDataCore _feasibility;
 
-        public FeasibilityRequestController(IFeasibilityRequestCore feasibility)
+        public HiringDataController(IHiringDataCore feasibility)
         {
             _feasibility = feasibility;
         }
@@ -53,7 +53,7 @@ namespace WebApiHiringItm.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(FeasibilityRequestDto model)
+        public async Task<IActionResult> Add(HiringDataDto model)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace WebApiHiringItm.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(FeasibilityRequestDto model)
+        public async Task<IActionResult> Update(HiringDataDto model)
         {
             try
             {

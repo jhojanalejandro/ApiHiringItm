@@ -13,7 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IUserCore, UserCore>();
-builder.Services.AddScoped<IFeasibilityRequestCore, FeasibilityRequestCore>();
+builder.Services.AddScoped<IHiringDataCore, HiringDataCore>();
+builder.Services.AddScoped<IFilesCore, FilesCore>();
+builder.Services.AddScoped<IContractorCore, ContractorCore>();
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
@@ -32,14 +34,14 @@ var mapperConfig = new MapperConfiguration(mc =>
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddDbContext<hiring_V1Context>(options =>
+builder.Services.AddDbContext<Hiring_V1Context>(options =>
       options
       .UseLazyLoadingProxies()
       .UseSqlServer(builder.Configuration.GetConnectionString("HiringDatabase"))
       );
 
 
-builder.Services.AddScoped<IHiring_V1Context>(provider => provider.GetService<hiring_V1Context>());
+builder.Services.AddScoped<IHiring_V1Context>(provider => provider.GetService<Hiring_V1Context>());
 
 
 var app = builder.Build();
