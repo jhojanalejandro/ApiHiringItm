@@ -10,10 +10,14 @@ namespace WebApiHiringItm.CONTEXT.Context
 {
     public interface IHiring_V1Context
     {
-        DbSet<UserT> UserT { get; set; }
+        DbSet<Contractor> Contractor { get; set; }
+        DbSet<ContractorStudy> ContractorStudy { get; set; }
+        DbSet<Files> Files { get; set; }
+        DbSet<Hiringdata> Hiringdata { get; set; }
+        DbSet<ProjectFolder> ProjectFolder { get; set; }
+        DbSet<RecursiveContractor> RecursiveContractor { get; set; }
         DbSet<Roll> Roll { get; set; }
-        DbSet<Folder> Folder { get; set; }
-        DbSet<FeasibilityRequest> FeasibilityRequest { get; set; }
+        DbSet<UserT> UserT { get; set; }
 
     }
 }
