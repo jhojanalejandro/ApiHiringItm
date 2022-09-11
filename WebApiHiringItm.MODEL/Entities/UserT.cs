@@ -7,8 +7,15 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class UserT
     {
+        public UserT()
+        {
+            RecursiveContractor = new HashSet<RecursiveContractor>();
+        }
+
         public int Id { get; set; }
         public string UserName { get; set; }
+        public string Avatar { get; set; }
+        public string Professionalposition { get; set; }
         public string UserPassword { get; set; }
         public int IdRoll { get; set; }
         public string UserEmail { get; set; }
@@ -16,5 +23,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public string PhoneNumber { get; set; }
 
         public virtual Roll IdRollNavigation { get; set; }
+        public virtual ICollection<RecursiveContractor> RecursiveContractor { get; set; }
     }
 }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace WebApiHiringItm.MODEL.Dto
 {
-    public class FolderDto
+    public class FilesDto
     {
         public int Id { get; set; }
-        public string FolderName { get; set; }
+        public string FilesName { get; set; }
+        public string FileType { get; set; }
     }
 }
