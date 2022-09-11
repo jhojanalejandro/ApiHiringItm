@@ -6,42 +6,42 @@ using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core
 {
-    public class FeasibilityRequestCore: IFeasibilityRequestCore
+    public class HiringDataCore: IHiringDataCore
     {
-        private readonly hiring_V1Context _context;
+        private readonly Hiring_V1Context _context;
         private readonly IMapper _mapper;
 
 
-        public FeasibilityRequestCore(hiring_V1Context context, IMapper mapper)
+        public HiringDataCore(Hiring_V1Context context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
 
-        public async Task<List<FeasibilityRequestDto>> GetAll()
+        public async Task<List<HiringDataDto>> GetAll()
         {
-            var result = _context.FeasibilityRequest.Where(x => x.Id > 0).ToList();
-            var map = _mapper.Map<List<FeasibilityRequestDto>>(result);
+            var result = _context.Hiringdata.Where(x => x.Id > 0).ToList();
+            var map = _mapper.Map<List<HiringDataDto>>(result);
             return await Task.FromResult(map);
         }
 
-        public async Task<FeasibilityRequestDto> GetById(int id)
+        public async Task<HiringDataDto> GetById(int id)
         {
-            var result = _context.FeasibilityRequest.Where(x => x.Id == id).FirstOrDefault();
-            var map = _mapper.Map<FeasibilityRequestDto>(result);
+            var result = _context.Hiringdata.Where(x => x.Id == id).FirstOrDefault();
+            var map = _mapper.Map<HiringDataDto>(result);
             return await Task.FromResult(map);
         }
 
-        public async Task<bool> Update(FeasibilityRequestDto model)
+        public async Task<bool> Update(HiringDataDto model)
         {
             try
             {
                 if (model.Id != 0)
 
                 {
-                    var map = _mapper.Map<FeasibilityRequest>(model);
-                    await _context.BulkInsertAsync(_context.FeasibilityRequest,options => options.InsertKeepIdentity = true);
+                    var map = _mapper.Map<HiringDataDto>(model);
+                    await _context.BulkInsertAsync(_context.Hiringdata, options => options.InsertKeepIdentity = true);
                     var res = _context.BulkSaveChangesAsync(bulk => bulk.BatchSize = 100);
                     if (res.IsCompleted)
                     {
@@ -59,7 +59,6 @@ namespace WebApiHiringItm.CORE.Core
             return false;
         }
 
-
         public async Task<bool> Updates(string model)
         {
             try
@@ -67,8 +66,8 @@ namespace WebApiHiringItm.CORE.Core
                 if (model != null)
 
                 {
-                    var map = _mapper.Map<FeasibilityRequest>(model);
-                    await _context.BulkInsertAsync(_context.FeasibilityRequest, options => options.InsertKeepIdentity = true);
+                    var map = _mapper.Map<HiringDataDto>(model);
+                    await _context.BulkInsertAsync(_context.Hiringdata, options => options.InsertKeepIdentity = true);
                     var res = _context.BulkSaveChangesAsync(bulk => bulk.BatchSize = 100);
                     if (res.IsCompleted)
                     {
@@ -88,11 +87,11 @@ namespace WebApiHiringItm.CORE.Core
 
         public async Task<bool> Delete(int id)
         {
-            var FeasibilityRequest = _context.FeasibilityRequest.Where(x => x.Id == id).FirstOrDefault();
-            if (FeasibilityRequest != null)
+            var getData = _context.Hiringdata.Where(x => x.Id == id).FirstOrDefault();
+            if (getData != null)
             {
 
-                var result = _context.FeasibilityRequest.Remove(FeasibilityRequest);
+                var result = _context.Hiringdata.Remove(getData);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -102,21 +101,21 @@ namespace WebApiHiringItm.CORE.Core
             }
         }
 
-        public async Task<int> Create(FeasibilityRequestDto model)
+        public async Task<int> Create(HiringDataDto model)
         {
-            var FeasibilityRequestGet = _context.FeasibilityRequest.Where(x => x.Id == model.Id).FirstOrDefault();
-            if (FeasibilityRequestGet == null)
+            var getData = _context.Hiringdata.Where(x => x.Id == model.Id).FirstOrDefault();
+            if (getData == null)
             {
-                var map = _mapper.Map<FeasibilityRequest>(model);
-                var res = _context.FeasibilityRequest.Add(map);
+                var map = _mapper.Map<Hiringdata>(model);
+                var res = _context.Hiringdata.Add(map);
                 await _context.SaveChangesAsync();
                 return map.Id != 0 ? map.Id : 0;
             }
             else
             {
-                var FeasibilityRequestupdate = _context.FeasibilityRequest.Where(x => x.Id == model.Id).FirstOrDefault();
-                var map = _mapper.Map(model, FeasibilityRequestupdate);
-                var res = _context.FeasibilityRequest.Update(map);
+                model.Id = getData.Id;
+                var map = _mapper.Map(model, getData);
+                var res = _context.Hiringdata.Update(map);
                 await _context.SaveChangesAsync();
                 if (res.State != 0)
                 {

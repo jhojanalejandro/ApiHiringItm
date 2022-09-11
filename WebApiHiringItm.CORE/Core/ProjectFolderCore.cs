@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApiHiringItm.CORE.Core
 {
-    public class FolderCore
+    public class ProjectFolderCore
     {
     }
 }
