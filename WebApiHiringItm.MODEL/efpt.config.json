@@ -26,15 +26,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Hiringdata]",
+         "Name": "[dbo].[HiringData]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[ProjectFolder]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[RecursiveContractor]",
          "ObjectType": 0
       },
       {

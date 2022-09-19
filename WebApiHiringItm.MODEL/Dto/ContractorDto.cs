@@ -11,13 +11,13 @@ namespace WebApiHiringItm.MODEL.Dto
         public int Id { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
-        public string Documentodeidentificación { get; set; }
-        public string Lugardeexpedición { get; set; }
+        public string Documentodeidentificacion { get; set; }
+        public string Lugardeexpedicion { get; set; }
         public DateTime? Fechanacimiento { get; set; }
         public string Municipio { get; set; }
         public string Comuna { get; set; }
         public string Barrio { get; set; }
-        public string Teléfono { get; set; }
+        public string Telefono { get; set; }
         public string Celular { get; set; }
         public string Correo { get; set; }
         public string Sexo { get; set; }

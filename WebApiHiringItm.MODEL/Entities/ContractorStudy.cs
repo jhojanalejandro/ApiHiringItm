@@ -7,18 +7,16 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class ContractorStudy
     {
-        public ContractorStudy()
-        {
-            RecursiveContractor = new HashSet<RecursiveContractor>();
-        }
-
         public int Id { get; set; }
+        public int IdUser { get; set; }
+        public int IdContractor { get; set; }
         public string TypeStudy { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? FinalDate { get; set; }
         public string DescriptionStudy { get; set; }
         public string InstitutionName { get; set; }
 
-        public virtual ICollection<RecursiveContractor> RecursiveContractor { get; set; }
+        public virtual Contractor IdContractorNavigation { get; set; }
+        public virtual UserT IdUserNavigation { get; set; }
     }
 }

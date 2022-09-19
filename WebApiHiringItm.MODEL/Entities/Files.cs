@@ -7,15 +7,14 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class Files
     {
-        public Files()
-        {
-            RecursiveContractor = new HashSet<RecursiveContractor>();
-        }
-
         public int Id { get; set; }
+        public int IdContractor { get; set; }
         public string FilesName { get; set; }
+        public string Filename { get; set; }
         public string FileType { get; set; }
+        public int IdUser { get; set; }
 
-        public virtual ICollection<RecursiveContractor> RecursiveContractor { get; set; }
+        public virtual Contractor IdContractorNavigation { get; set; }
+        public virtual UserT IdUserNavigation { get; set; }
     }
 }

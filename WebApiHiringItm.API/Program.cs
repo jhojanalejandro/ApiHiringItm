@@ -16,13 +16,16 @@ builder.Services.AddScoped<IUserCore, UserCore>();
 builder.Services.AddScoped<IHiringDataCore, HiringDataCore>();
 builder.Services.AddScoped<IFilesCore, FilesCore>();
 builder.Services.AddScoped<IContractorCore, ContractorCore>();
+builder.Services.AddScoped<IProjectFolder, ProjectFolderCore>();
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder => { builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod(); });
+    options.AddDefaultPolicy(builder => { builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod(); 
+    
+    });
 });
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));

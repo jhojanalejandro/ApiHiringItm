@@ -23,7 +23,6 @@ namespace WebApiHiringItm.MODEL.Models
             UserName = user.UserName;
             UserPassword = user.UserPassword;
             UserEmail = user.UserEmail;         
-            Permission = user.Permission;
             IdRoll = user.IdRoll;
             accessToken = token;
         }

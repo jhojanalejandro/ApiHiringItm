@@ -9,15 +9,17 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public ProjectFolder()
         {
-            RecursiveContractor = new HashSet<RecursiveContractor>();
+            Contractor = new HashSet<Contractor>();
         }
 
         public int Id { get; set; }
+        public int IdUser { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
 
-        public virtual ICollection<RecursiveContractor> RecursiveContractor { get; set; }
+        public virtual UserT IdUserNavigation { get; set; }
+        public virtual ICollection<Contractor> Contractor { get; set; }
     }
 }

@@ -21,14 +21,14 @@ namespace WebApiHiringItm.CORE.Core
 
         public async Task<List<HiringDataDto>> GetAll()
         {
-            var result = _context.Hiringdata.Where(x => x.Id > 0).ToList();
+            var result = _context.HiringData.Where(x => x.Id > 0).ToList();
             var map = _mapper.Map<List<HiringDataDto>>(result);
             return await Task.FromResult(map);
         }
 
         public async Task<HiringDataDto> GetById(int id)
         {
-            var result = _context.Hiringdata.Where(x => x.Id == id).FirstOrDefault();
+            var result = _context.HiringData.Where(x => x.Id == id).FirstOrDefault();
             var map = _mapper.Map<HiringDataDto>(result);
             return await Task.FromResult(map);
         }
@@ -41,7 +41,7 @@ namespace WebApiHiringItm.CORE.Core
 
                 {
                     var map = _mapper.Map<HiringDataDto>(model);
-                    await _context.BulkInsertAsync(_context.Hiringdata, options => options.InsertKeepIdentity = true);
+                    await _context.BulkInsertAsync(_context.HiringData, options => options.InsertKeepIdentity = true);
                     var res = _context.BulkSaveChangesAsync(bulk => bulk.BatchSize = 100);
                     if (res.IsCompleted)
                     {
@@ -67,7 +67,7 @@ namespace WebApiHiringItm.CORE.Core
 
                 {
                     var map = _mapper.Map<HiringDataDto>(model);
-                    await _context.BulkInsertAsync(_context.Hiringdata, options => options.InsertKeepIdentity = true);
+                    await _context.BulkInsertAsync(_context.HiringData, options => options.InsertKeepIdentity = true);
                     var res = _context.BulkSaveChangesAsync(bulk => bulk.BatchSize = 100);
                     if (res.IsCompleted)
                     {
@@ -87,11 +87,11 @@ namespace WebApiHiringItm.CORE.Core
 
         public async Task<bool> Delete(int id)
         {
-            var getData = _context.Hiringdata.Where(x => x.Id == id).FirstOrDefault();
+            var getData = _context.HiringData.Where(x => x.Id == id).FirstOrDefault();
             if (getData != null)
             {
 
-                var result = _context.Hiringdata.Remove(getData);
+                var result = _context.HiringData.Remove(getData);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -103,11 +103,11 @@ namespace WebApiHiringItm.CORE.Core
 
         public async Task<int> Create(HiringDataDto model)
         {
-            var getData = _context.Hiringdata.Where(x => x.Id == model.Id).FirstOrDefault();
+            var getData = _context.HiringData.Where(x => x.Id == model.Id).FirstOrDefault();
             if (getData == null)
             {
-                var map = _mapper.Map<Hiringdata>(model);
-                var res = _context.Hiringdata.Add(map);
+                var map = _mapper.Map<HiringData>(model);
+                var res = _context.HiringData.Add(map);
                 await _context.SaveChangesAsync();
                 return map.Id != 0 ? map.Id : 0;
             }
@@ -115,7 +115,7 @@ namespace WebApiHiringItm.CORE.Core
             {
                 model.Id = getData.Id;
                 var map = _mapper.Map(model, getData);
-                var res = _context.Hiringdata.Update(map);
+                var res = _context.HiringData.Update(map);
                 await _context.SaveChangesAsync();
                 if (res.State != 0)
                 {

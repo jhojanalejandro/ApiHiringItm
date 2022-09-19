@@ -8,5 +8,6 @@ namespace WebApiHiringItm.CORE.Interface
         Task<ContractorDto> GetById(int id);
         Task<bool> Delete(int id);
         Task<bool> Create(ContractorDto model);
+        Task<List<ContractorDto>> GetByIdFolder(int id);
     }
 }

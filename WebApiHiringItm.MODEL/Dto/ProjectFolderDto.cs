@@ -8,7 +8,13 @@ namespace WebApiHiringItm.MODEL.Dto
 {
     public class ProjectFolderDto
     {
+
         public int Id { get; set; }
-        public string FolderName { get; set; }
+        public int IdUser { get; set; }
+        public string CompanyName { get; set; }
+        public string ProjectName { get; set; }
+        public DateTime? RegisterDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+
     }
 }

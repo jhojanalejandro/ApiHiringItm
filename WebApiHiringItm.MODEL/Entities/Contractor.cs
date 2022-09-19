@@ -9,19 +9,23 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public Contractor()
         {
-            RecursiveContractor = new HashSet<RecursiveContractor>();
+            ContractorStudy = new HashSet<ContractorStudy>();
+            Files = new HashSet<Files>();
+            HiringData = new HashSet<HiringData>();
         }
 
         public int Id { get; set; }
+        public int IdUser { get; set; }
+        public int? IdFolder { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
-        public string Documentodeidentificación { get; set; }
-        public string Lugardeexpedición { get; set; }
+        public string Documentodeidentificacion { get; set; }
+        public string Lugardeexpedicion { get; set; }
         public DateTime? Fechanacimiento { get; set; }
         public string Municipio { get; set; }
         public string Comuna { get; set; }
         public string Barrio { get; set; }
-        public string Teléfono { get; set; }
+        public string Telefono { get; set; }
         public string Celular { get; set; }
         public string Correo { get; set; }
         public string Sexo { get; set; }
@@ -35,6 +39,10 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Tipodecuenta { get; set; }
         public string Entidadcuentabancaria { get; set; }
 
-        public virtual ICollection<RecursiveContractor> RecursiveContractor { get; set; }
+        public virtual ProjectFolder IdFolderNavigation { get; set; }
+        public virtual UserT IdUserNavigation { get; set; }
+        public virtual ICollection<ContractorStudy> ContractorStudy { get; set; }
+        public virtual ICollection<Files> Files { get; set; }
+        public virtual ICollection<HiringData> HiringData { get; set; }
     }
 }

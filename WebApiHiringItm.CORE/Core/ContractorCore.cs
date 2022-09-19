@@ -27,15 +27,22 @@ namespace WebApiHiringItm.CORE.Core
             var result = _context.Contractor.Where(x => x.Id > 0).ToList();
             var map = _mapper.Map<List<ContractorDto>>(result);
             return await Task.FromResult(map);
+            
         }
 
+        public async Task<List<ContractorDto>> GetByIdFolder(int id)
+        {
+            var contractor = _context.Contractor.Where(x => x.IdFolder == id).ToList();
+            var map = _mapper.Map<List<ContractorDto>>(contractor);
+            return await Task.FromResult(map);
+        }
         public async Task<ContractorDto> GetById(int id)
         {
             var result = _context.Contractor.Where(x => x.Id == id).FirstOrDefault();
             var map = _mapper.Map<ContractorDto>(result);
             return await Task.FromResult(map);
         }
-
+  
         public async Task<bool> Delete(int id)
         {
             try

@@ -10,6 +10,7 @@ namespace WebApiHiringItm.MODEL.Dto
     {
         public int Id { get; set; }
         public string FilesName { get; set; }
+        public string Filename { get; set; }
         public string FileType { get; set; }
     }
 }

@@ -9,7 +9,11 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public UserT()
         {
-            RecursiveContractor = new HashSet<RecursiveContractor>();
+            Contractor = new HashSet<Contractor>();
+            ContractorStudy = new HashSet<ContractorStudy>();
+            Files = new HashSet<Files>();
+            HiringData = new HashSet<HiringData>();
+            ProjectFolder = new HashSet<ProjectFolder>();
         }
 
         public int Id { get; set; }
@@ -19,10 +23,13 @@ namespace WebApiHiringItm.MODEL.Entities
         public string UserPassword { get; set; }
         public int IdRoll { get; set; }
         public string UserEmail { get; set; }
-        public bool Permission { get; set; }
         public string PhoneNumber { get; set; }
 
         public virtual Roll IdRollNavigation { get; set; }
-        public virtual ICollection<RecursiveContractor> RecursiveContractor { get; set; }
+        public virtual ICollection<Contractor> Contractor { get; set; }
+        public virtual ICollection<ContractorStudy> ContractorStudy { get; set; }
+        public virtual ICollection<Files> Files { get; set; }
+        public virtual ICollection<HiringData> HiringData { get; set; }
+        public virtual ICollection<ProjectFolder> ProjectFolder { get; set; }
     }
 }

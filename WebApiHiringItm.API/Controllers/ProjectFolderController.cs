@@ -7,13 +7,13 @@ namespace WebApiHiringItm.API.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class ContractorController : ControllerBase
+    public class ProjectFolderController : ControllerBase
     {
-        private readonly IContractorCore _contactor;
+        private readonly IProjectFolder _project;
 
-        public ContractorController(IContractorCore contactor)
+        public ProjectFolderController(IProjectFolder proeject)
         {
-            _contactor = contactor;
+            _project = proeject;
         }
 
         [HttpGet]
@@ -22,25 +22,7 @@ namespace WebApiHiringItm.API.Controllers
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _contactor.GetAll();
-
-                //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAllByFolder(int id)
-            {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _contactor.GetByIdFolder(id);
+                var Data = await _project.GetAll();
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : (NoContent());
@@ -58,7 +40,7 @@ namespace WebApiHiringItm.API.Controllers
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _contactor.GetById(id);
+                var Data = await _project.GetById(id);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : (NoContent());
@@ -71,15 +53,15 @@ namespace WebApiHiringItm.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(ContractorDto model)
+        public async Task<IActionResult> Add(ProjectFolderDto model)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _contactor.Create(model);
+                var Data = await _project.Create(model);
 
                 //Retornamos datos.
-                return Data != null ? Ok(Data) : NoContent();
+                return Data == true ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -90,12 +72,12 @@ namespace WebApiHiringItm.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(ContractorDto model)
+        public async Task<IActionResult> Update(ProjectFolderDto model)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _contactor.Create(model);
+                var Data = await _project.Create(model);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
@@ -114,7 +96,7 @@ namespace WebApiHiringItm.API.Controllers
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _contactor.Delete(id);
+                var Data = await _project.Delete(id);
 
                 //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();
@@ -124,6 +106,5 @@ namespace WebApiHiringItm.API.Controllers
                 throw new Exception("Error", ex);
             }
         }
-
     }
 }
