@@ -41,7 +41,7 @@ namespace WebApiHiringItm.CORE.Core
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var getUser = _context.UserT.Where(x => x.UserEmail == model.Username && x.UserPassword == model.Password).FirstOrDefault();
+            var getUser = _context.UserT.Where(x => x.UserEmail == model.Username && x.UserPassword == model.Password && x.IdRoll != 1004).FirstOrDefault();
 
             if (getUser == null)
             {
@@ -100,13 +100,9 @@ namespace WebApiHiringItm.CORE.Core
                 {
                     var userupdate = _context.UserT.Where(x => x.Id == model.Id).FirstOrDefault();
                     var map = _mapper.Map(model, userupdate);
-                    var res = _context.UserT.Update(map);
-                    await _context.SaveChangesAsync();
-                    if (res.State != 0)
-                    {
-                        return true;
-                    }
-                    return false;
+                     _context.UserT.Update(map);
+                    var res = await _context.SaveChangesAsync();
+                    return res != 0 ? true : false;
 
                 }
 
@@ -118,7 +114,29 @@ namespace WebApiHiringItm.CORE.Core
             }
             return false;
         }
+        public async Task<bool> UpdateRoll(UpdateRollDto model)
+        {
+            try
+            {
+                if (model.Id != 0)
 
+                {
+                    var userupdate = _context.UserT.Where(x => x.Id == model.Id).FirstOrDefault();
+                    var map = _mapper.Map(model, userupdate);
+                    _context.UserT.Update(map);
+                    var res = await _context.SaveChangesAsync();
+                    return res != 0 ? true : false;
+
+                }
+
+            }
+            catch (Exception e)
+            {
+
+                new Exception("Error", e);
+            }
+            return false;
+        }
         public async Task<bool> Delete(int id)
         {
             var user = _context.UserT.Where(x => x.Id == id).FirstOrDefault();
@@ -126,13 +144,10 @@ namespace WebApiHiringItm.CORE.Core
             {
 
                 var result = _context.UserT.Remove(user);
-                await _context.SaveChangesAsync();
-                return true;
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         public async Task<int> Create(UserTDto model)
@@ -145,7 +160,7 @@ namespace WebApiHiringItm.CORE.Core
             else
             {
                 var map = _mapper.Map<UserT>(model);
-                var res = _context.UserT.Add(map);
+                _context.UserT.Add(map);
                 await _context.SaveChangesAsync();
                 return map.Id != 0 ? map.Id : 0;
             }

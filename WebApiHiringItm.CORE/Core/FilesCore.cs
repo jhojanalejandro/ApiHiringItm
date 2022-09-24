@@ -83,5 +83,77 @@ namespace WebApiHiringItm.CORE.Core
             return false;
 
         }
+
+
+        //Basado en lo publicado por otros
+
+           //Buscar el archivo
+ 
+
+
+
+    public string CodificarArchivo(string sNombreArchivo)
+    {
+        string sBase64 = "";
+        // Declaramos fs para tener acceso al archivo residente en la maquina cliente.
+        FileStream fs = new FileStream(sNombreArchivo, FileMode.Open);
+        // Declaramos un Leector Binario para accesar a los datos del archivo pasarlos a un arreglo de bytes
+        BinaryReader br = new BinaryReader(fs);
+        byte[] bytes = new byte[(int)fs.Length];
+        try
+        {
+            br.Read(bytes, 0, bytes.Length);
+            // base64 es la cadena en donde se guarda el arreglo de bytes ya convertido
+            sBase64 = Convert.ToBase64String(bytes);
+            return sBase64;
+
+
+
+        }
+
+        catch(Exception ex)
+        {
+                throw new Exception("Ocurri un error al cargar el archivo Error", ex);
+        }
+        // Se cierran los archivos para liberar memoria.
+        finally
+        {
+            fs.Close();
+            fs = null;
+            br = null;
+            bytes = null;
+        }
     }
+
+
+
+    public string DecodificarArchivo(string sBase64)
+    {
+        // Declaramos fs para tener crear un nuevo archivo temporal en la maquina cliente.
+        // y memStream para almacenar en memoria la cadena recibida.
+        string sImagenTemporal = @"c:PRUEBA.pdf";  //Nombre del archivo y su extencion
+        FileStream fs = new FileStream(sImagenTemporal, FileMode.Create);
+        BinaryWriter bw = new BinaryWriter(fs);
+        byte[] bytes;
+        try
+        {
+            bytes = Convert.FromBase64String(sBase64);
+            bw.Write(bytes);
+            return sImagenTemporal;
+        }
+        catch(FormatException ex)
+        {
+                throw new Exception("Ocurri un error al cargar el archivo Error", ex);
+                return sImagenTemporal = @"c:PRUEBA.MP3";
+        }
+        finally
+        {
+            fs.Close();
+            bytes = null;
+            bw = null;
+            sBase64 = null;
+        }
+    }
+
+}
 }

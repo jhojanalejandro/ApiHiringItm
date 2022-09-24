@@ -48,8 +48,6 @@ namespace WebApiHiringItm.API.Controllers
             }
         }
 
-
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -66,6 +64,7 @@ namespace WebApiHiringItm.API.Controllers
 
                 throw new Exception("Error", ex);
             }
+
         }
 
         [HttpPost]
