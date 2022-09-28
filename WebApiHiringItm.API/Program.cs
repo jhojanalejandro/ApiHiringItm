@@ -2,8 +2,11 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core;
+using WebApiHiringItm.CORE.Core.ExcelCore;
+using WebApiHiringItm.CORE.Core.ExcelCore.interfaces;
 using WebApiHiringItm.CORE.Helpers;
 using WebApiHiringItm.CORE.Interface;
+using WebApiHiringItm.IOC;
 using WebApiHiringItm.MODEL.Mapper;
 using WebApiHiringItm.MODEL.Models;
 using WebApiRifa.CORE.Helpers;
@@ -12,12 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<IUserCore, UserCore>();
-builder.Services.AddScoped<IHiringDataCore, HiringDataCore>();
-builder.Services.AddScoped<IFilesCore, FilesCore>();
-builder.Services.AddScoped<IContractorCore, ContractorCore>();
-builder.Services.AddScoped<IProjectFolder, ProjectFolderCore>();
-
+RegisterDependency.RegistrarDependencias(builder.Services);
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 

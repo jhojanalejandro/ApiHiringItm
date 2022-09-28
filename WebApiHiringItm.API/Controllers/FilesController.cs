@@ -1,12 +1,12 @@
 ﻿using Aspose.Cells;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Data.SqlClient;
+using WebApiHiringItm.CORE.Core.ExcelCore.interfaces;
 using WebApiHiringItm.CORE.Interface;
 using WebApiHiringItm.MODEL.Dto;
-using WebApiHiringItm.MODEL.Entities;
+using WebApiHiringItm.MODEL.Models;
+using WebApiRifa.CORE.Helpers;
 
 namespace WebApiHiringItm.API.Controllers
 {
@@ -15,121 +15,21 @@ namespace WebApiHiringItm.API.Controllers
     public class FilesController : ControllerBase
     {
         private readonly IFilesCore _file;
+        private readonly IUploadExcelCore _uploadExcel;
 
-        public FilesController(IFilesCore file)
+        public FilesController(IFilesCore file, IUploadExcelCore uploadExcel)
         {
             _file = file;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _file.GetAll();
-
-                //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
+            _uploadExcel = uploadExcel;
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddFileUser(FilesDto model)
+        public async Task<IActionResult> Add(FileRequest files)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _file.Create(model);
-
-                //Retornamos datos.
-                return Data == true ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _file.GetById(id);
-
-                //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Add(IFormFile files)
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                string path = Path.Combine(@"D:\PruebaExcel\source\repos\Excel\Excel.API\Excel\", files.FileName);
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                //Save the uploaded Excel file.
-                string fileName = Path.GetFileName(files.FileName);
-                string filePath = Path.Combine(path, fileName);
-                using (FileStream stream = new FileStream(filePath, FileMode.Create))
-                {
-                    files.CopyTo(stream);
-                }
-                FileStream test = new FileStream(filePath, FileMode.Open);
-
-                Workbook workbook = new Workbook(test);
-
-                Worksheet worksheet = workbook.Worksheets[0];
-                var rows = worksheet.Cells.MaxRow;
-                var columns = worksheet.Cells.MaxColumn;
-
-                DataTable dataTable = worksheet.Cells.ExportDataTable(0, 0, rows, columns, true);
-                dataTable.TableName = "";
-
-                test.Close();
-
-                System.IO.File.Delete(filePath);
-                var builder = WebApplication.CreateBuilder();
-                var conn = builder.Configuration.GetConnectionString("HiringDatabase");
-
-                using (SqlConnection connection = new SqlConnection(conn))
-                {
-                    connection.Open();
-                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
-                    {
-                        foreach (DataColumn c in dataTable.Columns)
-                            bulkCopy.ColumnMappings.Add(c.ColumnName, c.ColumnName);
-
-                        bulkCopy.DestinationTableName = dataTable.TableName;
-                        try
-                        {
-                            bulkCopy.WriteToServer(dataTable);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                    }
-                }
-                return Ok(Newtonsoft.Json.JsonConvert.SerializeObject(dataTable));
+                var result = await _uploadExcel.ImportarExcel(files);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -173,6 +73,5 @@ namespace WebApiHiringItm.API.Controllers
                 throw new Exception("Error", ex);
             }
         }
-
     }
 }
