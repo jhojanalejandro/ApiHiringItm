@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WebApiHiringItm.CORE\WebApiHiringItm.CORE.csproj" />
+    <ProjectReference Include="..\WebApiHiringItm.IOC\WebApiHiringItm.IOC.csproj" />
     <ProjectReference Include="..\WebApiHiringItm.MODEL\WebApiHiringItm.MODEL.csproj" />
   </ItemGroup>
 

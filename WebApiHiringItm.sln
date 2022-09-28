@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiHiringItm.CORE", "WebApiHiringItm.CORE\WebApiHiringItm.CORE.csproj", "{0F4EAF19-E2BD-4EE6-8036-8E54E3285F53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiHiringItm.CORE", "WebApiHiringItm.CORE\WebApiHiringItm.CORE.csproj", "{0F4EAF19-E2BD-4EE6-8036-8E54E3285F53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiHiringItm.MODEL", "WebApiHiringItm.MODEL\WebApiHiringItm.MODEL.csproj", "{A241EFAA-52C2-4C08-97ED-10269F0EBCB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiHiringItm.MODEL", "WebApiHiringItm.MODEL\WebApiHiringItm.MODEL.csproj", "{A241EFAA-52C2-4C08-97ED-10269F0EBCB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiHiringItm.API", "WebApiHiringItm.API\WebApiHiringItm.API.csproj", "{3E57DEB6-5989-4AAB-ABD6-430B37C1B3E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiHiringItm.API", "WebApiHiringItm.API\WebApiHiringItm.API.csproj", "{3E57DEB6-5989-4AAB-ABD6-430B37C1B3E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiHiringItm.CONTEXT", "WebApiHiringItm.CONTEXT\WebApiHiringItm.CONTEXT.csproj", "{ED5DFD12-79F4-4471-9716-FABD00E31346}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiHiringItm.CONTEXT", "WebApiHiringItm.CONTEXT\WebApiHiringItm.CONTEXT.csproj", "{ED5DFD12-79F4-4471-9716-FABD00E31346}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiHiringItm.IOC", "WebApiHiringItm.IOC\WebApiHiringItm.IOC.csproj", "{32CA91C5-C2D5-4042-802F-8A6F73138048}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{ED5DFD12-79F4-4471-9716-FABD00E31346}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED5DFD12-79F4-4471-9716-FABD00E31346}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED5DFD12-79F4-4471-9716-FABD00E31346}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32CA91C5-C2D5-4042-802F-8A6F73138048}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32CA91C5-C2D5-4042-802F-8A6F73138048}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32CA91C5-C2D5-4042-802F-8A6F73138048}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32CA91C5-C2D5-4042-802F-8A6F73138048}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
