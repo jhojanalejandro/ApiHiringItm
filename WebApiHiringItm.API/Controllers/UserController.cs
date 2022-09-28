@@ -104,6 +104,23 @@ namespace WebApiHiringItm.API.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(UserUpdatePasswordDto model)
+        {
+            try
+            {
+                //Obtenemos todos los registros.
+                var Data = await _user.UpdatePassword(model);
+
+                //Retornamos datos.
+                return Data != false ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
 
         [HttpPost("{authToken}")]
         public async Task<IActionResult> ValidateTokens(string authToken)

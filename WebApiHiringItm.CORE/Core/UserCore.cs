@@ -93,24 +93,29 @@ namespace WebApiHiringItm.CORE.Core
         }
         public async Task<bool> Update(UserTDto model)
         {
-            try
+            if (model.Id != 0)
+
             {
-                if (model.Id != 0)
-
-                {
-                    var userupdate = _context.UserT.Where(x => x.Id == model.Id).FirstOrDefault();
-                    var map = _mapper.Map(model, userupdate);
-                     _context.UserT.Update(map);
-                    var res = await _context.SaveChangesAsync();
-                    return res != 0 ? true : false;
-
-                }
+                var userupdate = _context.UserT.Where(x => x.Id == model.Id).FirstOrDefault();
+                var map = _mapper.Map(model, userupdate);
+                _context.UserT.Update(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
 
             }
-            catch (Exception e)
-            {
+            return false;
+        }
 
-                new Exception("Error", e);
+        public async Task<bool> UpdatePassword(UserUpdatePasswordDto model)
+        {
+            if (model.Id != 0)
+            {
+                var userupdate = _context.UserT.Where(x => x.Id == model.Id).FirstOrDefault();
+                var map = _mapper.Map(model, userupdate);
+                _context.UserT.Update(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+
             }
             return false;
         }

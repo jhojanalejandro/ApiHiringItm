@@ -39,6 +39,23 @@ namespace WebApiHiringItm.API.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddFileUser(FilesDto model)
+        {
+            try
+            {
+                //Obtenemos todos los registros.
+                var Data = await _file.Create(model);
+
+                //Retornamos datos.
+                return Data == true ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -63,7 +80,7 @@ namespace WebApiHiringItm.API.Controllers
             try
             {
                 //Obtenemos todos los registros.
-                string path = Path.Combine(@"C:\Users\Maicol\source\repos\Excel\Excel.API\Excel\", files.FileName);
+                string path = Path.Combine(@"D:\PruebaExcel\source\repos\Excel\Excel.API\Excel\", files.FileName);
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
@@ -156,5 +173,6 @@ namespace WebApiHiringItm.API.Controllers
                 throw new Exception("Error", ex);
             }
         }
+
     }
 }

@@ -19,6 +19,7 @@ namespace WebApiHiringItm.CORE.Interface
         Task<bool> Delete(int id);
         Task<bool> Update(UserTDto model);
         Task<bool> ValidateT(string authToken);
+        Task<bool> UpdatePassword(UserUpdatePasswordDto model);
         Task<bool> GetUserForgetPassword(RetrievePassword model);
     }
 }
