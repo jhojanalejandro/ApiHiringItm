@@ -14,6 +14,13 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using System.Text;
 using WebApiHiringItm.MODEL.Models;
+using WebApiHiringItm.CORE.Helpers;
+using System.Net;
+using MimeKit;
+using MailKit.Security;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace WebApiHiringItm.CORE.Core.ExcelCore
 {
@@ -21,6 +28,9 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
     {
         #region Dependency
         private readonly Hiring_V1Context _context;
+        private readonly MailSettings _mailSettings;
+        static readonly byte[] keys = Encoding.UTF8.GetBytes("401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1");
+        private readonly AppSettings _appSettings;
         #endregion
 
         #region Constructor
@@ -30,7 +40,7 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
         }
         #endregion
 
-        #region Methods
+        #region Public Methods
         public async Task<string> ImportarExcel(FileRequest obj)
         {
             string path = Path.Combine(@"C:\Users\Maicol\source\repos\Excel\Excel.API\Excel\", obj.Excel.FileName);
@@ -114,8 +124,6 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
             var result = JsonConvert.SerializeObject(filas);
             return await Task.FromResult(result);
         }
-
-
         public static string ToCamelCase(string str)
         {
             var words = str.Split(new[] { "_", " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -126,8 +134,92 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
 
             return string.Join(string.Empty, words);
         }
+        public AuthenticateResponse Authenticate(AuthenticateRequest model)
+        {
+            var getUser = _context.Contractor.Where(x => x.Correo == model.Username && x.ClaveUsuario == model.Password).FirstOrDefault();
+
+            if (getUser == null)
+            {
+                return null;
+            }
+            var token = generateJwtToken(getUser);
+
+            return new AuthenticateResponse(getUser, token);
+        }
+        public string generateJwtToken(Contractor user)
+        {
+            // generate token that is valid for 7 days
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
         #endregion
 
+        #region METODS PRIVATE
+        private async Task<string> validateDinamycKey()
+        {
+            var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+            var stringChars = new char[5];
+            var random = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            var finalString = new String(stringChars);
+
+            if (finalString != null)
+            {
+                var message = new MailRequest();
+                message.Body = "Tu Clave dinamica es: " + finalString;
+                message.ToEmail = "alejoyepes.18@gmail.com";
+                message.Subject = "Clave dinamica";
+                sendMessage(message);
+            }
+
+            return finalString;
+        }
+        private async Task<bool> sendMessage(MailRequest mailRequest)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+            var email = new MimeMessage();
+            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+            //email.From.Add(MailboxAddress.Parse("alejoyepes.1000@gmail.com"));
+            email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
+            email.Subject = mailRequest.Subject;
+            var builder = new BodyBuilder();
+            //CreateTestMessage2();
+            //message();
+            builder.HtmlBody = mailRequest.Body;
+            email.Body = builder.ToMessageBody();
+            using var smtp = new MailKit.Net.Smtp.SmtpClient();
+            var resp = smtp;
+            smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+            smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+            try
+            {
+                await smtp.SendAsync(email);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+
+            return false;
+
+        }
+        #endregion
     }
 }

@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Interface;
+using WebApiHiringItm.CORE.Core.File.Interface;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Entities;
 
-namespace WebApiHiringItm.CORE.Core
+namespace WebApiHiringItm.CORE.Core.File
 {
-    public class FilesCore: IFilesCore
+    public class FilesCore : IFilesCore
     {
         private readonly Hiring_V1Context _context;
         private readonly IMapper _mapper;
@@ -87,8 +87,8 @@ namespace WebApiHiringItm.CORE.Core
 
         //Basado en lo publicado por otros
 
-           //Buscar el archivo
- 
+        //Buscar el archivo
+
 
 
 
@@ -111,9 +111,9 @@ namespace WebApiHiringItm.CORE.Core
 
             }
 
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                    throw new Exception("Ocurri un error al cargar el archivo Error", ex);
+                throw new Exception("Ocurri un error al cargar el archivo Error", ex);
             }
             // Se cierran los archivos para liberar memoria.
             finally
@@ -141,10 +141,10 @@ namespace WebApiHiringItm.CORE.Core
                 bw.Write(bytes);
                 return sImagenTemporal;
             }
-            catch(FormatException ex)
+            catch (FormatException ex)
             {
-                    throw new Exception("Ocurri un error al cargar el archivo Error", ex);
-                    return sImagenTemporal = @"c:PRUEBA.MP3";
+                throw new Exception("Ocurri un error al cargar el archivo Error", ex);
+                return sImagenTemporal = @"c:PRUEBA.MP3";
             }
             finally
             {

@@ -6,5 +6,7 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore.interfaces
     public interface IUploadExcelCore
     {
         Task<string> ImportarExcel(FileRequest file);
+        AuthenticateResponse Authenticate(AuthenticateRequest model);
+
     }
 }

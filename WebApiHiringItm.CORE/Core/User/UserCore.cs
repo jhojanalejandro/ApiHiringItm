@@ -10,7 +10,6 @@ using WebApiHiringItm.CORE.Helpers;
 using WebApiHiringItm.MODEL.Entities;
 using WebApiHiringItm.MODEL.Models;
 using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Interface;
 using WebApiHiringItm.MODEL.Dto;
 using System.Security.Principal;
 using System.Security.Cryptography;
@@ -19,18 +18,20 @@ using MailKit.Security;
 using System.Net.Mail;
 using System.Net;
 using MimeKit.Text;
+using WebApiHiringItm.CORE.Core.User.Interface;
 
-namespace WebApiHiringItm.CORE.Core
+namespace WebApiHiringItm.CORE.Core.User
 {
     public class UserCore : IUserCore
     {
+        #region VARIABLE
         private readonly Hiring_V1Context _context;
         private readonly IMapper _mapper;
         private readonly MailSettings _mailSettings;
-
         static readonly byte[] keys = Encoding.UTF8.GetBytes("401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1");
         private readonly AppSettings _appSettings;
-
+        #endregion
+        #region CONTRUCTOR
         public UserCore(Hiring_V1Context context, IMapper mapper, IOptions<AppSettings> appSettings, IOptions<MailSettings> mailSettings)
         {
             _context = context;
@@ -38,7 +39,9 @@ namespace WebApiHiringItm.CORE.Core
             _appSettings = appSettings.Value;
             _mailSettings = mailSettings.Value;
         }
+        #endregion
 
+        #region PUBLIC METODS
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
             var getUser = _context.UserT.Where(x => x.UserEmail == model.Username && x.UserPassword == model.Password && x.IdRoll != 1004).FirstOrDefault();
@@ -53,19 +56,16 @@ namespace WebApiHiringItm.CORE.Core
 
 
         }
-
         public async Task<List<UserTDto>> GetAll()
         {
             var result = _context.UserT.Where(x => x.Id > 0).ToList();
             var map = _mapper.Map<List<UserTDto>>(result);
             return await Task.FromResult(map);
         }
-
         public UserT GetByIdd(int id)
         {
             return _context.UserT.Where(x => x.Id == id).FirstOrDefault();
         }
-
         public async Task<UserTDto> GetById(int id)
         {
             var result = _context.UserT.Where(x => x.Id == id).FirstOrDefault();
@@ -105,7 +105,6 @@ namespace WebApiHiringItm.CORE.Core
             }
             return false;
         }
-
         public async Task<bool> UpdatePassword(UserUpdatePasswordDto model)
         {
             if (model.Id != 0)
@@ -154,7 +153,6 @@ namespace WebApiHiringItm.CORE.Core
             }
             return false;
         }
-
         public async Task<int> Create(UserTDto model)
         {
             var userupdate = _context.UserT.Where(x => x.UserEmail == model.UserEmail).FirstOrDefault();
@@ -171,8 +169,7 @@ namespace WebApiHiringItm.CORE.Core
             }
             return 0;
         }
-
-        private string generateJwtToken(UserT user)
+        public string generateJwtToken(UserT user)
         {
             // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -186,7 +183,6 @@ namespace WebApiHiringItm.CORE.Core
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
         public async Task<bool> ValidateT(string authToken)
         {
             if (IsJwtTokenValid(authToken))
@@ -195,7 +191,9 @@ namespace WebApiHiringItm.CORE.Core
             }
             return false;
         }
+        #endregion
 
+        #region PRIVATE METODS
         private static bool IsJwtTokenValid(string token)
         {
             // example of token:
@@ -290,6 +288,6 @@ namespace WebApiHiringItm.CORE.Core
             return false;
 
         }
-
+        #endregion
     }
 }
