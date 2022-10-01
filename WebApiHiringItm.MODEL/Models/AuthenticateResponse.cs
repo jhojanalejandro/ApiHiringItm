@@ -26,5 +26,14 @@ namespace WebApiHiringItm.MODEL.Models
             IdRoll = user.IdRoll;
             accessToken = token;
         }
+        public AuthenticateResponse(Contractor user, string token)
+        {
+            Id = user.Id;
+            UserName = user.NombreCompleto;
+            UserPassword = user.ClaveUsuario;
+            UserEmail = user.Correo;
+            IdRoll = 6;
+            accessToken = token;
+        }
     }
 }

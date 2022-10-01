@@ -171,11 +171,6 @@ namespace WebApiHiringItm.CONTEXT.Context
             {
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Apellido)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("APELLIDO");
-
                 entity.Property(e => e.Arl)
                     .HasMaxLength(100)
                     .IsUnicode(false)
@@ -254,7 +249,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .IsUnicode(false)
                     .HasColumnName("NACIONALIDAD");
 
-                entity.Property(e => e.Nombre)
+                entity.Property(e => e.NombreCompleto)
                     .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("NOMBRE");

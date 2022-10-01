@@ -3,6 +3,10 @@ using WebApiHiringItm.CORE.Core;
 using WebApiHiringItm.CORE.Core.ExcelCore.interfaces;
 using WebApiHiringItm.CORE.Core.ExcelCore;
 using WebApiHiringItm.CORE.Interface;
+using WebApiHiringItm.CORE.Core.User.Interface;
+using WebApiHiringItm.CORE.Core.User;
+using WebApiHiringItm.CORE.Core.File.Interface;
+using WebApiHiringItm.CORE.Core.File;
 
 namespace WebApiHiringItm.IOC
 {

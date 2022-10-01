@@ -30,5 +30,7 @@ namespace WebApiHiringItm.MODEL.Dto
         public string Cuentabancaria { get; set; }
         public string Tipodecuenta { get; set; }
         public string Entidadcuentabancaria { get; set; }
+        public string ClaveUsuario { get; set; }
+
     }
 }
