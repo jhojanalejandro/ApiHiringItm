@@ -7,6 +7,8 @@ using WebApiHiringItm.CORE.Core.User.Interface;
 using WebApiHiringItm.CORE.Core.User;
 using WebApiHiringItm.CORE.Core.File.Interface;
 using WebApiHiringItm.CORE.Core.File;
+using WebApiHiringItm.CORE.Core.ProjectFolder;
+using WebApiHiringItm.CORE.Core.ProjectFolder.Interface;
 
 namespace WebApiHiringItm.IOC
 {

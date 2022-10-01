@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Interface;
+using WebApiHiringItm.CORE.Core.ProjectFolder.Interface;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Entities;
 
-namespace WebApiHiringItm.CORE.Core
+namespace WebApiHiringItm.CORE.Core.ProjectFolder
 {
-    public class ProjectFolderCore: IProjectFolder
+    public class ProjectFolderCore : IProjectFolder
     {
         private readonly Hiring_V1Context _context;
         private readonly IMapper _mapper;
@@ -58,9 +58,9 @@ namespace WebApiHiringItm.CORE.Core
         }
 
         public async Task<bool> Create(ProjectFolderDto model)
-            {
+        {
             var getData = _context.ProjectFolder.Where(x => x.Id == model.Id).FirstOrDefault();
-           
+
             if (getData == null)
             {
                 var map = _mapper.Map<ProjectFolder>(model);

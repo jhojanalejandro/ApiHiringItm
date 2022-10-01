@@ -96,7 +96,7 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
                 using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn))
                 {
                     connection.Open();
-                foreach (DataColumn c in dataTable.Columns)
+                    foreach (DataColumn c in dataTable.Columns)
                         bulkCopy.ColumnMappings.Add(c.ColumnName, c.ColumnName);
                     bulkCopy.DestinationTableName = dataTable.TableName;
                     try
