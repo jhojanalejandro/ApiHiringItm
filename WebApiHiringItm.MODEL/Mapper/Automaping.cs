@@ -16,6 +16,7 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<UserTDto, UserT>().ReverseMap();
             CreateMap<HiringDataDto, HiringData>().ReverseMap();
             CreateMap<ContractorDto, Contractor>().ReverseMap();
+            CreateMap<AddPasswordContractorDto, Contractor>().ReverseMap();
             CreateMap<ContractorStudyDto, ContractorStudy>().ReverseMap();
             CreateMap<FilesDto, Files>().ReverseMap();
             CreateMap<ProjectFolderDto, ProjectFolder>().ReverseMap();

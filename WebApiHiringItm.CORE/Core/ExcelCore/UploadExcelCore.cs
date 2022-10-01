@@ -21,6 +21,8 @@ using MailKit.Security;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using AutoMapper;
+using WebApiHiringItm.MODEL.Dto;
 
 namespace WebApiHiringItm.CORE.Core.ExcelCore
 {
@@ -31,12 +33,15 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
         private readonly MailSettings _mailSettings;
         static readonly byte[] keys = Encoding.UTF8.GetBytes("401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1");
         private readonly AppSettings _appSettings;
+        private readonly IMapper _mapper;
+
         #endregion
 
         #region Constructor
-        public UploadExcelCore(Hiring_V1Context context)
+        public UploadExcelCore(Hiring_V1Context context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         #endregion
 
@@ -160,10 +165,20 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+        public async Task<Contractor> SendMessageById(int idFolder)
+        {
+            var result = _context.Contractor.Where(x => x.IdFolder == idFolder).ToList();
+            foreach (var resultItem in result) { 
+                
+            }
+            var map = _mapper.Map<Contractor>(result);
+            return await Task.FromResult(map);
+        }
+
         #endregion
 
         #region METODS PRIVATE
-        private async Task<string> validateDinamycKey()
+        private async Task<string> createPassword()
         {
             var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -219,6 +234,20 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
 
             return false;
 
+        }
+        private async Task<bool> Update(AddPasswordContractorDto model)
+        {
+            if (model.Id != 0)
+
+            {
+                var userupdate = _context.Contractor.Where(x => x.Id.Equals(model.Id) && x.Documentodeidentificacion.Equals(model.Documentodeidentificacion)).FirstOrDefault();
+                var map = _mapper.Map(model, userupdate);
+                _context.Contractor.Update(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+
+            }
+            return false;
         }
         #endregion
     }

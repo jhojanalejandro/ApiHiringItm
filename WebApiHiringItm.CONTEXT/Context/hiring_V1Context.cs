@@ -181,6 +181,11 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .IsUnicode(false)
                     .HasColumnName("BARRIO");
 
+                entity.Property(e => e.ClaveUsuario)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("ClaveUsuario");
+
                 entity.Property(e => e.Celular)
                     .HasMaxLength(15)
                     .IsUnicode(false)

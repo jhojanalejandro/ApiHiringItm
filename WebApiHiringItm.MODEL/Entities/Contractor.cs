@@ -17,6 +17,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public int Id { get; set; }
         public int IdUser { get; set; }
         public int? IdFolder { get; set; }
+        public string ClaveUsuario { get; set; }
         public string NombreCompleto { get; set; }
         public string Documentodeidentificacion { get; set; }
         public string Lugardeexpedicion { get; set; }
