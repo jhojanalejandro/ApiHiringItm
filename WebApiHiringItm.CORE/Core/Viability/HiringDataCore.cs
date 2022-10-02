@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Interface;
+using WebApiHiringItm.CORE.Core.Viability.Interface;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Entities;
 
-namespace WebApiHiringItm.CORE.Core
+namespace WebApiHiringItm.CORE.Core.Viability
 {
-    public class HiringDataCore: IHiringDataCore
+    public class HiringDataCore : IHiringDataCore
     {
         private readonly Hiring_V1Context _context;
         private readonly IMapper _mapper;
@@ -47,6 +47,35 @@ namespace WebApiHiringItm.CORE.Core
                     {
                         return true;
                     }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+
+                new Exception("Error", e);
+            }
+            return false;
+        }
+
+        public async Task<bool> UpdateViability(ViabilityDto model)
+        {
+            try
+            {
+                if (model.Id != 0)
+
+                {
+                    var getData = _context.HiringData.Where(x => x.Id.Equals(model.Id) && x.IdContractor.Equals(model.IdContractor)).FirstOrDefault();
+                    if (getData != null)
+                    {
+                        var map = _mapper.Map(model, getData);
+                        _context.HiringData.Update(map);
+                        var res = await _context.SaveChangesAsync();
+                        return res != 0 ? true : false;
+
+                    }
+   
 
                 }
 

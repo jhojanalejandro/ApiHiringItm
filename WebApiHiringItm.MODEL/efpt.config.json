@@ -8,6 +8,7 @@
    "ModelNamespace": null,
    "OutputContextPath": "Context",
    "OutputPath": "Entities",
+   "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "WebApiHiringItm.MODEL",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
@@ -59,5 +60,6 @@
    "UseNodaTime": false,
    "UseNullableReferences": false,
    "UseSchemaFolders": false,
-   "UseSpatial": false
+   "UseSpatial": false,
+   "UseT4": false
 }

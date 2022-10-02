@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto;
 
-namespace WebApiHiringItm.CORE.Core.ProjectFolder.Interface
+namespace WebApiHiringItm.CORE.Core.ProjectFolders.Interface
 {
     public interface IProjectFolder
     {

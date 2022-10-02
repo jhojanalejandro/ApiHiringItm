@@ -12,7 +12,9 @@ namespace WebApiHiringItm.MODEL.Entities
         public string FilesName { get; set; }
         public string Filename { get; set; }
         public string FileType { get; set; }
+        public string DescriptionFile { get; set; }
         public int IdUser { get; set; }
+        public DateTime? RegisterDate { get; set; }
 
         public virtual Contractor IdContractorNavigation { get; set; }
         public virtual UserT IdUserNavigation { get; set; }

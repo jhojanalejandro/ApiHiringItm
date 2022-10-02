@@ -104,6 +104,24 @@ namespace WebApiHiringItm.API.Controllers
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddFileContractor(FilesDto model)
+        {
+            try
+            {
+                //Obtenemos todos los registros.
+                var Data = await _file.Create(model);
+
+                //Retornamos datos.
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> Add(FileRequest files)
         {

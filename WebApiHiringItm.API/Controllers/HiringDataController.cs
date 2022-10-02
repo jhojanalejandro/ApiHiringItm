@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApiHiringItm.CORE.Interface;
+using WebApiHiringItm.CORE.Core.Viability.Interface;
 using WebApiHiringItm.MODEL.Dto;
 
 namespace WebApiHiringItm.API.Controllers

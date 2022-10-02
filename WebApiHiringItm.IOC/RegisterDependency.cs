@@ -1,14 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using WebApiHiringItm.CORE.Core;
 using WebApiHiringItm.CORE.Core.ExcelCore.interfaces;
 using WebApiHiringItm.CORE.Core.ExcelCore;
-using WebApiHiringItm.CORE.Interface;
 using WebApiHiringItm.CORE.Core.User.Interface;
 using WebApiHiringItm.CORE.Core.User;
 using WebApiHiringItm.CORE.Core.File.Interface;
 using WebApiHiringItm.CORE.Core.File;
-using WebApiHiringItm.CORE.Core.ProjectFolder;
-using WebApiHiringItm.CORE.Core.ProjectFolder.Interface;
+using WebApiHiringItm.CORE.Core.ProjectFolders;
+using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
+using WebApiHiringItm.CORE.Core.Contractors;
+using WebApiHiringItm.CORE.Core.Contractors.Interface;
+using WebApiHiringItm.CORE.Core.Viability.Interface;
+using WebApiHiringItm.CORE.Core.Viability;
 
 namespace WebApiHiringItm.IOC
 {

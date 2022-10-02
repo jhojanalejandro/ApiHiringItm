@@ -13,6 +13,7 @@ namespace WebApiHiringItm.MODEL.Dto
         public int IdUser { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
+        public string DescriptionProject { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
 

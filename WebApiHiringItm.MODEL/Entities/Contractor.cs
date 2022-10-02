@@ -17,10 +17,10 @@ namespace WebApiHiringItm.MODEL.Entities
         public int Id { get; set; }
         public int IdUser { get; set; }
         public int? IdFolder { get; set; }
-        public string ClaveUsuario { get; set; }
         public string NombreCompleto { get; set; }
-        public string Documentodeidentificacion { get; set; }
-        public string Lugardeexpedicion { get; set; }
+        public string DocumentoDeIdentidificacion { get; set; }
+        public string ClaveUsuario { get; set; }
+        public string LugarDeExpedicion { get; set; }
         public DateTime? Fechanacimiento { get; set; }
         public string Municipio { get; set; }
         public string Comuna { get; set; }
@@ -38,7 +38,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Cuentabancaria { get; set; }
         public string Tipodecuenta { get; set; }
         public string Entidadcuentabancaria { get; set; }
-        public string ClaveUsuario { get; set; }
 
         public virtual ProjectFolder IdFolderNavigation { get; set; }
         public virtual UserT IdUserNavigation { get; set; }

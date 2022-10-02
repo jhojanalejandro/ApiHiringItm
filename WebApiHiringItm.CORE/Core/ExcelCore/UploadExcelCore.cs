@@ -141,7 +141,7 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
         }
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var getUser = _context.Contractor.Where(x => x.Correo == model.Username && x.ClaveUsuario == model.Password).FirstOrDefault();
+            var getUser = _context.Contractor.Where(x => x.Correo == model.Username && x.ClaveUsuario.Equals(model.Password)).FirstOrDefault();
 
             if (getUser == null)
             {
@@ -240,7 +240,7 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
             if (model.Id != 0)
 
             {
-                var userupdate = _context.Contractor.Where(x => x.Id.Equals(model.Id) && x.Documentodeidentificacion.Equals(model.Documentodeidentificacion)).FirstOrDefault();
+                var userupdate = _context.Contractor.Where(x => x.Id.Equals(model.Id) && x.DocumentoDeIdentidificacion.Equals(model.Documentodeidentificacion)).FirstOrDefault();
                 var map = _mapper.Map(model, userupdate);
                 _context.Contractor.Update(map);
                 var res = await _context.SaveChangesAsync();

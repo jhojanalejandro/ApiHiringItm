@@ -1,6 +1,6 @@
 ﻿using WebApiHiringItm.MODEL.Dto;
 
-namespace WebApiHiringItm.CORE.Interface
+namespace WebApiHiringItm.CORE.Core.Contractors.Interface
 {
     public interface IContractorCore
     {
