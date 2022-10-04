@@ -12,6 +12,7 @@ namespace WebApiHiringItm.CORE.Core.Viability.Interface
         Task<List<HiringDataDto>> GetAll();
         Task<HiringDataDto> GetById(int id);
         Task<bool> Update(HiringDataDto model);
+        Task<bool> UpdateViability(ViabilityDto model);
         Task<bool> Delete(int id);
         Task<int> Create(HiringDataDto model);
 

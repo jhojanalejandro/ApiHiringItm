@@ -1,28 +1,28 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApiHiringItm.CORE.Core.Viability.Interface;
+using WebApiHiringItm.CORE.Core.FoldersContractor.Interface;
 using WebApiHiringItm.MODEL.Dto;
 
 namespace WebApiHiringItm.API.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class HiringDataController : ControllerBase
+    public class FolderContractorController : ControllerBase
     {
-        private readonly IHiringDataCore _viability;
+        private readonly IFolderContractorCore _folder;
 
-        public HiringDataController(IHiringDataCore feasibility)
+        public FolderContractorController(IFolderContractorCore _folder)
         {
-            _viability = feasibility;
+            _folder = _folder;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int idContractor, int idFolder)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _viability.GetAll();
+                var Data = await _folder.GetAllById(idContractor, idFolder);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : (NoContent());
@@ -40,7 +40,7 @@ namespace WebApiHiringItm.API.Controllers
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _viability.GetById(id);
+                var Data = await _folder.GetById(id);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : (NoContent());
@@ -53,15 +53,15 @@ namespace WebApiHiringItm.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(HiringDataDto model)
+        public async Task<IActionResult> Add(FolderContractorDto model)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _viability.Create(model);
+                var Data = await _folder.Create(model);
 
                 //Retornamos datos.
-                return Data != 0 ? Ok(Data) : NoContent();
+                return Data == true ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -72,15 +72,15 @@ namespace WebApiHiringItm.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(HiringDataDto model)
+        public async Task<IActionResult> Update(FolderContractorDto model)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _viability.Update(model);
+                var Data = await _folder.Create(model);
 
                 //Retornamos datos.
-                return Data != false ? Ok(Data) : NoContent();
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -90,30 +90,13 @@ namespace WebApiHiringItm.API.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateViability(HiringDataDto model)
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _viability.Update(model);
-
-                //Retornamos datos.
-                return Data != false ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _viability.Delete(id);
+                var Data = await _folder.Delete(id);
 
                 //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();
@@ -123,6 +106,5 @@ namespace WebApiHiringItm.API.Controllers
                 throw new Exception("Error", ex);
             }
         }
-
     }
 }

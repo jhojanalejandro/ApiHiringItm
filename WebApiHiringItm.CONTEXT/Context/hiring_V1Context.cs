@@ -21,8 +21,8 @@ namespace WebApiHiringItm.CONTEXT.Context
         }
 
         public virtual DbSet<Contractor> Contractor { get; set; }
-        public virtual DbSet<ContractorStudy> ContractorStudy { get; set; }
         public virtual DbSet<Files> Files { get; set; }
+        public virtual DbSet<FolderContractor> FolderContractor { get; set; }
         public virtual DbSet<HiringData> HiringData { get; set; }
         public virtual DbSet<ProjectFolder> ProjectFolder { get; set; }
         public virtual DbSet<Roll> Roll { get; set; }
@@ -141,52 +141,10 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.IdFolderNavigation)
                     .WithMany(p => p.Contractor)
                     .HasForeignKey(d => d.IdFolder)
-                    .HasConstraintName("FK__Contracto__idFol__37A5467C");
+                    .HasConstraintName("FK__Contracto__idFol__36B12243");
 
                 entity.HasOne(d => d.IdUserNavigation)
                     .WithMany(p => p.Contractor)
-                    .HasForeignKey(d => d.IdUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Contracto__idUse__36B12243");
-            });
-
-            modelBuilder.Entity<ContractorStudy>(entity =>
-            {
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.DescriptionStudy)
-                    .IsUnicode(false)
-                    .HasColumnName("descriptionStudy");
-
-                entity.Property(e => e.FinalDate)
-                    .HasColumnType("date")
-                    .HasColumnName("finalDate");
-
-                entity.Property(e => e.IdContractor).HasColumnName("idContractor");
-
-                entity.Property(e => e.IdUser).HasColumnName("idUser");
-
-                entity.Property(e => e.InstitutionName)
-                    .IsUnicode(false)
-                    .HasColumnName("institutionName");
-
-                entity.Property(e => e.StartDate)
-                    .HasColumnType("date")
-                    .HasColumnName("startDate");
-
-                entity.Property(e => e.TypeStudy)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("typeStudy");
-
-                entity.HasOne(d => d.IdContractorNavigation)
-                    .WithMany(p => p.ContractorStudy)
-                    .HasForeignKey(d => d.IdContractor)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Contracto__idCon__34C8D9D1");
-
-                entity.HasOne(d => d.IdUserNavigation)
-                    .WithMany(p => p.ContractorStudy)
                     .HasForeignKey(d => d.IdUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Contracto__idUse__35BCFE0A");
@@ -201,13 +159,9 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .IsUnicode(false)
                     .HasColumnName("descriptionFile");
 
-                entity.Property(e => e.FileType)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Filename)
+                entity.Property(e => e.Fildata)
                     .IsUnicode(false)
-                    .HasColumnName("filename");
+                    .HasColumnName("fildata");
 
                 entity.Property(e => e.FilesName)
                     .HasMaxLength(100)
@@ -216,23 +170,62 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.IdContractor).HasColumnName("idContractor");
 
+                entity.Property(e => e.IdFolder).HasColumnName("idFolder");
+
                 entity.Property(e => e.IdUser).HasColumnName("idUser");
 
                 entity.Property(e => e.RegisterDate)
                     .HasColumnType("date")
                     .HasColumnName("registerDate");
 
+                entity.Property(e => e.TypeFile)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("typeFile");
+
                 entity.HasOne(d => d.IdContractorNavigation)
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.IdContractor)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Files__idContrac__30F848ED");
+                    .HasConstraintName("FK__Files__idContrac__31EC6D26");
 
                 entity.HasOne(d => d.IdUserNavigation)
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.IdUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Files__idUser__31EC6D26");
+                    .HasConstraintName("FK__Files__idUser__32E0915F");
+            });
+
+            modelBuilder.Entity<FolderContractor>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.DescriptionProject)
+                    .IsUnicode(false)
+                    .HasColumnName("descriptionProject");
+
+                entity.Property(e => e.FolderName)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("folderName");
+
+                entity.Property(e => e.IdContractor).HasColumnName("idContractor");
+
+                entity.Property(e => e.IdUser).HasColumnName("idUser");
+
+                entity.Property(e => e.ModifyDate)
+                    .HasColumnType("date")
+                    .HasColumnName("modifyDate");
+
+                entity.Property(e => e.RegisterDate)
+                    .HasColumnType("date")
+                    .HasColumnName("registerDate");
+
+                entity.HasOne(d => d.IdContractorNavigation)
+                    .WithMany(p => p.FolderContractor)
+                    .HasForeignKey(d => d.IdContractor)
+                    .HasConstraintName("FK__FolderCon__idCon__30F848ED");
             });
 
             modelBuilder.Entity<HiringData>(entity =>
@@ -440,13 +433,13 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.HiringData)
                     .HasForeignKey(d => d.IdContractor)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__HiringDat__idCon__33D4B598");
+                    .HasConstraintName("FK__HiringDat__idCon__34C8D9D1");
 
                 entity.HasOne(d => d.IdUserNavigation)
                     .WithMany(p => p.HiringData)
                     .HasForeignKey(d => d.IdUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__HiringDat__idUse__32E0915F");
+                    .HasConstraintName("FK__HiringDat__idUse__33D4B598");
             });
 
             modelBuilder.Entity<ProjectFolder>(entity =>
@@ -535,7 +528,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.UserT)
                     .HasForeignKey(d => d.IdRoll)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserT__idRoll__38996AB5");
+                    .HasConstraintName("FK__UserT__idRoll__37A5467C");
             });
 
             OnModelCreatingPartial(modelBuilder);

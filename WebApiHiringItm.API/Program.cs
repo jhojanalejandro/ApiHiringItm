@@ -2,10 +2,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core;
-using WebApiHiringItm.CORE.Core.ExcelCore;
-using WebApiHiringItm.CORE.Core.ExcelCore.interfaces;
 using WebApiHiringItm.CORE.Helpers;
-using WebApiHiringItm.CORE.Interface;
 using WebApiHiringItm.IOC;
 using WebApiHiringItm.MODEL.Mapper;
 using WebApiHiringItm.MODEL.Models;
@@ -21,7 +18,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder => { builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod(); 
+    options.AddDefaultPolicy(builder => { builder.WithOrigins("http://localhost:4201").AllowAnyHeader().AllowAnyMethod(); 
     
     });
 });

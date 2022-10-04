@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CORE.Core;
-using WebApiHiringItm.CORE.Interface;
 using WebApiHiringItm.CORE.Helpers;
 using WebApiRifa.CORE.Helpers;
 using WebApiHiringItm.CORE.Core.User.Interface;

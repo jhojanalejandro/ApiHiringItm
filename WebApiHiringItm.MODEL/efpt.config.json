@@ -19,11 +19,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ContractorStudy]",
+         "Name": "[dbo].[Files]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Files]",
+         "Name": "[dbo].[FolderContractor]",
          "ObjectType": 0
       },
       {

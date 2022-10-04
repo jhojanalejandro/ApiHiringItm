@@ -33,8 +33,4 @@
     <ProjectReference Include="..\WebApiHiringItm.MODEL\WebApiHiringItm.MODEL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Interface\" />
-  </ItemGroup>
-
 </Project>

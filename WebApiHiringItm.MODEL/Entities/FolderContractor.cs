@@ -5,19 +5,16 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class Files
+    public partial class FolderContractor
     {
         public int Id { get; set; }
-        public int IdContractor { get; set; }
-        public int IdFolder { get; set; }
-        public string FilesName { get; set; }
-        public string Fildata { get; set; }
-        public string TypeFile { get; set; }
-        public string DescriptionFile { get; set; }
         public int IdUser { get; set; }
+        public int? IdContractor { get; set; }
+        public string FolderName { get; set; }
+        public string DescriptionProject { get; set; }
         public DateTime? RegisterDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
 
         public virtual Contractor IdContractorNavigation { get; set; }
-        public virtual UserT IdUserNavigation { get; set; }
     }
 }

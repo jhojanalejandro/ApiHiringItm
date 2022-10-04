@@ -11,7 +11,7 @@ namespace WebApiHiringItm.CONTEXT.Context
     public interface IHiring_V1Context
     {
         DbSet<Contractor> Contractor { get; set; }
-        DbSet<ContractorStudy> ContractorStudy { get; set; }
+        DbSet<FolderContractor> FolderContractor { get; set; }
         DbSet<Files> Files { get; set; }
         DbSet<HiringData> HiringData { get; set; }
         DbSet<ProjectFolder> ProjectFolder { get; set; }
