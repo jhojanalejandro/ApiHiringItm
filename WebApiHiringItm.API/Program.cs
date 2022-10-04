@@ -15,13 +15,20 @@ builder.Services.AddEndpointsApiExplorer();
 RegisterDependency.RegistrarDependencias(builder.Services);
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+#region RegisterAddCors
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder => { builder.WithOrigins("http://localhost:4201").AllowAnyHeader().AllowAnyMethod(); 
-    
-    });
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      builder =>
+                      {
+                          builder.WithOrigins("*")
+                          .AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                      });
 });
+#endregion
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
@@ -58,7 +65,6 @@ app.UseMiddleware<JwtMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseCors(MyAllowSpecificOrigins);
 app.MapControllers();
-app.UseCors();
 app.Run();

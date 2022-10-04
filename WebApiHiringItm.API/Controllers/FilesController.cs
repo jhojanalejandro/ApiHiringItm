@@ -123,11 +123,11 @@ namespace WebApiHiringItm.API.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Add(FileRequest files)
+        public async Task<IActionResult> Add([FromForm]FileRequest model)
         {
             try
             {
-                var result = await _uploadExcel.ImportarExcel(files);
+                var result = await _uploadExcel.ImportarExcel(model);
                 return Ok(result);
             }
             catch (Exception ex)
