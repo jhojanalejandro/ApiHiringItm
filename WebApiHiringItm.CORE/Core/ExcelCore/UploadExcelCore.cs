@@ -252,7 +252,7 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
             if (model.Id != 0)
 
             {
-                var userupdate = _context.Contractor.Where(x => x.Id.Equals(model.Id) && x.DocumentoDeIdentidificacion.Equals(model.Documentodeidentificacion)).FirstOrDefault();
+                var userupdate = _context.Files.Where(x => x.IdContractor.Equals(model.IdContractor) && x.IdFolder.Equals(model.IdFolder)).FirstOrDefault();
                 var map = _mapper.Map(model, userupdate);
                 _context.Contractor.Update(map);
                 var res = await _context.SaveChangesAsync();
