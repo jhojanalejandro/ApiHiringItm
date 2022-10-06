@@ -7,7 +7,7 @@
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": "Context",
-   "OutputPath": "Entities",
+   "OutputPath": "Entities1",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "WebApiHiringItm.MODEL",
    "Schemas": null,
@@ -15,31 +15,7 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
-         "Name": "[dbo].[Contractor]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Files]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[FolderContractor]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HiringData]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[ProjectFolder]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Roll]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[UserT]",
+         "Name": "[dbo].[ExcelInfo]",
          "ObjectType": 0
       }
    ],

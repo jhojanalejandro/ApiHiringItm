@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Core.File.Interface;
+using WebApiHiringItm.CORE.Core.FileCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Entities;
 
-namespace WebApiHiringItm.CORE.Core.File
+namespace WebApiHiringItm.CORE.Core.FileCore
 {
     public class FilesCore : IFilesCore
     {
@@ -22,9 +22,9 @@ namespace WebApiHiringItm.CORE.Core.File
             _mapper = mapper;
         }
 
-        public async Task<List<FilesDto>> GetAll()
+        public async Task<List<FilesDto>> GetAllById(int idConytractor, int idFolder)
         {
-            var result = _context.Files.Where(x => x.Id > 0).ToList();
+            var result = _context.Files.Where(x => x.IdContractor.Equals(idConytractor) && x.IdFolder.Equals(idFolder)).ToList();
             var map = _mapper.Map<List<FilesDto>>(result);
             return await Task.FromResult(map);
         }
@@ -60,10 +60,6 @@ namespace WebApiHiringItm.CORE.Core.File
         public async Task<bool> Create(FilesDto model)
         {
             var getData = _context.Files.Where(x => x.Id == model.Id).FirstOrDefault();
-            //Convert pdf in Binary formate
-            //int lenght = model.FilesName.ContentLength;
-            //byte[] data = new byte[lenght];
-            //model.FilesName.InputStream.Read(data, 0, lenght);
             if (getData == null)
             {
                 var map = _mapper.Map<Files>(model);

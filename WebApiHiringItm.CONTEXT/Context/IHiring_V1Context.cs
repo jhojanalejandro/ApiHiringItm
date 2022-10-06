@@ -17,6 +17,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<ProjectFolder> ProjectFolder { get; set; }
         DbSet<Roll> Roll { get; set; }
         DbSet<UserT> UserT { get; set; }
+        DbSet<ExcelInfo> ExcelInfo { get; set; }
 
     }
 }

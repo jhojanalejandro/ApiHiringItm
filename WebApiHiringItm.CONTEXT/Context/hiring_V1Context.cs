@@ -27,6 +27,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         public virtual DbSet<ProjectFolder> ProjectFolder { get; set; }
         public virtual DbSet<Roll> Roll { get; set; }
         public virtual DbSet<UserT> UserT { get; set; }
+        public virtual DbSet<ExcelInfo> ExcelInfo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -529,6 +530,139 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasForeignKey(d => d.IdRoll)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__UserT__idRoll__37A5467C");
+            });
+
+            modelBuilder.Entity<ExcelInfo>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.Apellido).HasMaxLength(30);
+
+                entity.Property(e => e.Arl)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Bachiller)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Barrio)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Celular)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Componente)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Comuna)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Convenio).HasColumnType("numeric(15, 0)");
+
+                entity.Property(e => e.Correo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CuentaBancaria)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Departamento)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Direccion)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Doctorado)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DocumentoDeIdentificacion).HasColumnType("numeric(15, 0)");
+
+                entity.Property(e => e.Entidad)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EntidadCuentaBancaria)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Eps)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Especializacion)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FechaActualizacion).HasColumnType("date");
+
+                entity.Property(e => e.FechaCreacion).HasColumnType("date");
+
+                entity.Property(e => e.FechaFinalizacionConvenio).HasColumnType("date");
+
+                entity.Property(e => e.FechaInicioConvenio).HasColumnType("date");
+
+                entity.Property(e => e.FechaNacimiento).HasColumnType("date");
+
+                entity.Property(e => e.LugarDeExpedicion)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Maestria)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Municipio)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Nacionalidad)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Nombre)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ObjetoConvenio).IsUnicode(false);
+
+                entity.Property(e => e.Pension).HasMaxLength(30);
+
+                entity.Property(e => e.Pregrado)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Sexo)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TalentoHumano)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Tecnico)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Tecnologo)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Telefono)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoDeCuenta)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

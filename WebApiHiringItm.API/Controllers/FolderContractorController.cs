@@ -11,18 +11,18 @@ namespace WebApiHiringItm.API.Controllers
     {
         private readonly IFolderContractorCore _folder;
 
-        public FolderContractorController(IFolderContractorCore _folder)
+        public FolderContractorController(IFolderContractorCore folder)
         {
-            _folder = _folder;
+            _folder = folder;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll(int idContractor, int idFolder)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAll(int id)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _folder.GetAllById(idContractor, idFolder);
+                var Data = await _folder.GetAllById(id);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : (NoContent());
@@ -57,10 +57,8 @@ namespace WebApiHiringItm.API.Controllers
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _folder.Create(model);
 
-                //Retornamos datos.
                 return Data == true ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

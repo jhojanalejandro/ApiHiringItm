@@ -23,9 +23,9 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractor
         }
 
 
-        public async Task<List<FolderContractorDto>> GetAllById(int idContractor, int idFolder)
+        public async Task<List<FolderContractorDto>> GetAllById(int idContractor)
         {
-            var result = _context.FolderContractor.Where(x => x.IdContractor.Equals(idContractor) && idFolder.Equals(idFolder)).ToList();
+            var result = _context.FolderContractor.Where(x => x.IdContractor.Equals(idContractor)).ToList();
             var map = _mapper.Map<List<FolderContractorDto>>(result);
             return await Task.FromResult(map);
         }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using WebApiHiringItm.CORE.Core.ExcelCore.interfaces;
-using WebApiHiringItm.CORE.Core.File.Interface;
+using WebApiHiringItm.CORE.Core.FileCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Models;
 using WebApiRifa.CORE.Helpers;
@@ -133,6 +133,21 @@ namespace WebApiHiringItm.API.Controllers
             catch (Exception ex)
             {
 
+                throw new Exception("Error", ex);
+            }
+        }
+        [HttpGet("{idC}")]
+        public async Task<IActionResult> GetAllFileById(int idC, int idF)
+        {
+            try
+            {
+                //Obtenemos todos los registros.
+                var Data = await _file.GetAllById(idC, idF);
+
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
                 throw new Exception("Error", ex);
             }
         }

@@ -48,7 +48,7 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
         #region Public Methods
         public async Task<string> ImportarExcel(FileRequest obj)
         {
-            string path = Path.Combine(@"C:\Users\Maicol\source\repos\Excel\Excel.API\Excel\", obj.Excel.FileName);
+            string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", obj.Excel.FileName);
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -165,20 +165,31 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        public async Task<Contractor> SendMessageById(int idFolder)
-        {
-            var result = _context.Contractor.Where(x => x.IdFolder == idFolder).ToList();
-            foreach (var resultItem in result) { 
-                
-            }
-            var map = _mapper.Map<Contractor>(result);
-            return await Task.FromResult(map);
-        }
+        //public async Task<Contractor> SendMessageById(int idFolder)
+        //{
+        //    var result = _context.Contractor.Where(x => x.IdFolder == idFolder).ToList();
+        //    foreach (var resultItem in result) { 
 
+        //    }
+        //    var map = _mapper.Map<Contractor>(result);
+        //    return await Task.FromResult(map);
+        //}
+        private async Task<string> SearchMails(int idAgreement)
+        {
+            var result = _context.ExcelInfo.Where(x => x.IdContrato.Equals(idAgreement)).ToList();
+            foreach (var item in result)
+            {
+                createPassword(item.Correo);
+
+            }
+
+            return "";
+        }
         #endregion
 
         #region METODS PRIVATE
-        private async Task<string> createPassword()
+
+        private async Task<string> createPassword(string mail)
         {
             var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -194,16 +205,17 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
 
             if (finalString != null)
             {
-                var message = new MailRequest();
-                message.Body = "Tu Clave dinamica es: " + finalString;
-                message.ToEmail = "alejoyepes.18@gmail.com";
+                var message = new MailRequestContractor();
+                message.Body = "Cordial saludo señ@r contratista acontinuacion le adjuntaremos correo, contraseña y un link de ingreso para que ingresa  para que adjunte los diferentes documetnos mecesarios" ;
+                message.ToEmail = mail;
+                message.Password = finalString;
                 message.Subject = "Clave dinamica";
                 sendMessage(message);
             }
 
             return finalString;
         }
-        private async Task<bool> sendMessage(MailRequest mailRequest)
+        private async Task<bool> sendMessage(MailRequestContractor mailRequest)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
             var email = new MimeMessage();
@@ -234,6 +246,20 @@ namespace WebApiHiringItm.CORE.Core.ExcelCore
 
             return false;
 
+        }
+        private async Task<bool> Add(FilesDto model)
+        {
+            if (model.Id != 0)
+
+            {
+                var userupdate = _context.Contractor.Where(x => x.Id.Equals(model.Id) && x.DocumentoDeIdentidificacion.Equals(model.Documentodeidentificacion)).FirstOrDefault();
+                var map = _mapper.Map(model, userupdate);
+                _context.Contractor.Update(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+
+            }
+            return false;
         }
         private async Task<bool> Update(AddPasswordContractorDto model)
         {
