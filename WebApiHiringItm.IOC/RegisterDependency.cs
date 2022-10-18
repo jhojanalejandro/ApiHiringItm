@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using WebApiHiringItm.CORE.Core.ExcelCore.interfaces;
-using WebApiHiringItm.CORE.Core.ExcelCore;
 using WebApiHiringItm.CORE.Core.User.Interface;
 using WebApiHiringItm.CORE.Core.User;
 using WebApiHiringItm.CORE.Core.FileCore.Interface;
@@ -25,7 +23,6 @@ namespace WebApiHiringItm.IOC
             services.AddScoped<IFilesCore, FilesCore>();
             services.AddScoped<IContractorCore, ContractorCore>();
             services.AddScoped<IProjectFolder, ProjectFolderCore>();
-            services.AddScoped<IUploadExcelCore, UploadExcelCore>();
             services.AddScoped<IFolderContractorCore, FolderContractorCore>();
 
         }

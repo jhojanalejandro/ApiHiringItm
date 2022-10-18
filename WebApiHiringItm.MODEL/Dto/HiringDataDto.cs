@@ -9,52 +9,42 @@ namespace WebApiHiringItm.MODEL.Dto
     public class HiringDataDto
     {
         public int Id { get; set; }
-        public int IdUser { get; set; }
-        public int IdContractor { get; set; }
-        public string Convenio { get; set; }
-        public string Entidad { get; set; }
-        public string Objetoconvenio { get; set; }
-        public DateTime? Fechainicioconvenio { get; set; }
-        public DateTime? Fechafinalizaciónconvenio { get; set; }
-        public string Componente { get; set; }
-        public string Talentohumano { get; set; }
+        public int? ContractorId { get; set; }
+        public int? UserId { get; set; }
+        public DateTime? FechaFinalizacionConvenio { get; set; }
         public string Actividad { get; set; }
-        public string Objeto { get; set; }
         public string Contrato { get; set; }
         public string Compromiso { get; set; }
-        public string Valortotaldelcontrato { get; set; }
-        public string Consecutivo { get; set; }
-        public string Rubropresupuestal { get; set; }
-        public string Nombredelrubro { get; set; }
+        public string RubroPresupuestal { get; set; }
+        public string NombreDelRubro { get; set; }
         public string Cpc { get; set; }
-        public string Nombrecpc { get; set; }
-        public DateTime? Fechaexapreocupacionales { get; set; }
-        public DateTime? Fechainicioampliacion { get; set; }
-        public DateTime? Fechadeterminaciónampliacion { get; set; }
-        public string Interventoritm { get; set; }
-        public string Cargointerventoritm { get; set; }
-        public string Noadicion { get; set; }
-        public DateTime? Fechadecontrato { get; set; }
-        public DateTime? Fechadeinicioproyectado { get; set; }
-        public DateTime? Fecharealdeinicio { get; set; }
-        public DateTime? Fechafinalizacion { get; set; }
-        public decimal? Honorariosmensuales { get; set; }
+        public string NombreCpc { get; set; }
+        public DateTime? FechaExaPreocupacional { get; set; }
+        public DateTime? FechaInicioAmpliacion { get; set; }
+        public DateTime? FechaDeTerminacionAmpliacion { get; set; }
+        public string InterventorItm { get; set; }
+        public string CargoInterventorItm { get; set; }
+        public string NoAdicion { get; set; }
+        public DateTime? FechaDeContrato { get; set; }
+        public DateTime? FechaDeInicioProyectado { get; set; }
+        public DateTime? FechaRealDeInicio { get; set; }
+        public DateTime? FechaFinalizacion { get; set; }
         public string Encabezado { get; set; }
         public string Ejecucion { get; set; }
-        public string Obligacionesgenerales { get; set; }
-        public string Obligacionesespecificas { get; set; }
-        public string Profesional { get; set; }
-        public string Laboral { get; set; }
-        public string Actacomite { get; set; }
-        public DateTime? Fechadecomite { get; set; }
-        public bool? Requierepoliza { get; set; }
-        public string Entidadaseguradora { get; set; }
-        public string Nopoliza { get; set; }
-        public DateTime? Vigenciainicial { get; set; }
-        public DateTime? Vigenciafinal { get; set; }
-        public DateTime? Fechaexpedicionpoliza { get; set; }
-        public decimal? Valorasegurado { get; set; }
+        public string ActaComite { get; set; }
+        public DateTime? FechaDeComite { get; set; }
+        public bool? RequierePoliza { get; set; }
+        public string NoPoliza { get; set; }
+        public DateTime? VigenciaInicial { get; set; }
+        public DateTime? VigenciaFinal { get; set; }
+        public DateTime? FechaExpedicionPoliza { get; set; }
+        public decimal? ValorAsegurado { get; set; }
         public int? Nivel { get; set; }
-
+        public string Eps { get; set; }
+        public string Pension { get; set; }
+        public string Arl { get; set; }
+        public string CuentaBancaria { get; set; }
+        public string TipoCuenta { get; set; }
+        public string EntidadCuentaBancaria { get; set; }
     }
 }

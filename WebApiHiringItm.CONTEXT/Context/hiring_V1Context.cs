@@ -20,6 +20,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         {
         }
 
+
         public virtual DbSet<Contractor> Contractor { get; set; }
         public virtual DbSet<Files> Files { get; set; }
         public virtual DbSet<FolderContractor> FolderContractor { get; set; }
@@ -27,134 +28,166 @@ namespace WebApiHiringItm.CONTEXT.Context
         public virtual DbSet<ProjectFolder> ProjectFolder { get; set; }
         public virtual DbSet<Roll> Roll { get; set; }
         public virtual DbSet<UserT> UserT { get; set; }
-        public virtual DbSet<ExcelInfo> ExcelInfo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Contractor>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
-
                 entity.Property(e => e.Arl)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("ARL");
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Bachiller)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Barrio)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("BARRIO");
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Celular)
-                    .HasMaxLength(15)
-                    .IsUnicode(false)
-                    .HasColumnName("CELULAR");
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ClaveUsuario)
                     .HasMaxLength(15)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Componente)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Comuna)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("COMUNA");
-
-                entity.Property(e => e.Correo)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("CORREO");
-
-                entity.Property(e => e.Cuentabancaria)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("CUENTABANCARIA");
-
-                entity.Property(e => e.Departamento)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("DEPARTAMENTO");
-
-                entity.Property(e => e.Direccion)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("DIRECCION");
-
-                entity.Property(e => e.DocumentoDeIdentidificacion)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Entidadcuentabancaria)
+                entity.Property(e => e.Convenio)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Correo)
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ENTIDADCUENTABANCARIA");
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CuentaBancaria)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Departamento)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Direccion)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Doctorado)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DocumentoDeIdentificacion)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Entidad)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EntidadCuentaBancaria)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Eps)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Especializacion)
                     .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("EPS");
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Fechanacimiento)
-                    .HasColumnType("date")
-                    .HasColumnName("FECHANACIMIENTO");
+                entity.Property(e => e.FechaActualizacion).HasColumnType("date");
 
-                entity.Property(e => e.IdFolder).HasColumnName("idFolder");
+                entity.Property(e => e.FechaCreacion).HasColumnType("date");
 
-                entity.Property(e => e.IdUser).HasColumnName("idUser");
+                entity.Property(e => e.FechaFinalizacionConvenio).HasColumnType("date");
+
+                entity.Property(e => e.FechaInicioConvenio).HasColumnType("date");
+
+                entity.Property(e => e.FechaNacimiento).HasColumnType("date");
 
                 entity.Property(e => e.LugarDeExpedicion)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Municipio)
+                entity.Property(e => e.Maestria)
                     .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("MUNICIPIO");
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Municipio)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Nacionalidad)
                     .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("NACIONALIDAD");
+                    .IsUnicode(false);
+
+                entity.Property(e => e.No)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.NombreCompleto)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Pension)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("PENSION");
+                entity.Property(e => e.ObjetoConvenio).IsUnicode(false);
+
+                entity.Property(e => e.Pension).HasMaxLength(30);
+
+                entity.Property(e => e.Pregrado)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Sexo)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TalentoHumano)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Tecnico)
                     .HasMaxLength(15)
-                    .IsUnicode(false)
-                    .HasColumnName("SEXO");
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Tecnologo)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Telefono)
-                    .HasMaxLength(15)
-                    .IsUnicode(false)
-                    .HasColumnName("TELEFONO");
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Tipodecuenta)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("TIPODECUENTA");
+                entity.Property(e => e.TipoDeCuenta)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.HasOne(d => d.IdFolderNavigation)
+                entity.HasOne(d => d.Contract)
                     .WithMany(p => p.Contractor)
-                    .HasForeignKey(d => d.IdFolder)
-                    .HasConstraintName("FK__Contracto__idFol__36B12243");
-
-                entity.HasOne(d => d.IdUserNavigation)
-                    .WithMany(p => p.Contractor)
-                    .HasForeignKey(d => d.IdUser)
+                    .HasForeignKey(d => d.ContractId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Contracto__idUse__35BCFE0A");
+                    .HasConstraintName("FK__Contracto__Contr__38996AB5");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Contractor)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Contracto__UserI__37A5467C");
             });
 
             modelBuilder.Entity<Files>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
-
                 entity.Property(e => e.DescriptionFile)
                     .HasMaxLength(100)
                     .IsUnicode(false)
@@ -169,12 +202,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .IsUnicode(false)
                     .HasColumnName("filesName");
 
-                entity.Property(e => e.IdContractor).HasColumnName("idContractor");
-
-                entity.Property(e => e.IdFolder).HasColumnName("idFolder");
-
-                entity.Property(e => e.IdUser).HasColumnName("idUser");
-
                 entity.Property(e => e.RegisterDate)
                     .HasColumnType("date")
                     .HasColumnName("registerDate");
@@ -184,17 +211,23 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .IsUnicode(false)
                     .HasColumnName("typeFile");
 
-                entity.HasOne(d => d.IdContractorNavigation)
+                entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.Files)
-                    .HasForeignKey(d => d.IdContractor)
+                    .HasForeignKey(d => d.ContractorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Files__idContrac__31EC6D26");
+                    .HasConstraintName("FK__Files__Contracto__34C8D9D1");
 
-                entity.HasOne(d => d.IdUserNavigation)
+                entity.HasOne(d => d.Folder)
                     .WithMany(p => p.Files)
-                    .HasForeignKey(d => d.IdUser)
+                    .HasForeignKey(d => d.FolderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Files__idUser__32E0915F");
+                    .HasConstraintName("FK__Files__FolderId__35BCFE0A");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Files)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Files__UserId__36B12243");
             });
 
             modelBuilder.Entity<FolderContractor>(entity =>
@@ -211,10 +244,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .IsUnicode(false)
                     .HasColumnName("folderName");
 
-                entity.Property(e => e.IdContractor).HasColumnName("idContractor");
-
-                entity.Property(e => e.IdUser).HasColumnName("idUser");
-
                 entity.Property(e => e.ModifyDate)
                     .HasColumnType("date")
                     .HasColumnName("modifyDate");
@@ -223,225 +252,158 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasColumnType("date")
                     .HasColumnName("registerDate");
 
-                entity.HasOne(d => d.IdContractorNavigation)
+                entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.FolderContractor)
-                    .HasForeignKey(d => d.IdContractor)
-                    .HasConstraintName("FK__FolderCon__idCon__30F848ED");
+                    .HasForeignKey(d => d.ContractorId)
+                    .HasConstraintName("FK__FolderCon__Contr__33D4B598");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.FolderContractor)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__FolderCon__UserI__32E0915F");
             });
 
             modelBuilder.Entity<HiringData>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Actacomite)
-                    .IsUnicode(false)
-                    .HasColumnName("ACTACOMITE");
+                entity.Property(e => e.ActaComite).IsUnicode(false);
 
                 entity.Property(e => e.Actividad)
                     .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("ACTIVIDAD");
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Cargointerventoritm)
+                entity.Property(e => e.Arl)
                     .HasMaxLength(100)
                     .IsUnicode(false)
-                    .HasColumnName("CARGOINTERVENTORITM");
+                    .HasColumnName("arl");
 
-                entity.Property(e => e.Componente)
-                    .IsUnicode(false)
-                    .HasColumnName("COMPONENTE");
+                entity.Property(e => e.CargoInterventorItm)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Compromiso)
                     .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("COMPROMISO");
-
-                entity.Property(e => e.Consecutivo)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("CONSECUTIVO");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Contrato)
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("CONTRATO");
-
-                entity.Property(e => e.Convenio)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("CONVENIO");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Cpc)
                     .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CuentaBancaria)
+                    .HasMaxLength(100)
                     .IsUnicode(false)
-                    .HasColumnName("CPC");
+                    .HasColumnName("cuentaBancaria");
 
                 entity.Property(e => e.Ejecucion)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("EJECUCION");
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Encabezado)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EntidadCuentaBancaria)
                     .HasMaxLength(100)
                     .IsUnicode(false)
-                    .HasColumnName("ENCABEZADO");
+                    .HasColumnName("entidadCuentaBancaria");
 
-                entity.Property(e => e.Entidad)
+                entity.Property(e => e.Eps)
                     .HasMaxLength(100)
                     .IsUnicode(false)
-                    .HasColumnName("ENTIDAD");
+                    .HasColumnName("eps");
 
-                entity.Property(e => e.Entidadaseguradora)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("ENTIDADASEGURADORA");
+                entity.Property(e => e.FechaDeComite).HasColumnType("date");
 
-                entity.Property(e => e.Fechadecomite)
+                entity.Property(e => e.FechaDeContrato).HasColumnType("date");
+
+                entity.Property(e => e.FechaDeInicioProyectado).HasColumnType("date");
+
+                entity.Property(e => e.FechaDeTerminacionAmpliacion).HasColumnType("date");
+
+                entity.Property(e => e.FechaExaPreocupacional)
                     .HasColumnType("date")
-                    .HasColumnName("FECHADECOMITE");
+                    .HasColumnName("fechaExaPreocupacional");
 
-                entity.Property(e => e.Fechadecontrato)
-                    .HasColumnType("date")
-                    .HasColumnName("FECHADECONTRATO");
+                entity.Property(e => e.FechaExpedicionPoliza).HasColumnType("date");
 
-                entity.Property(e => e.Fechadeinicioproyectado)
-                    .HasColumnType("date")
-                    .HasColumnName("FECHADEINICIOPROYECTADO");
+                entity.Property(e => e.FechaFinalizacion).HasColumnType("date");
 
-                entity.Property(e => e.Fechadeterminaciónampliacion)
-                    .HasColumnType("date")
-                    .HasColumnName("FECHADETERMINACIÓNAMPLIACION");
+                entity.Property(e => e.FechaFinalizacionConvenio).HasColumnType("date");
 
-                entity.Property(e => e.Fechaexapreocupacionales)
-                    .HasColumnType("date")
-                    .HasColumnName("FECHAEXAPREOCUPACIONALES");
+                entity.Property(e => e.FechaInicioAmpliacion).HasColumnType("date");
 
-                entity.Property(e => e.Fechaexpedicionpoliza)
-                    .HasColumnType("date")
-                    .HasColumnName("FECHAEXPEDICIONPOLIZA");
+                entity.Property(e => e.FechaRealDeInicio).HasColumnType("date");
 
-                entity.Property(e => e.Fechafinalizacion)
-                    .HasColumnType("date")
-                    .HasColumnName("FECHAFINALIZACION");
-
-                entity.Property(e => e.Fechafinalizaciónconvenio)
-                    .HasColumnType("date")
-                    .HasColumnName("FECHAFINALIZACIÓNCONVENIO");
-
-                entity.Property(e => e.Fechainicioampliacion)
-                    .HasColumnType("date")
-                    .HasColumnName("FECHAINICIOAMPLIACION");
-
-                entity.Property(e => e.Fechainicioconvenio)
-                    .HasColumnType("date")
-                    .HasColumnName("FECHAINICIOCONVENIO");
-
-                entity.Property(e => e.Fecharealdeinicio)
-                    .HasColumnType("date")
-                    .HasColumnName("FECHAREALDEINICIO");
-
-                entity.Property(e => e.Honorariosmensuales)
-                    .HasColumnType("decimal(18, 0)")
-                    .HasColumnName("HONORARIOSMENSUALES");
-
-                entity.Property(e => e.IdContractor).HasColumnName("idContractor");
-
-                entity.Property(e => e.IdUser).HasColumnName("idUser");
-
-                entity.Property(e => e.Interventoritm)
+                entity.Property(e => e.InterventorItm)
                     .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NoAdicion)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NoPoliza)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NombreCpc)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NombreDelRubro)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Pension)
+                    .HasMaxLength(100)
                     .IsUnicode(false)
-                    .HasColumnName("INTERVENTORITM");
+                    .HasColumnName("pension");
+
+                entity.Property(e => e.RubroPresupuestal)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoCuenta)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("tipoCuenta");
+
+                entity.Property(e => e.ValorAsegurado)
+                    .HasColumnType("decimal(18, 0)")
+                    .HasColumnName("ValorASegurado");
+
+                entity.Property(e => e.VigenciaFinal).HasColumnType("date");
+
+                entity.Property(e => e.VigenciaInicial).HasColumnType("date");
+            });
+
+            modelBuilder.Entity<Planning>(entity =>
+            {
+                entity.ToTable("planning");
+
+                entity.Property(e => e.Componente).IsUnicode(false);
+
+                entity.Property(e => e.HonorariosMensuales).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.Laboral)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("LABORAL");
-
-                entity.Property(e => e.Nivel).HasColumnName("NIVEL");
-
-                entity.Property(e => e.Noadicion)
-                    .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("NOADICION");
-
-                entity.Property(e => e.Nombrecpc)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("NOMBRECPC");
-
-                entity.Property(e => e.Nombredelrubro)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("NOMBREDELRUBRO");
-
-                entity.Property(e => e.Nopoliza)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("NOPOLIZA");
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Objeto)
                     .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("OBJETO");
-
-                entity.Property(e => e.Objetoconvenio)
-                    .IsUnicode(false)
-                    .HasColumnName("OBJETOCONVENIO");
-
-                entity.Property(e => e.Obligacionesespecificas)
-                    .IsUnicode(false)
-                    .HasColumnName("OBLIGACIONESESPECIFICAS");
-
-                entity.Property(e => e.Obligacionesgenerales)
-                    .IsUnicode(false)
-                    .HasColumnName("OBLIGACIONESGENERALES");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Profesional)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("PROFESIONAL");
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Requierepoliza).HasColumnName("REQUIEREPOLIZA");
-
-                entity.Property(e => e.Rubropresupuestal)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("RUBROPRESUPUESTAL");
-
-                entity.Property(e => e.Talentohumano)
-                    .IsUnicode(false)
-                    .HasColumnName("TALENTOHUMANO");
-
-                entity.Property(e => e.Valorasegurado)
-                    .HasColumnType("decimal(18, 0)")
-                    .HasColumnName("VALORASEGURADO");
-
-                entity.Property(e => e.Valortotaldelcontrato)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("VALORTOTALDELCONTRATO");
-
-                entity.Property(e => e.Vigenciafinal)
-                    .HasColumnType("date")
-                    .HasColumnName("VIGENCIAFINAL");
-
-                entity.Property(e => e.Vigenciainicial)
-                    .HasColumnType("date")
-                    .HasColumnName("VIGENCIAINICIAL");
-
-                entity.HasOne(d => d.IdContractorNavigation)
-                    .WithMany(p => p.HiringData)
-                    .HasForeignKey(d => d.IdContractor)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__HiringDat__idCon__34C8D9D1");
-
-                entity.HasOne(d => d.IdUserNavigation)
-                    .WithMany(p => p.HiringData)
-                    .HasForeignKey(d => d.IdUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__HiringDat__idUse__33D4B598");
+                entity.Property(e => e.ValorTotal).HasColumnType("decimal(18, 0)");
             });
+
 
             modelBuilder.Entity<ProjectFolder>(entity =>
             {
@@ -455,8 +417,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.DescriptionProject)
                     .IsUnicode(false)
                     .HasColumnName("descriptionProject");
-
-                entity.Property(e => e.IdUser).HasColumnName("idUser");
 
                 entity.Property(e => e.ModifyDate)
                     .HasColumnType("date")
@@ -472,11 +432,11 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasColumnType("date")
                     .HasColumnName("registerDate");
 
-                entity.HasOne(d => d.IdUserNavigation)
+                entity.HasOne(d => d.User)
                     .WithMany(p => p.ProjectFolder)
-                    .HasForeignKey(d => d.IdUser)
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ProjectFo__idUse__300424B4");
+                    .HasConstraintName("FK__ProjectFo__UserI__300424B4");
             });
 
             modelBuilder.Entity<Roll>(entity =>
@@ -529,140 +489,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.UserT)
                     .HasForeignKey(d => d.IdRoll)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserT__idRoll__37A5467C");
-            });
-
-            modelBuilder.Entity<ExcelInfo>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.Property(e => e.Apellido).HasMaxLength(30);
-
-                entity.Property(e => e.Arl)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Bachiller)
-                    .HasMaxLength(15)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Barrio)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Celular)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Componente)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Comuna)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Convenio).HasColumnType("numeric(15, 0)");
-
-                entity.Property(e => e.Correo)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CuentaBancaria)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Departamento)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Direccion)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Doctorado)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DocumentoDeIdentificacion).HasColumnType("numeric(15, 0)");
-
-                entity.Property(e => e.Entidad)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.EntidadCuentaBancaria)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Eps)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Especializacion)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FechaActualizacion).HasColumnType("date");
-
-                entity.Property(e => e.FechaCreacion).HasColumnType("date");
-
-                entity.Property(e => e.FechaFinalizacionConvenio).HasColumnType("date");
-
-                entity.Property(e => e.FechaInicioConvenio).HasColumnType("date");
-
-                entity.Property(e => e.FechaNacimiento).HasColumnType("date");
-
-                entity.Property(e => e.LugarDeExpedicion)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Maestria)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Municipio)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Nacionalidad)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Nombre)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ObjetoConvenio).IsUnicode(false);
-
-                entity.Property(e => e.Pension).HasMaxLength(30);
-
-                entity.Property(e => e.Pregrado)
-                    .HasMaxLength(15)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Sexo)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TalentoHumano)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Tecnico)
-                    .HasMaxLength(15)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Tecnologo)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Telefono)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TipoDeCuenta)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .HasConstraintName("FK__UserT__idRoll__398D8EEE");
             });
 
             OnModelCreatingPartial(modelBuilder);

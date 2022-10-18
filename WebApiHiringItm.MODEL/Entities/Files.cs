@@ -8,16 +8,17 @@ namespace WebApiHiringItm.MODEL.Entities
     public partial class Files
     {
         public int Id { get; set; }
-        public int IdContractor { get; set; }
-        public int IdFolder { get; set; }
+        public int ContractorId { get; set; }
+        public int FolderId { get; set; }
         public string FilesName { get; set; }
         public string Fildata { get; set; }
         public string TypeFile { get; set; }
         public string DescriptionFile { get; set; }
-        public int IdUser { get; set; }
+        public int UserId { get; set; }
         public DateTime? RegisterDate { get; set; }
 
-        public virtual Contractor IdContractorNavigation { get; set; }
-        public virtual UserT IdUserNavigation { get; set; }
+        public virtual Contractor Contractor { get; set; }
+        public virtual FolderContractor Folder { get; set; }
+        public virtual UserT User { get; set; }
     }
 }

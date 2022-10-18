@@ -7,14 +7,21 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class FolderContractor
     {
+        public FolderContractor()
+        {
+            Files = new HashSet<Files>();
+        }
+
         public int Id { get; set; }
-        public int IdUser { get; set; }
-        public int? IdContractor { get; set; }
+        public int UserId { get; set; }
+        public int? ContractorId { get; set; }
         public string FolderName { get; set; }
         public string DescriptionProject { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
 
-        public virtual Contractor IdContractorNavigation { get; set; }
+        public virtual Contractor Contractor { get; set; }
+        public virtual UserT User { get; set; }
+        public virtual ICollection<Files> Files { get; set; }
     }
 }

@@ -59,34 +59,34 @@ namespace WebApiHiringItm.CORE.Core.Viability
             return false;
         }
 
-        public async Task<bool> UpdateViability(ViabilityDto model)
-        {
-            try
-            {
-                if (model.Id != 0)
+        //public async Task<bool> UpdateViability(ViabilityDto model)
+        //{
+        //    try
+        //    {
+        //        if (model.Id != 0)
 
-                {
-                    var getData = _context.HiringData.Where(x => x.Id.Equals(model.Id) && x.IdContractor.Equals(model.IdContractor)).FirstOrDefault();
-                    if (getData != null)
-                    {
-                        var map = _mapper.Map(model, getData);
-                        _context.HiringData.Update(map);
-                        var res = await _context.SaveChangesAsync();
-                        return res != 0 ? true : false;
+        //        {
+        //            var getData = _context.HiringData.Where(x => x.Id.Equals(model.Id) && x.IdContractor.Equals(model.IdContractor)).FirstOrDefault();
+        //            if (getData != null)
+        //            {
+        //                var map = _mapper.Map(model, getData);
+        //                _context.HiringData.Update(map);
+        //                var res = await _context.SaveChangesAsync();
+        //                return res != 0 ? true : false;
 
-                    }
+        //            }
    
 
-                }
+        //        }
 
-            }
-            catch (Exception e)
-            {
+        //    }
+        //    catch (Exception e)
+        //    {
 
-                new Exception("Error", e);
-            }
-            return false;
-        }
+        //        new Exception("Error", e);
+        //    }
+        //    return false;
+        //}
 
         public async Task<bool> Updates(string model)
         {

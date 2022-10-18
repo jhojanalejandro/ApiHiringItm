@@ -9,8 +9,8 @@ namespace WebApiHiringItm.MODEL.Dto
     public class FolderContractorDto
     {
         public int Id { get; set; }
-        public int IdUser { get; set; }
-        public int? IdContractor { get; set; }
+        public int UserId { get; set; }
+        public int? ContractorId { get; set; }
         public string FolderName { get; set; }
         public string DescriptionProject { get; set; }
         public DateTime? RegisterDate { get; set; }

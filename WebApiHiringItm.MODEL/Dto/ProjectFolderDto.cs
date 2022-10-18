@@ -10,7 +10,7 @@ namespace WebApiHiringItm.MODEL.Dto
     {
 
         public int Id { get; set; }
-        public int IdUser { get; set; }
+        public int UserId { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
         public string DescriptionProject { get; set; }

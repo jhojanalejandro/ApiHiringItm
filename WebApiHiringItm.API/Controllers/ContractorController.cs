@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.API.Controllers
 {
@@ -87,7 +88,20 @@ namespace WebApiHiringItm.API.Controllers
                 throw new Exception("Error", ex);
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> AddExcel([FromForm]FileRequest model)
+        {
+            try
+            {
+                var result = await _contactor.ImportarExcel(model);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
 
+                throw new Exception("Error", ex);
+            }
+        }
 
         [HttpPost]
         public async Task<IActionResult> Update(ContractorDto model)
@@ -107,8 +121,25 @@ namespace WebApiHiringItm.API.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SendContractorCount(int idContract)
+        {
+            try
+            {
+                //Obtenemos todos los registros.
+                var Data = await _contactor.SendContractorCount(idContract);
 
-        [HttpGet]
+                //Retornamos datos.
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -123,6 +154,17 @@ namespace WebApiHiringItm.API.Controllers
             {
                 throw new Exception("Error", ex);
             }
+        }
+
+        [HttpPost]
+        public IActionResult Authenticate(AuthenticateRequest model)
+        {
+            var response = _contactor.Authenticate(model);
+            if (response == null)
+            {
+                return BadRequest(new { message = "Username or password is incorrect" });
+            }
+            return StatusCode(200, response);
         }
 
     }

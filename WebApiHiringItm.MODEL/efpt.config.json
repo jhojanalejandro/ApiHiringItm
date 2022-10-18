@@ -6,7 +6,7 @@
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
-   "OutputContextPath": "Context",
+   "OutputContextPath": "Context1",
    "OutputPath": "Entities1",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "WebApiHiringItm.MODEL",
@@ -15,7 +15,11 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
-         "Name": "[dbo].[ExcelInfo]",
+         "Name": "[dbo].[HiringData]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[planning]",
          "ObjectType": 0
       }
    ],

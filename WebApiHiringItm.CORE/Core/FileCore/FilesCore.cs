@@ -22,9 +22,9 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             _mapper = mapper;
         }
 
-        public async Task<List<FilesDto>> GetAllById(int idConytractor, int idFolder)
+        public async Task<List<FilesDto>> GetAllById(GetFileDto model)
         {
-            var result = _context.Files.Where(x => x.IdContractor.Equals(idConytractor) && x.IdFolder.Equals(idFolder)).ToList();
+            var result = _context.Files.Where(x => x.ContractorId.Equals(model.contractorId) && x.FolderId.Equals(model.FolderId)).ToList();
             var map = _mapper.Map<List<FilesDto>>(result);
             return await Task.FromResult(map);
         }
@@ -66,7 +66,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 _context.Files.Add(map);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
-
             }
             else
             {
