@@ -147,12 +147,36 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             DataColumn newColumn4 = new DataColumn("Fecha Actualizacion", typeof(DateTime));
             newColumn4.DefaultValue = DateTime.Now;
             dataTable.Columns.Add(newColumn4);
+
             for (int i = 0; i < dataTable.Columns.Count; i++)
             {
-
                 dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
+                var columna = dataTable.Columns[i].ColumnName;
+                //if (columna.Equals("DocumentoDeIdentificacion"))
+                //{
+                //    for (int j = 0; j <= dataTable.Rows.Count; j++)
+                //    {
+                //        int posicion = j;
+                //        if (dataTable.Rows.Count == 1)
+                //        {
+                //             posicion = 0;
+
+                //        }
+                //        var valor = dataTable.Rows[j]["DocumentoDeIdentificacion"];
+                //        var resultado = _context.Contractor.Where(x => x.DocumentoDeIdentificacion.Equals(valor)).FirstOrDefault();
+                //        if (resultado != null)
+                //        {
+                //            j--;
+                //            dataTable.Rows.Remove(dataTable.Rows[j]);
+                //        }
+
+                //    }
+                //}
+
+
             }
 
+   
             test.Close();
             var conn = _context.Database.GetConnectionString();
             //File.Delete(filePath);

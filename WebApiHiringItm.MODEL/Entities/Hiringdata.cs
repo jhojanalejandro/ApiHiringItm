@@ -14,6 +14,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Actividad { get; set; }
         public string Contrato { get; set; }
         public string Compromiso { get; set; }
+        public string Consecutivo { get; set; }
         public string RubroPresupuestal { get; set; }
         public string NombreDelRubro { get; set; }
         public string Cpc { get; set; }
