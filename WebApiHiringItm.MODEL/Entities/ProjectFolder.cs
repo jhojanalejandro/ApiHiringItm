@@ -19,6 +19,10 @@ namespace WebApiHiringItm.MODEL.Entities
         public string DescriptionProject { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
+        public decimal? Budget { get; set; }
+        public int? ContractCant { get; set; }
+        public bool? Execution { get; set; }
+        public bool? Activate { get; set; }
 
         public virtual UserT User { get; set; }
         public virtual ICollection<Contractor> Contractor { get; set; }
