@@ -120,7 +120,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
         {
             // Get the user list 
             var data = _context.Contractor.ToList();
-
+            var hiringData = _context.HiringData.ToList();
             var stream = new MemoryStream();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var xlPackage = new ExcelPackage(stream))
@@ -160,15 +160,18 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 row = 2;
                 foreach (var user in data)
                 {
-                    worksheet.Cells[row, 1].Value = user.No;
-                    worksheet.Cells[row, 2].Value = user.Convenio;
-                    worksheet.Cells[row, 3].Value = user.Entidad;
-                    worksheet.Cells[row, 4].Value = user.Componente;
-                    worksheet.Cells[row, 5].Value = "";
-                    worksheet.Cells[row, 6].Value = "";
-                    worksheet.Cells[row, 7].Value = "";
-                    worksheet.Cells[row, 8].Value = user.NombreCompleto;
-                    worksheet.Cells[row, 9].Value = user.DocumentoDeIdentificacion;
+                    foreach (var item in hiringData)
+                    {
+                        worksheet.Cells[row, 1].Value = user.No;
+                        worksheet.Cells[row, 2].Value = user.Convenio;
+                        worksheet.Cells[row, 3].Value = user.Entidad;
+                        worksheet.Cells[row, 4].Value = user.Componente;
+                        worksheet.Cells[row, 5].Value = "";
+                        worksheet.Cells[row, 6].Value = "";
+                        worksheet.Cells[row, 7].Value = "";
+                        worksheet.Cells[row, 8].Value = user.NombreCompleto;
+                        worksheet.Cells[row, 9].Value = user.DocumentoDeIdentificacion;
+                    }                    
 
                     row++;
                 }
