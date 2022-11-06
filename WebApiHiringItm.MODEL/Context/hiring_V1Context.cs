@@ -4,22 +4,20 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.MODEL.Entities;
 
-namespace WebApiHiringItm.CONTEXT.Context
+namespace WebApiHiringItm.MODEL.WebApiHiringItm.CONTEXT.Context
 {
-    public partial class Hiring_V1Context : DbContext, IHiring_V1Context
+    public partial class hiring_V1Context : DbContext
     {
-        public Hiring_V1Context()
+        public hiring_V1Context()
         {
         }
 
-        public Hiring_V1Context(DbContextOptions<Hiring_V1Context> options)
+        public hiring_V1Context(DbContextOptions<hiring_V1Context> options)
             : base(options)
         {
         }
-
 
         public virtual DbSet<Component> Component { get; set; }
         public virtual DbSet<Contractor> Contractor { get; set; }

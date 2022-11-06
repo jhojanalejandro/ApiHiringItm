@@ -19,6 +19,5 @@ namespace WebApiHiringItm.MODEL.Dto
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public bool? Passed { get; set; }
-
     }
 }

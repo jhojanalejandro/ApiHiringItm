@@ -9,8 +9,8 @@ using WebApiHiringItm.CORE.Core.Contractors;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.CORE.Core.Viability.Interface;
 using WebApiHiringItm.CORE.Core.Viability;
-using WebApiHiringItm.CORE.Core.FoldersContractor.Interface;
-using WebApiHiringItm.CORE.Core.FoldersContractor;
+using WebApiHiringItm.CORE.Core.FoldersContractorCore.Interface;
+using WebApiHiringItm.CORE.Core.FoldersContractorCore;
 
 namespace WebApiHiringItm.IOC
 {

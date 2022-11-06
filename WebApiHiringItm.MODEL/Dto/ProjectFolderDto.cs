@@ -18,6 +18,8 @@ namespace WebApiHiringItm.MODEL.Dto
         public decimal? Budget { get; set; }
         public int? ContractCant { get; set; }
         public bool? Execution { get; set; }
+        public string Cpc { get; set; }
+        public string NombreCpc { get; set; }
         public bool? Activate { get; set; }
     }
 }

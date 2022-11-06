@@ -10,6 +10,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public ProjectFolder()
         {
             Contractor = new HashSet<Contractor>();
+            Planning = new HashSet<Planning>();
         }
 
         public int Id { get; set; }
@@ -22,9 +23,12 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? Budget { get; set; }
         public int? ContractCant { get; set; }
         public bool? Execution { get; set; }
+        public string Cpc { get; set; }
+        public string NombreCpc { get; set; }
         public bool? Activate { get; set; }
 
         public virtual UserT User { get; set; }
         public virtual ICollection<Contractor> Contractor { get; set; }
+        public virtual ICollection<Planning> Planning { get; set; }
     }
 }
