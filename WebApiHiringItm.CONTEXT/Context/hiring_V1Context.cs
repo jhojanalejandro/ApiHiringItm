@@ -9,7 +9,7 @@ using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CONTEXT.Context
 {
-    public partial class Hiring_V1Context : DbContext, IHiring_V1Context
+    public partial class Hiring_V1Context : DbContext,IHiring_V1Context
     {
         public Hiring_V1Context()
         {
@@ -20,13 +20,14 @@ namespace WebApiHiringItm.CONTEXT.Context
         {
         }
 
-
         public virtual DbSet<Component> Component { get; set; }
         public virtual DbSet<Contractor> Contractor { get; set; }
         public virtual DbSet<ContractorPayments> ContractorPayments { get; set; }
+        public virtual DbSet<EconomicdataContractor> EconomicdataContractor { get; set; }
         public virtual DbSet<Files> Files { get; set; }
         public virtual DbSet<FolderContractor> FolderContractor { get; set; }
         public virtual DbSet<HiringData> HiringData { get; set; }
+        public virtual DbSet<PayRoll> PayRoll { get; set; }
         public virtual DbSet<Planning> Planning { get; set; }
         public virtual DbSet<ProjectFolder> ProjectFolder { get; set; }
         public virtual DbSet<Roll> Roll { get; set; }
@@ -239,6 +240,34 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasConstraintName("FK__Contracto__userI__4222D4EF");
             });
 
+            modelBuilder.Entity<EconomicdataContractor>(entity =>
+            {
+                entity.Property(e => e.Debt)
+                    .HasColumnType("decimal(18, 0)")
+                    .HasColumnName("debt");
+
+                entity.Property(e => e.Freed)
+                    .HasColumnType("decimal(18, 0)")
+                    .HasColumnName("freed");
+
+                entity.Property(e => e.Missing).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.ModifyDate).HasColumnType("date");
+
+                entity.Property(e => e.RegisterDate).HasColumnType("date");
+
+                entity.Property(e => e.TotalPaidMonth).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.TotalValue).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.UnitValue).HasColumnType("decimal(18, 0)");
+
+                entity.HasOne(d => d.IdContractorNavigation)
+                    .WithMany(p => p.EconomicdataContractor)
+                    .HasForeignKey(d => d.IdContractor)
+                    .HasConstraintName("FK__Economicd__IdCon__619B8048");
+            });
+
             modelBuilder.Entity<Files>(entity =>
             {
                 entity.Property(e => e.DescriptionFile)
@@ -449,6 +478,18 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasConstraintName("FK__HiringDat__UserI__38996AB5");
             });
 
+            modelBuilder.Entity<PayRoll>(entity =>
+            {
+                entity.Property(e => e.ModifyDate).HasColumnType("date");
+
+                entity.Property(e => e.RegisterDate).HasColumnType("date");
+
+                entity.HasOne(d => d.IdUserNavigation)
+                    .WithMany(p => p.PayRoll)
+                    .HasForeignKey(d => d.IdUser)
+                    .HasConstraintName("FK__PayRoll__IdUser__60A75C0F");
+            });
+
             modelBuilder.Entity<Planning>(entity =>
             {
                 entity.ToTable("planning");
@@ -548,7 +589,15 @@ namespace WebApiHiringItm.CONTEXT.Context
             {
                 entity.ToTable("sharedData");
 
-                entity.Property(e => e.Encabezado)
+                entity.Property(e => e.AdditionalData).IsUnicode(false);
+
+                entity.Property(e => e.DescriptionData).IsUnicode(false);
+
+                entity.Property(e => e.TypeDataShare)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TypedataRegistered)
                     .HasMaxLength(100)
                     .IsUnicode(false);
             });

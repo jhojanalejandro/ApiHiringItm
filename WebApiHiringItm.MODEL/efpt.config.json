@@ -27,6 +27,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[EconomicdataContractor]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Files]",
          "ObjectType": 0
       },
@@ -36,6 +40,10 @@
       },
       {
          "Name": "[dbo].[HiringData]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PayRoll]",
          "ObjectType": 0
       },
       {

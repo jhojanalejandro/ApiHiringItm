@@ -22,6 +22,7 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<UserUpdatePasswordDto, UserT>().ReverseMap();
             CreateMap<FolderContractorDto, FolderContractor>().ReverseMap();
             CreateMap<GetFileDto, Files>().ReverseMap();
+            CreateMap<PayRoll, PayrollDto>().ReverseMap();
 
         }
     }
