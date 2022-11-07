@@ -9,8 +9,8 @@ using WebApiHiringItm.CORE.Core.Contractors;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.CORE.Core.Viability.Interface;
 using WebApiHiringItm.CORE.Core.Viability;
-using WebApiHiringItm.CORE.Core.FoldersContractorCore.Interface;
-using WebApiHiringItm.CORE.Core.FoldersContractorCore;
+using WebApiHiringItm.CORE.Core.FoldersContractor.Interface;
+using WebApiHiringItm.CORE.Core.FoldersContractor;
 
 namespace WebApiHiringItm.IOC
 {
@@ -24,7 +24,7 @@ namespace WebApiHiringItm.IOC
             services.AddScoped<IContractorCore, ContractorCore>();
             services.AddScoped<IProjectFolder, ProjectFolderCore>();
             services.AddScoped<IFolderContractorCore, FolderContractorCore>();
-
+            services.AddScoped<IExportToExcelCore, ExportToExcelCore>();
         }
     }
 }

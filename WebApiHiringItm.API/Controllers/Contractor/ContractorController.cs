@@ -4,7 +4,7 @@ using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Models;
 
-namespace WebApiHiringItm.API.Controllers
+namespace WebApiHiringItm.API.Controllers.Contractor
 {
     [ApiController]
     [Route("[controller]/[action]")]
@@ -26,7 +26,7 @@ namespace WebApiHiringItm.API.Controllers
                 var Data = await _contactor.GetAll();
 
                 //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -37,14 +37,14 @@ namespace WebApiHiringItm.API.Controllers
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAllByFolder(int id)
-            {
+        {
             try
             {
                 //Obtenemos todos los registros.
                 var Data = await _contactor.GetByIdFolder(id);
 
                 //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -62,7 +62,7 @@ namespace WebApiHiringItm.API.Controllers
                 var Data = await _contactor.GetById(id);
 
                 //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -89,7 +89,7 @@ namespace WebApiHiringItm.API.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> AddExcel([FromForm]FileRequest model)
+        public async Task<IActionResult> AddExcel([FromForm] FileRequest model)
         {
             try
             {
