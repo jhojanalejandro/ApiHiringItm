@@ -1,31 +1,31 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApiHiringItm.CORE.Core.FoldersContractor.Interface;
+using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
 using WebApiHiringItm.MODEL.Dto;
 
-namespace WebApiHiringItm.API.Controllers
+namespace WebApiHiringItm.API.Controllers.ProjectFolder
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class FolderContractorController : ControllerBase
+    public class ProjectFolderController : ControllerBase
     {
-        private readonly IFolderContractorCore _folder;
+        private readonly IProjectFolder _project;
 
-        public FolderContractorController(IFolderContractorCore folder)
+        public ProjectFolderController(IProjectFolder proeject)
         {
-            _folder = folder;
+            _project = proeject;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAll(int id)
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _folder.GetAllById(id);
+                var Data = await _project.GetAll();
 
                 //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -40,10 +40,10 @@ namespace WebApiHiringItm.API.Controllers
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _folder.GetById(id);
+                var Data = await _project.GetById(id);
 
                 //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -53,12 +53,14 @@ namespace WebApiHiringItm.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(FolderContractorDto model)
+        public async Task<IActionResult> Add(ProjectFolderDto model)
         {
             try
             {
-                var Data = await _folder.Create(model);
+                //Obtenemos todos los registros.
+                var Data = await _project.Create(model);
 
+                //Retornamos datos.
                 return Data == true ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -70,12 +72,12 @@ namespace WebApiHiringItm.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(FolderContractorDto model)
+        public async Task<IActionResult> Update(ProjectFolderDto model)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _folder.Create(model);
+                var Data = await _project.Create(model);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
@@ -94,7 +96,7 @@ namespace WebApiHiringItm.API.Controllers
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _folder.Delete(id);
+                var Data = await _project.Delete(id);
 
                 //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();

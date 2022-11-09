@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto;
 
-namespace WebApiHiringItm.CORE.Core.Viability.Interface
+namespace WebApiHiringItm.CORE.Core.HiringDataCore.Interface
 {
     public interface IHiringDataCore
     {

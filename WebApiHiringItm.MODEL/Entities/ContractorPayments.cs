@@ -14,6 +14,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public decimal? Paymentcant { get; set; }
+        public bool? CashPayment { get; set; }
 
         public virtual Contractor Contractor { get; set; }
         public virtual UserT User { get; set; }

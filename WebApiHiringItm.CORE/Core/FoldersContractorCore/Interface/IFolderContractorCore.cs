@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto;
 
-namespace WebApiHiringItm.CORE.Core.FoldersContractor.Interface
+namespace WebApiHiringItm.CORE.Core.FoldersContractorCore.Interface
 {
     public interface IFolderContractorCore
     {

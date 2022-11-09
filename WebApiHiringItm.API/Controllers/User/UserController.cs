@@ -4,7 +4,7 @@ using WebApiHiringItm.CORE.Core.User.Interface;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Models;
 
-namespace WebApiHiringItm.API.Controllers
+namespace WebApiHiringItm.API.Controllers.User
 {
     [ApiController]
     [Route("[controller]/[action]")]
@@ -39,7 +39,7 @@ namespace WebApiHiringItm.API.Controllers
                 var Data = await _user.GetAll();
 
                 //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -57,7 +57,7 @@ namespace WebApiHiringItm.API.Controllers
                 var Data = await _user.GetById(id);
 
                 //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {

@@ -15,6 +15,7 @@ namespace WebApiHiringItm.MODEL.Dto
         public string Actividad { get; set; }
         public string Contrato { get; set; }
         public string Compromiso { get; set; }
+        public string Consecutivo { get; set; }
         public string RubroPresupuestal { get; set; }
         public string NombreDelRubro { get; set; }
         public string Cpc { get; set; }
@@ -46,5 +47,6 @@ namespace WebApiHiringItm.MODEL.Dto
         public string CuentaBancaria { get; set; }
         public string TipoCuenta { get; set; }
         public string EntidadCuentaBancaria { get; set; }
+
     }
 }

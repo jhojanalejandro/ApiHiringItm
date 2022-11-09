@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Core.Viability.Interface;
+using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Entities;
 
-namespace WebApiHiringItm.CORE.Core.Viability
+namespace WebApiHiringItm.CORE.Core.HiringDataCore
 {
     public class HiringDataCore : IHiringDataCore
     {
@@ -153,9 +153,6 @@ namespace WebApiHiringItm.CORE.Core.Viability
             }
             return 0;
         }
-
-
-
 
     }
 }

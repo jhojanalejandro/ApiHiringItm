@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core;
 using WebApiHiringItm.CORE.Helpers;
-using WebApiHiringItm.IOC;
+using WebApiHiringItm.IOC.Dependencies;
 using WebApiHiringItm.MODEL.Mapper;
 using WebApiHiringItm.MODEL.Models;
 using WebApiRifa.CORE.Helpers;

@@ -1,83 +1,33 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Aspose.Cells;
 using Microsoft.AspNetCore.Mvc;
-using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using WebApiHiringItm.CORE.Core.FileCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Models;
+using WebApiRifa.CORE.Helpers;
 
-namespace WebApiHiringItm.API.Controllers
+namespace WebApiHiringItm.API.Controllers.Files
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class ProjectFolderController : ControllerBase
+    public class FilesController : ControllerBase
     {
-        private readonly IProjectFolder _project;
+        private readonly IFilesCore _file;
 
-        public ProjectFolderController(IProjectFolder proeject)
+        public FilesController(IFilesCore file)
         {
-            _project = proeject;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _project.GetAll();
-
-                //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _project.GetById(id);
-
-                //Retornamos datos.
-                return Data != null ? Ok(Data) : (NoContent());
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Add(ProjectFolderDto model)
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _project.Create(model);
-
-                //Retornamos datos.
-                return Data == true ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
+            _file = file;
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(ProjectFolderDto model)
+        public async Task<IActionResult> Update(FilesDto model)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _project.Create(model);
+                var Data = await _file.Create(model);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
@@ -89,14 +39,63 @@ namespace WebApiHiringItm.API.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddFileContractor(FilesDto model)
+        {
+            try
+            {
+                //Obtenemos todos los registros.
+                var Data = await _file.Create(model);
 
+                //Retornamos datos.
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                //Obtenemos todos los registros.
+                var Data = await _file.GetById(id);
+
+                //Retornamos datos.
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAllFileById(GetFileDto model)
+        {
+            try
+            {
+                //Obtenemos todos los registros.
+                var Data = await _file.GetAllById(model);
+
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _project.Delete(id);
+                var Data = await _file.Delete(id);
 
                 //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();
@@ -106,5 +105,7 @@ namespace WebApiHiringItm.API.Controllers
                 throw new Exception("Error", ex);
             }
         }
+
+
     }
 }

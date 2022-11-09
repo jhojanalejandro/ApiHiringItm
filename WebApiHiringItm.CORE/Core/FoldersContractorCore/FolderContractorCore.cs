@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Core.FoldersContractor.Interface;
+using WebApiHiringItm.CORE.Core.FoldersContractorCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Entities;
 
-namespace WebApiHiringItm.CORE.Core.FoldersContractor
+namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
 {
     public class FolderContractorCore : IFolderContractorCore
     {
@@ -31,7 +32,8 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractor
         }
         public async Task<FolderContractorDto> GetById(int id)
         {
-            var result = _context.FolderContractor.Where(x => x.Id == id).FirstOrDefault();
+            var result = _context.FolderContractor.Include(i => i.User).Where(x => x.Id == id).FirstOrDefault();
+            var user = result.User.UserName;
             var map = _mapper.Map<FolderContractorDto>(result);
             return await Task.FromResult(map);
         }

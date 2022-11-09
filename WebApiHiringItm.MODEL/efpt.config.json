@@ -15,11 +15,19 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
+         "Name": "[dbo].[Component]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Contractor]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[ContractorPayments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EconomicdataContractor]",
          "ObjectType": 0
       },
       {
@@ -35,6 +43,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[PayRoll]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[planning]",
          "ObjectType": 0
       },
@@ -47,11 +59,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[sharedData]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[UserT]",
          "ObjectType": 0
       }
    ],
-   "UiHint": "DESKTOP-L2G9S2N.hiring_V1",
+   "UiHint": "DESKTOP-L2G9S2N.Hiring_V2",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
    "UseDbContextSplitting": false,
