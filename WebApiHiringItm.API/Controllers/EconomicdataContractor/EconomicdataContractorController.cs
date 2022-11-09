@@ -1,27 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web;
-using WebApiHiringItm.CORE.Core.Payroll.Interface;
+using WebApiHiringItm.CORE.Core.EconomicdataContractorCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
-using WebApiHiringItm.MODEL.Entities;
 
-namespace WebApiHiringItm.API.Controllers.Payroll
+namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
 {
     [ApiController]
-    [EnableCors("AllowOrigin")]
     [Route("[controller]/[action]")]
-    public class PayRollController : ControllerBase
+    public class EconomicDataContractorController : ControllerBase
     {
-        private readonly IPayrollCore _payroll;
-        readonly ITokenAcquisition _tokenAcquisition;
+        private readonly IEconomicdataContractorCore _economicData;
 
-        public PayRollController(IPayrollCore payroll, ITokenAcquisition tokenAcquisition)
+        public EconomicDataContractorController(IEconomicdataContractorCore economicData)
         {
-            _payroll = payroll;
-            _tokenAcquisition = tokenAcquisition;
-
+            _economicData = economicData;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -29,7 +21,7 @@ namespace WebApiHiringItm.API.Controllers.Payroll
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _payroll.GetAll();
+                var Data = await _economicData.GetAll();
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
@@ -42,13 +34,12 @@ namespace WebApiHiringItm.API.Controllers.Payroll
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _payroll.GetById(id);
+                var Data = await _economicData.GetById(id);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
@@ -61,12 +52,12 @@ namespace WebApiHiringItm.API.Controllers.Payroll
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(PayrollDto model)
+        public async Task<IActionResult> Add(EconomicdataContractorDto model)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _payroll.Create(model);
+                var Data = await _economicData.Create(model);
 
                 //Retornamos datos.
                 return Data != 0 ? Ok(Data) : NoContent();
@@ -80,12 +71,12 @@ namespace WebApiHiringItm.API.Controllers.Payroll
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(PayrollDto model)
+        public async Task<IActionResult> Update(EconomicdataContractorDto model)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _payroll.Create(model);
+                var Data = await _economicData.Create(model);
 
                 //Retornamos datos.
                 return Data != 0 ? Ok(Data) : NoContent();
@@ -103,9 +94,8 @@ namespace WebApiHiringItm.API.Controllers.Payroll
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _payroll.Delete(id);
+                var Data = await _economicData.Delete(id);
 
-                //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -113,6 +103,5 @@ namespace WebApiHiringItm.API.Controllers.Payroll
                 throw new Exception("Error", ex);
             }
         }
-
     }
 }

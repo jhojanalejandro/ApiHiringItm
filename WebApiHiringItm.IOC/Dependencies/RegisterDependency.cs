@@ -13,8 +13,8 @@ using WebApiHiringItm.CORE.Core.FoldersContractorCore.Interface;
 using WebApiHiringItm.CORE.Core.FoldersContractorCore;
 using WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces;
 using WebApiHiringItm.CORE.Core.ExportToExcel;
-using WebApiHiringItm.CORE.Core.Payroll.Interface;
-using WebApiHiringItm.CORE.Core.Payroll;
+using WebApiHiringItm.CORE.Core.EconomicdataContractorCore.Interface;
+using WebApiHiringItm.CORE.Core.EconomicdataContractorCore;
 
 namespace WebApiHiringItm.IOC.Dependencies
 {
@@ -29,7 +29,7 @@ namespace WebApiHiringItm.IOC.Dependencies
             services.AddScoped<IProjectFolder, ProjectFolderCore>();
             services.AddScoped<IFolderContractorCore, FolderContractorCore>();
             services.AddScoped<IExportToExcelCore, ExportToExcelCore>();
-            services.AddScoped<IPayrollCore, PayrollCore>();
+            services.AddScoped<IEconomicdataContractorCore, EconomicdataContractorCore>();
 
         }
     }
