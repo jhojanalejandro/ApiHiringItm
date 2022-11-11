@@ -15,5 +15,6 @@ namespace WebApiHiringItm.MODEL.Dto
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public decimal? Paymentcant { get; set; }
+        public bool? CashPayment { get; set; }
     }
 }

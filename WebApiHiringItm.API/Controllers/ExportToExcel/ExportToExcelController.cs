@@ -29,7 +29,7 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
             {
                 var result = await _export.ExportToExcelViabilidad(this, idContrato);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
-                if (result == null)
+                 if (result == null)
                 {
                     return NoContent();
                 }

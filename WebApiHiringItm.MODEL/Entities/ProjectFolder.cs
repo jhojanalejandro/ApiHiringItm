@@ -20,8 +20,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public string DescriptionProject { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
-        public decimal? Budget { get; set; }
-        public int? ContractCant { get; set; }
         public bool? Execution { get; set; }
         public string Cpc { get; set; }
         public string NombreCpc { get; set; }
