@@ -23,11 +23,11 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
 
         #region Methods
         [HttpGet("GetViabilidadExcel")]
-        public async Task<IActionResult> GetViabilidadExcel()
+        public async Task<IActionResult> GetViabilidadExcel(int idContrato)
         {
             try
             {
-                var result = await _export.ExportToExcelViabilidad(this);
+                var result = await _export.ExportToExcelViabilidad(this, idContrato);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
                 if (result == null)
                 {
@@ -63,11 +63,11 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
         }
 
         [HttpGet("GetSolicitudCdp")]
-        public async Task<IActionResult> GetSolicitudCdp()
+        public async Task<IActionResult> GetSolicitudCdp(int idContrato)
         {
             try
             {
-                var result = await _export.ExportCdp(this);
+                var result = await _export.ExportCdp(this, idContrato);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
                 if (result == null)
                 {
@@ -83,11 +83,11 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
         }
 
         [HttpGet("GetSolicitudPpa")]
-        public async Task<IActionResult> GetSolicitudPpa()
+        public async Task<IActionResult> GetSolicitudPpa(int idContrato)
         {
             try
             {
-                var result = await _export.ExportSolicitudPpa(this);
+                var result = await _export.ExportSolicitudPpa(this, idContrato);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
                 if (result == null)
                 {
