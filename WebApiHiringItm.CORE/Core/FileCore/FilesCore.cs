@@ -29,6 +29,13 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             return await Task.FromResult(map);
         }
 
+        public async Task<List<GetFilesPaymentDto>> GetAllByDate(GetFilesPaymentDto model)
+        {
+            var result = _context.Files.Where(x => x.ContractId.Equals(model.ContractId) && x.RegisterDate.Equals(model.RegisterDate)).ToList();
+            var map = _mapper.Map<List<GetFilesPaymentDto>>(result);
+            return await Task.FromResult(map);
+        }
+
         public async Task<FilesDto> GetById(int id)
         {
             var result = _context.Files.Where(x => x.Id == id).FirstOrDefault();

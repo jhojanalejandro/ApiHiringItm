@@ -7,7 +7,6 @@ using WebApiHiringItm.MODEL.Dto;
 namespace WebApiHiringItm.API.Controllers.HiringData
 {
     [ApiController]
-    [EnableCors("AllowOrigin")]
     [Route("[controller]/[action]")]
     public class HiringDataController : ControllerBase
     {
