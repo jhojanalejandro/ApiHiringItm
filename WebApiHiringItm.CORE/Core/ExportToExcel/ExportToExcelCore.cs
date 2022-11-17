@@ -29,10 +29,10 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
         #endregion
 
         #region Methods
-        public async Task<MemoryStream> ExportToExcelViabilidad(ControllerBase controller)
+        public async Task<MemoryStream> ExportToExcelViabilidad(ControllerBase controller, int idContrato)
         {
             // Get the user list 
-            var data = _context.Contractor.ToList();
+            var data = _context.Contractor.Where(x => x.ContractId == idContrato).ToList();
 
             var stream = new MemoryStream();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -177,10 +177,10 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             return await Task.FromResult(stream);
         }
 
-        public async Task<MemoryStream> ExportCdp(ControllerBase controller)
+        public async Task<MemoryStream> ExportCdp(ControllerBase controller, int idContrato)
         {
             // Get the user list 
-            var data = _context.Contractor.ToList();
+            var data = _context.Contractor.Where(x => x.ContractId == idContrato).ToList();
             var hiringData = _context.HiringData.ToList();
             var stream = new MemoryStream();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -235,10 +235,10 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             return await Task.FromResult(stream);
         }
 
-        public async Task<MemoryStream> ExportSolicitudPpa(ControllerBase controller)
+        public async Task<MemoryStream> ExportSolicitudPpa(ControllerBase controller, int idContrato)
         {
             // Get the user list 
-            var data = _context.Contractor.ToList();
+            var data = _context.Contractor.Where(x => x.ContractId == idContrato).ToList();
             var hiringData = _context.HiringData.ToList();
             var stream = new MemoryStream();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
