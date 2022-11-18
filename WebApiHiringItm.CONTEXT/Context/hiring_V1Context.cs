@@ -268,7 +268,14 @@ namespace WebApiHiringItm.CONTEXT.Context
 
             modelBuilder.Entity<Files>(entity =>
             {
+                entity.Property(e => e.ContractId).HasColumnName("ContractId");
+
                 entity.Property(e => e.DescriptionFile)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("descriptionFile");
+
+                entity.Property(e => e.TypeFilePayment)
                     .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("descriptionFile");
@@ -324,6 +331,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .IsUnicode(false)
                     .HasColumnName("folderName");
 
+
                 entity.Property(e => e.ModifyDate)
                     .HasColumnType("date")
                     .HasColumnName("modifyDate");
@@ -365,10 +373,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Consecutivo)
-                    .HasMaxLength(15)
-                    .IsUnicode(false)
-                    .HasColumnName("consecutivo");
 
                 entity.Property(e => e.Contrato)
                     .HasMaxLength(50)
@@ -384,10 +388,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasColumnName("cuentaBancaria");
 
                 entity.Property(e => e.Ejecucion)
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Encabezado)
                     .HasMaxLength(200)
                     .IsUnicode(false);
 

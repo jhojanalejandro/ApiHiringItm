@@ -14,7 +14,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Actividad { get; set; }
         public string Contrato { get; set; }
         public string Compromiso { get; set; }
-        public string Consecutivo { get; set; }
         public string RubroPresupuestal { get; set; }
         public string NombreDelRubro { get; set; }
         public string Cpc { get; set; }
@@ -29,7 +28,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? FechaDeInicioProyectado { get; set; }
         public DateTime? FechaRealDeInicio { get; set; }
         public DateTime? FechaFinalizacion { get; set; }
-        public string Encabezado { get; set; }
         public string Ejecucion { get; set; }
         public string ActaComite { get; set; }
         public DateTime? FechaDeComite { get; set; }

@@ -30,6 +30,7 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
             var map = _mapper.Map<List<FolderContractorDto>>(result);
             return await Task.FromResult(map);
         }
+
         public async Task<FolderContractorDto> GetById(int id)
         {
             var result = _context.FolderContractor.Include(i => i.User).Where(x => x.Id == id).FirstOrDefault();

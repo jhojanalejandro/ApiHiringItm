@@ -292,7 +292,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             if (finalString != null)
             {
                 var message = new MailRequestContractor();
-                message.Body = "Cordial saludo señ@r contratista acontinuacion le adjuntaremos correo, contraseña y un link de ingreso para que ingresa  para que adjunte los diferentes documetnos necesarios" + 
+                message.Body = "Cordial saludo señ@r contratista acontinuacion le adjuntaremos correo, contraseña y un link de ingreso para que ingresa  para que adjunte los diferentes documentos necesarios" + 
                     "tu Contraseña es:" + finalString + "Ingresa con tu correo";
                 message.ToEmail = mail;
                 message.Subject = "Clave dinamica";
