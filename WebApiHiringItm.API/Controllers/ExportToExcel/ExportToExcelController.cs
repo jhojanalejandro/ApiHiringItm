@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.IO;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces;
 
 namespace WebApiHiringItm.API.Controllers.ExportToExcel
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("[controller]/[action]")]
     public class ExportToExcelController : ControllerBase
     {
         #region Dependency
@@ -22,7 +20,7 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
         #endregion
 
         #region Methods
-        [HttpGet("GetViabilidadExcel")]
+        [HttpGet("{idContrato}")]
         public async Task<IActionResult> GetViabilidadExcel(int idContrato)
         {
             try
@@ -62,7 +60,8 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
             }
         }
 
-        [HttpGet("GetSolicitudCdp")]
+        [HttpGet("{idContrato}")]
+        
         public async Task<IActionResult> GetSolicitudCdp(int idContrato)
         {
             try
@@ -82,7 +81,7 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
             }
         }
 
-        [HttpGet("GetSolicitudPpa")]
+        [HttpGet("{idContrato}")]
         public async Task<IActionResult> GetSolicitudPpa(int idContrato)
         {
             try

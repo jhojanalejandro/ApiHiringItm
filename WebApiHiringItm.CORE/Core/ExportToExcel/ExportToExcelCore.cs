@@ -45,17 +45,6 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 const int startRow = 1;
                 var row = startRow;
 
-                //Create Headers and format them
-                //worksheet.Cells["A1"].Value = "Contratos";
-                //using (var r = worksheet.Cells["A1:Y1"])
-                //{
-                //    r.Merge = true;
-                //    r.Style.Font.Color.SetColor(Color.White);
-                //    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.CenterContinuous;
-                //    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                //    r.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(23, 55, 93));
-                //}
-
                 worksheet.Cells["A1"].Value = "No";
                 worksheet.Cells["B1"].Value = "Convenio";
                 worksheet.Cells["C1"].Value = "Entidad";
