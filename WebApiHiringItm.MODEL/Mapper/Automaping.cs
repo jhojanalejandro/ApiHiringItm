@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.MODEL.Mapper
@@ -23,7 +24,9 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<FolderContractorDto, FolderContractor>().ReverseMap();
             CreateMap<GetFileDto, Files>().ReverseMap();
             CreateMap<ContractorPayments, ContractorPaymentsDto>().ReverseMap();
-            CreateMap<EconomicdataContractor, EconomicdataContractorDto>().ReverseMap();
+            CreateMap<EconomicdataContractor, EconomicdataContractorDto>().ReverseMap(); 
+            CreateMap<ComponenteDto, Componente>().ReverseMap();
+            CreateMap<ElementosComponenteDto, ElementosComponente>().ReverseMap();
         }
     }
 }

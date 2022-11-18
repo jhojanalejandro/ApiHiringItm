@@ -15,6 +15,10 @@ using WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces;
 using WebApiHiringItm.CORE.Core.ExportToExcel;
 using WebApiHiringItm.CORE.Core.EconomicdataContractorCore.Interface;
 using WebApiHiringItm.CORE.Core.EconomicdataContractorCore;
+using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
+using WebApiHiringItm.CORE.Core.Componentes;
+using WebApiHiringItm.CORE.Helpers.InterfacesHelpers;
+using WebApiHiringItm.CORE.Helpers;
 
 namespace WebApiHiringItm.IOC.Dependencies
 {
@@ -30,6 +34,9 @@ namespace WebApiHiringItm.IOC.Dependencies
             services.AddScoped<IFolderContractorCore, FolderContractorCore>();
             services.AddScoped<IExportToExcelCore, ExportToExcelCore>();
             services.AddScoped<IEconomicdataContractorCore, EconomicdataContractorCore>();
+            services.AddScoped<IComponenteCore, ComponenteCore>();
+            services.AddScoped<ISaveChangesExitHelper, SaveChangesExitHelper>();
+            services.AddScoped<IElementosComponenteCore, ElementosComponenteCore>();
 
         }
     }

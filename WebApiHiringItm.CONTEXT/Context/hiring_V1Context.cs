@@ -31,9 +31,27 @@ namespace WebApiHiringItm.CONTEXT.Context
         public virtual DbSet<Roll> Roll { get; set; }
         public virtual DbSet<SharedData> SharedData { get; set; }
         public virtual DbSet<UserT> UserT { get; set; }
+        public virtual DbSet<Componente> Componentes { get; set; } = null!;
+        public virtual DbSet<ElementosComponente> ElementosComponentes { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ElementosComponente>(entity =>
+            {
+                entity.ToTable("ElementosComponente");
+
+                entity.Property(e => e.ValorPorDia).HasColumnType("money");
+
+                entity.Property(e => e.ValorTotal).HasColumnType("money");
+
+                entity.Property(e => e.ValorUnidad).HasColumnType("money");
+            });
+
+            modelBuilder.Entity<Componente>(entity =>
+            {
+                entity.Property(e => e.NombreComponente).HasMaxLength(30);
+            });
+
             modelBuilder.Entity<Component>(entity =>
             {
                 entity.Property(e => e.ContractorCant).HasColumnName("contractorCant");
