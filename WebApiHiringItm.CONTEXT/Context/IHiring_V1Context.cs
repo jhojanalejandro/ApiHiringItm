@@ -21,6 +21,8 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<Roll> Roll { get; set; }
         DbSet<SharedData> SharedData { get; set; }
         DbSet<UserT> UserT { get; set; }
+        DbSet<Componente> Componentes { get; set; }
+        DbSet<ElementosComponente> ElementosComponentes { get; set; }
 
     }
 }
