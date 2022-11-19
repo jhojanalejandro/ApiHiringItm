@@ -91,12 +91,12 @@ namespace WebApiHiringItm.API.Controllers.Files
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAllFileByDatePayments(GetFileDto model)
+        public async Task<IActionResult> GetAllFileByDatePayments(GetFilesPaymentDto model)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _file.GetAllById(model);
+                var Data = await _file.GetAllByDate(model);
 
                 return Data != null ? Ok(Data) : NoContent();
             }

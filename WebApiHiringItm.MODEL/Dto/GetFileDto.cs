@@ -10,6 +10,5 @@ namespace WebApiHiringItm.MODEL.Dto
     {
         public int FolderId { get; set; }
         public int contractorId { get; set; }
-
     }
 }

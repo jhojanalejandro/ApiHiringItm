@@ -17,7 +17,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public string TypeFile { get; set; }
         public string DescriptionFile { get; set; }
         public int UserId { get; set; }
-        public DateTime? RegisterDate { get; set; }
+        public DateTime RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public bool? Passed { get; set; }
         public string TypeFilePayment { get; set; }

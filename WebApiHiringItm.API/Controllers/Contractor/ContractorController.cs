@@ -122,12 +122,12 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendContractorCount(int idContract)
+        public async Task<IActionResult> SendContractorCount(int idContract, int[] contractorsId)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _contactor.SendContractorCount(idContract);
+                var Data = await _contactor.SendContractorCount(idContract, contractorsId);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();

@@ -258,17 +258,32 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         //    var map = _mapper.Map<Contractor>(result);
         //    return await Task.FromResult(map);
         //}
-        public async Task<bool> SendContractorCount(int idAgreement)
+        public async Task<bool> SendContractorCount(int contractId, int[] contractorsId)
         {
-            var result = _context.Contractor.Where(x => x.ContractId.Equals(idAgreement)).ToList();
-            foreach (var item in result)
+            if (contractorsId.Length > 0)
             {
-                item.ClaveUsuario = await createPassword(item.Correo);
-                _context.Contractor.Update(item);
-                var res = await _context.SaveChangesAsync();
+                foreach (var idContractor in contractorsId)
+                {
+                    var  result = _context.Contractor.Where(x => x.ContractId.Equals(contractId) && x.Id == idContractor).FirstOrDefault();
+                    result.ClaveUsuario = await createPassword(result.Correo);
+                    _context.Contractor.Update(result);
+                    var res = await _context.SaveChangesAsync();
+                }
+                return true;
+            }
+            else
+            {
+                var listContractor = _context.Contractor.Where(x => x.ContractId.Equals(contractId)).ToList();
+                foreach (var item in listContractor)
+                {
+                    item.ClaveUsuario = await createPassword(item.Correo);
+                    _context.Contractor.Update(item);
+                    var res = await _context.SaveChangesAsync();
+
+                }
+                return true;
 
             }
-
             return false;
         }
         #endregion

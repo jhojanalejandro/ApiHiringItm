@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Dto
     public class GetFilesPaymentDto
     {
         public int ContractId { get; set; }
-        public DateTime? RegisterDate { get; set; }
-
+        public DateTime RegisterDate { get; set; }
+        public string Type { get; set; } 
     }
 }

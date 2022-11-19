@@ -13,6 +13,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore.Interface
         Task<FilesDto> GetById(int id);
         Task<bool> Delete(int id);
         Task<bool> Create(FilesDto model);
-
+        Task<List<GetFilesPaymentDto>> GetAllByDate(GetFilesPaymentDto model);
     }
 }

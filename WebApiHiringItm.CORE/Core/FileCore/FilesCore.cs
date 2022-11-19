@@ -31,7 +31,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<List<GetFilesPaymentDto>> GetAllByDate(GetFilesPaymentDto model)
         {
-            var result = _context.Files.Where(x => x.ContractId.Equals(model.ContractId) && x.RegisterDate.Equals(model.RegisterDate)).ToList();
+            var result = _context.Files.Where(x => x.ContractId.Equals(model.ContractId) && x.RegisterDate == model.RegisterDate && x.TypeFilePayment.Equals(model.Type)).ToList();
             var map = _mapper.Map<List<GetFilesPaymentDto>>(result);
             return await Task.FromResult(map);
         }
