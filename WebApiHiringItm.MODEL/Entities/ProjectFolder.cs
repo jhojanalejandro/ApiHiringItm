@@ -9,6 +9,7 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public ProjectFolder()
         {
+            Componente = new HashSet<Componente>();
             Contractor = new HashSet<Contractor>();
             Planning = new HashSet<Planning>();
         }
@@ -21,11 +22,12 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public bool? Execution { get; set; }
-        public string Cpc { get; set; }
-        public string NombreCpc { get; set; }
         public bool? Activate { get; set; }
+        public DateTime? FechaContrato { get; set; }
+        public DateTime? FechaFinalizacion { get; set; }
 
         public virtual UserT User { get; set; }
+        public virtual ICollection<Componente> Componente { get; set; }
         public virtual ICollection<Contractor> Contractor { get; set; }
         public virtual ICollection<Planning> Planning { get; set; }
     }

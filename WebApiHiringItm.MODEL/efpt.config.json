@@ -15,7 +15,7 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
-         "Name": "[dbo].[Component]",
+         "Name": "[dbo].[Componente]",
          "ObjectType": 0
       },
       {
@@ -28,6 +28,10 @@
       },
       {
          "Name": "[dbo].[EconomicdataContractor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ElementosComponente]",
          "ObjectType": 0
       },
       {
@@ -51,6 +55,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[ProfessionalRol]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[ProjectFolder]",
          "ObjectType": 0
       },
@@ -60,6 +68,10 @@
       },
       {
          "Name": "[dbo].[sharedData]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserFirm]",
          "ObjectType": 0
       },
       {

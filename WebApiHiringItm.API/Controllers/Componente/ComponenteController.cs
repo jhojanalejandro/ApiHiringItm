@@ -5,8 +5,8 @@ using WebApiHiringItm.MODEL.Dto.Componentes;
 
 namespace WebApiHiringItm.API.Controllers.Componente
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("[controller]/[action]")]
     public class ComponenteController : ControllerBase
     {
         #region Fields
@@ -36,13 +36,29 @@ namespace WebApiHiringItm.API.Controllers.Componente
         }
 
         [HttpGet]
-        [Route("Get/{id}")]
+        [Route("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             try
             {
                 var res = await _componente.Get(id);
                 return res.Count == 0 ? BadRequest() : Ok(res);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var res = await _componente.Delete(id);
+                return res != false ? Ok(res) : BadRequest();
             }
             catch (Exception e)
             {

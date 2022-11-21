@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Dto
     public class EconomicdataContractorDto
     {
         public int Id { get; set; }
-        public int? IdContractor { get; set; }
+        public int? ContractorId { get; set; }
         public decimal? TotalValue { get; set; }
         public decimal? UnitValue { get; set; }
         public decimal? TotalPaidMonth { get; set; }
@@ -19,5 +19,6 @@ namespace WebApiHiringItm.MODEL.Dto
         public decimal? Freed { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
+
     }
 }

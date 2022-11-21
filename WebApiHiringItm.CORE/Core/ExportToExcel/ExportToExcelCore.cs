@@ -70,7 +70,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 row = 2;
                 foreach (var user in data)
                 {
-                    worksheet.Cells[row, 1].Value = user.No;
+                    worksheet.Cells[row, 1].Value = user.Nro;
                     worksheet.Cells[row, 2].Value = user.Convenio;
                     worksheet.Cells[row, 3].Value = user.Entidad;
                     worksheet.Cells[row, 4].Value = user.Componente;
@@ -198,7 +198,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 {
                     foreach (var item in hiringData)
                     {
-                        worksheet.Cells[row, 1].Value = user.No;
+                        worksheet.Cells[row, 1].Value = user.Nro;
                         worksheet.Cells[row, 2].Value = "";
                         worksheet.Cells[row, 3].Value = "";
                         worksheet.Cells[row, 4].Value = user.ObjetoConvenio;
@@ -263,7 +263,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 row = 5;
                 foreach (var user in data)
                 {
-                    worksheet.Cells[row, 1].Value = user.No;
+                    worksheet.Cells[row, 1].Value = user.Nro;
                     worksheet.Cells[row, 2].Value = "";
                     worksheet.Cells[row, 3].Value = "";
                     worksheet.Cells[row, 4].Value = user.ObjetoConvenio;

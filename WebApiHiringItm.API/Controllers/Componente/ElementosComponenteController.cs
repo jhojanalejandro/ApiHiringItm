@@ -49,6 +49,21 @@ namespace WebApiHiringItm.API.Controllers.Componente
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet]
+        [Route("GetByContractId/{id}")]
+        public async Task<IActionResult> ByContractId(int id)
+        {
+            try
+            {
+                var res = await _element.GetByContractId(id);
+                return res.Count == 0 ? BadRequest() : Ok(res);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
         #endregion
     }
 }

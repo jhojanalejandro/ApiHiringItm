@@ -5,14 +5,16 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class Component
+    public partial class ProfessionalRol
     {
         public int Id { get; set; }
-        public int? PlaningId { get; set; }
+        public int? ComponentId { get; set; }
         public int? ContractorCant { get; set; }
         public decimal? UnitValue { get; set; }
-        public decimal? TotalValue { get; set; }
+        public decimal? Total { get; set; }
+        public decimal? DayValue { get; set; }
+        public int? Contractorduration { get; set; }
 
-        public virtual Planning Planing { get; set; }
+        public virtual Componente Component { get; set; }
     }
 }

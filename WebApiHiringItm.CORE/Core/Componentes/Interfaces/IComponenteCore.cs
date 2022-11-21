@@ -6,5 +6,6 @@ namespace WebApiHiringItm.CORE.Core.Componentes.Interfaces
     {
         Task<bool> Add(ComponenteDto model);
         Task<List<ComponenteDto>?> Get(int id);
+        Task<bool> Delete(int id);
     }
 }

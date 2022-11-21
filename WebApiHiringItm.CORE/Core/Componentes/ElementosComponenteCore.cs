@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Helpers.InterfacesHelpers;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Entities;
-
 namespace WebApiHiringItm.CORE.Core.Componentes
 {
     public class ElementosComponenteCore : IElementosComponenteCore
@@ -35,14 +31,14 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             var map = _mapper.Map<List<ElementosComponente>>(model);
             foreach (var item in map)
             {
-                var exist = _context.ElementosComponentes.Where(w => w.Id == item.Id).FirstOrDefault();
+                var exist = _context.ElementosComponente.Where(w => w.Id == item.Id).FirstOrDefault();
                 if (exist != null)
                 {
-                    _context.ElementosComponentes.Add(item);
+                    _context.ElementosComponente.Add(item);
                 }
                 else
                 {
-                    _context.ElementosComponentes.Update(item);
+                    _context.ElementosComponente.Update(item);
                 }
             }
             await _save.SaveChangesDB();
@@ -51,7 +47,25 @@ namespace WebApiHiringItm.CORE.Core.Componentes
 
         public async Task<List<ElementosComponenteDto>?> Get(int id)
         {
-            var result = _context.ElementosComponentes.Where(x => x.IdComponenete == id).ToList();
+            var result = _context.ElementosComponente.Where(x => x.IdComponenete == id).ToList();
+            if (result.Count != 0)
+            {
+                var map = _mapper.Map<List<ElementosComponenteDto>>(result);
+                return await Task.FromResult(map);
+            }
+            else
+            {
+                return new List<ElementosComponenteDto>();
+            }
+        }
+
+        public async Task<List<ElementosComponenteDto>?> GetByContractId(int id)
+        {
+            var result = _context.ElementosComponente
+                .Include(x => x.IdComponeneteNavigation)
+                .ThenInclude(X => X.IdContratoNavigation)
+                .Where(x => x.IdComponeneteNavigation.IdContratoNavigation.Id == id)
+                .ToList();
             if (result.Count != 0)
             {
                 var map = _mapper.Map<List<ElementosComponenteDto>>(result);

@@ -10,8 +10,8 @@ namespace WebApiHiringItm.MODEL.Dto
     {
         public int Id { get; set; }
         public int ContractorId { get; set; }
-        public int ContractId { get; set; }
-        public int FolderId { get; set; }
+        public int? FolderId { get; set; }
+        public int? ContractId { get; set; }
         public string FilesName { get; set; }
         public string Filedata { get; set; }
         public string TypeFile { get; set; }
@@ -21,6 +21,5 @@ namespace WebApiHiringItm.MODEL.Dto
         public DateTime? ModifyDate { get; set; }
         public bool? Passed { get; set; }
         public string TypeFilePayment { get; set; }
-
     }
 }

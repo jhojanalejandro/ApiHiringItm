@@ -16,8 +16,9 @@ namespace WebApiHiringItm.MODEL.Dto
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public bool? Execution { get; set; }
-        public string Cpc { get; set; }
-        public string NombreCpc { get; set; }
         public bool? Activate { get; set; }
+        public DateTime? FechaContrato { get; set; }
+        public DateTime? FechaFinalizacion { get; set; }
+
     }
 }

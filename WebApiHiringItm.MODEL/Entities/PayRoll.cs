@@ -5,20 +5,16 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class EconomicdataContractor
+    public partial class PayRoll
     {
         public int Id { get; set; }
+        public int? UserId { get; set; }
         public int? ContractorId { get; set; }
-        public decimal? TotalValue { get; set; }
-        public decimal? UnitValue { get; set; }
-        public decimal? TotalPaidMonth { get; set; }
-        public bool? CashPayment { get; set; }
-        public decimal? Missing { get; set; }
-        public decimal? Debt { get; set; }
-        public decimal? Freed { get; set; }
+        public bool? ContractorPayment { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
 
         public virtual Contractor Contractor { get; set; }
+        public virtual UserT User { get; set; }
     }
 }

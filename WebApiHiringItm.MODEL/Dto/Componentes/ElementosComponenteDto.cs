@@ -9,5 +9,7 @@
         public decimal ValorUnidad { get; set; }
         public decimal ValorTotal { get; set; }
         public decimal ValorPorDia { get; set; }
+        public string Cpc { get; set; }
+        public string NombreCpc { get; set; }
     }
 }

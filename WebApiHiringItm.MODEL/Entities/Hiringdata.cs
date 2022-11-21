@@ -16,18 +16,14 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Compromiso { get; set; }
         public string RubroPresupuestal { get; set; }
         public string NombreDelRubro { get; set; }
-        public string Cpc { get; set; }
-        public string NombreCpc { get; set; }
         public DateTime? FechaExaPreocupacional { get; set; }
         public DateTime? FechaInicioAmpliacion { get; set; }
         public DateTime? FechaDeTerminacionAmpliacion { get; set; }
         public string InterventorItm { get; set; }
         public string CargoInterventorItm { get; set; }
         public string NoAdicion { get; set; }
-        public DateTime? FechaDeContrato { get; set; }
         public DateTime? FechaDeInicioProyectado { get; set; }
         public DateTime? FechaRealDeInicio { get; set; }
-        public DateTime? FechaFinalizacion { get; set; }
         public string Ejecucion { get; set; }
         public string ActaComite { get; set; }
         public DateTime? FechaDeComite { get; set; }
@@ -38,12 +34,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? FechaExpedicionPoliza { get; set; }
         public decimal? ValorAsegurado { get; set; }
         public int? Nivel { get; set; }
-        public string Eps { get; set; }
-        public string Pension { get; set; }
-        public string Arl { get; set; }
-        public string CuentaBancaria { get; set; }
-        public string TipoCuenta { get; set; }
-        public string EntidadCuentaBancaria { get; set; }
 
         public virtual Contractor Contractor { get; set; }
         public virtual UserT User { get; set; }

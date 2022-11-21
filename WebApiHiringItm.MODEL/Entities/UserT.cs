@@ -14,6 +14,7 @@ namespace WebApiHiringItm.MODEL.Entities
             Files = new HashSet<Files>();
             FolderContractor = new HashSet<FolderContractor>();
             HiringData = new HashSet<HiringData>();
+            PayRoll = new HashSet<PayRoll>();
             ProjectFolder = new HashSet<ProjectFolder>();
         }
 
@@ -22,16 +23,17 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Avatar { get; set; }
         public string Professionalposition { get; set; }
         public string UserPassword { get; set; }
-        public int IdRoll { get; set; }
+        public int RollId { get; set; }
         public string UserEmail { get; set; }
         public string PhoneNumber { get; set; }
 
-        public virtual Roll IdRollNavigation { get; set; }
+        public virtual Roll Roll { get; set; }
         public virtual ICollection<Contractor> Contractor { get; set; }
         public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
         public virtual ICollection<Files> Files { get; set; }
         public virtual ICollection<FolderContractor> FolderContractor { get; set; }
         public virtual ICollection<HiringData> HiringData { get; set; }
+        public virtual ICollection<PayRoll> PayRoll { get; set; }
         public virtual ICollection<ProjectFolder> ProjectFolder { get; set; }
     }
 }

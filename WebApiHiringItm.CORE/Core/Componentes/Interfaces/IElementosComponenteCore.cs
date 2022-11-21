@@ -6,5 +6,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes.Interfaces
     {
         Task<bool> Add(List<ElementosComponenteDto> model);
         Task<List<ElementosComponenteDto>?> Get(int id);
+        Task<List<ElementosComponenteDto>?> GetByContractId(int id);
+
     }
 }
