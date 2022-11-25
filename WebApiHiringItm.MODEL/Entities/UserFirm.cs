@@ -9,7 +9,6 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public int FolderId { get; set; }
         public string FirmName { get; set; }
     }
 }
