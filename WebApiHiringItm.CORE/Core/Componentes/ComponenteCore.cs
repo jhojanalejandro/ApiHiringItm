@@ -21,7 +21,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         {
             _context = context;
             _mapper = mapper;
-            _save =  save;
+            _save = save;
         }
         #endregion
 
@@ -31,7 +31,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             var map = _mapper.Map<Componente>(model);
             var exist = _context.Componente.Where(x => x.Id == model.Id).FirstOrDefault();
 
-            if (exist != null)
+            if (exist == null)
             {
                 _context.Componente.Add(map);
                 await _save.SaveChangesDB();
@@ -46,11 +46,16 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         }
 
         public async Task<List<ComponenteDto>?> Get(int id)
-        {           
+        {
             var result = _context.Componente.Where(x => x.IdContrato == id).ToList();
             if (result.Count != 0)
             {
                 var map = _mapper.Map<List<ComponenteDto>>(result);
+                map.ForEach(e =>
+                {
+                    var element = _context.ElementosComponente.Where(d => d.IdComponente == e.Id).ToList();
+                    e.Elementos = _mapper.Map<List<ElementosComponenteDto>>(element);
+                });
                 return await Task.FromResult(map);
             }
             else
@@ -63,7 +68,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         {
             try
             {
-                var resultData = _context.ElementosComponente.Where(x => x.IdComponenete == id).ToList();
+                var resultData = _context.ElementosComponente.Where(x => x.IdComponente == id).ToList();
                 foreach (var item in resultData)
                 {
                     var element = _context.ElementosComponente.Where(x => x.Id == item.Id).FirstOrDefault();

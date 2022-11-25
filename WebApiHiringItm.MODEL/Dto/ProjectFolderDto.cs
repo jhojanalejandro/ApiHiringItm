@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiHiringItm.MODEL.Dto.Componentes;
 
 namespace WebApiHiringItm.MODEL.Dto
 {
@@ -19,6 +20,7 @@ namespace WebApiHiringItm.MODEL.Dto
         public bool? Activate { get; set; }
         public DateTime? FechaContrato { get; set; }
         public DateTime? FechaFinalizacion { get; set; }
+        public List<ComponenteDto> Componentes { get; set; }
 
     }
 }

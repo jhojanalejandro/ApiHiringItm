@@ -209,7 +209,7 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.HasOne(d => d.IdComponeneteNavigation)
                     .WithMany(p => p.ElementosComponente)
-                    .HasForeignKey(d => d.IdComponenete)
+                    .HasForeignKey(d => d.IdComponente)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Elementos__IdCom__534D60F1");
             });
