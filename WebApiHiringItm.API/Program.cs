@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core;
 using WebApiHiringItm.CORE.Helpers;
@@ -42,6 +43,7 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddDbContext<Hiring_V1Context>(options =>
       options
       .UseLazyLoadingProxies()
+      .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
       .UseSqlServer(builder.Configuration.GetConnectionString("HiringDatabase"))
       );
 

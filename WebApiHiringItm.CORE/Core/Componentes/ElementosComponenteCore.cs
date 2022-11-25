@@ -32,13 +32,15 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             foreach (var item in map)
             {
                 var exist = _context.ElementosComponente.Where(w => w.Id == item.Id).FirstOrDefault();
-                if (exist != null)
+                if (exist == null)
                 {
                     _context.ElementosComponente.Add(item);
                 }
                 else
                 {
-                    _context.ElementosComponente.Update(item);
+                    
+                    exist = item;
+                    _context.ElementosComponente.Update(exist);
                 }
             }
             await _save.SaveChangesDB();
@@ -47,7 +49,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
 
         public async Task<List<ElementosComponenteDto>?> Get(int id)
         {
-            var result = _context.ElementosComponente.Where(x => x.IdComponenete == id).ToList();
+            var result = _context.ElementosComponente.Where(x => x.IdComponente == id).ToList();
             if (result.Count != 0)
             {
                 var map = _mapper.Map<List<ElementosComponenteDto>>(result);

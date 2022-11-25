@@ -3,7 +3,7 @@
     public class ElementosComponenteDto
     {
         public int Id { get; set; }
-        public int IdComponenete { get; set; }
+        public int IdComponente { get; set; }
         public int CantidadContratistas { get; set; }
         public int CantidadDias { get; set; }
         public decimal ValorUnidad { get; set; }
