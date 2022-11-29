@@ -47,20 +47,27 @@ namespace WebApiHiringItm.CORE.Core.Componentes
 
         public async Task<List<ComponenteDto>?> Get(int id)
         {
-            var result = _context.Componente.Where(x => x.IdContrato == id).ToList();
-            if (result.Count != 0)
+            try
             {
-                var map = _mapper.Map<List<ComponenteDto>>(result);
-                map.ForEach(e =>
+                var result = _context.Componente.Where(x => x.IdContrato == id).ToList();
+                if (result.Count != 0)
                 {
-                    var element = _context.ElementosComponente.Where(d => d.IdComponente == e.Id).ToList();
-                    e.Elementos = _mapper.Map<List<ElementosComponenteDto>>(element);
-                });
-                return await Task.FromResult(map);
+                    var map = _mapper.Map<List<ComponenteDto>>(result);
+                    map.ForEach(e =>
+                    {
+                        var element = _context.ElementosComponente.Where(d => d.IdComponente == e.Id).ToList();
+                        e.Elementos = _mapper.Map<List<ElementosComponenteDto>>(element);
+                    });
+                    return await Task.FromResult(map);
+                }
+                else
+                {
+                    return new List<ComponenteDto>();
+                }
             }
-            else
+            catch (Exception e)
             {
-                return new List<ComponenteDto>();
+                return new List<ComponenteDto>(); throw;
             }
         }
 
