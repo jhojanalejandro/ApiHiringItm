@@ -39,15 +39,8 @@ namespace WebApiHiringItm.API.Controllers.Componente
         [Route("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                var res = await _componente.Get(id);
-                return res.Count == 0 ? BadRequest() : Ok(res);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            var res = await _componente.Get(id);
+            return Ok(res);
         }
 
         [HttpDelete]
