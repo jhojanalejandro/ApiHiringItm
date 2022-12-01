@@ -37,6 +37,7 @@ namespace WebApiHiringItm.IOC.Dependencies
             services.AddScoped<IComponenteCore, ComponenteCore>();
             services.AddScoped<ISaveChangesExitHelper, SaveChangesExitHelper>();
             services.AddScoped<IElementosComponenteCore, ElementosComponenteCore>();
+            services.AddScoped<IUserFirmCore, UserFirmCore>();
 
         }
     }

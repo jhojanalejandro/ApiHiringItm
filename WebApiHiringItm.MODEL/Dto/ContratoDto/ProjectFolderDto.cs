@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 
-namespace WebApiHiringItm.MODEL.Dto
+namespace WebApiHiringItm.MODEL.Dto.ContratoDto
 {
     public class ProjectFolderDto
     {
@@ -14,13 +14,12 @@ namespace WebApiHiringItm.MODEL.Dto
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
         public string DescriptionProject { get; set; }
-        public DateTime? RegisterDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
         public bool? Execution { get; set; }
         public bool? Activate { get; set; }
-        public DateTime? FechaContrato { get; set; }
-        public DateTime? FechaFinalizacion { get; set; }
+        public int? ContractorsCant { get; set; }
+
         public List<ComponenteDto> Componentes { get; set; }
+        //public DetalleContratoDto DetalleContrato { get; set; }
 
     }
 }

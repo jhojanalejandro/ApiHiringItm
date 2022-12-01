@@ -26,22 +26,18 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         #endregion
 
         #region Methods
-        public async Task<bool> Add(List<ElementosComponenteDto> model)
+        public async Task<bool> Add(ElementosComponenteDto model)
         {
-            var map = _mapper.Map<List<ElementosComponente>>(model);
-            foreach (var item in map)
+            var exist = _context.ElementosComponente.Where(w => w.Id == model.Id).FirstOrDefault();
+            if (exist == null)
             {
-                var exist = _context.ElementosComponente.Where(w => w.Id == item.Id).FirstOrDefault();
-                if (exist == null)
-                {
-                    _context.ElementosComponente.Add(item);
-                }
-                else
-                {
-                    
-                    exist = item;
-                    _context.ElementosComponente.Update(exist);
-                }
+                var map = _mapper.Map<ElementosComponente>(model);
+                _context.ElementosComponente.Add(map);
+            }
+            else
+            {
+
+                _context.ElementosComponente.Update(exist);
             }
             await _save.SaveChangesDB();
             return true;
@@ -61,23 +57,14 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             }
         }
 
-        public async Task<List<ElementosComponenteDto>?> GetByContractId(int id)
+        public async Task<ElementosComponenteDto> GetById(int id)
         {
-            var result = _context.ElementosComponente
-                .Include(x => x.IdComponeneteNavigation)
-                .ThenInclude(X => X.IdContratoNavigation)
-                .Where(x => x.IdComponeneteNavigation.IdContratoNavigation.Id == id)
-                .ToList();
-            if (result.Count != 0)
-            {
-                var map = _mapper.Map<List<ElementosComponenteDto>>(result);
-                return await Task.FromResult(map);
-            }
-            else
-            {
-                return new List<ElementosComponenteDto>();
-            }
+            var result = _context.ElementosComponente.Where(x => x.Id.Equals(id)).FirstOrDefault();
+            var map = _mapper.Map<ElementosComponenteDto>(result);
+            return await Task.FromResult(map);
         }
+
+
         #endregion
     }
 }

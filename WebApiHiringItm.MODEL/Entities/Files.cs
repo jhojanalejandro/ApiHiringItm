@@ -18,8 +18,9 @@ namespace WebApiHiringItm.MODEL.Entities
         public int UserId { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
-        public bool? Passed { get; set; }
         public string TypeFilePayment { get; set; }
+        public string Mont { get; set; }
+        public bool? Passed { get; set; }
 
         public virtual FolderContractor Folder { get; set; }
         public virtual UserT User { get; set; }

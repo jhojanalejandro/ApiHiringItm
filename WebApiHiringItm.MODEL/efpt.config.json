@@ -1,6 +1,6 @@
 ﻿{
    "CodeGenerationMode": 2,
-   "ContextClassName": "hiring_V1Context",
+   "ContextClassName": "Hiring_V1Context",
    "ContextNamespace": "WebApiHiringItm.CONTEXT.Context",
    "DefaultDacpacSchema": null,
    "FilterSchemas": false,
@@ -24,6 +24,10 @@
       },
       {
          "Name": "[dbo].[ContractorPayments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DetalleContrato]",
          "ObjectType": 0
       },
       {

@@ -8,6 +8,8 @@ namespace WebApiHiringItm.MODEL.Entities
     public partial class ElementosComponente
     {
         public int Id { get; set; }
+        public string NombreElemento { get; set; }
+        public string TipoElemento { get; set; }
         public int IdComponente { get; set; }
         public int CantidadContratistas { get; set; }
         public int CantidadDias { get; set; }
@@ -16,7 +18,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal ValorPorDia { get; set; }
         public string Cpc { get; set; }
         public string NombreCpc { get; set; }
+        public bool? Adicion { get; set; }
 
-        public virtual Componente IdComponeneteNavigation { get; set; }
+        public virtual Componente IdComponenteNavigation { get; set; }
     }
 }

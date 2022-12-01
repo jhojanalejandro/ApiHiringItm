@@ -4,26 +4,25 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CONTEXT.Context
 {
-    public partial class Hiring_V1Context : DbContext,IHiring_V1Context
+    public partial class Hiring_V1Context : DbContext, IHiring_V1Context
     {
-
         public Hiring_V1Context()
         {
         }
 
         public Hiring_V1Context(DbContextOptions<Hiring_V1Context> options)
-             : base(options)
+            : base(options)
         {
         }
 
         public virtual DbSet<Componente> Componente { get; set; }
         public virtual DbSet<Contractor> Contractor { get; set; }
         public virtual DbSet<ContractorPayments> ContractorPayments { get; set; }
+        public virtual DbSet<DetalleContrato> DetalleContrato { get; set; }
         public virtual DbSet<EconomicdataContractor> EconomicdataContractor { get; set; }
         public virtual DbSet<ElementosComponente> ElementosComponente { get; set; }
         public virtual DbSet<Files> Files { get; set; }
@@ -46,108 +45,147 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .IsRequired()
                     .HasMaxLength(30);
 
-                entity.Property(e => e.NombreRubro).HasMaxLength(50);
-
-                entity.Property(e => e.Rubro).HasMaxLength(30);
-
                 entity.HasOne(d => d.IdContratoNavigation)
                     .WithMany(p => p.Componente)
                     .HasForeignKey(d => d.IdContrato)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Component__IdCon__52593CB8");
+                    .HasConstraintName("FK__Component__IdCon__4D94879B");
             });
 
             modelBuilder.Entity<Contractor>(entity =>
             {
-                entity.Property(e => e.Arl).HasMaxLength(50);
+                entity.Property(e => e.Administradora).IsUnicode(false);
 
-                entity.Property(e => e.Bachiller).HasMaxLength(15);
+                entity.Property(e => e.Apellido)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Barrio).HasMaxLength(50);
+                entity.Property(e => e.Barrio)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Celular).HasMaxLength(50);
+                entity.Property(e => e.Celular)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ClaveUsuario).HasMaxLength(15);
 
-                entity.Property(e => e.Componente).HasMaxLength(100);
-
-                entity.Property(e => e.Comuna).HasMaxLength(50);
+                entity.Property(e => e.Codigo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Convenio)
                     .IsRequired()
-                    .HasMaxLength(20);
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Correo).HasMaxLength(50);
+                entity.Property(e => e.Correo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.CuentaBancaria).HasMaxLength(50);
+                entity.Property(e => e.CuentaBancaria).HasMaxLength(100);
 
-                entity.Property(e => e.Departamento).HasMaxLength(100);
+                entity.Property(e => e.Departamento)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Direccion).HasMaxLength(50);
+                entity.Property(e => e.Direccion)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Doctorado).HasMaxLength(100);
-
-                entity.Property(e => e.DocumentoDeIdentificacion).HasMaxLength(15);
-
-                entity.Property(e => e.Entidad).HasMaxLength(50);
+                entity.Property(e => e.Doctorado)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EntidadCuentaBancaria).HasMaxLength(50);
 
-                entity.Property(e => e.Eps).HasMaxLength(50);
+                entity.Property(e => e.Especializacion)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Especializacion).HasMaxLength(100);
+                entity.Property(e => e.Estado).HasMaxLength(50);
 
                 entity.Property(e => e.FechaActualizacion).HasColumnType("date");
 
                 entity.Property(e => e.FechaCreacion).HasColumnType("date");
 
-                entity.Property(e => e.FechaFinalizacionConvenio).HasColumnType("date");
+                entity.Property(e => e.FechaFin)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.FechaInicioConvenio).HasColumnType("date");
+                entity.Property(e => e.FechaInicio)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.FechaNacimiento).HasColumnType("date");
 
-                entity.Property(e => e.LugarDeExpedicion).HasMaxLength(100);
+                entity.Property(e => e.Genero)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Maestria).HasMaxLength(100);
-
-                entity.Property(e => e.Municipio).HasMaxLength(50);
-
-                entity.Property(e => e.Nacionalidad).HasMaxLength(100);
-
-                entity.Property(e => e.NombreCompleto).HasMaxLength(100);
-
-                entity.Property(e => e.Nro)
+                entity.Property(e => e.Identificacion)
                     .IsRequired()
-                    .HasMaxLength(20);
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Pension).HasMaxLength(30);
+                entity.Property(e => e.LugarExpedicion)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Pregrado).HasMaxLength(15);
+                entity.Property(e => e.Maestria)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Sexo).HasMaxLength(100);
+                entity.Property(e => e.Municipio)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.TalentoHumano).HasMaxLength(100);
+                entity.Property(e => e.Nacionalidad)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Tecnico).HasMaxLength(15);
+                entity.Property(e => e.Nombre)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Tecnologo).HasMaxLength(100);
+                entity.Property(e => e.Pregrado)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Telefono).HasMaxLength(50);
+                entity.Property(e => e.Tecnico)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.TipoDeCuenta).HasMaxLength(50);
+                entity.Property(e => e.Tecnologo)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Telefono)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoAdministradora).IsUnicode(false);
+
+                entity.Property(e => e.TipoContratacion)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoCuenta).HasMaxLength(50);
 
                 entity.HasOne(d => d.Contract)
                     .WithMany(p => p.Contractor)
                     .HasForeignKey(d => d.ContractId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Contracto__Contr__48CFD27E");
+                    .HasConstraintName("FK__Contracto__Contr__4CA06362");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Contractor)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Contracto__UserI__47DBAE45");
+                    .HasConstraintName("FK__Contracto__UserI__4BAC3F29");
             });
 
             modelBuilder.Entity<ContractorPayments>(entity =>
@@ -163,12 +201,28 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.ContractorPayments)
                     .HasForeignKey(d => d.ContractorId)
-                    .HasConstraintName("FK__Contracto__Contr__4AB81AF0");
+                    .HasConstraintName("FK__Contracto__Contr__4F7CD00D");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.ContractorPayments)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Contracto__UserI__4BAC3F29");
+                    .HasConstraintName("FK__Contracto__UserI__5070F446");
+            });
+
+            modelBuilder.Entity<DetalleContrato>(entity =>
+            {
+                entity.Property(e => e.FechaContrato).HasColumnType("date");
+
+                entity.Property(e => e.FechaFinalizacion).HasColumnType("date");
+
+                entity.Property(e => e.TipoContrato)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.IdcontratoNavigation)
+                    .WithMany(p => p.DetalleContrato)
+                    .HasForeignKey(d => d.Idcontrato)
+                    .HasConstraintName("FK__DetalleCo__Idcon__571DF1D5");
             });
 
             modelBuilder.Entity<EconomicdataContractor>(entity =>
@@ -192,14 +246,22 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.EconomicdataContractor)
                     .HasForeignKey(d => d.ContractorId)
-                    .HasConstraintName("FK__Economicd__Contr__4E88ABD4");
+                    .HasConstraintName("FK__Economicd__Contr__52593CB8");
             });
 
             modelBuilder.Entity<ElementosComponente>(entity =>
             {
+                entity.Property(e => e.Adicion).HasColumnName("adicion");
+
                 entity.Property(e => e.Cpc).HasMaxLength(30);
 
                 entity.Property(e => e.NombreCpc).HasMaxLength(50);
+
+                entity.Property(e => e.NombreElemento).HasMaxLength(100);
+
+                entity.Property(e => e.TipoElemento)
+                    .HasMaxLength(50)
+                    .HasColumnName("tipoElemento");
 
                 entity.Property(e => e.ValorPorDia).HasColumnType("money");
 
@@ -207,11 +269,11 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.ValorUnidad).HasColumnType("money");
 
-                entity.HasOne(d => d.IdComponeneteNavigation)
+                entity.HasOne(d => d.IdComponenteNavigation)
                     .WithMany(p => p.ElementosComponente)
                     .HasForeignKey(d => d.IdComponente)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Elementos__IdCom__534D60F1");
+                    .HasConstraintName("FK__Elementos__IdCom__5629CD9C");
             });
 
             modelBuilder.Entity<Files>(entity =>
@@ -222,6 +284,10 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.ModifyDate).HasColumnType("date");
 
+                entity.Property(e => e.Mont)
+                    .HasMaxLength(15)
+                    .HasColumnName("mont");
+
                 entity.Property(e => e.RegisterDate).HasColumnType("date");
 
                 entity.Property(e => e.TypeFile).HasMaxLength(10);
@@ -231,13 +297,13 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Folder)
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.FolderId)
-                    .HasConstraintName("FK__Files__FolderId__45F365D3");
+                    .HasConstraintName("FK__Files__FolderId__49C3F6B7");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Files__UserId__46E78A0C");
+                    .HasConstraintName("FK__Files__UserId__4AB81AF0");
             });
 
             modelBuilder.Entity<FolderContractor>(entity =>
@@ -255,13 +321,13 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.FolderContractor)
                     .HasForeignKey(d => d.ContractorId)
-                    .HasConstraintName("FK__FolderCon__Contr__44FF419A");
+                    .HasConstraintName("FK__FolderCon__Contr__48CFD27E");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.FolderContractor)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__FolderCon__UserI__440B1D61");
+                    .HasConstraintName("FK__FolderCon__UserI__47DBAE45");
             });
 
             modelBuilder.Entity<HiringData>(entity =>
@@ -298,9 +364,9 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.NoPoliza).HasMaxLength(100);
 
-                entity.Property(e => e.NombreDelRubro).HasMaxLength(100);
+                entity.Property(e => e.NombreRubro).HasMaxLength(50);
 
-                entity.Property(e => e.RubroPresupuestal).HasMaxLength(100);
+                entity.Property(e => e.Rubro).HasMaxLength(30);
 
                 entity.Property(e => e.ValorAsegurado)
                     .HasColumnType("money")
@@ -313,12 +379,12 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.HiringData)
                     .HasForeignKey(d => d.ContractorId)
-                    .HasConstraintName("FK__HiringDat__Contr__4316F928");
+                    .HasConstraintName("FK__HiringDat__Contr__46E78A0C");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.HiringData)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__HiringDat__UserI__4222D4EF");
+                    .HasConstraintName("FK__HiringDat__UserI__45F365D3");
             });
 
             modelBuilder.Entity<PayRoll>(entity =>
@@ -330,12 +396,12 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.PayRoll)
                     .HasForeignKey(d => d.ContractorId)
-                    .HasConstraintName("FK__PayRoll__Contrac__4F7CD00D");
+                    .HasConstraintName("FK__PayRoll__Contrac__534D60F1");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.PayRoll)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__PayRoll__UserId__5070F446");
+                    .HasConstraintName("FK__PayRoll__UserId__5441852A");
             });
 
             modelBuilder.Entity<Planning>(entity =>
@@ -351,7 +417,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.ProjectFolder)
                     .WithMany(p => p.Planning)
                     .HasForeignKey(d => d.ProjectFolderId)
-                    .HasConstraintName("FK__planning__Projec__4D94879B");
+                    .HasConstraintName("FK__planning__Projec__5165187F");
             });
 
             modelBuilder.Entity<ProfessionalRol>(entity =>
@@ -365,7 +431,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Component)
                     .WithMany(p => p.ProfessionalRol)
                     .HasForeignKey(d => d.ComponentId)
-                    .HasConstraintName("FK__Professio__Compo__5165187F");
+                    .HasConstraintName("FK__Professio__Compo__5535A963");
             });
 
             modelBuilder.Entity<ProjectFolder>(entity =>
@@ -376,23 +442,17 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .IsRequired()
                     .HasMaxLength(200);
 
-                entity.Property(e => e.FechaContrato).HasColumnType("date");
-
-                entity.Property(e => e.FechaFinalizacion).HasColumnType("date");
-
-                entity.Property(e => e.ModifyDate).HasColumnType("date");
+                entity.Property(e => e.ContractorsCant).HasColumnName("contractorsCant");
 
                 entity.Property(e => e.ProjectName)
                     .IsRequired()
                     .HasMaxLength(300);
 
-                entity.Property(e => e.RegisterDate).HasColumnType("date");
-
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.ProjectFolder)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ProjectFo__UserI__412EB0B6");
+                    .HasConstraintName("FK__ProjectFo__UserI__44FF419A");
             });
 
             modelBuilder.Entity<Roll>(entity =>
@@ -413,9 +473,9 @@ namespace WebApiHiringItm.CONTEXT.Context
 
             modelBuilder.Entity<UserFirm>(entity =>
             {
-                entity.Property(e => e.FirmName)
-                    .HasMaxLength(100)
-                    .HasColumnName("firmName");
+                entity.Property(e => e.FirmData).HasColumnName("firmData");
+
+                entity.Property(e => e.FirmUser).HasMaxLength(50);
             });
 
             modelBuilder.Entity<UserT>(entity =>
@@ -438,11 +498,12 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.UserT)
                     .HasForeignKey(d => d.RollId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserT__RollId__49C3F6B7");
+                    .HasConstraintName("FK__UserT__RollId__4E88ABD4");
             });
 
             OnModelCreatingPartial(modelBuilder);
         }
+
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

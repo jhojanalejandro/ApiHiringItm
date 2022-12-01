@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
+using WebApiHiringItm.CORE.Core.User.Interface;
+using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Usuario;
 
 namespace WebApiHiringItm.API.Controllers.UserFirm
 {
@@ -7,11 +11,11 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
     [Route("[controller]/[action]")]
     public class UserFirmController : ControllerBase
     {
-        private readonly IHiringDataCore _hiringData;
+        private readonly IUserFirmCore _userFirm;
 
-        public HiringDataController(IHiringDataCore hiringData)
+        public UserFirmController(IUserFirmCore userFirm)
         {
-            _hiringData = hiringData;
+            _userFirm = userFirm;
         }
 
         [HttpGet]
@@ -20,7 +24,7 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _hiringData.GetAll();
+                var Data = await _userFirm.GetAll();
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
@@ -38,7 +42,7 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _hiringData.GetById(id);
+                var Data = await _userFirm.GetById(id);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
@@ -51,15 +55,15 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(HiringDataDto model)
+        public async Task<IActionResult> Add(UserFirmDto model)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _hiringData.Create(model);
+                var Data = await _userFirm.Create(model);
 
                 //Retornamos datos.
-                return Data != 0 ? Ok(Data) : NoContent();
+                return Data != true ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -70,15 +74,15 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(HiringDataDto model)
+        public async Task<IActionResult> Update(UserFirmDto model)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _hiringData.Update(model);
+                var Data = await _userFirm.Create(model);
 
                 //Retornamos datos.
-                return Data != false ? Ok(Data) : NoContent();
+                return Data != true ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -93,7 +97,7 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _hiringData.Delete(id);
+                var Data = await _userFirm.Delete(id);
 
                 //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();

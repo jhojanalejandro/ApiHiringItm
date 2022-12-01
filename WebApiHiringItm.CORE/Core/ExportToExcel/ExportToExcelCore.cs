@@ -45,7 +45,6 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 const int startRow = 1;
                 var row = startRow;
 
-                worksheet.Cells["A1"].Value = "No";
                 worksheet.Cells["B1"].Value = "Convenio";
                 worksheet.Cells["C1"].Value = "Entidad";
                 worksheet.Cells["D1"].Value = "Componente";
@@ -70,21 +69,21 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 row = 2;
                 foreach (var user in data)
                 {
-                    worksheet.Cells[row, 1].Value = user.Nro;
-                    worksheet.Cells[row, 2].Value = user.Convenio;
-                    worksheet.Cells[row, 3].Value = user.Entidad;
-                    worksheet.Cells[row, 4].Value = user.Componente;
+                    //worksheet.Cells[row, 2].Value = user.Convenio;
+                    //worksheet.Cells[row, 3].Value = user.Entidad;
+                    //worksheet.Cells[row, 4].Value = user.Componente;
                     worksheet.Cells[row, 5].Value = "";
                     worksheet.Cells[row, 6].Value = "";
                     worksheet.Cells[row, 7].Value = "";
-                    worksheet.Cells[row, 8].Value = user.NombreCompleto;
-                    worksheet.Cells[row, 9].Value = user.DocumentoDeIdentificacion;
+                    worksheet.Cells[row, 8].Value = user.Nombre;
+                    worksheet.Cells[row, 8].Value = user.Apellido;
+                    worksheet.Cells[row, 9].Value = user.Identificacion;
                     worksheet.Cells[row, 10].Value = "";
                     worksheet.Cells[row, 11].Value = user.ObjetoConvenio;
                     worksheet.Cells[row, 12].Value = "";
-                    worksheet.Cells[row, 13].Value = user.Componente;
+                    worksheet.Cells[row, 13].Value = user.ComponenteId;
                     worksheet.Cells[row, 14].Value = user.Id;
-                    worksheet.Cells[row, 15].Value = user.TalentoHumano;
+                    worksheet.Cells[row, 15].Value = user.ElementId;
                     worksheet.Cells[row, 16].Value = "";
                     worksheet.Cells[row, 17].Value = "";
 
@@ -141,8 +140,8 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 {
                     foreach (var item in hiringData)
                     {
-                        worksheet.Cells[row, 1].Value = user.Convenio;
-                        worksheet.Cells[row, 2].Value = user.NombreCompleto;
+                        //worksheet.Cells[row, 1].Value = user.Convenio;
+                        worksheet.Cells[row, 2].Value = user.Nombre;
                         worksheet.Cells[row, 3].Value = "";
                         worksheet.Cells[row, 4].Value = "";
                         worksheet.Cells[row, 5].Value = "";
@@ -198,11 +197,11 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 {
                     foreach (var item in hiringData)
                     {
-                        worksheet.Cells[row, 1].Value = user.Nro;
+                        //worksheet.Cells[row, 1].Value = user.Nro;
                         worksheet.Cells[row, 2].Value = "";
                         worksheet.Cells[row, 3].Value = "";
                         worksheet.Cells[row, 4].Value = user.ObjetoConvenio;
-                        worksheet.Cells[row, 5].Value = user.Convenio;
+                        //worksheet.Cells[row, 5].Value = user.Convenio;
                         worksheet.Cells[row, 6].Value = "";
                         worksheet.Cells[row, 7].Value = "";
                     }
@@ -263,11 +262,11 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 row = 5;
                 foreach (var user in data)
                 {
-                    worksheet.Cells[row, 1].Value = user.Nro;
+                    //worksheet.Cells[row, 1].Value = user.Nro;
                     worksheet.Cells[row, 2].Value = "";
                     worksheet.Cells[row, 3].Value = "";
                     worksheet.Cells[row, 4].Value = user.ObjetoConvenio;
-                    worksheet.Cells[row, 5].Value = user.Convenio;
+                    //worksheet.Cells[row, 5].Value = user.Convenio;
                     worksheet.Cells[row, 6].Value = "";
                     worksheet.Cells[row, 7].Value = "";
                     row++;

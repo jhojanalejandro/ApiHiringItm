@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.User.Interface;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Usuario;
 using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.API.Controllers.User

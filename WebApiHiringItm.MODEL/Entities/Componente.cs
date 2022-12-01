@@ -16,8 +16,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public int Id { get; set; }
         public string NombreComponente { get; set; }
         public int IdContrato { get; set; }
-        public string Rubro { get; set; }
-        public string NombreRubro { get; set; }
 
         public virtual ProjectFolder IdContratoNavigation { get; set; }
         public virtual ICollection<ElementosComponente> ElementosComponente { get; set; }

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.ContractorPaymentsCore.Interface;
-using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 
-namespace WebApiHiringItm.API.Controllers.ContractorPayments
+namespace WebApiHiringItm.API.Controllers.Contractor
 {
     [ApiController]
     [Route("[controller]/[action]")]

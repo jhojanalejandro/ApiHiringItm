@@ -24,6 +24,7 @@ using AutoMapper;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using Microsoft.Extensions.Options;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 
 namespace WebApiHiringItm.CORE.Core.Contractors
 {
@@ -147,7 +148,16 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             DataColumn newColumn4 = new DataColumn("Fecha Actualizacion", typeof(DateTime));
             newColumn4.DefaultValue = DateTime.Now;
             dataTable.Columns.Add(newColumn4);
-
+            DataColumn componentId = new DataColumn("Componente Id", typeof(int));
+            componentId.DefaultValue = 0;
+            dataTable.Columns.Add(componentId);
+            DataColumn elementId = new DataColumn("Element Id", typeof(int));
+            elementId.DefaultValue = 0;
+            dataTable.Columns.Add(elementId);
+            DataColumn objeto = new DataColumn("Objeto Convenio", typeof(string));
+            objeto.DefaultValue = "vacio";
+            dataTable.Columns.Add(objeto);
+            dataTable.Columns.Remove("Nombre Completo");
             for (int i = 0; i < dataTable.Columns.Count; i++)
             {
                 dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
@@ -368,9 +378,33 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             if (model.Id != 0)
 
             {
-                var userupdate = _context.Contractor.Where(x => x.Id.Equals(model.Id) && x.DocumentoDeIdentificacion.Equals(model.Documentodeidentificacion)).FirstOrDefault();
+                var userupdate = _context.Contractor.Where(x => x.Id.Equals(model.Id) && x.Identificacion.Equals(model.Documentodeidentificacion)).FirstOrDefault();
                 var map = _mapper.Map(model, userupdate);
                 _context.Contractor.Update(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+
+            }
+            return false;
+        }
+        public async Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model)
+        {
+            if (model.Id != 0)
+
+            {
+                if (model.Type == "Elemento")
+                {
+                    var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor)).FirstOrDefault();
+                    contractorUpdate.ElementId = model.Id;
+                    _context.Contractor.Update(contractorUpdate);
+                }
+                else
+                {
+                    var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor)).FirstOrDefault();
+                    contractorUpdate.ComponenteId = model.Id;
+                    _context.Contractor.Update(contractorUpdate);
+
+                }
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
 

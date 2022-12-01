@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
-using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.API.Controllers.Contractor
@@ -112,6 +112,22 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 var Data = await _contactor.Create(model);
 
                 //Retornamos datos.
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAsignment(AsignElementOrCompoenteDto model)
+        {
+            try
+            {
+                var Data = await _contactor.UpdateAsignment(model);
+
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

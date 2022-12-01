@@ -22,6 +22,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<UserT> UserT { get; set; }
         DbSet<Componente> Componente { get; set; }
         DbSet<ElementosComponente> ElementosComponente { get; set; }
-
+        DbSet<UserFirm> UserFirm { get; set; }
+        DbSet<DetalleContrato> DetalleContrato { get; set; }
     }
 }

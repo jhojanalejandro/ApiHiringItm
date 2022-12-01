@@ -19,6 +19,7 @@ using System.Net.Mail;
 using System.Net;
 using MimeKit.Text;
 using WebApiHiringItm.CORE.Core.User.Interface;
+using WebApiHiringItm.MODEL.Dto.Usuario;
 
 namespace WebApiHiringItm.CORE.Core.User
 {
@@ -44,7 +45,7 @@ namespace WebApiHiringItm.CORE.Core.User
         #region PUBLIC METODS
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var getUser = _context.UserT.Where(x => x.UserEmail.Equals(model.Username) && x.UserPassword.Equals(model.Password) && x.RollId != 4).FirstOrDefault();
+            var getUser = _context.UserT.Where(x => x.UserEmail.Equals(model.Username) && x.UserPassword.Equals(model.Password) && x.RollId != 7).FirstOrDefault();
 
             if (getUser == null)
             {

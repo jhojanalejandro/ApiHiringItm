@@ -64,6 +64,13 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             }
         }
 
+        public async Task<ComponenteDto> GetById(int id)
+        {
+            var result = _context.Componente.Where(x => x.Id.Equals(id)).FirstOrDefault();
+            var map = _mapper.Map<ComponenteDto>(result);
+            return await Task.FromResult(map);
+        }
+
         public async Task<bool> Delete(int id)
         {
             try

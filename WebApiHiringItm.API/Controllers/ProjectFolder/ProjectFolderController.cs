@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
-using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.ContratoDto;
 
 namespace WebApiHiringItm.API.Controllers.ProjectFolder
 {

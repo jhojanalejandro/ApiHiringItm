@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.ContractorPaymentsCore.Interface;
-using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.ContractorPaymentsCore

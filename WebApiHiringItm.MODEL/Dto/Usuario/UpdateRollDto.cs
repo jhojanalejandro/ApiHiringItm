@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiHiringItm.MODEL.Dto
+namespace WebApiHiringItm.MODEL.Dto.Usuario
 {
-    public class UserUpdatePasswordDto
+    public class UpdateRollDto
     {
         public int Id { get; set; }
-        public string UserPassword { get; set; }
+        public int IdRoll { get; set; }
     }
 }

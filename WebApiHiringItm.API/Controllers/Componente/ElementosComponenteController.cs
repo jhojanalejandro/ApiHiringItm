@@ -22,7 +22,7 @@ namespace WebApiHiringItm.API.Controllers.Componente
 
         #region Methods
         [HttpPost]
-        public async Task<IActionResult> Add(List<ElementosComponenteDto> model)
+        public async Task<IActionResult> Add(ElementosComponenteDto model)
         {
             try
             {
@@ -51,19 +51,20 @@ namespace WebApiHiringItm.API.Controllers.Componente
         }
 
         [HttpGet]
-        [Route("GetByContractId/{id}")]
-        public async Task<IActionResult> ByContractId(int id)
+        [Route("GetById/{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
             try
             {
-                var res = await _element.GetByContractId(id);
-                return res.Count == 0 ? BadRequest() : Ok(res);
+                var res = await _element.GetById(id);
+                return res != null ? Ok(res) : BadRequest();
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
+
         #endregion
     }
 }

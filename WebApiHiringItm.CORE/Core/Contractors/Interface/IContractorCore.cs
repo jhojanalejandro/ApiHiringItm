@@ -1,4 +1,4 @@
-﻿using WebApiHiringItm.MODEL.Dto;
+﻿using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.CORE.Core.Contractors.Interface
@@ -13,5 +13,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
         Task<string> ImportarExcel(FileRequest obj);
         Task<List<ContractorDto>> GetByIdFolder(int id);
         AuthenticateResponse Authenticate(AuthenticateRequest model);
+        Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model);
     }
 }

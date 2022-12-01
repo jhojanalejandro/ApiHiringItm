@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Componentes;
+using WebApiHiringItm.MODEL.Dto.Contratista;
+using WebApiHiringItm.MODEL.Dto.ContratoDto;
+using WebApiHiringItm.MODEL.Dto.Usuario;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.MODEL.Mapper
@@ -27,6 +30,9 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<EconomicdataContractor, EconomicdataContractorDto>().ReverseMap(); 
             CreateMap<ComponenteDto, Componente>().ReverseMap();
             CreateMap<ElementosComponenteDto, ElementosComponente>().ReverseMap();
+            CreateMap<DetalleContratoDto, DetalleContrato>().ReverseMap();
+            CreateMap<UserFirmDto, UserFirm>().ReverseMap();
+
         }
     }
 }

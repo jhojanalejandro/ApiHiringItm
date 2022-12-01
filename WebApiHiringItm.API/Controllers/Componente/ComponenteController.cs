@@ -50,7 +50,6 @@ namespace WebApiHiringItm.API.Controllers.Componente
             }
         }
 
-
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -59,6 +58,22 @@ namespace WebApiHiringItm.API.Controllers.Componente
             {
                 var res = await _componente.Delete(id);
                 return res != false ? Ok(res) : BadRequest();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var res = await _componente.GetById(id);
+                return res != null ? Ok(res) : BadRequest();
             }
             catch (Exception e)
             {

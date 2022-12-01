@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
-using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.ProjectFolders
@@ -26,6 +26,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             _componente = componente;
             _elementos = elementos;
         }
+        #region METODOS PUBLICOS
 
         public async Task<List<ProjectFolderDto>> GetAll()
         {
@@ -84,9 +85,11 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             {
                 var map = _mapper.Map<ProjectFolder>(model);
                 _context.ProjectFolder.Add(map);
+                //DetalleContratoDto detalle = model.DetalleContrato;
+                //if(!await CreateDetail(detalle))
+                //    return false;                
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
-
             }
             else
             {
@@ -99,5 +102,32 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             return false;
 
         }
+        #endregion
+        #region METODOS PRIVADOS
+        private async Task<bool> CreateDetail(DetalleContratoDto model)
+        {
+            var getData = _context.DetalleContrato.Where(x => x.Id == model.Id).FirstOrDefault();
+
+            if (getData == null)
+            {
+                var map = _mapper.Map<DetalleContrato>(model);
+                _context.DetalleContrato.Add(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+
+            }
+            else
+            {
+                model.Id = getData.Id;
+                var map = _mapper.Map(model, getData);
+                _context.DetalleContrato.Update(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+            }
+            return false;
+
+        }
+        #endregion
+
     }
 }

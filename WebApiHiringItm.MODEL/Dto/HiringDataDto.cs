@@ -15,7 +15,6 @@ namespace WebApiHiringItm.MODEL.Dto
         public string Actividad { get; set; }
         public string Contrato { get; set; }
         public string Compromiso { get; set; }
-        public string NombreDelRubro { get; set; }
         public DateTime? FechaExaPreocupacional { get; set; }
         public DateTime? FechaInicioAmpliacion { get; set; }
         public DateTime? FechaDeTerminacionAmpliacion { get; set; }
@@ -34,6 +33,10 @@ namespace WebApiHiringItm.MODEL.Dto
         public DateTime? FechaExpedicionPoliza { get; set; }
         public decimal? ValorAsegurado { get; set; }
         public int? Nivel { get; set; }
+        public string Rubro { get; set; }
+        public string NombreRubro { get; set; }
+
+
 
     }
 }
