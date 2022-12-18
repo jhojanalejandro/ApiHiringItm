@@ -16,16 +16,18 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
             _project = proeject;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("{inProgress}")]
+        public async Task<IActionResult> GetAll(bool inProgress)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _project.GetAll();
+                List<ProjectFolderDto> projectFolders = new List<ProjectFolderDto>();
+                if (inProgress)
+                    projectFolders = await _project.GetAllInProgess();
+                else
+                    projectFolders = await _project.GetAll();
 
-                //Retornamos datos.
-                return Data != null ? Ok(Data) : NoContent();
+                return projectFolders != null ? Ok(projectFolders) : NoContent();
             }
             catch (Exception ex)
             {
@@ -52,8 +54,36 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
             }
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetByIdDetail(int id, bool tipoConsulta)
+        {
+            try
+            {
+                if (tipoConsulta)
+                {
+                    var Data = await _project.GetDetailById(id);
+                    return Data != null ? Ok(Data) : NoContent();
+                }
+                else
+                {
+                    var Data = await _project.GetDetailByIdLastDate(id);
+                    return Data != null ? Ok(Data) : NoContent();
+                }
+                return NoContent();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+
         [HttpPost]
-        public async Task<IActionResult> Add(ProjectFolderDto model)
+        public async Task<IActionResult> Add(RProjectForlderDto model)
         {
             try
             {
@@ -72,14 +102,12 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(ProjectFolderDto model)
+        public async Task<IActionResult> Update(RProjectForlderDto model)
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _project.Create(model);
 
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

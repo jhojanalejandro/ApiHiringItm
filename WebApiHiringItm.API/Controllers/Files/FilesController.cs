@@ -90,6 +90,22 @@ namespace WebApiHiringItm.API.Controllers.Files
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAllFileContractById(int id)
+        {
+            try
+            {
+                //Obtenemos todos los registros.
+                var Data = await _file.GetAllFileByIdContract(id);
+
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> GetAllFileByDatePayments(GetFilesPaymentDto model)
         {

@@ -72,42 +72,6 @@ namespace WebApiHiringItm.API.Controllers.HiringData
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> Update(HiringDataDto model)
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _hiringData.Update(model);
-
-                //Retornamos datos.
-                return Data != false ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateHiringData(HiringDataDto model)
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _hiringData.Update(model);
-
-                //Retornamos datos.
-                return Data != false ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {

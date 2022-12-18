@@ -19,6 +19,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Cpc { get; set; }
         public string NombreCpc { get; set; }
         public bool? Adicion { get; set; }
+        public decimal? Recursos { get; set; }
+        public string Consecutivo { get; set; }
 
         public virtual Componente IdComponenteNavigation { get; set; }
     }

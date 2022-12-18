@@ -24,10 +24,18 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<List<FilesDto>> GetAllById(GetFileDto model)
         {
-            var result = _context.Files.Where(x => x.ContractorId.Equals(model.contractorId) && x.FolderId.Equals(model.FolderId)).ToList();
+            var result = _context.Files.Where(x => x.ContractorId.Equals(model.ContractorId) && x.FolderId.Equals(model.FolderId)).ToList();
             var map = _mapper.Map<List<FilesDto>>(result);
             return await Task.FromResult(map);
         }
+
+        public async Task<List<FilesDto>> GetAllFileByIdContract(int id)
+        {
+            var result = _context.Files.Where(x => x.FolderId.Equals(id)).ToList();
+            var map = _mapper.Map<List<FilesDto>>(result);
+            return await Task.FromResult(map);
+        }
+
 
         public async Task<List<GetFilesPaymentDto>> GetAllByDate(GetFilesPaymentDto model)
         {

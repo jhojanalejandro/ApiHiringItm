@@ -22,14 +22,14 @@ namespace WebApiHiringItm.CORE.Core.User
             _mapper = mapper;
         }
 
-        public async Task<List<UserFirmDto>> GetAll()
+        public async Task<List<UserFirmDto>> GetAllFirms()
         {
             var result = _context.UserFirm.Where(x => x.Id > 0).ToList();
             var map = _mapper.Map<List<UserFirmDto>>(result);
             return await Task.FromResult(map);
         }
 
-        public async Task<UserFirmDto> GetById(int id)
+        public async Task<UserFirmDto> GetByIdFirm(int id)
         {
             var result = _context.UserFirm.Where(x => x.Id == id).FirstOrDefault();
             var map = _mapper.Map<UserFirmDto>(result);
@@ -37,7 +37,7 @@ namespace WebApiHiringItm.CORE.Core.User
         }
 
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> DeleteFirm(int id)
         {
             var getData = _context.UserFirm.Where(x => x.Id == id).FirstOrDefault();
             if (getData != null)
@@ -53,7 +53,7 @@ namespace WebApiHiringItm.CORE.Core.User
             }
         }
 
-        public async Task<bool> Create(UserFirmDto model)
+        public async Task<bool> CreateFirm(UserFirmDto model)
         {
             var getData = _context.UserFirm.Where(x => x.Id == model.Id).FirstOrDefault();
             if (getData == null)

@@ -9,6 +9,6 @@ namespace WebApiHiringItm.MODEL.Dto
     public class GetFileDto
     {
         public int FolderId { get; set; }
-        public int contractorId { get; set; }
+        public int ContractorId { get; set; }
     }
 }

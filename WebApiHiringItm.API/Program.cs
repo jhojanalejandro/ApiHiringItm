@@ -32,7 +32,6 @@ builder.Services.AddCors(options =>
 #endregion
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-
 var mapperConfig = new MapperConfiguration(mc =>
 {
     mc.AddProfile(new Automaping());

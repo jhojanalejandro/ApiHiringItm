@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.MODEL.Dto.Contratista;
+using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.API.Controllers.Contractor
@@ -138,12 +139,12 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendContractorCount(int idContract, int[] contractorsId)
+        public async Task<IActionResult> SendContractorAccount(SendMessageAccountDto ids)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _contactor.SendContractorCount(idContract, contractorsId);
+                var Data = await _contactor.SendContractorCount(ids);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();

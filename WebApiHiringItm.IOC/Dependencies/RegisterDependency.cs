@@ -19,6 +19,8 @@ using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Core.Componentes;
 using WebApiHiringItm.CORE.Helpers.InterfacesHelpers;
 using WebApiHiringItm.CORE.Helpers;
+using WebApiHiringItm.CORE.Core.ContractorPaymentsCore.Interface;
+using WebApiHiringItm.CORE.Core.ContractorPaymentsCore;
 
 namespace WebApiHiringItm.IOC.Dependencies
 {
@@ -38,6 +40,7 @@ namespace WebApiHiringItm.IOC.Dependencies
             services.AddScoped<ISaveChangesExitHelper, SaveChangesExitHelper>();
             services.AddScoped<IElementosComponenteCore, ElementosComponenteCore>();
             services.AddScoped<IUserFirmCore, UserFirmCore>();
+            services.AddScoped<IContractorPaymentsCore, ContractorPaymentCore>();
 
         }
     }

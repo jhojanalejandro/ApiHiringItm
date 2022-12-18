@@ -65,6 +65,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         }
 
 
+
         #endregion
     }
 }

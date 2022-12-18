@@ -34,6 +34,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public int? Nivel { get; set; }
         public string Rubro { get; set; }
         public string NombreRubro { get; set; }
+        public string Cdp { get; set; }
 
         public virtual Contractor Contractor { get; set; }
         public virtual UserT User { get; set; }

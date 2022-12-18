@@ -25,6 +25,8 @@ using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using Microsoft.Extensions.Options;
 using WebApiHiringItm.MODEL.Dto.Contratista;
+using WebApiHiringItm.MODEL.Dto.ContratoDto;
+using WebApiHiringItm.MODEL.Dto.CuentaCobroDto;
 
 namespace WebApiHiringItm.CORE.Core.Contractors
 {
@@ -57,10 +59,11 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             var map = _mapper.Map<List<ContractorDto>>(contractor);
             return await Task.FromResult(map);
         }
-        public async Task<ContractorDto> GetById(int id)
+        public async Task<CuentaCobroDto> GetById(int id)
         {
-            var result = _context.Contractor.Where(x => x.Id == id).FirstOrDefault();
-            var map = _mapper.Map<ContractorDto>(result);
+            var result = _context.Contractor.Include(co => co.ContractorPayments)
+                .Where(x => x.Id == id).FirstOrDefault();
+            var map = _mapper.Map<CuentaCobroDto>(result);
             return await Task.FromResult(map);
         }
 
@@ -268,13 +271,14 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         //    var map = _mapper.Map<Contractor>(result);
         //    return await Task.FromResult(map);
         //}
-        public async Task<bool> SendContractorCount(int contractId, int[] contractorsId)
+        public async Task<bool> SendContractorCount(SendMessageAccountDto ids)
         {
-            if (contractorsId.Length > 0)
+            if (ids.IdContratistas.Length > 0)
             {
-                foreach (var idContractor in contractorsId)
+                foreach (var idContractor in ids.IdContratistas)
                 {
-                    var  result = _context.Contractor.Where(x => x.ContractId.Equals(contractId) && x.Id == idContractor).FirstOrDefault();
+
+                    var  result = _context.Contractor.Where(x => x.ContractId.Equals(ids.IdContratistas) && x.Id == idContractor).FirstOrDefault();
                     result.ClaveUsuario = await createPassword(result.Correo);
                     _context.Contractor.Update(result);
                     var res = await _context.SaveChangesAsync();
@@ -283,7 +287,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             }
             else
             {
-                var listContractor = _context.Contractor.Where(x => x.ContractId.Equals(contractId)).ToList();
+                var listContractor = _context.Contractor.ToList();
                 foreach (var item in listContractor)
                 {
                     item.ClaveUsuario = await createPassword(item.Correo);
@@ -387,6 +391,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             }
             return false;
         }
+
         public async Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model)
         {
             if (model.Id != 0)

@@ -11,7 +11,6 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore.Interface
     {
         Task<List<HiringDataDto>> GetAll();
         Task<HiringDataDto> GetById(int id);
-        Task<bool> Update(HiringDataDto model);
         Task<bool> Delete(int id);
         Task<int> Create(HiringDataDto model);
 

@@ -9,6 +9,7 @@ namespace WebApiHiringItm.MODEL.Dto.Componentes
 {
     public class ComponenteDto
     {
+
         public int Id { get; set; }
         public string NombreComponente { get; set; }
         public int IdContrato { get; set; }

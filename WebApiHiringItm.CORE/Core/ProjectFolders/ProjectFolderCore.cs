@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,10 +45,63 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
                             element.Elementos = await _elementos.Get(element.Id);
                         }
                     }
+                    //item.DetalleContrato = await GetDetailById(item.Id);
                 }
             }
             return await Task.FromResult(map);
         }
+
+        public async Task<List<ProjectFolderDto>> GetAllInProgess()
+        {
+            var result = _context.ProjectFolder.Where(x => x.Execution == true).ToList();
+            var map = _mapper.Map<List<ProjectFolderDto>>(result);
+            if (result.Count != 0)
+            {
+                foreach (var item in map)
+                {
+                    item.Componentes = await _componente.Get(item.Id);
+                    if (item.Componentes.Count != 0)
+                    {
+                        foreach (var element in item.Componentes)
+                        {
+                            element.Elementos = await _elementos.Get(element.Id);
+                        }
+                    }
+                    //item.DetalleContrato = await GetDetailById(item.Id);
+                }
+            }
+            return await Task.FromResult(map);
+        }
+        public async Task<List<DetalleContratoDto>> GetDetailById(int idContrato)
+        {
+
+            var result = _context.DetalleContrato.Where(x => x.Idcontrato == idContrato).ToList();
+
+            var mapp = _mapper.Map<List<DetalleContratoDto>>(result);
+
+            return await Task.FromResult(mapp);
+
+        }
+
+        public async Task<DetalleContratoDto> GetDetailByIdLastDate(int idContrato)
+        {
+
+            var result = _context.DetalleContrato.Where(x => x.Idcontrato == idContrato).Select(x => new DetalleContratoDto()
+            {
+                Idcontrato = x.Id,
+                FechaContrato = x.FechaContrato,
+                FechaFinalizacion = x.FechaFinalizacion,
+                TipoContrato = x.TipoContrato,
+                Adicion = x.Adicion
+            })
+                .OrderByDescending(x => x.Idcontrato)
+                .AsNoTracking()
+                .FirstOrDefault();
+
+            return await Task.FromResult(result);
+        }
+
+
 
         public async Task<ProjectFolderDto> GetById(int id)
         {
@@ -77,7 +131,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             return false;
         }
 
-        public async Task<bool> Create(ProjectFolderDto model)
+        public async Task<bool> Create(RProjectForlderDto model)
         {
             var getData = _context.ProjectFolder.Where(x => x.Id == model.Id).FirstOrDefault();
 
@@ -85,10 +139,16 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             {
                 var map = _mapper.Map<ProjectFolder>(model);
                 _context.ProjectFolder.Add(map);
-                //DetalleContratoDto detalle = model.DetalleContrato;
-                //if(!await CreateDetail(detalle))
-                //    return false;                
                 var res = await _context.SaveChangesAsync();
+
+                if (map.Id != null)
+                {
+                    DetalleContratoDto detalle = model.DetalleContratoDto;
+                    detalle.Idcontrato = map.Id;
+                    if (!await CreateDetail(detalle))
+                        return false;
+                }
+
                 return res != 0 ? true : false;
             }
             else
@@ -96,6 +156,12 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
                 model.Id = getData.Id;
                 var map = _mapper.Map(model, getData);
                 _context.ProjectFolder.Update(map);
+                if (model.DetalleContratoDto.Idcontrato != 0)
+                {
+                    DetalleContratoDto detalle = model.DetalleContratoDto;
+                    if (!await CreateDetail(detalle))
+                        return false;
+                }
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
             }
@@ -106,7 +172,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
         #region METODOS PRIVADOS
         private async Task<bool> CreateDetail(DetalleContratoDto model)
         {
-            var getData = _context.DetalleContrato.Where(x => x.Id == model.Id).FirstOrDefault();
+            var getData = _context.DetalleContrato.Where(x => x.FechaFinalizacion == model.FechaFinalizacion).FirstOrDefault();
 
             if (getData == null)
             {
@@ -116,8 +182,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
                 return res != 0 ? true : false;
 
             }
-            else
-            {
+            else{
                 model.Id = getData.Id;
                 var map = _mapper.Map(model, getData);
                 _context.DetalleContrato.Update(map);

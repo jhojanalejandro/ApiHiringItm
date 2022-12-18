@@ -5,8 +5,8 @@ using WebApiHiringItm.MODEL.Dto.Componentes;
 
 namespace WebApiHiringItm.API.Controllers.Componente
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("[controller]/[action]")]
     public class ElementosComponenteController : ControllerBase
     {
         #region Fields
@@ -36,7 +36,7 @@ namespace WebApiHiringItm.API.Controllers.Componente
         }
 
         [HttpGet]
-        [Route("Get/{id}")]
+        [Route("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             try
@@ -51,7 +51,7 @@ namespace WebApiHiringItm.API.Controllers.Componente
         }
 
         [HttpGet]
-        [Route("GetById/{id}")]
+        [Route("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try

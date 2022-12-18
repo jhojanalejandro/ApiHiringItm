@@ -24,7 +24,7 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _userFirm.GetAll();
+                var Data = await _userFirm.GetAllFirms();
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
@@ -42,7 +42,7 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _userFirm.GetById(id);
+                var Data = await _userFirm.GetByIdFirm(id);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
@@ -60,7 +60,7 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _userFirm.Create(model);
+                var Data = await _userFirm.CreateFirm(model);
 
                 //Retornamos datos.
                 return Data != true ? Ok(Data) : NoContent();
@@ -79,7 +79,7 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _userFirm.Create(model);
+                var Data = await _userFirm.CreateFirm(model);
 
                 //Retornamos datos.
                 return Data != true ? Ok(Data) : NoContent();
@@ -97,7 +97,7 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _userFirm.Delete(id);
+                var Data = await _userFirm.DeleteFirm(id);
 
                 //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();

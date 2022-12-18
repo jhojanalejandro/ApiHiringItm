@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces;
+using System.Data.Entity;
 
 namespace WebApiHiringItm.CORE.Core.ExportToExcel
 {
@@ -32,8 +33,9 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
         public async Task<MemoryStream> ExportToExcelViabilidad(ControllerBase controller, int idContrato)
         {
             // Get the user list 
-            var data = _context.Contractor.Where(x => x.ContractId == idContrato).ToList();
-
+            var data = _context.Contractor
+                .Where(x => x.ContractId == idContrato).ToList();
+            
             var stream = new MemoryStream();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var xlPackage = new ExcelPackage(stream))
@@ -62,37 +64,47 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["P1"].Value = "Fuente Rubro";
                 worksheet.Cells["Q1"].Value = "Posición";
                 worksheet.Cells["A1:Q1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["A1:Q1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(23, 55, 93));
+                worksheet.Cells["A1:Q1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(0, 128, 0));
                 worksheet.Cells["A1:Q1"].Style.Font.Bold = true;
                 worksheet.Cells["A1:Q1"].Style.Border.DiagonalDown = true;
                 worksheet.Columns.AutoFit();
                 row = 2;
                 foreach (var user in data)
                 {
-                    //worksheet.Cells[row, 2].Value = user.Convenio;
-                    //worksheet.Cells[row, 3].Value = user.Entidad;
-                    //worksheet.Cells[row, 4].Value = user.Componente;
-                    worksheet.Cells[row, 5].Value = "";
-                    worksheet.Cells[row, 6].Value = "";
-                    worksheet.Cells[row, 7].Value = "";
-                    worksheet.Cells[row, 8].Value = user.Nombre;
-                    worksheet.Cells[row, 8].Value = user.Apellido;
-                    worksheet.Cells[row, 9].Value = user.Identificacion;
-                    worksheet.Cells[row, 10].Value = "";
-                    worksheet.Cells[row, 11].Value = user.ObjetoConvenio;
-                    worksheet.Cells[row, 12].Value = "";
-                    worksheet.Cells[row, 13].Value = user.ComponenteId;
-                    worksheet.Cells[row, 14].Value = user.Id;
-                    worksheet.Cells[row, 15].Value = user.ElementId;
-                    worksheet.Cells[row, 16].Value = "";
-                    worksheet.Cells[row, 17].Value = "";
+                    if (user.ComponenteId != 0 )
+                    {
 
-                    row++;
+                        var hiring = _context.HiringData.Where(x => x.ContractorId == user.Id).FirstOrDefault();
+                        var component = _context.Componente.Where(x => x.Id == user.ComponenteId).FirstOrDefault();
+                        var elemento = _context.ElementosComponente.Where(x => x.Id == user.ElementId).FirstOrDefault();
+                        var convenio = _context.ElementosComponente.Where(x => x.Id == user.ElementId).FirstOrDefault();
+
+                        //worksheet.Cells[row, 2].Value = user.Convenio;
+                        //worksheet.Cells[row, 3].Value = user.Entidad;
+                        worksheet.Cells[row, 4].Value = component.NombreComponente;
+                        worksheet.Cells[row, 5].Value = hiring.Rubro;
+                        worksheet.Cells[row, 6].Value = hiring.NombreRubro;
+                        worksheet.Cells[row, 7].Value = elemento.Cpc;
+                        worksheet.Cells[row, 8].Value = user.Nombre;
+                        worksheet.Cells[row, 8].Value = user.Apellido;
+                        worksheet.Cells[row, 9].Value = user.Identificacion;
+                        worksheet.Cells[row, 10].Value = "";
+                        worksheet.Cells[row, 11].Value = user.ObjetoConvenio;
+                        worksheet.Cells[row, 12].Value = elemento.ValorTotal;
+                        worksheet.Cells[row, 13].Value = user.ComponenteId;
+                        worksheet.Cells[row, 14].Value = user.Id;
+                        worksheet.Cells[row, 15].Value = user.ElementId;
+                        worksheet.Cells[row, 16].Value = "";
+                        worksheet.Cells[row, 17].Value = "";
+
+                        row++;
+                    }
+
                 }
 
                 // set some core property values
                 xlPackage.Workbook.Properties.Title = "Lista de contratistas";
-                xlPackage.Workbook.Properties.Author = "Maicol Yepes";
+                xlPackage.Workbook.Properties.Author = "jhojan";
                 xlPackage.Workbook.Properties.Created = DateTime.Now;
                 xlPackage.Workbook.Properties.Subject = "Lista de contratistas";
 
@@ -138,17 +150,23 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 row = 2;
                 foreach (var user in data)
                 {
-                    foreach (var item in hiringData)
+                    if (user.ComponenteId != 0)
                     {
+                        var hiring = _context.HiringData.Where(x => x.ContractorId == user.Id).FirstOrDefault();
+                        var component = _context.Componente.Where(x => x.Id == user.ComponenteId).FirstOrDefault();
+                        var elemento = _context.ElementosComponente.Where(x => x.Id == user.ElementId).FirstOrDefault();
+                        var convenio = _context.ElementosComponente.Where(x => x.Id == user.ElementId).FirstOrDefault();
+                        var project = _context.ProjectFolder.Where(x => x.Id == user.ContractId).FirstOrDefault();
+
                         //worksheet.Cells[row, 1].Value = user.Convenio;
                         worksheet.Cells[row, 2].Value = user.Nombre;
-                        worksheet.Cells[row, 3].Value = "";
-                        worksheet.Cells[row, 4].Value = "";
-                        worksheet.Cells[row, 5].Value = "";
+                        worksheet.Cells[row, 3].Value = elemento.Cpc;
+                        worksheet.Cells[row, 4].Value = hiring.Cdp;
+                        worksheet.Cells[row, 5].Value = elemento.ValorTotal;
                         worksheet.Cells[row, 6].Value = "";
-                    }
 
-                    row++;
+                        row++;
+                    }
                 }
 
                 // set some core property values
@@ -169,7 +187,6 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
         {
             // Get the user list 
             var data = _context.Contractor.Where(x => x.ContractId == idContrato).ToList();
-            var hiringData = _context.HiringData.ToList();
             var stream = new MemoryStream();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var xlPackage = new ExcelPackage(stream))
@@ -188,23 +205,32 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["E1"].Value = "Proyecto o Convenio";
                 worksheet.Cells["F1"].Value = "CPC";
                 worksheet.Cells["G1"].Value = "Valor";
-                worksheet.Cells["A1:F1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["A1:F1"].Style.Font.Bold = true;
-                worksheet.Cells["A1:F1"].Style.Border.DiagonalDown = true;
+                worksheet.Cells["A1:G1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A1:G1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(0, 128, 0));
+                worksheet.Cells["A1:G1"].Style.Font.Bold = true;
+                worksheet.Cells["A1:G1"].Style.Border.DiagonalDown = true;
                 worksheet.Columns.AutoFit();
                 row = 2;
                 foreach (var user in data)
                 {
-                    foreach (var item in hiringData)
+                    if (user.ComponenteId != 0)
                     {
-                        //worksheet.Cells[row, 1].Value = user.Nro;
-                        worksheet.Cells[row, 2].Value = "";
-                        worksheet.Cells[row, 3].Value = "";
+
+                        var hiring = _context.HiringData.Where(x => x.ContractorId == user.Id).FirstOrDefault();
+                        var component = _context.Componente.Where(x => x.Id == user.ComponenteId).FirstOrDefault();
+                        var elemento = _context.ElementosComponente.Where(x => x.Id == user.ElementId).FirstOrDefault();
+                        var convenio = _context.ElementosComponente.Where(x => x.Id == user.ElementId).FirstOrDefault();
+                        var project = _context.ProjectFolder.Where(x => x.Id == user.ContractId).FirstOrDefault();
+
+                        worksheet.Cells[row, 1].Value = elemento.Consecutivo;
+                        worksheet.Cells[row, 2].Value = hiring.Rubro;
+                        //worksheet.Cells[row, 3].Value = user.Nro;
                         worksheet.Cells[row, 4].Value = user.ObjetoConvenio;
-                        //worksheet.Cells[row, 5].Value = user.Convenio;
-                        worksheet.Cells[row, 6].Value = "";
-                        worksheet.Cells[row, 7].Value = "";
+                        worksheet.Cells[row, 5].Value = user.Convenio;
+                        worksheet.Cells[row, 6].Value = elemento.Cpc;
+                        worksheet.Cells[row, 7].Value = elemento.ValorTotal;
                     }
+
 
                     row++;
                 }

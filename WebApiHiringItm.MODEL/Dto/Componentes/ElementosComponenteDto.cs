@@ -14,5 +14,8 @@
         public string Cpc { get; set; }
         public string NombreCpc { get; set; }
         public bool? Adicion { get; set; }
+        public decimal? Recursos { get; set; }
+        public string Consecutivo { get; set; }
+
     }
 }

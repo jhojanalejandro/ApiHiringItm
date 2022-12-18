@@ -35,6 +35,7 @@ namespace WebApiHiringItm.MODEL.Dto
         public int? Nivel { get; set; }
         public string Rubro { get; set; }
         public string NombreRubro { get; set; }
+        public string Cdp { get; set; }
 
 
 

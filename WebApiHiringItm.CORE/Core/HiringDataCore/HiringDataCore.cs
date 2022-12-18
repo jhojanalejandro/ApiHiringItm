@@ -28,65 +28,11 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
 
         public async Task<HiringDataDto> GetById(int id)
         {
-            var result = _context.HiringData.Where(x => x.Id == id).FirstOrDefault();
+            var result = _context.HiringData.Where(x => x.ContractorId == id).FirstOrDefault();
             var map = _mapper.Map<HiringDataDto>(result);
             return await Task.FromResult(map);
         }
 
-        public async Task<bool> Update(HiringDataDto model)
-        {
-            try
-            {
-                if (model.Id != 0)
-
-                {
-                    var map = _mapper.Map<HiringDataDto>(model);
-                    await _context.BulkInsertAsync(_context.HiringData, options => options.InsertKeepIdentity = true);
-                    var res = _context.BulkSaveChangesAsync(bulk => bulk.BatchSize = 100);
-                    if (res.IsCompleted)
-                    {
-                        return true;
-                    }
-
-                }
-
-            }
-            catch (Exception e)
-            {
-
-                new Exception("Error", e);
-            }
-            return false;
-        }
-
-        //public async Task<bool> UpdateViability(ViabilityDto model)
-        //{
-        //    try
-        //    {
-        //        if (model.Id != 0)
-
-        //        {
-        //            var getData = _context.HiringData.Where(x => x.Id.Equals(model.Id) && x.IdContractor.Equals(model.IdContractor)).FirstOrDefault();
-        //            if (getData != null)
-        //            {
-        //                var map = _mapper.Map(model, getData);
-        //                _context.HiringData.Update(map);
-        //                var res = await _context.SaveChangesAsync();
-        //                return res != 0 ? true : false;
-
-        //            }
-   
-
-        //        }
-
-        //    }
-        //    catch (Exception e)
-        //    {
-
-        //        new Exception("Error", e);
-        //    }
-        //    return false;
-        //}
 
         public async Task<bool> Updates(string model)
         {
@@ -132,7 +78,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
 
         public async Task<int> Create(HiringDataDto model)
         {
-            var getData = _context.HiringData.Where(x => x.Id == model.Id).FirstOrDefault();
+            var getData = _context.HiringData.Where(x => x.ContractorId == model.ContractorId).FirstOrDefault();
             if (getData == null)
             {
                 var map = _mapper.Map<HiringData>(model);

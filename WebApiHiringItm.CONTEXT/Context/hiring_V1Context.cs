@@ -41,6 +41,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         {
             modelBuilder.Entity<Componente>(entity =>
             {
+
                 entity.Property(e => e.NombreComponente)
                     .IsRequired()
                     .HasMaxLength(30);
@@ -51,6 +52,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Component__IdCon__4D94879B");
             });
+
 
             modelBuilder.Entity<Contractor>(entity =>
             {
@@ -259,6 +261,13 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.NombreElemento).HasMaxLength(100);
 
+                entity.Property(e => e.Consecutivo)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .HasColumnName("Consecutivo");
+
+                entity.Property(e => e.Recursos).HasColumnType("money");
+
                 entity.Property(e => e.TipoElemento)
                     .HasMaxLength(50)
                     .HasColumnName("tipoElemento");
@@ -367,6 +376,9 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.NombreRubro).HasMaxLength(50);
 
                 entity.Property(e => e.Rubro).HasMaxLength(30);
+
+                entity.Property(e => e.Cdp).HasMaxLength(50);
+
 
                 entity.Property(e => e.ValorAsegurado)
                     .HasColumnType("money")

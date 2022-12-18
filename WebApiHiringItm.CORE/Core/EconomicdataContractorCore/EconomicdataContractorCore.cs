@@ -33,7 +33,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
 
         public async Task<EconomicdataContractorDto> GetById(int id)
         {
-            var result = _context.EconomicdataContractor.Where(x => x.Id == id).FirstOrDefault();
+            var result = _context.EconomicdataContractor.Where(x => x.ContractorId == id).FirstOrDefault();
             var map = _mapper.Map<EconomicdataContractorDto>(result);
             return await Task.FromResult(map);
         }
@@ -56,7 +56,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
 
         public async Task<int> Create(EconomicdataContractorDto model)
         {
-            var getData = _context.ContractorPayments.Where(x => x.Id == model.Id).FirstOrDefault();
+            var getData = _context.ContractorPayments.Where(x => x.Id == model.ContractorId).FirstOrDefault();
             if (getData == null)
             {
                 var map = _mapper.Map<EconomicdataContractor>(model);
