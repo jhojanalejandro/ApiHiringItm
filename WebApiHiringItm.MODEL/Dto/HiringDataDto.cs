@@ -36,8 +36,6 @@ namespace WebApiHiringItm.MODEL.Dto
         public string Rubro { get; set; }
         public string NombreRubro { get; set; }
         public string Cdp { get; set; }
-
-
-
+        public int[] idsContractors { get; set; }
     }
 }

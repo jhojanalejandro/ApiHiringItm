@@ -17,6 +17,9 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public bool? Execution { get; set; }
         public bool? Activate { get; set; }
         public int? ContractorsCant { get; set; }
+        public decimal? ValorContrato { get; set; }
+        public decimal? GastosOperativos { get; set; }
+        public decimal? ValorSubTotal { get; set; }
 
         public List<ComponenteDto> Componentes { get; set; }
         //public List<DetalleContratoDto?> DetalleContrato { get; set; }

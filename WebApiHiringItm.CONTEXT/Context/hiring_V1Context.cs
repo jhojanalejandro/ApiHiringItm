@@ -28,7 +28,6 @@ namespace WebApiHiringItm.CONTEXT.Context
         public virtual DbSet<Files> Files { get; set; }
         public virtual DbSet<FolderContractor> FolderContractor { get; set; }
         public virtual DbSet<HiringData> HiringData { get; set; }
-        public virtual DbSet<PayRoll> PayRoll { get; set; }
         public virtual DbSet<Planning> Planning { get; set; }
         public virtual DbSet<ProfessionalRol> ProfessionalRol { get; set; }
         public virtual DbSet<ProjectFolder> ProjectFolder { get; set; }
@@ -41,7 +40,6 @@ namespace WebApiHiringItm.CONTEXT.Context
         {
             modelBuilder.Entity<Componente>(entity =>
             {
-
                 entity.Property(e => e.NombreComponente)
                     .IsRequired()
                     .HasMaxLength(30);
@@ -52,7 +50,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Component__IdCon__4D94879B");
             });
-
 
             modelBuilder.Entity<Contractor>(entity =>
             {
@@ -253,18 +250,15 @@ namespace WebApiHiringItm.CONTEXT.Context
 
             modelBuilder.Entity<ElementosComponente>(entity =>
             {
-                entity.Property(e => e.Adicion).HasColumnName("adicion");
+                entity.Property(e => e.Consecutivo)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Cpc).HasMaxLength(30);
 
                 entity.Property(e => e.NombreCpc).HasMaxLength(50);
 
                 entity.Property(e => e.NombreElemento).HasMaxLength(100);
-
-                entity.Property(e => e.Consecutivo)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("Consecutivo");
 
                 entity.Property(e => e.Recursos).HasColumnType("money");
 
@@ -345,6 +339,8 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.CargoInterventorItm).HasMaxLength(100);
 
+                entity.Property(e => e.Cdp).HasMaxLength(50);
+
                 entity.Property(e => e.Compromiso).HasMaxLength(100);
 
                 entity.Property(e => e.Contrato).HasMaxLength(50);
@@ -377,9 +373,6 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.Rubro).HasMaxLength(30);
 
-                entity.Property(e => e.Cdp).HasMaxLength(50);
-
-
                 entity.Property(e => e.ValorAsegurado)
                     .HasColumnType("money")
                     .HasColumnName("ValorASegurado");
@@ -397,23 +390,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.HiringData)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK__HiringDat__UserI__45F365D3");
-            });
-
-            modelBuilder.Entity<PayRoll>(entity =>
-            {
-                entity.Property(e => e.ModifyDate).HasColumnType("date");
-
-                entity.Property(e => e.RegisterDate).HasColumnType("date");
-
-                entity.HasOne(d => d.Contractor)
-                    .WithMany(p => p.PayRoll)
-                    .HasForeignKey(d => d.ContractorId)
-                    .HasConstraintName("FK__PayRoll__Contrac__534D60F1");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.PayRoll)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__PayRoll__UserId__5441852A");
             });
 
             modelBuilder.Entity<Planning>(entity =>
@@ -465,6 +441,13 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__ProjectFo__UserI__44FF419A");
+
+                entity.Property(e => e.ValorContrato).HasColumnType("money");
+                entity.Property(e => e.ValorSubTotal).HasColumnType("money");
+                entity.Property(e => e.GastosOperativos).HasColumnType("money");
+
+
+
             });
 
             modelBuilder.Entity<Roll>(entity =>

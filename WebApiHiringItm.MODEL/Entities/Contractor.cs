@@ -13,7 +13,6 @@ namespace WebApiHiringItm.MODEL.Entities
             EconomicdataContractor = new HashSet<EconomicdataContractor>();
             FolderContractor = new HashSet<FolderContractor>();
             HiringData = new HashSet<HiringData>();
-            PayRoll = new HashSet<PayRoll>();
         }
 
         public int Id { get; set; }
@@ -63,6 +62,5 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual ICollection<EconomicdataContractor> EconomicdataContractor { get; set; }
         public virtual ICollection<FolderContractor> FolderContractor { get; set; }
         public virtual ICollection<HiringData> HiringData { get; set; }
-        public virtual ICollection<PayRoll> PayRoll { get; set; }
     }
 }

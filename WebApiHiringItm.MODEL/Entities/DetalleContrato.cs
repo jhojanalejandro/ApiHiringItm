@@ -10,9 +10,9 @@ namespace WebApiHiringItm.MODEL.Entities
         public int Id { get; set; }
         public DateTime? FechaContrato { get; set; }
         public DateTime? FechaFinalizacion { get; set; }
-        public bool? Adicion { get; set; }
         public string TipoContrato { get; set; }
         public int? Idcontrato { get; set; }
+        public bool? Modificacion { get; set; }
 
         public virtual ProjectFolder IdcontratoNavigation { get; set; }
     }

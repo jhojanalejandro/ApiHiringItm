@@ -51,10 +51,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[PayRoll]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[planning]",
          "ObjectType": 0
       },
