@@ -250,9 +250,13 @@ namespace WebApiHiringItm.CONTEXT.Context
 
             modelBuilder.Entity<ElementosComponente>(entity =>
             {
+<<<<<<< HEAD
                 entity.Property(e => e.Consecutivo)
                     .HasMaxLength(15)
                     .IsUnicode(false);
+=======
+                entity.Property(e => e.Modificacion).HasColumnName("Modificacion");
+>>>>>>> 42cf66e55a8ab3e547588d7fd61cd983c9876af5
 
                 entity.Property(e => e.Cpc).HasMaxLength(30);
 
