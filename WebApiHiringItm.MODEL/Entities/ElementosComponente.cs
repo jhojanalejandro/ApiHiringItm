@@ -18,13 +18,9 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal ValorPorDia { get; set; }
         public string Cpc { get; set; }
         public string NombreCpc { get; set; }
-<<<<<<< HEAD
-=======
         public bool? Modificacion { get; set; }
->>>>>>> 42cf66e55a8ab3e547588d7fd61cd983c9876af5
         public decimal? Recursos { get; set; }
         public string Consecutivo { get; set; }
-        public bool? Modificacion { get; set; }
 
         public virtual Componente IdComponenteNavigation { get; set; }
     }
