@@ -56,7 +56,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
 
         public async Task<int> Create(EconomicdataContractorDto model)
         {
-            var getData = _context.ContractorPayments.Where(x => x.Id == model.ContractorId).FirstOrDefault();
+            var getData = _context.EconomicdataContractor.FirstOrDefault(x => x.ContractorId == model.ContractorId);
             if (getData == null)
             {
                 var map = _mapper.Map<EconomicdataContractor>(model);
@@ -68,7 +68,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
             {
                 model.Id = getData.Id;
                 var map = _mapper.Map(model, getData);
-                var res = _context.ContractorPayments.Update(map);
+                var res = _context.EconomicdataContractor.Update(map);
                 await _context.SaveChangesAsync();
                 if (res.State != 0)
                 {

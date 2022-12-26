@@ -23,8 +23,8 @@ namespace WebApiHiringItm.MODEL.Dto
         public string NoAdicion { get; set; }
         public DateTime? FechaDeInicioProyectado { get; set; }
         public DateTime? FechaRealDeInicio { get; set; }
-        public string Ejecucion { get; set; }
-        public string ActaComite { get; set; }
+        public string? Ejecucion { get; set; }
+        public string? ActaComite { get; set; }
         public DateTime? FechaDeComite { get; set; }
         public bool? RequierePoliza { get; set; }
         public string NoPoliza { get; set; }
@@ -33,9 +33,10 @@ namespace WebApiHiringItm.MODEL.Dto
         public DateTime? FechaExpedicionPoliza { get; set; }
         public decimal? ValorAsegurado { get; set; }
         public int? Nivel { get; set; }
-        public string Rubro { get; set; }
-        public string NombreRubro { get; set; }
-        public string Cdp { get; set; }
+        public string? Rubro { get; set; }
+        public string? NombreRubro { get; set; }
+        public string? FuenteRubro { get; set; }
+        public string? Cdp { get; set; }
         public int[] idsContractors { get; set; }
     }
 }

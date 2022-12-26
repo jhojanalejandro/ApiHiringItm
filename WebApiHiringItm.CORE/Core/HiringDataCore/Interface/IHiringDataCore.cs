@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 
 namespace WebApiHiringItm.CORE.Core.HiringDataCore.Interface
 {
@@ -13,6 +14,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore.Interface
         Task<HiringDataDto> GetById(int id);
         Task<bool> Delete(int id);
         Task<int> Create(HiringDataDto model);
+        Task<MinutaDto> GetByIdMinuta(int[] id);
 
     }
 }

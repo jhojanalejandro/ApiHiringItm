@@ -2,6 +2,8 @@
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Componentes;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.HiringDataCore
@@ -33,6 +35,19 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             return await Task.FromResult(map);
         }
 
+        public async Task<MinutaDto> GetByIdMinuta(int[] id)
+        {
+            var hiring = _context.HiringData.FirstOrDefault(x => x.ContractorId == id[0]);
+            var elemento = _context.ElementosComponente.FirstOrDefault(x => x.Id == id[1]);
+            MinutaDto minutaDto = new MinutaDto();
+            var hiringMap = _mapper.Map<HiringDataDto>(hiring);
+            var elementoMap = _mapper.Map<ElementosComponenteDto>(elemento);
+
+            minutaDto.HiringDataDto = hiringMap;
+            minutaDto.elementosComponenteDto = elementoMap;
+            var map = _mapper.Map<MinutaDto>(minutaDto);
+            return await Task.FromResult(map);
+        }
 
         public async Task<bool> Updates(string model)
         {
