@@ -25,6 +25,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public int RollId { get; set; }
         public string UserEmail { get; set; }
         public string PhoneNumber { get; set; }
+        public string Identification { get; set; }
 
         public virtual Roll Roll { get; set; }
         public virtual ICollection<Contractor> Contractor { get; set; }

@@ -16,5 +16,6 @@ namespace WebApiHiringItm.MODEL.Dto.Usuario
         public int RollId { get; set; }
         public string UserEmail { get; set; }
         public string PhoneNumber { get; set; }
+        public string Identification { get; set; }
     }
 }

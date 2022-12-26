@@ -36,16 +36,16 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
             catch (Exception e)
             {
 
-                throw;
+                throw new Exception("Error", e);
             }
         }
 
         [HttpGet("GetSolicitudContratacionDap")]
-        public async Task<IActionResult> GetSolicitudContratacionDap()
+        public async Task<IActionResult> GetSolicitudContratacionDap(int contractId)
         {
             try
             {
-                var result = await _export.ExportContratacionDap(this);
+                var result = await _export.ExportContratacionDap(this, contractId);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
                 if (result == null)
                 {
@@ -86,7 +86,7 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
         {
             try
             {
-                var result = await _export.ExportSolicitudPpa(this, idContrato);
+                var result = await _export.ExportSolicitudPaa(this, idContrato);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
                 if (result == null)
                 {

@@ -84,7 +84,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 var map = _mapper.Map<HiringData>(model);
                 var res = _context.HiringData.Add(map);
                 await _context.SaveChangesAsync();
-                return map.Id != 0 ? map.Id : 0;
+                return map.Id != 0 ? map.Id : 0; 
             }
             else
             {

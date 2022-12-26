@@ -21,12 +21,12 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using AutoMapper;
-using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using Microsoft.Extensions.Options;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Dto.CuentaCobroDto;
+using WebApiHiringItm.MODEL.Dto.FileDto;
 
 namespace WebApiHiringItm.CORE.Core.Contractors
 {
@@ -368,7 +368,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             if (model.Id != 0)
 
             {
-                var userupdate = _context.Files.Where(x => x.ContractorId.Equals(model.ContractorId) && x.FolderId.Equals(model.FolderId)).FirstOrDefault();
+                var userupdate = _context.Files.Where(x => x.ContractorId.Equals(model.ContractorId) && x.ContractId.Equals(model.ContractId)).FirstOrDefault();
                 var map = _mapper.Map(model, userupdate);
                 _context.Files.Update(map);
                 var res = await _context.SaveChangesAsync();
@@ -393,25 +393,35 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         }
 
         public async Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model)
-        {
+            {
             if (model.Id != 0)
 
             {
-                if (model.Type == "Elemento")
+                try
                 {
-                    var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor)).FirstOrDefault();
-                    contractorUpdate.ElementId = model.Id;
-                    _context.Contractor.Update(contractorUpdate);
+                    if (model.Type == "Elemento")
+                    {
+                        var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor)).FirstOrDefault();
+                        contractorUpdate.ElementId = model.Id;
+                        _context.Contractor.Update(contractorUpdate);
+                        var res = await _context.SaveChangesAsync();
+                        return res != 0 ? true : false;
+                    }
+                    else
+                    {
+                        var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor)).FirstOrDefault();
+                        contractorUpdate.ComponenteId = model.Id;
+                        _context.Contractor.Update(contractorUpdate);
+                        var res = await _context.SaveChangesAsync();
+                        return res != 0 ? true : false;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor)).FirstOrDefault();
-                    contractorUpdate.ComponenteId = model.Id;
-                    _context.Contractor.Update(contractorUpdate);
+                        throw new Exception("Error", ex);
+                }
+             
 
-                }
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
 
             }
             return false;

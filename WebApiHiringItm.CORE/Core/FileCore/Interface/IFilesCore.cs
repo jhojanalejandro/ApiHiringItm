@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.FileDto;
 
 namespace WebApiHiringItm.CORE.Core.FileCore.Interface
 {
@@ -15,5 +16,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore.Interface
         Task<bool> Create(FilesDto model);
         Task<List<GetFilesPaymentDto>> GetAllByDate(GetFilesPaymentDto model);
         Task<List<FilesDto>> GetAllFileByIdContract(int id);
+        Task<bool> CreateDetail(DetailFileDto model);
     }
 }

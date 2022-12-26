@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using WebApiHiringItm.CORE.Core.FileCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Models;
 using WebApiRifa.CORE.Helpers;
 
@@ -46,6 +47,24 @@ namespace WebApiHiringItm.API.Controllers.Files
             {
                 //Obtenemos todos los registros.
                 var Data = await _file.Create(model);
+
+                //Retornamos datos.
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddDetailFile(DetailFileDto model)
+        {
+            try
+            {
+                //Obtenemos todos los registros.
+                var Data = await _file.CreateDetail(model);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();

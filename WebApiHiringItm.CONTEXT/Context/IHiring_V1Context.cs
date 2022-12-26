@@ -14,6 +14,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<Contractor> Contractor { get; set; }
         DbSet<ContractorPayments> ContractorPayments { get; set; }
         DbSet<DetalleContrato> DetalleContrato { get; set; }
+        DbSet<DetalleFile> DetalleFile { get; set; }
         DbSet<EconomicdataContractor> EconomicdataContractor { get; set; }
         DbSet<ElementosComponente> ElementosComponente { get; set; }
         DbSet<Files> Files { get; set; }

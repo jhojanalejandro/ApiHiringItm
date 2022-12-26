@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiHiringItm.MODEL.Dto
+namespace WebApiHiringItm.MODEL.Dto.FileDto
 {
     public class GetFileDto
     {
-        public int FolderId { get; set; }
+        public int ContractId { get; set; }
         public int ContractorId { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Dto.CuentaCobroDto;
+using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Dto.Usuario;
 using WebApiHiringItm.MODEL.Entities;
 
@@ -34,7 +35,10 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<DetalleContratoDto, DetalleContrato>().ReverseMap();
             CreateMap<UserFirmDto, UserFirm>().ReverseMap();
             CreateMap<RProjectForlderDto, ProjectFolder>().ReverseMap();
+            CreateMap<ProjectFolderCostsDto, ProjectFolder>().ReverseMap();
             CreateMap<CuentaCobroDto, Contractor>().ReverseMap();
+            CreateMap<DetailFileDto, DetalleFile>().ReverseMap();
+
 
         }
     }

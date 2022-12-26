@@ -7,9 +7,13 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class Files
     {
+        public Files()
+        {
+            DetalleFile = new HashSet<DetalleFile>();
+        }
+
         public int Id { get; set; }
         public int ContractorId { get; set; }
-        public int? FolderId { get; set; }
         public int? ContractId { get; set; }
         public string FilesName { get; set; }
         public string Filedata { get; set; }
@@ -22,7 +26,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Mont { get; set; }
         public bool? Passed { get; set; }
 
-        public virtual FolderContractor Folder { get; set; }
+        public virtual FolderContractor Contract { get; set; }
         public virtual UserT User { get; set; }
+        public virtual ICollection<DetalleFile> DetalleFile { get; set; }
     }
 }

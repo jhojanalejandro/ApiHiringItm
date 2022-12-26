@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.FileCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.FileCore
@@ -24,14 +25,29 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<List<FilesDto>> GetAllById(GetFileDto model)
         {
-            var result = _context.Files.Where(x => x.ContractorId.Equals(model.ContractorId) && x.FolderId.Equals(model.FolderId)).ToList();
-            var map = _mapper.Map<List<FilesDto>>(result);
-            return await Task.FromResult(map);
+            var result = _context.Files
+                .Where(x => x.ContractorId.Equals(model.ContractorId) && x.ContractId.Equals(model.ContractId)).ToList();
+            if (result != null)
+            {
+                var map = _mapper.Map<List<FilesDto>>(result);
+                map.ForEach(e =>
+                {
+                    var detail = _context.ElementosComponente.Where(d => d.IdComponente == e.Id).ToList();
+                    e.DetalleFile = _mapper.Map<List<DetailFileDto>>(detail);
+                });
+                return await Task.FromResult(map);
+
+            }
+            else
+            {
+                return new List<FilesDto>();
+
+            }
         }
 
         public async Task<List<FilesDto>> GetAllFileByIdContract(int id)
         {
-            var result = _context.Files.Where(x => x.FolderId.Equals(id)).ToList();
+            var result = _context.Files.Where(x => x.ContractId.Equals(id)).ToList();
             var map = _mapper.Map<List<FilesDto>>(result);
             return await Task.FromResult(map);
         }
@@ -94,12 +110,27 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         }
 
+        public async Task<bool> CreateDetail(DetailFileDto model)
+        {
+            var getData = _context.DetalleFile.Where(x => x.Id == model.Id).FirstOrDefault();
+            if (getData == null)
+            {
+                var map = _mapper.Map<DetalleFile>(model);
+                _context.DetalleFile.Add(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+            }
+            else
+            {
+                model.Id = getData.Id;
+                var map = _mapper.Map(model, getData);
+                _context.DetalleFile.Update(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+            }
+            return false;
 
-        //Basado en lo publicado por otros
-
-        //Buscar el archivo
-
-
+        }
 
 
         public string CodificarArchivo(string sNombreArchivo)

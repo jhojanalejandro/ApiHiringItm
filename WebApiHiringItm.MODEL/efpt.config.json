@@ -31,6 +31,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[DetalleFile]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[EconomicdataContractor]",
          "ObjectType": 0
       },

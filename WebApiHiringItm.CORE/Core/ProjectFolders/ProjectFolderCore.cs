@@ -92,7 +92,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
                 FechaContrato = x.FechaContrato,
                 FechaFinalizacion = x.FechaFinalizacion,
                 TipoContrato = x.TipoContrato,
-                Adicion = x.Adicion
+                Modificacion = x.Modificacion
             })
                 .OrderByDescending(x => x.Idcontrato)
                 .AsNoTracking()
@@ -156,7 +156,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
                 model.Id = getData.Id;
                 var map = _mapper.Map(model, getData);
                 _context.ProjectFolder.Update(map);
-                if (model.DetalleContratoDto.Idcontrato != 0)
+                if (model.DetalleContratoDto.Idcontrato != 0 && model.DetalleContratoDto.Update)
                 {
                     DetalleContratoDto detalle = model.DetalleContratoDto;
                     if (!await CreateDetail(detalle))
@@ -164,7 +164,23 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
                 }
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
+            } 
+            return false;
+
+        }
+
+        public async Task<bool> UpdateCost(ProjectFolderCostsDto model)
+        {
+            var getData = _context.ProjectFolder.Where(x => x.Id == model.Id).FirstOrDefault();
+
+            if (getData != null)
+            {
+                var map = _mapper.Map(model, getData);
+                _context.ProjectFolder.Update(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
             }
+
             return false;
 
         }

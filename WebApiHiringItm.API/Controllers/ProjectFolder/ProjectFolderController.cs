@@ -102,11 +102,11 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(RProjectForlderDto model)
+        public async Task<IActionResult> UpdateCost(ProjectFolderCostsDto model)
         {
             try
             {
-                var Data = await _project.Create(model);
+                var Data = await _project.UpdateCost(model);
 
                 return Data != null ? Ok(Data) : NoContent();
             }
