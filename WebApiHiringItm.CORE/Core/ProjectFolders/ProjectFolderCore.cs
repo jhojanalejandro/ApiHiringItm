@@ -114,7 +114,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
         {
             try
             {
-                var resultData = _context.ProjectFolder.Where(x => x.Id == id).FirstOrDefault();
+                var resultData = _context.ProjectFolder.FirstOrDefault(x => x.Id == id);    
                 if (resultData != null)
                 {
                     var result = _context.ProjectFolder.Remove(resultData);

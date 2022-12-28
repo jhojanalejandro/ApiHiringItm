@@ -111,20 +111,20 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
         }
         #region PUBLIC METODS
-        public async Task<string> ImportarExcel(FileRequest obj)
+        public async Task<string> ImportarExcel(FileRequest model)
         {
-            string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", obj.Excel.FileName);
+            string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", model.Excel.FileName);
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
             //Save the uploaded Excel file.
-            string fileName = Path.GetFileName(obj.Excel.FileName);
+            string fileName = Path.GetFileName(model.Excel.FileName);
             string filePath = Path.Combine(path, fileName);
             using (FileStream stream = new FileStream(filePath, FileMode.Create))
             {
-                obj.Excel.CopyTo(stream);
+                model.Excel.CopyTo(stream);
             }
             FileStream test = new FileStream(filePath, FileMode.Open);
 
@@ -135,7 +135,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             DataTable dataTable = worksheet.Cells.ExportDataTable(0, 0, worksheet.Cells.MaxRow + 1, worksheet.Cells.LastCell.Column + 1, true);
             dataTable.TableName = "Contractor";
             DataColumn newColumn = new DataColumn("User Id", typeof(int));
-            newColumn.DefaultValue = obj.UserId;
+            newColumn.DefaultValue = model.UserId;
             dataTable.Columns.Add(newColumn);
             DataColumn newColumnid = new DataColumn("id", typeof(int));
             dataTable.Columns.Add(newColumnid);
@@ -143,7 +143,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             newColumnPassword.DefaultValue = "NoAsignada";
             dataTable.Columns.Add(newColumnPassword);
             DataColumn newColumn2 = new DataColumn("Contract Id", typeof(int));
-            newColumn2.DefaultValue = obj.ContractId;
+            newColumn2.DefaultValue = model.ContractId;
             dataTable.Columns.Add(newColumn2);
             DataColumn newColumn3 = new DataColumn("Fecha Creacion", typeof(DateTime));
             newColumn3.DefaultValue = DateTime.Now;
@@ -163,28 +163,33 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             dataTable.Columns.Remove("Nombre Completo");
             for (int i = 0; i < dataTable.Columns.Count; i++)
             {
+
                 dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
                 var columna = dataTable.Columns[i].ColumnName;
-                //if (columna.Equals("DocumentoDeIdentificacion"))
-                //{
-                //    for (int j = 0; j <= dataTable.Rows.Count; j++)
-                //    {
-                //        int posicion = j;
-                //        if (dataTable.Rows.Count == 1)
-                //        {
-                //             posicion = 0;
+                if (columna.Equals("Identificacion"))
+                {
+                    for (int j = 0; j <= dataTable.Rows.Count; j++)
+                    {
+                        int posicion = j;
+                        if (dataTable.Rows.Count == 1)
+                        {
+                            posicion = 0;
 
-                //        }
-                //        var valor = dataTable.Rows[j]["DocumentoDeIdentificacion"];
-                //        var resultado = _context.Contractor.Where(x => x.DocumentoDeIdentificacion.Equals(valor)).FirstOrDefault();
-                //        if (resultado != null)
-                //        {
-                //            j--;
-                //            dataTable.Rows.Remove(dataTable.Rows[j]);
-                //        }
+                        }else if (dataTable.Rows.Count == 0)
+                        {
+                            return "No se agrego la Información por que es repetida";
+                        }
 
-                //    }
-                //}
+                        var valor = dataTable.Rows[j]["Identificacion"];
+                        var resultado = _context.Contractor.FirstOrDefault(x => x.Identificacion.Equals(valor));
+                        if (resultado != null)
+                            {
+                            dataTable.Rows.Remove(dataTable.Rows[j]);
+                            j--;
+                        }
+
+                    }
+                }
 
 
             }

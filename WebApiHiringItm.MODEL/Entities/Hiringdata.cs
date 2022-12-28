@@ -15,11 +15,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Contrato { get; set; }
         public string Compromiso { get; set; }
         public DateTime? FechaExaPreocupacional { get; set; }
-        public DateTime? FechaInicioAmpliacion { get; set; }
-        public DateTime? FechaDeTerminacionAmpliacion { get; set; }
-        public string InterventorItm { get; set; }
-        public string CargoInterventorItm { get; set; }
-        public string NoAdicion { get; set; }
+        public string SupervisorItm { get; set; }
+        public string CargoSupervisorItm { get; set; }
         public DateTime? FechaDeInicioProyectado { get; set; }
         public DateTime? FechaRealDeInicio { get; set; }
         public string Ejecucion { get; set; }
@@ -32,7 +29,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? FechaExpedicionPoliza { get; set; }
         public decimal? ValorAsegurado { get; set; }
         public int? Nivel { get; set; }
-        public string? Rubro { get; set; }
+        public string Rubro { get; set; }
         public string NombreRubro { get; set; }
         public string FuenteRubro { get; set; }
         public string Cdp { get; set; }

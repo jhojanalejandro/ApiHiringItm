@@ -40,12 +40,12 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
             }
         }
 
-        [HttpGet("GetSolicitudContratacionDap")]
-        public async Task<IActionResult> GetSolicitudContratacionDap(int contractId)
+        [HttpGet("{idContrato}")]
+        public async Task<IActionResult> GetSolicitudContratacionDap(int idContrato)
         {
             try
             {
-                var result = await _export.ExportContratacionDap(this, contractId);
+                var result = await _export.ExportContratacionDap(this, idContrato);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
                 if (result == null)
                 {

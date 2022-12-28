@@ -159,14 +159,21 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                         var componente = componentes.FirstOrDefault(x => x.IdContrato == user.ContractId);
                         var elemento = elementos.FirstOrDefault(x => x.IdComponente == componente.Id);
                         var hdata = hiringData.FirstOrDefault(x => x.ContractorId == user.Id);
-                        worksheet.Cells[row, 1].Value = user.Convenio;
-                        worksheet.Cells[row, 2].Value = user.Nombre +" "+ user.Apellido;
-                        worksheet.Cells[row, 3].Value = elemento.Cpc;
-                        worksheet.Cells[row, 4].Value = hdata.Cdp;
-                        worksheet.Cells[row, 5].Value = elemento.ValorTotal;
-                        worksheet.Cells[row, 6].Value = "";
+                        if (hdata != null )
+                        {
+                            if (hdata.Cdp != null)
+                            {
+                                worksheet.Cells[row, 1].Value = user.Convenio;
+                                worksheet.Cells[row, 2].Value = user.Nombre + " " + user.Apellido;
+                                worksheet.Cells[row, 3].Value = elemento.Cpc;
+                                worksheet.Cells[row, 4].Value = hdata.Cdp;
+                                worksheet.Cells[row, 5].Value = elemento.ValorTotal;
+                                worksheet.Cells[row, 6].Value = "";
+                                row++;
+                            }
+                        
+                        }
 
-                        row++;
                     }
                 }
                 worksheet.Columns.AutoFit();
@@ -228,15 +235,18 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                         var hdata = hiring.FirstOrDefault(x => x.ContractorId == user.Id);
                         var componente = componentes.FirstOrDefault(x => x.IdContrato == user.ContractId);
                         var elemento = elementos.FirstOrDefault(x => x.IdComponente == componente.Id);
-                        if (hdata.Rubro != null)
+                        if (hdata != null)
                         {
-                            worksheet.Cells[row, 3].Value = nro;
-                            worksheet.Cells[row, 2].Value = hdata.Rubro;
-                            worksheet.Cells[row, 1].Value = hdata.FuenteRubro;
-                            worksheet.Cells[row, 4].Value = contract.DescriptionProject;
-                            worksheet.Cells[row, 5].Value = user.Convenio;
-                            worksheet.Cells[row, 6].Value = elemento.Cpc;
-                            worksheet.Cells[row, 7].Value = elemento.ValorTotal;
+                            if (hdata.Rubro != null && hdata.FuenteRubro != null)
+                            {
+                                worksheet.Cells[row, 3].Value = nro;
+                                worksheet.Cells[row, 2].Value = hdata.Rubro;
+                                worksheet.Cells[row, 1].Value = hdata.FuenteRubro;
+                                worksheet.Cells[row, 4].Value = contract.DescriptionProject;
+                                worksheet.Cells[row, 5].Value = user.Convenio;
+                                worksheet.Cells[row, 6].Value = elemento.Cpc;
+                                worksheet.Cells[row, 7].Value = elemento.ValorTotal;
+                            }
                         }
                     }
                     row++;
@@ -300,18 +310,26 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 int nro = 0;
                 foreach (var user in data)
                 {
+
                     nro++;
                     var hdata = hiringData.FirstOrDefault(x => x.ContractorId == user.Id);
                     var componente = componentes.FirstOrDefault(x => x.IdContrato == user.ContractId);
                     var elemento = elementos.FirstOrDefault(x => x.IdComponente == componente.Id);
-                    worksheet.Cells[row, 1].Value = nro;
-                    worksheet.Cells[row, 2].Value = hdata.Rubro;
-                    worksheet.Cells[row, 3].Value = "";
-                    worksheet.Cells[row, 4].Value = user.ObjetoConvenio;
-                    worksheet.Cells[row, 5].Value = user.Convenio;
-                    worksheet.Cells[row, 6].Value = elemento.Cpc;
-                    worksheet.Cells[row, 7].Value = elemento.ValorTotal;
-                    row++;
+                    if (hdata != null)
+                    {
+                        if (hdata.Rubro != null)
+                        {
+                            worksheet.Cells[row, 1].Value = nro;
+                            worksheet.Cells[row, 2].Value = hdata.Rubro;
+                            worksheet.Cells[row, 3].Value = "";
+                            worksheet.Cells[row, 4].Value = user.ObjetoConvenio;
+                            worksheet.Cells[row, 5].Value = user.Convenio;
+                            worksheet.Cells[row, 6].Value = elemento.Cpc;
+                            worksheet.Cells[row, 7].Value = elemento.ValorTotal;
+                            row++;
+                        }
+                    }
+                 
                 }
                 worksheet.Columns.AutoFit();
                 xlPackage.Workbook.Properties.Title = "Solicitud CDP - DAP";

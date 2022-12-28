@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using WebApiHiringItm.MODEL.Entities;
 
-namespace WebApiHiringItm.CONTEXT.Context
+namespace WebApiHiringItm.MODEL.WebApiHiringItm.CONTEXT.Context
 {
-    public partial class Hiring_V1Context : DbContext, IHiring_V1Context
+    public partial class Hiring_V1Context : DbContext
     {
         public Hiring_V1Context()
         {
@@ -18,7 +18,6 @@ namespace WebApiHiringItm.CONTEXT.Context
             : base(options)
         {
         }
-
 
         public virtual DbSet<Componente> Componente { get; set; }
         public virtual DbSet<Contractor> Contractor { get; set; }
@@ -522,6 +521,7 @@ namespace WebApiHiringItm.CONTEXT.Context
 
             OnModelCreatingPartial(modelBuilder);
         }
+
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

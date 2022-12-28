@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
         public string NombreElemento { get; set; }
-        public string ObligacionesGenerales { get; set; }
-        public string ObligacionesEspecificas { get; set; }
+        public string? ObligacionesGenerales { get; set; }
+        public string? ObligacionesEspecificas { get; set; }
         public string TipoElemento { get; set; }
         public int IdComponente { get; set; }
         public int CantidadContratistas { get; set; }

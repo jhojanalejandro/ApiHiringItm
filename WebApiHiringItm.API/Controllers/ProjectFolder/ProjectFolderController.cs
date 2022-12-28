@@ -118,7 +118,7 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
         }
 
 
-        [HttpGet]
+        [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
             try

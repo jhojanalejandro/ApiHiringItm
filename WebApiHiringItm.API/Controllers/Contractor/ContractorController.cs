@@ -87,6 +87,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             {
 
                 throw new Exception("Error", ex);
+
             }
         }
         [HttpPost]
