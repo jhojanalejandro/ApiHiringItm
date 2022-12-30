@@ -137,7 +137,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             DataColumn newColumn = new DataColumn("User Id", typeof(int));
             newColumn.DefaultValue = model.UserId;
             dataTable.Columns.Add(newColumn);
-            DataColumn newColumnid = new DataColumn("id", typeof(int));
+            DataColumn newColumnid = new DataColumn("Id", typeof(int));
             dataTable.Columns.Add(newColumnid);
             DataColumn newColumnPassword = new DataColumn("Clave Usuario", typeof(string));
             newColumnPassword.DefaultValue = "NoAsignada";
@@ -166,9 +166,11 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
                 dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
                 var columna = dataTable.Columns[i].ColumnName;
-                if (columna.Equals("Identificacion"))
+                var listaHring = _context.Contractor.ToList();
+
+                if (columna.Equals("Identificacion") && listaHring.Count > 0)
                 {
-                    for (int j = 0; j <= dataTable.Rows.Count; j++)
+                    for (int j = 0; j < dataTable.Rows.Count; j++)
                     {
                         int posicion = j;
                         if (dataTable.Rows.Count == 1)

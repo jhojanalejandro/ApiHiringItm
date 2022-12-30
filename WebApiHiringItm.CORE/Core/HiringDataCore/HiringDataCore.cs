@@ -91,28 +91,42 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             }
         }
 
-        public async Task<int> Create(HiringDataDto model)
+        public async Task<bool> Create(List<HiringDataDto> model)
         {
-            var getData = _context.HiringData.Where(x => x.ContractorId == model.ContractorId).FirstOrDefault();
-            if (getData == null)
+            try
             {
-                var map = _mapper.Map<HiringData>(model);
-                var res = _context.HiringData.Add(map);
-                await _context.SaveChangesAsync();
-                return map.Id != 0 ? map.Id : 0; 
-            }
-            else
-            {
-                model.Id = getData.Id;
-                var map = _mapper.Map(model, getData);
-                var res = _context.HiringData.Update(map);
-                await _context.SaveChangesAsync();
-                if (res.State != 0)
+                List<HiringData> hiringDataListUpdate = new List<HiringData>();
+                List<HiringData> hiringDataListAdd = new List<HiringData>();
+
+                var map = _mapper.Map<List<HiringData>>(model);
+                foreach (var item in map)
                 {
-                    return 0;
+                    var getData = _context.HiringData.Where(x => x.ContractorId == item.ContractorId).FirstOrDefault();
+                    if (getData != null)
+                    {
+                        hiringDataListUpdate.Add(getData);
+                        map.Remove(item);
+
+                    }
+                    else
+                    {
+                        hiringDataListAdd.Add(item);
+                    }
                 }
+                if (hiringDataListUpdate.Count > 0)
+                    _context.HiringData.UpdateRange(hiringDataListUpdate);
+                if (hiringDataListAdd.Count > 0)
+                    _context.HiringData.AddRange(hiringDataListAdd);
+                await _context.SaveChangesAsync();
+                return true;
             }
-            return 0;
+            catch(Exception ex)
+            {
+                throw new Exception("Error", ex);
+                return true;
+
+            }
+            return false;
         }
 
     }

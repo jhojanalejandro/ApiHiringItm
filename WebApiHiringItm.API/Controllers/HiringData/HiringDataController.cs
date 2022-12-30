@@ -72,7 +72,7 @@ namespace WebApiHiringItm.API.Controllers.HiringData
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(HiringDataDto model)
+        public async Task<IActionResult> Add(List<HiringDataDto> model)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace WebApiHiringItm.API.Controllers.HiringData
                 var Data = await _hiringData.Create(model);
 
                 //Retornamos datos.
-                return Data != 0 ? Ok(Data) : NoContent();
+                return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
