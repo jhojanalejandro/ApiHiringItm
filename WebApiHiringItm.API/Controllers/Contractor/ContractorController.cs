@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.MODEL.Dto.Contratista;
@@ -8,6 +9,7 @@ using WebApiHiringItm.MODEL.Models;
 namespace WebApiHiringItm.API.Controllers.Contractor
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ContractorController : ControllerBase
     {

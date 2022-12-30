@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.EconomicdataContractorCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
@@ -6,6 +7,7 @@ using WebApiHiringItm.MODEL.Dto;
 namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class EconomicDataContractorController : ControllerBase
     {

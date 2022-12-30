@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces;
 
 namespace WebApiHiringItm.API.Controllers.ExportToExcel
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ExportToExcelController : ControllerBase
     {

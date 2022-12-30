@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
@@ -7,6 +8,7 @@ using WebApiHiringItm.MODEL.Dto;
 namespace WebApiHiringItm.API.Controllers.HiringData
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class HiringDataController : ControllerBase
     {
