@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
@@ -6,6 +7,7 @@ using WebApiHiringItm.MODEL.Dto.ContratoDto;
 namespace WebApiHiringItm.API.Controllers.ProjectFolder
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ProjectFolderController : ControllerBase
     {

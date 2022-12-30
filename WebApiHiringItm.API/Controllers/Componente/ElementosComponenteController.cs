@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.MODEL.Dto.Componentes;
@@ -6,6 +7,7 @@ using WebApiHiringItm.MODEL.Dto.Componentes;
 namespace WebApiHiringItm.API.Controllers.Componente
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ElementosComponenteController : ControllerBase
     {

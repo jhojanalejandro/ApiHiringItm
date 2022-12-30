@@ -1,4 +1,6 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WebApiHiringItm.CONTEXT.Context;
@@ -32,6 +34,9 @@ builder.Services.AddCors(options =>
 #endregion
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
+        options => builder.Configuration.Bind("AppSettings", options));
 var mapperConfig = new MapperConfiguration(mc =>
 {
     mc.AddProfile(new Automaping());
@@ -64,7 +69,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseMiddleware<JwtMiddleware>();
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors(MyAllowSpecificOrigins);
 app.MapControllers();
