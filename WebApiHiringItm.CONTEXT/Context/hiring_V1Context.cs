@@ -19,7 +19,6 @@ namespace WebApiHiringItm.CONTEXT.Context
         {
         }
 
-
         public virtual DbSet<Componente> Componente { get; set; }
         public virtual DbSet<Contractor> Contractor { get; set; }
         public virtual DbSet<ContractorPayments> ContractorPayments { get; set; }
@@ -191,13 +190,13 @@ namespace WebApiHiringItm.CONTEXT.Context
 
             modelBuilder.Entity<ContractorPayments>(entity =>
             {
-                entity.Property(e => e.ModifyDate).HasColumnType("date");
+                entity.Property(e => e.FromDate).HasColumnType("date");
 
                 entity.Property(e => e.MonthPayment).HasColumnType("money");
 
                 entity.Property(e => e.Paymentcant).HasColumnType("money");
 
-                entity.Property(e => e.RegisterDate).HasColumnType("date");
+                entity.Property(e => e.ToDate).HasColumnType("date");
 
                 entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.ContractorPayments)
@@ -295,7 +294,11 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.ValorPorDia).HasColumnType("money");
 
+                entity.Property(e => e.ValorPorDiaContratista).HasColumnType("money");
+
                 entity.Property(e => e.ValorTotal).HasColumnType("money");
+
+                entity.Property(e => e.ValorTotalContratista).HasColumnType("money");
 
                 entity.Property(e => e.ValorUnidad).HasColumnType("money");
 
@@ -323,17 +326,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.TypeFile).HasMaxLength(10);
 
                 entity.Property(e => e.TypeFilePayment).HasMaxLength(50);
-
-                entity.HasOne(d => d.Contract)
-                    .WithMany(p => p.Files)
-                    .HasForeignKey(d => d.ContractId)
-                    .HasConstraintName("FK__Files__ContractI__47DBAE45");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Files)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Files__UserId__48CFD27E");
             });
 
             modelBuilder.Entity<FolderContractor>(entity =>
@@ -501,8 +493,6 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.PhoneNumber).HasMaxLength(15);
 
-                entity.Property(e => e.Professionalposition).HasMaxLength(100);
-
                 entity.Property(e => e.UserEmail).HasMaxLength(50);
 
                 entity.Property(e => e.UserName)
@@ -522,6 +512,7 @@ namespace WebApiHiringItm.CONTEXT.Context
 
             OnModelCreatingPartial(modelBuilder);
         }
+
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
