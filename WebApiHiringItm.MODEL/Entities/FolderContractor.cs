@@ -7,11 +7,6 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class FolderContractor
     {
-        public FolderContractor()
-        {
-            Files = new HashSet<Files>();
-        }
-
         public int Id { get; set; }
         public int UserId { get; set; }
         public int? ContractorId { get; set; }
@@ -22,6 +17,5 @@ namespace WebApiHiringItm.MODEL.Entities
 
         public virtual Contractor Contractor { get; set; }
         public virtual UserT User { get; set; }
-        public virtual ICollection<Files> Files { get; set; }
     }
 }

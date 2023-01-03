@@ -11,11 +11,11 @@ namespace WebApiHiringItm.MODEL.Entities
         public int? ContractorId { get; set; }
         public int? UserId { get; set; }
         public decimal? MonthPayment { get; set; }
-        public DateTime? RegisterDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
         public string DescriptionPayment { get; set; }
         public decimal? Paymentcant { get; set; }
         public bool? CashPayment { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
 
         public virtual Contractor Contractor { get; set; }
         public virtual UserT User { get; set; }

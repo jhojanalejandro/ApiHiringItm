@@ -7,7 +7,7 @@ using WebApiHiringItm.MODEL.Dto.Componentes;
 namespace WebApiHiringItm.API.Controllers.Componente
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("[controller]/[action]")]
     public class ComponenteController : ControllerBase
     {

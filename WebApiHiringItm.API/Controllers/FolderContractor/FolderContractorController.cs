@@ -7,7 +7,7 @@ using WebApiHiringItm.MODEL.Dto.Contratista;
 namespace WebApiHiringItm.API.Controllers.FolderContractor
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("[controller]/[action]")]
     public class FolderContractorController : ControllerBase
     {

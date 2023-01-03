@@ -22,5 +22,6 @@ namespace WebApiHiringItm.CORE.Core.User.Interface
         Task<bool> ValidateT(string authToken);
         Task<bool> UpdatePassword(UserUpdatePasswordDto model);
         Task<bool> GetUserForgetPassword(RetrievePassword model);
+        Task<List<UserTDto>> GetAllByRoll();
     }
 }

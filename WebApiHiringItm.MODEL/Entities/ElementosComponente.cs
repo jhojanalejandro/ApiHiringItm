@@ -24,6 +24,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public int? IdDetalle { get; set; }
         public bool? Modificacion { get; set; }
         public string Consecutivo { get; set; }
+        public decimal? ValorTotalContratista { get; set; }
+        public decimal? ValorPorDiaContratista { get; set; }
 
         public virtual Componente IdComponenteNavigation { get; set; }
     }

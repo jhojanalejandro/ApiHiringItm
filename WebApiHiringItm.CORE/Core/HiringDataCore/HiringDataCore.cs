@@ -99,18 +99,18 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 List<HiringData> hiringDataListAdd = new List<HiringData>();
 
                 var map = _mapper.Map<List<HiringData>>(model);
-                foreach (var item in map)
+                for(var i= 0; i< map.Count; i++)
                 {
-                    var getData = _context.HiringData.Where(x => x.ContractorId == item.ContractorId).FirstOrDefault();
+                    var getData = _context.HiringData.Where(x => x.ContractorId == map[i].ContractorId).FirstOrDefault();
                     if (getData != null)
                     {
                         hiringDataListUpdate.Add(getData);
-                        map.Remove(item);
-
+                        map.Remove(map[i]);
+                        i--;
                     }
                     else
                     {
-                        hiringDataListAdd.Add(item);
+                        hiringDataListAdd.Add(map[i]);
                     }
                 }
                 if (hiringDataListUpdate.Count > 0)

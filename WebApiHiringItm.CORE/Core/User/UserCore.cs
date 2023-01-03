@@ -63,6 +63,13 @@ namespace WebApiHiringItm.CORE.Core.User
             var map = _mapper.Map<List<UserTDto>>(result);
             return await Task.FromResult(map);
         }
+
+        public async Task<List<UserTDto>> GetAllByRoll()
+        {
+            var result = _context.UserT.Where(x => x.RollId == 1 || x.RollId == 2).ToList();
+            var map = _mapper.Map<List<UserTDto>>(result);
+            return await Task.FromResult(map);
+        }
         public UserT GetByIdd(int id)
         {
             return _context.UserT.Where(x => x.Id == id).FirstOrDefault();

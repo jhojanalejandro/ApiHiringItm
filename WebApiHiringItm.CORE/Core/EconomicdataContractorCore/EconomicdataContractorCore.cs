@@ -31,11 +31,20 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
             return await Task.FromResult(map);
         }
 
-        public async Task<EconomicdataContractorDto> GetById(int id)
+        public async Task<List<EconomicdataContractorDto>> GetById(int[] id)
         {
-            var result = _context.EconomicdataContractor.Where(x => x.ContractorId == id).FirstOrDefault();
-            var map = _mapper.Map<EconomicdataContractorDto>(result);
-            return await Task.FromResult(map);
+            List<EconomicdataContractorDto> economicDataContractorList = new List<EconomicdataContractorDto>();
+            foreach (var item in id)
+            {
+                var result = _context.EconomicdataContractor.Where(x => x.ContractorId == item).FirstOrDefault();
+                if (result != null)
+                {
+                    var map = _mapper.Map<EconomicdataContractorDto>(result);
+                    economicDataContractorList.Add(map);
+                }
+
+            }
+            return await Task.FromResult(economicDataContractorList);
         }
 
         public async Task<bool> Delete(int id)
@@ -54,28 +63,46 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
             }
         }
 
-        public async Task<int> Create(EconomicdataContractorDto model)
+        public async Task<bool> Create(List<EconomicdataContractorDto> model)
         {
-            var getData = _context.EconomicdataContractor.FirstOrDefault(x => x.ContractorId == model.ContractorId);
-            if (getData == null)
+            List<EconomicdataContractor> economicDataListAdd = new List<EconomicdataContractor>();
+            List<EconomicdataContractor> economicDataListUpdate = new List<EconomicdataContractor>();
+
+
+            var map = _mapper.Map<List<EconomicdataContractor>>(model);
+
+            try
             {
-                var map = _mapper.Map<EconomicdataContractor>(model);
-                var res = _context.EconomicdataContractor.Add(map);
-                await _context.SaveChangesAsync();
-                return map.Id != 0 ? map.Id : 0;
-            }
-            else
-            {
-                model.Id = getData.Id;
-                var map = _mapper.Map(model, getData);
-                var res = _context.EconomicdataContractor.Update(map);
-                await _context.SaveChangesAsync();
-                if (res.State != 0)
+                for (var i = 0; i < map.Count; i++)
                 {
-                    return 0;
+                    var getData = _context.EconomicdataContractor.FirstOrDefault(x => x.ContractorId == map[i].ContractorId && x.Id == map[i].Id);
+                    if (getData != null)
+                    {
+                        var mapData = _mapper.Map(model[i], getData);
+                        economicDataListUpdate.Add(mapData);
+                        map.Remove(map[i]);
+                        i--;
+                    }
+                    else
+                    {
+                        economicDataListAdd.Add(map[i]);
+                    }
                 }
+                if (economicDataListUpdate.Count > 0)
+                    _context.EconomicdataContractor.UpdateRange(economicDataListUpdate);
+                if (economicDataListAdd.Count > 0)
+                    _context.EconomicdataContractor.AddRange(economicDataListAdd);
+                await _context.SaveChangesAsync();
+                return true;
+
             }
-            return 0;
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+
+            }
+            return false;
         }
+
     }
 }

@@ -6,7 +6,7 @@ using WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces;
 namespace WebApiHiringItm.API.Controllers.ExportToExcel
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("[controller]/[action]")]
     public class ExportToExcelController : ControllerBase
     {

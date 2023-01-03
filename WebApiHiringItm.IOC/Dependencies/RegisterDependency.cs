@@ -19,8 +19,6 @@ using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Core.Componentes;
 using WebApiHiringItm.CORE.Helpers.InterfacesHelpers;
 using WebApiHiringItm.CORE.Helpers;
-using WebApiHiringItm.CORE.Core.ContractorPaymentsCore.Interface;
-using WebApiHiringItm.CORE.Core.ContractorPaymentsCore;
 
 namespace WebApiHiringItm.IOC.Dependencies
 {

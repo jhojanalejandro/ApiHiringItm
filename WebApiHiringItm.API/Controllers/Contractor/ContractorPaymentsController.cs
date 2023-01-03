@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApiHiringItm.CORE.Core.ContractorPaymentsCore.Interface;
+using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 
 namespace WebApiHiringItm.API.Controllers.Contractor
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("[controller]/[action]")]
     public class ContractorPaymentsController : ControllerBase
     {
@@ -54,38 +54,15 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(ContractorPaymentsDto model)
+        public async Task<IActionResult> Add(List<ContractorPaymentsDto> model)
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _contractorPayment.Create(model);
-
-                //Retornamos datos.
-                return Data != 0 ? Ok(Data) : NoContent();
+                return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> Update(ContractorPaymentsDto model)
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _contractorPayment.Create(model);
-
-                //Retornamos datos.
-                return Data != 0 ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
                 throw new Exception("Error", ex);
             }
         }

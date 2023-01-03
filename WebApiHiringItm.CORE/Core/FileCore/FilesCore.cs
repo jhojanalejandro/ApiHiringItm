@@ -30,11 +30,11 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             if (result != null)
             {
                 var map = _mapper.Map<List<FilesDto>>(result);
-                map.ForEach(e =>
-                {
-                    var detail = _context.ElementosComponente.Where(d => d.IdComponente == e.Id).ToList();
-                    e.DetalleFile = _mapper.Map<List<DetailFileDto>>(detail);
-                });
+                //map.ForEach(e =>
+                //{
+                //    var detail = _context.ElementosComponente.Where(d => d.IdComponente == e.Id).ToList();
+                //    e.DetalleFile = _mapper.Map<List<DetailFileDto>>(detail);
+                //});
                 return await Task.FromResult(map);
 
             }
@@ -47,7 +47,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<List<FilesDto>> GetAllFileByIdContract(int id)
         {
-            var result = _context.Files.Where(x => x.ContractId.Equals(id)).ToList();
+            var result = _context.Files.Where(x => x.ContractId.Equals(id) && x.TypeFilePayment.Equals("contrato")).ToList();
             var map = _mapper.Map<List<FilesDto>>(result);
             return await Task.FromResult(map);
         }
@@ -55,7 +55,14 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<List<GetFilesPaymentDto>> GetAllByDate(GetFilesPaymentDto model)
         {
-            var result = _context.Files.Where(x => x.ContractId.Equals(model.ContractId) && x.RegisterDate == model.RegisterDate && x.TypeFilePayment.Equals(model.Type)).ToList();
+            var result = _context.Files.Where(x => x.ContractId.Equals(model.ContractId) && x.RegisterDate == model.RegisterDate && x.TypeFilePayment.Equals(model.TypeFilePayment)).ToList();
+            var map = _mapper.Map<List<GetFilesPaymentDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<GetFilesPaymentDto>> GetAllByType(GetFilesPaymentDto model)
+        {
+            var result = _context.Files.Where(x => x.ContractId.Equals(model.ContractId)  && x.TypeFilePayment.Equals(model.TypeFilePayment)).ToList();
             var map = _mapper.Map<List<GetFilesPaymentDto>>(result);
             return await Task.FromResult(map);
         }

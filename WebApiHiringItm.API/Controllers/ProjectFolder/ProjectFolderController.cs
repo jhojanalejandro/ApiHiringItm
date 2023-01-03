@@ -7,7 +7,7 @@ using WebApiHiringItm.MODEL.Dto.ContratoDto;
 namespace WebApiHiringItm.API.Controllers.ProjectFolder
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("[controller]/[action]")]
     public class ProjectFolderController : ControllerBase
     {

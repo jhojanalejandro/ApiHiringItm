@@ -140,6 +140,22 @@ namespace WebApiHiringItm.API.Controllers.Files
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAllByType(GetFilesPaymentDto model)
+        {
+            try
+            {
+                //Obtenemos todos los registros.
+                var Data = await _file.GetAllByType(model);
+
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {

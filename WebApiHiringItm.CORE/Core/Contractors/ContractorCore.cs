@@ -61,9 +61,15 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         }
         public async Task<CuentaCobroDto> GetById(int id)
         {
-            var result = _context.Contractor.Include(co => co.ContractorPayments)
+            var result = _context.Contractor.Include(co => co.ContractorPayments).Include(x => x.Contract)
                 .Where(x => x.Id == id).FirstOrDefault();
+            var payment =  result.ContractorPayments.OrderByDescending(X => X.FromDate).FirstOrDefault();
+
             var map = _mapper.Map<CuentaCobroDto>(result);
+            map.UnitValue = payment.Paymentcant;
+            map.From = payment.FromDate;
+            map.To = payment.ToDate;
+            map.Company = result.Contract.CompanyName;
             return await Task.FromResult(map);
         }
 

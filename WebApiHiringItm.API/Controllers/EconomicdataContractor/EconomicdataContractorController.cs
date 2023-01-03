@@ -7,7 +7,7 @@ using WebApiHiringItm.MODEL.Dto;
 namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("[controller]/[action]")]
     public class EconomicDataContractorController : ControllerBase
     {
@@ -35,8 +35,8 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpPost]
+        public async Task<IActionResult> GetById(int[] id)
         {
             try
             {
@@ -54,15 +54,14 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(EconomicdataContractorDto model)
+        public async Task<IActionResult> Add(List<EconomicdataContractorDto> model)
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _economicData.Create(model);
 
                 //Retornamos datos.
-                return Data != 0 ? Ok(Data) : NoContent();
+                return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -73,7 +72,7 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(EconomicdataContractorDto model)
+        public async Task<IActionResult> Update(List<EconomicdataContractorDto> model)
         {
             try
             {
@@ -81,7 +80,7 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
                 var Data = await _economicData.Create(model);
 
                 //Retornamos datos.
-                return Data != 0 ? Ok(Data) : NoContent();
+                return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {

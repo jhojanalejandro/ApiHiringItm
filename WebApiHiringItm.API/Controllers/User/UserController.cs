@@ -68,6 +68,20 @@ namespace WebApiHiringItm.API.Controllers.User
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllByRoll()
+        {
+            try
+            {
+                var Data = await _user.GetAllByRoll();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Add(UserTDto model)
         {

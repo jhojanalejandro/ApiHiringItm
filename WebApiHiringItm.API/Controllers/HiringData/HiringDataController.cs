@@ -8,7 +8,7 @@ using WebApiHiringItm.MODEL.Dto;
 namespace WebApiHiringItm.API.Controllers.HiringData
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("[controller]/[action]")]
     public class HiringDataController : ControllerBase
     {

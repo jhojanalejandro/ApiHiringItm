@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Core.ContractorPaymentsCore.Interface;
+using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Entities;
 
-namespace WebApiHiringItm.CORE.Core.ContractorPaymentsCore
+namespace WebApiHiringItm.CORE.Core.Contractors
 {
     public class ContractorPaymentCore : IContractorPaymentsCore
     {
@@ -54,28 +54,44 @@ namespace WebApiHiringItm.CORE.Core.ContractorPaymentsCore
             }
         }
 
-        public async Task<int> Create(ContractorPaymentsDto model)
+        public async Task<bool> Create(List<ContractorPaymentsDto> model)
         {
-            var getData = _context.ContractorPayments.Where(x => x.Id == model.Id).FirstOrDefault();
-            if (getData == null)
+            List<ContractorPayments> paymentListAdd = new List<ContractorPayments>();
+            List<ContractorPayments> paymentListUpdate = new List<ContractorPayments>();
+
+            var map = _mapper.Map<List<ContractorPayments>>(model);
+
+            try
             {
-                var map = _mapper.Map<ContractorPayments>(model);
-                var res = _context.ContractorPayments.Add(map);
-                await _context.SaveChangesAsync();
-                return map.Id != 0 ? map.Id : 0;
-            }
-            else
-            {
-                model.Id = getData.Id;
-                var map = _mapper.Map(model, getData);
-                var res = _context.ContractorPayments.Update(map);
-                await _context.SaveChangesAsync();
-                if (res.State != 0)
+                for (var i = 0; i < map.Count; i++)
                 {
-                    return 0;
+                    var getData = _context.ContractorPayments.Where(x => x.FromDate == map[i].FromDate && x.ToDate == map[i].ToDate && x.ContractorId == map[i].ContractorId).FirstOrDefault();
+                    if (getData != null)
+                    {
+                        var mapData = _mapper.Map(model[i], getData);
+                        paymentListUpdate.Add(getData);
+                        map.Remove(map[i]);
+                        i--;
+                    }
+                    else
+                    {
+                        paymentListAdd.Add(map[i]);
+                    }
                 }
+                if (paymentListUpdate.Count > 0)
+                    _context.ContractorPayments.UpdateRange(paymentListUpdate);
+                if (paymentListAdd.Count > 0)
+                    _context.ContractorPayments.AddRange(paymentListAdd);
+                await _context.SaveChangesAsync();
+                return true;
+
             }
-            return 0;
+            catch (Exception ex )
+            {
+                throw new Exception("Error", ex);
+
+            }
+
         }
     }
 }

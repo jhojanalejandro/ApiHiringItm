@@ -9,7 +9,7 @@ using WebApiHiringItm.MODEL.Models;
 namespace WebApiHiringItm.API.Controllers.Contractor
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("[controller]/[action]")]
     public class ContractorController : ControllerBase
     {
