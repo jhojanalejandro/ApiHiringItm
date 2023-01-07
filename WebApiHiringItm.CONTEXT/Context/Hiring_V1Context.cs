@@ -19,6 +19,9 @@ namespace WebApiHiringItm.CONTEXT.Context
         {
         }
 
+
+
+        public virtual DbSet<Actividad> Actividad { get; set; }
         public virtual DbSet<Componente> Componente { get; set; }
         public virtual DbSet<Contractor> Contractor { get; set; }
         public virtual DbSet<ContractorPayments> ContractorPayments { get; set; }
@@ -29,7 +32,6 @@ namespace WebApiHiringItm.CONTEXT.Context
         public virtual DbSet<Files> Files { get; set; }
         public virtual DbSet<FolderContractor> FolderContractor { get; set; }
         public virtual DbSet<HiringData> HiringData { get; set; }
-        public virtual DbSet<Planning> Planning { get; set; }
         public virtual DbSet<ProfessionalRol> ProfessionalRol { get; set; }
         public virtual DbSet<ProjectFolder> ProjectFolder { get; set; }
         public virtual DbSet<Roll> Roll { get; set; }
@@ -39,6 +41,19 @@ namespace WebApiHiringItm.CONTEXT.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Actividad>(entity =>
+            {
+                entity.Property(e => e.NombreActividad)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.HasOne(d => d.IdComponenteNavigation)
+                    .WithMany(p => p.Actividad)
+                    .HasForeignKey(d => d.IdComponente)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Actividad__IdCom__5CD6CB2B");
+            });
+
             modelBuilder.Entity<Componente>(entity =>
             {
                 entity.Property(e => e.NombreComponente)
@@ -282,6 +297,8 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.NombreElemento).HasMaxLength(100);
 
+                entity.Property(e => e.ObjetoElemento).IsUnicode(false);
+
                 entity.Property(e => e.ObligacionesEspecificas).IsUnicode(false);
 
                 entity.Property(e => e.ObligacionesGenerales).IsUnicode(false);
@@ -354,8 +371,6 @@ namespace WebApiHiringItm.CONTEXT.Context
 
             modelBuilder.Entity<HiringData>(entity =>
             {
-                entity.Property(e => e.Actividad).HasMaxLength(100);
-
                 entity.Property(e => e.CargoSupervisorItm).HasMaxLength(100);
 
                 entity.Property(e => e.Cdp).HasMaxLength(50);
@@ -364,11 +379,7 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.Contrato).HasMaxLength(50);
 
-                entity.Property(e => e.Ejecucion).HasMaxLength(200);
-
                 entity.Property(e => e.FechaDeComite).HasColumnType("date");
-
-                entity.Property(e => e.FechaDeInicioProyectado).HasColumnType("date");
 
                 entity.Property(e => e.FechaExaPreocupacional).HasColumnType("date");
 
@@ -385,6 +396,10 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.NoPoliza).HasMaxLength(100);
 
                 entity.Property(e => e.NombreRubro).HasMaxLength(50);
+
+                entity.Property(e => e.NumeroActa)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Rubro).HasMaxLength(30);
 
@@ -407,22 +422,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.HiringData)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK__HiringDat__UserI__440B1D61");
-            });
-
-            modelBuilder.Entity<Planning>(entity =>
-            {
-                entity.ToTable("planning");
-
-                entity.Property(e => e.Consecutive).HasMaxLength(100);
-
-                entity.Property(e => e.Objeto).HasMaxLength(100);
-
-                entity.Property(e => e.TotalValue).HasColumnType("money");
-
-                entity.HasOne(d => d.ProjectFolder)
-                    .WithMany(p => p.Planning)
-                    .HasForeignKey(d => d.ProjectFolderId)
-                    .HasConstraintName("FK__planning__Projec__4F7CD00D");
             });
 
             modelBuilder.Entity<ProfessionalRol>(entity =>
@@ -448,6 +447,10 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasMaxLength(200);
 
                 entity.Property(e => e.GastosOperativos).HasColumnType("money");
+
+                entity.Property(e => e.NumberProject)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ProjectName)
                     .IsRequired()

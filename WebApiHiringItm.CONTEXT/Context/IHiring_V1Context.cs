@@ -20,7 +20,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<Files> Files { get; set; }
         DbSet<FolderContractor> FolderContractor { get; set; }
         DbSet<HiringData> HiringData { get; set; }
-        DbSet<Planning> Planning { get; set; }
+        DbSet<Actividad> Actividad { get; set; }
         DbSet<ProfessionalRol> ProfessionalRol { get; set; }
         DbSet<ProjectFolder> ProjectFolder { get; set; }
         DbSet<Roll> Roll { get; set; }

@@ -16,7 +16,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public DateTime? FechaDeTerminacionAmpliacion { get; set; }
         public string? NoAdicion { get; set; }
         public bool? Modificacion { get; set; }
-        public string TipoContrato { get; set; }
+        public string? TipoContrato { get; set; }
         public bool Update { get; set; }
 
     }

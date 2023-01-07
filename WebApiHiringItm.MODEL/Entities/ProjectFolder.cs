@@ -12,25 +12,25 @@ namespace WebApiHiringItm.MODEL.Entities
             Componente = new HashSet<Componente>();
             Contractor = new HashSet<Contractor>();
             DetalleContrato = new HashSet<DetalleContrato>();
-            Planning = new HashSet<Planning>();
         }
 
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public int UserId { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
         public string DescriptionProject { get; set; }
         public bool? Execution { get; set; }
         public bool? Activate { get; set; }
+        public bool? EnableProject { get; set; }
         public int? ContractorsCant { get; set; }
         public decimal? ValorContrato { get; set; }
         public decimal? GastosOperativos { get; set; }
         public decimal? ValorSubTotal { get; set; }
+        public string NumberProject { get; set; }
 
         public virtual UserT User { get; set; }
         public virtual ICollection<Componente> Componente { get; set; }
         public virtual ICollection<Contractor> Contractor { get; set; }
         public virtual ICollection<DetalleContrato> DetalleContrato { get; set; }
-        public virtual ICollection<Planning> Planning { get; set; }
     }
 }

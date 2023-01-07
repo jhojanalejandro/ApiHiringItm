@@ -15,7 +15,9 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders.Interface
         Task<bool> Create(RProjectForlderDto model);
         Task<bool> UpdateCost(ProjectFolderCostsDto model);
         Task<List<DetalleContratoDto>> GetDetailById(int idContrato);
-        Task<DetalleContratoDto> GetDetailByIdLastDate(int idContrato);
-        Task<List<ProjectFolderDto>> GetAllInProgess();
+        Task<DetalleContratoDto?> GetDetailByIdLastDate(int idContrato);
+        Task<List<ProjectFolderDto>> GetAllInProgess(string typeModule);
+        Task<List<ProjectFolderDto>> GetAllActivate();
+        Task<bool> UpdateState(int id);
     }
 }

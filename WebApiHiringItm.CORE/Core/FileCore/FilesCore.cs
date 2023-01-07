@@ -69,7 +69,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<FilesDto> GetById(int id)
         {
-            var result = _context.Files.Where(x => x.Id == id).FirstOrDefault();
+            var result = _context.Files.FirstOrDefault(x => x.Id == id);
             var map = _mapper.Map<FilesDto>(result);
             return await Task.FromResult(map);
         }
@@ -78,7 +78,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
         {
             try
             {
-                var resultData = _context.Files.Where(x => x.Id == id).FirstOrDefault();
+                var resultData = _context.Files.FirstOrDefault(x => x.Id == id);
                 if (resultData != null)
                 {
                     var result = _context.Files.Remove(resultData);
@@ -97,7 +97,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<bool> Create(FilesDto model)
         {
-            var getData = _context.Files.Where(x => x.Id == model.Id).FirstOrDefault();
+            var getData = _context.Files.FirstOrDefault(x => x.Id == model.Id);
             if (getData == null)
             {
                 var map = _mapper.Map<Files>(model);
@@ -119,7 +119,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<bool> CreateDetail(DetailFileDto model)
         {
-            var getData = _context.DetalleFile.Where(x => x.Id == model.Id).FirstOrDefault();
+            var getData = _context.DetalleFile.FirstOrDefault(x => x.Id == model.Id);
             if (getData == null)
             {
                 var map = _mapper.Map<DetalleFile>(model);

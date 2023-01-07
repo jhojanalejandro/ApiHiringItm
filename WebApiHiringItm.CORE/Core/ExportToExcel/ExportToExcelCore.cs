@@ -92,7 +92,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                         worksheet.Cells[row, 6].Value = elemento.Cpc;
                         worksheet.Cells[row, 7].Value = user.Nombre + " " + user.Apellido;
                         worksheet.Cells[row, 8].Value = user.Identificacion;
-                        worksheet.Cells[row, 9].Value = hdata.Actividad;
+                        worksheet.Cells[row, 9].Value = "";
                         worksheet.Cells[row, 10].Value = contract.DescriptionProject;
                         worksheet.Cells[row, 11].Value = user.ObjetoConvenio;
                         worksheet.Cells[row, 12].Value = elemento.ValorTotal;

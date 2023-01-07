@@ -45,7 +45,7 @@ namespace WebApiHiringItm.CORE.Core.User
         #region PUBLIC METODS
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var getUser = _context.UserT.Where(x => x.UserEmail.Equals(model.Username) && x.UserPassword.Equals(model.Password) && x.RollId != 7).FirstOrDefault();
+            var getUser = _context.UserT.FirstOrDefault(x => x.UserEmail.Equals(model.Username) && x.UserPassword.Equals(model.Password) && x.RollId != 7);
 
             if (getUser == null)
             {
@@ -72,17 +72,17 @@ namespace WebApiHiringItm.CORE.Core.User
         }
         public UserT GetByIdd(int id)
         {
-            return _context.UserT.Where(x => x.Id == id).FirstOrDefault();
+            return _context.UserT.FirstOrDefault(x => x.Id == id);
         }
         public async Task<UserTDto> GetById(int id)
         {
-            var result = _context.UserT.Where(x => x.Id == id).FirstOrDefault();
+            var result = _context.UserT.FirstOrDefault(x => x.Id == id);
             var map = _mapper.Map<UserTDto>(result);
             return await Task.FromResult(map);
         }
         public async Task<bool> GetUserForgetPassword(RetrievePassword model)
         {
-            var result = _context.UserT.Where(x => x.UserEmail == model.UserEmail && x.UserName == model.UserName).FirstOrDefault();
+            var result = _context.UserT.FirstOrDefault(x => x.UserEmail == model.UserEmail && x.UserName == model.UserName);
 
             if (result != null)
             {
@@ -104,7 +104,7 @@ namespace WebApiHiringItm.CORE.Core.User
             if (model.Id != 0)
 
             {
-                var userupdate = _context.UserT.Where(x => x.Id == model.Id).FirstOrDefault();
+                var userupdate = _context.UserT.FirstOrDefault(x => x.Id == model.Id);
                 var map = _mapper.Map(model, userupdate);
                 _context.UserT.Update(map);
                 var res = await _context.SaveChangesAsync();
@@ -118,7 +118,7 @@ namespace WebApiHiringItm.CORE.Core.User
         {
             if (model.Id != 0)
             {
-                var userupdate = _context.UserT.Where(x => x.Id == model.Id).FirstOrDefault();
+                var userupdate = _context.UserT.FirstOrDefault(x => x.Id == model.Id);
                 var map = _mapper.Map(model, userupdate);
                 _context.UserT.Update(map);
                 var res = await _context.SaveChangesAsync();
@@ -134,7 +134,7 @@ namespace WebApiHiringItm.CORE.Core.User
                 if (model.Id != 0)
 
                 {
-                    var userupdate = _context.UserT.Where(x => x.Id == model.Id).FirstOrDefault();
+                    var userupdate = _context.UserT.FirstOrDefault(x => x.Id == model.Id);
                     var map = _mapper.Map(model, userupdate);
                     _context.UserT.Update(map);
                     var res = await _context.SaveChangesAsync();

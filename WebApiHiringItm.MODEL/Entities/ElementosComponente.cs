@@ -26,6 +26,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Consecutivo { get; set; }
         public decimal? ValorTotalContratista { get; set; }
         public decimal? ValorPorDiaContratista { get; set; }
+        public string ObjetoElemento { get; set; }
 
         public virtual Componente IdComponenteNavigation { get; set; }
     }

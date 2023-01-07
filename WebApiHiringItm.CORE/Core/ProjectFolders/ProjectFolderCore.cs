@@ -19,6 +19,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
         private readonly IMapper _mapper;
         private readonly IComponenteCore _componente;
         private readonly IElementosComponenteCore _elementos;
+        private const string MODULONOMINA = "Nomina";
 
         public ProjectFolderCore(Hiring_V1Context context, IMapper mapper, IComponenteCore componente, IElementosComponenteCore elementos)
         {
@@ -50,10 +51,40 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             }
             return await Task.FromResult(map);
         }
-
-        public async Task<List<ProjectFolderDto>> GetAllInProgess()
+        public async Task<List<ProjectFolderDto>> GetAllActivate()
         {
-            var result = _context.ProjectFolder.Where(x => x.Execution == true).ToList();
+            var result = _context.ProjectFolder.Where(x => x.Id > 0 && x.Activate == true).ToList();
+            var map = _mapper.Map<List<ProjectFolderDto>>(result);
+            if (result.Count != 0)
+            {
+                foreach (var item in map)
+                {
+                    item.Componentes = await _componente.Get(item.Id);
+                    if (item.Componentes.Count != 0)
+                    {
+                        foreach (var element in item.Componentes)
+                        {
+                            element.Elementos = await _elementos.Get(element.Id);
+                        }
+                    }
+                    //item.DetalleContrato = await GetDetailById(item.Id);
+                }
+            }
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<ProjectFolderDto>> GetAllInProgess(string typeModule)
+        {
+            List<ProjectFolder> result; 
+            if (typeModule.Equals(MODULONOMINA))
+            {
+                result = _context.ProjectFolder.Where(x => x.Activate == true && x.Execution == true && x.EnableProject == true).ToList();
+            }
+            else
+            {
+                result = _context.ProjectFolder.Where(x => x.Activate == true && x.Execution == true).ToList();
+
+            }
             var map = _mapper.Map<List<ProjectFolderDto>>(result);
             if (result.Count != 0)
             {
@@ -83,7 +114,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
 
         }
 
-        public async Task<DetalleContratoDto> GetDetailByIdLastDate(int idContrato)
+        public async Task<DetalleContratoDto?> GetDetailByIdLastDate(int idContrato)
         {
 
             var result = _context.DetalleContrato.Where(x => x.Idcontrato == idContrato).Select(x => new DetalleContratoDto()
@@ -105,35 +136,14 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
 
         public async Task<ProjectFolderDto> GetById(int id)
         {
-            var result = _context.ProjectFolder.Where(x => x.Id == id).FirstOrDefault();
+            var result = _context.ProjectFolder.FirstOrDefault(x => x.Id == id);
             var map = _mapper.Map<ProjectFolderDto>(result);
             return await Task.FromResult(map);
         }
 
-        public async Task<bool> Delete(int id)
-        {
-            try
-            {
-                var resultData = _context.ProjectFolder.FirstOrDefault(x => x.Id == id);    
-                if (resultData != null)
-                {
-                    var result = _context.ProjectFolder.Remove(resultData);
-                    await _context.SaveChangesAsync();
-
-                }
-                return true;
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error", ex);
-            }
-            return false;
-        }
-
         public async Task<bool> Create(RProjectForlderDto model)
         {
-            var getData = _context.ProjectFolder.Where(x => x.Id == model.Id).FirstOrDefault();
+            var getData = _context.ProjectFolder.FirstOrDefault(x => x.Id == model.Id);
 
             if (getData == null)
             {
@@ -148,20 +158,19 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
                     if (!await CreateDetail(detalle))
                         return false;
                 }
-
                 return res != 0 ? true : false;
             }
             else
             {
                 model.Id = getData.Id;
                 var map = _mapper.Map(model, getData);
-                _context.ProjectFolder.Update(map);
                 if (model.DetalleContratoDto.Idcontrato != 0 && model.DetalleContratoDto.Update)
                 {
                     DetalleContratoDto detalle = model.DetalleContratoDto;
                     if (!await CreateDetail(detalle))
                         return false;
                 }
+                _context.ProjectFolder.Update(map);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
             } 
@@ -169,9 +178,23 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
 
         }
 
+        public async Task<bool> UpdateState(int id)
+        {
+            var getData = _context.ProjectFolder.FirstOrDefault(x => x.Id == id);
+
+            if (getData != null) 
+            {
+                getData.EnableProject = true;
+                _context.ProjectFolder.Update(getData);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+            }
+            return false;
+
+        }
         public async Task<bool> UpdateCost(ProjectFolderCostsDto model)
         {
-            var getData = _context.ProjectFolder.Where(x => x.Id == model.Id).FirstOrDefault();
+            var getData = _context.ProjectFolder.FirstOrDefault(x => x.Id == model.Id);
 
             if (getData != null)
             {
@@ -188,7 +211,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
         #region METODOS PRIVADOS
         private async Task<bool> CreateDetail(DetalleContratoDto model)
         {
-            var getData = _context.DetalleContrato.Where(x => x.FechaFinalizacion == model.FechaFinalizacion).FirstOrDefault();
+            var getData = _context.DetalleContrato.FirstOrDefault(x => x.FechaFinalizacion == model.FechaFinalizacion);
 
             if (getData == null)
             {
@@ -205,8 +228,19 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
             }
-            return false;
+        }
 
+        public async Task<bool> Delete(int id)
+        {
+            var resultData = _context.ProjectFolder.FirstOrDefault(x => x.Id == id);
+            if (resultData != null)
+            {
+                resultData.Activate = false;
+                var result = _context.ProjectFolder.Update(resultData);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
         #endregion
 

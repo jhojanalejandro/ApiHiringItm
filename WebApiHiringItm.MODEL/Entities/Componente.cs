@@ -9,6 +9,7 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public Componente()
         {
+            Actividad = new HashSet<Actividad>();
             ElementosComponente = new HashSet<ElementosComponente>();
             ProfessionalRol = new HashSet<ProfessionalRol>();
         }
@@ -18,6 +19,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public int IdContrato { get; set; }
 
         public virtual ProjectFolder IdContratoNavigation { get; set; }
+        public virtual ICollection<Actividad> Actividad { get; set; }
         public virtual ICollection<ElementosComponente> ElementosComponente { get; set; }
         public virtual ICollection<ProfessionalRol> ProfessionalRol { get; set; }
     }
