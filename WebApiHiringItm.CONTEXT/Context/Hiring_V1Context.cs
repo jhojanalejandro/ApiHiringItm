@@ -18,13 +18,11 @@ namespace WebApiHiringItm.CONTEXT.Context
             : base(options)
         {
         }
-
-
-
         public virtual DbSet<Actividad> Actividad { get; set; }
         public virtual DbSet<Componente> Componente { get; set; }
         public virtual DbSet<Contractor> Contractor { get; set; }
         public virtual DbSet<ContractorPayments> ContractorPayments { get; set; }
+        public virtual DbSet<DetailProjectContractor> DetailProjectContractor { get; set; }
         public virtual DbSet<DetalleContrato> DetalleContrato { get; set; }
         public virtual DbSet<DetalleFile> DetalleFile { get; set; }
         public virtual DbSet<EconomicdataContractor> EconomicdataContractor { get; set; }
@@ -51,20 +49,20 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.Actividad)
                     .HasForeignKey(d => d.IdComponente)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Actividad__IdCom__5CD6CB2B");
+                    .HasConstraintName("FK__Actividad__IdCom__45F365D3");
             });
 
             modelBuilder.Entity<Componente>(entity =>
             {
                 entity.Property(e => e.NombreComponente)
                     .IsRequired()
-                    .HasMaxLength(30);
+                    .HasMaxLength(100);
 
                 entity.HasOne(d => d.IdContratoNavigation)
                     .WithMany(p => p.Componente)
                     .HasForeignKey(d => d.IdContrato)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Component__IdCon__4BAC3F29");
+                    .HasConstraintName("FK__Component__IdCon__5070F446");
             });
 
             modelBuilder.Entity<Contractor>(entity =>
@@ -129,7 +127,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .IsUnicode(false);
 
                 entity.Property(e => e.FechaInicio)
-                    .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
@@ -216,12 +213,46 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.ContractorPayments)
                     .HasForeignKey(d => d.ContractorId)
-                    .HasConstraintName("FK__Contracto__Contr__4D94879B");
+                    .HasConstraintName("FK__Contracto__Contr__52593CB8");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.ContractorPayments)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Contracto__UserI__4E88ABD4");
+                    .HasConstraintName("FK__Contracto__UserI__534D60F1");
+            });
+
+            modelBuilder.Entity<DetailProjectContractor>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ContractId).HasColumnName("contractId");
+
+                entity.Property(e => e.ContractorId).HasColumnName("contractorId");
+
+                entity.HasOne(d => d.Componente)
+                    .WithMany(p => p.DetailProjectContractor)
+                    .HasForeignKey(d => d.ComponenteId)
+                    .HasConstraintName("FK__DetailPro__Compo__4F7CD00D");
+
+                entity.HasOne(d => d.Contract)
+                    .WithMany(p => p.DetailProjectContractor)
+                    .HasForeignKey(d => d.ContractId)
+                    .HasConstraintName("FK__DetailPro__contr__4BAC3F29");
+
+                entity.HasOne(d => d.Contractor)
+                    .WithMany(p => p.DetailProjectContractor)
+                    .HasForeignKey(d => d.ContractorId)
+                    .HasConstraintName("FK__DetailPro__contr__4CA06362");
+
+                entity.HasOne(d => d.Element)
+                    .WithMany(p => p.DetailProjectContractor)
+                    .HasForeignKey(d => d.ElementId)
+                    .HasConstraintName("FK__DetailPro__Eleme__4E88ABD4");
+
+                entity.HasOne(d => d.HiringData)
+                    .WithMany(p => p.DetailProjectContractor)
+                    .HasForeignKey(d => d.HiringDataId)
+                    .HasConstraintName("FK__DetailPro__Hirin__4D94879B");
             });
 
             modelBuilder.Entity<DetalleContrato>(entity =>
@@ -243,7 +274,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.IdcontratoNavigation)
                     .WithMany(p => p.DetalleContrato)
                     .HasForeignKey(d => d.Idcontrato)
-                    .HasConstraintName("FK__DetalleCo__Idcon__534D60F1");
+                    .HasConstraintName("FK__DetalleCo__Idcon__571DF1D5");
             });
 
             modelBuilder.Entity<DetalleFile>(entity =>
@@ -258,7 +289,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.DetalleFile)
                     .HasForeignKey(d => d.FileId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__DetalleFi__FileI__5441852A");
+                    .HasConstraintName("FK__DetalleFi__FileI__5812160E");
             });
 
             modelBuilder.Entity<EconomicdataContractor>(entity =>
@@ -282,7 +313,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.EconomicdataContractor)
                     .HasForeignKey(d => d.ContractorId)
-                    .HasConstraintName("FK__Economicd__Contr__5070F446");
+                    .HasConstraintName("FK__Economicd__Contr__5441852A");
             });
 
             modelBuilder.Entity<ElementosComponente>(entity =>
@@ -323,7 +354,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.ElementosComponente)
                     .HasForeignKey(d => d.IdComponente)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Elementos__IdCom__52593CB8");
+                    .HasConstraintName("FK__Elementos__IdCom__5629CD9C");
             });
 
             modelBuilder.Entity<Files>(entity =>
@@ -332,23 +363,23 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.FilesName).HasMaxLength(100);
 
-                entity.Property(e => e.ModifyDate).HasColumnType("date");
-
-                entity.Property(e => e.Mont)
-                    .HasMaxLength(15)
-                    .HasColumnName("mont");
+                entity.Property(e => e.MonthPayment).HasMaxLength(10);
 
                 entity.Property(e => e.RegisterDate).HasColumnType("date");
 
                 entity.Property(e => e.TypeFile).HasMaxLength(10);
 
                 entity.Property(e => e.TypeFilePayment).HasMaxLength(50);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Files)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Files__UserId__48CFD27E");
             });
 
             modelBuilder.Entity<FolderContractor>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
-
                 entity.Property(e => e.FolderName)
                     .IsRequired()
                     .HasMaxLength(200);
@@ -356,17 +387,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.ModifyDate).HasColumnType("date");
 
                 entity.Property(e => e.RegisterDate).HasColumnType("date");
-
-                entity.HasOne(d => d.Contractor)
-                    .WithMany(p => p.FolderContractor)
-                    .HasForeignKey(d => d.ContractorId)
-                    .HasConstraintName("FK__FolderCon__Contr__46E78A0C");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.FolderContractor)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__FolderCon__UserI__45F365D3");
             });
 
             modelBuilder.Entity<HiringData>(entity =>
@@ -416,12 +436,12 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.HiringData)
                     .HasForeignKey(d => d.ContractorId)
-                    .HasConstraintName("FK__HiringDat__Contr__44FF419A");
+                    .HasConstraintName("FK__HiringDat__Contr__47DBAE45");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.HiringData)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__HiringDat__UserI__440B1D61");
+                    .HasConstraintName("FK__HiringDat__UserI__46E78A0C");
             });
 
             modelBuilder.Entity<ProfessionalRol>(entity =>
@@ -435,7 +455,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Component)
                     .WithMany(p => p.ProfessionalRol)
                     .HasForeignKey(d => d.ComponentId)
-                    .HasConstraintName("FK__Professio__Compo__5165187F");
+                    .HasConstraintName("FK__Professio__Compo__5535A963");
             });
 
             modelBuilder.Entity<ProjectFolder>(entity =>
@@ -464,7 +484,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.ProjectFolder)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ProjectFo__UserI__4316F928");
+                    .HasConstraintName("FK__ProjectFo__UserI__44FF419A");
             });
 
             modelBuilder.Entity<Roll>(entity =>
@@ -496,7 +516,9 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.PhoneNumber).HasMaxLength(15);
 
-                entity.Property(e => e.UserEmail).HasMaxLength(50);
+                entity.Property(e => e.UserEmail)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.UserName)
                     .IsRequired()
@@ -510,8 +532,9 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.UserT)
                     .HasForeignKey(d => d.RollId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserT__RollId__4CA06362");
+                    .HasConstraintName("FK__UserT__RollId__5165187F");
             });
+
 
             OnModelCreatingPartial(modelBuilder);
         }

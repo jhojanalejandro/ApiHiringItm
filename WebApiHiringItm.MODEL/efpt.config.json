@@ -31,6 +31,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[DetailProjectContractor]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[DetalleContrato]",
          "ObjectType": 0
       },

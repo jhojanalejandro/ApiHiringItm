@@ -11,3 +11,4 @@ namespace WebApiHiringItm.CORE.Helpers
         public string Secret { get; set; }
     }
 }
+    

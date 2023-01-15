@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Data.Entity;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
@@ -28,16 +29,17 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             return await Task.FromResult(map);
         }
 
-        public async Task<HiringDataDto> GetById(int id)
+        public async Task<HiringDataDto> GetById(int contractorId)
         {
-            var result = _context.HiringData.Where(x => x.ContractorId == id).FirstOrDefault();
+            var result = _context.HiringData.FirstOrDefault(x => x.ContractorId == contractorId);
             var map = _mapper.Map<HiringDataDto>(result);
             return await Task.FromResult(map);
         }
 
         public async Task<MinutaDto> GetByIdMinuta(int[] id)
         {
-            var hiring = _context.HiringData.FirstOrDefault(x => x.ContractorId == id[0]);
+            var hiring = _context.DetailProjectContractor
+                .Include(hd => hd.HiringData).FirstOrDefault(x => x.ContractorId == id[0]);
             var elemento = _context.ElementosComponente.FirstOrDefault(x => x.Id == id[1]);
             MinutaDto minutaDto = new MinutaDto();
             var hiringMap = _mapper.Map<HiringDataDto>(hiring);
@@ -63,13 +65,10 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                     {
                         return true;
                     }
-
                 }
-
             }
             catch (Exception e)
             {
-
                 new Exception("Error", e);
             }
             return false;
@@ -101,10 +100,12 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 var map = _mapper.Map<List<HiringData>>(model);
                 for(var i= 0; i< map.Count; i++)
                 {
-                    var getData = _context.HiringData.Where(x => x.ContractorId == map[i].ContractorId).FirstOrDefault();
+                    var getData = _context.HiringData.FirstOrDefault(x => x.ContractorId == model[i].ContractorId);
                     if (getData != null)
                     {
-                        hiringDataListUpdate.Add(getData);
+                        model[i].Id = getData.Id;
+                        var mapData = _mapper.Map(model[i], getData);
+                        hiringDataListUpdate.Add(mapData);
                         map.Remove(map[i]);
                         i--;
                     }

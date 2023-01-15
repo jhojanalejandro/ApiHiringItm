@@ -20,10 +20,10 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string? TypeFilePayment { get; set; }
-        public string? Mont { get; set; }
+        public string? MonthPayment { get; set; }
         public bool? Passed { get; set; }
         public int? ContractId { get; set; }
-
+        public int? FolderId { get; set; }  
 
     }
 }

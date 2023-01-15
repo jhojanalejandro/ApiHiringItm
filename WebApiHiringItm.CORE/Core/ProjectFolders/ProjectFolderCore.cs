@@ -133,7 +133,6 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
         }
 
 
-
         public async Task<ProjectFolderDto> GetById(int id)
         {
             var result = _context.ProjectFolder.FirstOrDefault(x => x.Id == id);
@@ -182,13 +181,16 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
         {
             var getData = _context.ProjectFolder.FirstOrDefault(x => x.Id == id);
 
-            if (getData != null) 
+            if (getData != null)
             {
                 getData.EnableProject = true;
+                getData.CompanyName = getData.CompanyName;
+                getData.Activate = getData.Activate;
                 _context.ProjectFolder.Update(getData);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
             }
+
             return false;
 
         }
@@ -211,7 +213,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
         #region METODOS PRIVADOS
         private async Task<bool> CreateDetail(DetalleContratoDto model)
         {
-            var getData = _context.DetalleContrato.FirstOrDefault(x => x.FechaFinalizacion == model.FechaFinalizacion);
+            var getData = _context.DetalleContrato.FirstOrDefault(x => x.FechaFinalizacion == model.FechaFinalizacion && x.Idcontrato == model.Idcontrato);
 
             if (getData == null)
             {

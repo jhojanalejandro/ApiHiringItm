@@ -10,7 +10,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
     {
         public int Id { get; set; }
         public string Type { get; set; }
-        public int IdContractor { get; set; }
+        public int[] IdContractor { get; set; }
 
     }
 }

@@ -36,7 +36,6 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             }
             else
             {
-
                 _context.ElementosComponente.Update(exist);
             }
             await _save.SaveChangesDB();

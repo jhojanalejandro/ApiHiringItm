@@ -11,17 +11,18 @@ namespace WebApiHiringItm.MODEL.Entities
         {
             Componente = new HashSet<Componente>();
             Contractor = new HashSet<Contractor>();
+            DetailProjectContractor = new HashSet<DetailProjectContractor>();
             DetalleContrato = new HashSet<DetalleContrato>();
         }
 
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public int UserId { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
         public string DescriptionProject { get; set; }
-        public bool? Execution { get; set; }
-        public bool? Activate { get; set; }
-        public bool? EnableProject { get; set; }
+        public bool Execution { get; set; }
+        public bool Activate { get; set; }
+        public bool EnableProject { get; set; }
         public int? ContractorsCant { get; set; }
         public decimal? ValorContrato { get; set; }
         public decimal? GastosOperativos { get; set; }
@@ -31,6 +32,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual UserT User { get; set; }
         public virtual ICollection<Componente> Componente { get; set; }
         public virtual ICollection<Contractor> Contractor { get; set; }
+        public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
         public virtual ICollection<DetalleContrato> DetalleContrato { get; set; }
     }
 }

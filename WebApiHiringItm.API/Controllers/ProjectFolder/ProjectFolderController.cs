@@ -18,16 +18,16 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
             _project = proeject;
         }
 
-        [HttpGet("{inProgress}")]
-        public async Task<IActionResult> GetAll(bool inProgress)
+        [HttpGet]
+        public async Task<IActionResult> GetAll(bool inProgress, string tipoModulo)
         {
             try
             {
                 List<ProjectFolderDto> projectFolders = new List<ProjectFolderDto>();
                 if (inProgress)
-                    projectFolders = await _project.GetAllInProgess();
+                    projectFolders = await _project.GetAllInProgess(tipoModulo);
                 else
-                    projectFolders = await _project.GetAll();
+                    projectFolders = await _project.GetAllActivate();
 
                 return projectFolders != null ? Ok(projectFolders) : NoContent();
             }
@@ -89,10 +89,7 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _project.Create(model);
-
-                //Retornamos datos.
                 return Data == true ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -102,6 +99,23 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
             }
         }
 
+
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateState(int id)
+        {
+            try
+            {
+                var Data = await _project.UpdateState(id);
+
+                return Data == true ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
 
         [HttpPost]
         public async Task<IActionResult> UpdateCost(ProjectFolderCostsDto model)

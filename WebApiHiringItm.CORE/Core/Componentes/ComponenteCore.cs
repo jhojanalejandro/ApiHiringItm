@@ -11,13 +11,13 @@ namespace WebApiHiringItm.CORE.Core.Componentes
     public class ComponenteCore : IComponenteCore
     {
         #region Fields
-        private readonly IHiring_V1Context _context;
+        private readonly Hiring_V1Context _context;
         private readonly IMapper _mapper;
         private readonly ISaveChangesExitHelper _save;
         #endregion
 
         #region Builder
-        public ComponenteCore(IHiring_V1Context context, IMapper mapper, ISaveChangesExitHelper save)
+        public ComponenteCore(Hiring_V1Context context, IMapper mapper, ISaveChangesExitHelper save)
         {
             _context = context;
             _mapper = mapper;
@@ -28,23 +28,47 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         #region Methods
         public async Task<bool> Add(ComponenteDto model)
         {
-            var map = _mapper.Map<Componente>(model);
-            var exist = _context.Componente.Where(x => x.Id == model.Id).FirstOrDefault();
+            var exist = _context.Componente.FirstOrDefault(x => x.Id == model.Id);
 
             if (exist == null)
             {
+                var map = _mapper.Map<Componente>(model);
                 _context.Componente.Add(map);
-                await _save.SaveChangesDB();
+                _save.SaveChangesDB();
                 return await Task.FromResult(true);
             }
             else
             {
-                _context.Componente.Update(map);
-                await _save.SaveChangesDB();
+                var mapUpdate = _mapper.Map(model,exist);
+                _context.Componente.Update(mapUpdate);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+
                 return await Task.FromResult(true);
             }
         }
 
+        public async Task<bool> AddActivity(ActivityDto model)
+        {
+            var exist = _context.Actividad.FirstOrDefault(x => x.Id == model.Id);
+
+            if (exist == null)
+            {
+                var map = _mapper.Map<Actividad>(model);
+                _context.Actividad.Add(map);
+                _save.SaveChangesDB();
+                return await Task.FromResult(true);
+            }
+            else
+            {
+                var mapUpdate = _mapper.Map(model, exist);
+                _context.Actividad.Update(mapUpdate);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+
+                return await Task.FromResult(true);
+            }
+        }
         public async Task<List<ComponenteDto>?> Get(int id)
         {
             try
@@ -73,7 +97,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
 
         public async Task<ComponenteDto> GetById(int id)
         {
-            var result = _context.Componente.Where(x => x.Id.Equals(id)).FirstOrDefault();
+            var result = _context.Componente.FirstOrDefault(x => x.Id.Equals(id));
             var map = _mapper.Map<ComponenteDto>(result);
             return await Task.FromResult(map);
         }
@@ -83,23 +107,27 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             try
             {
                 var resultData = _context.ElementosComponente.Where(x => x.IdComponente == id).ToList();
-                foreach (var item in resultData)
+                List<ElementosComponente?> elementComponent = new List<ElementosComponente?>();
+                if (resultData != null)
                 {
-                    var element = _context.ElementosComponente.Where(x => x.Id == item.Id).FirstOrDefault();
-                    _context.ElementosComponente.Remove(element);
-                    await _save.SaveChangesDB();
-                    return await Task.FromResult(true);
+                    foreach (var item in resultData)
+                    {
+                        var element = _context.ElementosComponente.FirstOrDefault(x => x.Id == item.Id);
+                        elementComponent.Add(element);
+                    }
                 }
-                var componentData = _context.Componente.Where(x => x.Id == id).FirstOrDefault();
+
+                var componentData = _context.Componente.FirstOrDefault(x => x.Id == id);
                 if (resultData != null)
                 {
                     var result = _context.Componente.Remove(componentData);
-                    await _save.SaveChangesDB();
-                    return await Task.FromResult(true);
-
                 }
-                return true;
-
+                if (elementComponent.Count > 0)
+                {
+                    _context.ElementosComponente.RemoveRange(elementComponent);
+                }
+                await _save.SaveChangesDB();
+                return await Task.FromResult(true);
             }
             catch (Exception ex)
             {

@@ -39,6 +39,7 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<ProjectFolderCostsDto, ProjectFolder>().ReverseMap();
             CreateMap<CuentaCobroDto, Contractor>().ReverseMap();
             CreateMap<DetailFileDto, DetalleFile>().ReverseMap();
+            CreateMap<Actividad, ActivityDto>().ReverseMap();
 
 
         }

@@ -19,12 +19,12 @@ namespace WebApiHiringItm.API.Controllers.FolderContractor
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAll(int id)
+        public async Task<IActionResult> GetAll(int contractorId, int contractId)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _folder.GetAllById(id);
+                var Data = await _folder.GetAllById(contractorId, contractId);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();

@@ -10,8 +10,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public Contractor()
         {
             ContractorPayments = new HashSet<ContractorPayments>();
+            DetailProjectContractor = new HashSet<DetailProjectContractor>();
             EconomicdataContractor = new HashSet<EconomicdataContractor>();
-            FolderContractor = new HashSet<FolderContractor>();
             HiringData = new HashSet<HiringData>();
         }
 
@@ -55,12 +55,13 @@ namespace WebApiHiringItm.MODEL.Entities
         public int? ComponenteId { get; set; }
         public int? ElementId { get; set; }
         public string ObjetoConvenio { get; set; }
+        public bool? Habilitado { get; set; }
 
         public virtual ProjectFolder Contract { get; set; }
         public virtual UserT User { get; set; }
         public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
+        public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
         public virtual ICollection<EconomicdataContractor> EconomicdataContractor { get; set; }
-        public virtual ICollection<FolderContractor> FolderContractor { get; set; }
         public virtual ICollection<HiringData> HiringData { get; set; }
     }
 }

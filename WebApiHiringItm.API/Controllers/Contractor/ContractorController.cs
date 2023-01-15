@@ -79,10 +79,8 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _contactor.Create(model);
 
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -112,10 +110,8 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _contactor.Create(model);
 
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -146,10 +142,8 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _contactor.SendContractorCount(ids);
 
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

@@ -37,6 +37,20 @@ namespace WebApiHiringItm.API.Controllers.Componente
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddActivity(ActivityDto model)
+        {
+            try
+            {
+                var res = await _componente.AddActivity(model);
+                return res != false ? Ok(res) : BadRequest();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> Get(int id)

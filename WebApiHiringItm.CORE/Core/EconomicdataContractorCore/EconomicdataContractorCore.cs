@@ -49,10 +49,9 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
 
         public async Task<bool> Delete(int id)
         {
-            var getData = _context.EconomicdataContractor.Where(x => x.Id == id).FirstOrDefault();
+            var getData = _context.EconomicdataContractor.FirstOrDefault(x => x.Id == id);
             if (getData != null)
             {
-
                 var result = _context.EconomicdataContractor.Remove(getData);
                 await _context.SaveChangesAsync();
                 return true;
@@ -67,17 +66,17 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
         {
             List<EconomicdataContractor> economicDataListAdd = new List<EconomicdataContractor>();
             List<EconomicdataContractor> economicDataListUpdate = new List<EconomicdataContractor>();
-
-
+    
             var map = _mapper.Map<List<EconomicdataContractor>>(model);
 
             try
             {
                 for (var i = 0; i < map.Count; i++)
                 {
-                    var getData = _context.EconomicdataContractor.FirstOrDefault(x => x.ContractorId == map[i].ContractorId && x.Id == map[i].Id);
+                    var getData = _context.EconomicdataContractor.FirstOrDefault(x => x.ContractorId.Equals(map[i].ContractorId));
                     if (getData != null)
                     {
+                        model[i].Id = getData.Id;
                         var mapData = _mapper.Map(model[i], getData);
                         economicDataListUpdate.Add(mapData);
                         map.Remove(map[i]);

@@ -32,6 +32,9 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 {
     public class ContractorCore : IContractorCore
     {
+        private const string NOASIGNADA = "NoAsignada";
+        private const bool HABILITADO = true;
+        private const string TIPOASIGNACION = "Elemento";
         private readonly Hiring_V1Context _context;
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
@@ -44,7 +47,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             _appSettings = appSettings.Value;
             _mailSettings = mailSettings.Value;
         }
-
         public async Task<List<ContractorDto>> GetAll()
         {
             var result = _context.Contractor.Where(x => x.Id > 0).ToList();
@@ -55,7 +57,8 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
         public async Task<List<ContractorDto>> GetByIdFolder(int id)
         {
-            var contractor = _context.Contractor.Where(x => x.ContractId == id).ToList();
+
+            var contractor = _context.Contractor.Where(x => x.ContractId == id && x.Habilitado == HABILITADO).ToList();
             var map = _mapper.Map<List<ContractorDto>>(contractor);
             return await Task.FromResult(map);
         }
@@ -80,7 +83,8 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                 var resultData = _context.Contractor.Where(x => x.Id == id).FirstOrDefault();
                 if (resultData != null)
                 {
-                    var result = _context.Contractor.Remove(resultData);
+                    resultData.Habilitado = false;
+                    var result = _context.Contractor.Update(resultData);
                     await _context.SaveChangesAsync();
 
                 }
@@ -166,6 +170,9 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             DataColumn objeto = new DataColumn("Objeto Convenio", typeof(string));
             objeto.DefaultValue = "vacio";
             dataTable.Columns.Add(objeto);
+            DataColumn habiliatdo = new DataColumn("Habilitado", typeof(bool));
+            habiliatdo.DefaultValue = true;
+            dataTable.Columns.Add(habiliatdo);
             dataTable.Columns.Remove("Nombre Completo");
             for (int i = 0; i < dataTable.Columns.Count; i++)
             {
@@ -201,8 +208,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
 
             }
-
-   
             test.Close();
             var conn = _context.Database.GetConnectionString();
             //File.Delete(filePath);
@@ -300,7 +305,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             }
             else
             {
-                var listContractor = _context.Contractor.ToList();
+                var listContractor = _context.Contractor.Where(x => x.ClaveUsuario.Equals(NOASIGNADA)).ToList();
                 foreach (var item in listContractor)
                 {
                     item.ClaveUsuario = await createPassword(item.Correo);
@@ -372,7 +377,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
                 throw new Exception("Error", ex);
             }
-
             return false;
 
         }
@@ -406,41 +410,40 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         }
 
         public async Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model)
-            {
+        {
             if (model.Id != 0)
-
             {
                 try
                 {
-                    if (model.Type == "Elemento")
+                    List<Contractor> asignDataListUpdate = new List<Contractor>();
+                    for (int i= 0; i < model.IdContractor.Length; i++)
                     {
-                        var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor)).FirstOrDefault();
-                        contractorUpdate.ElementId = model.Id;
-                        _context.Contractor.Update(contractorUpdate);
-                        var res = await _context.SaveChangesAsync();
-                        return res != 0 ? true : false;
+                        if (model.Type == TIPOASIGNACION)
+                        {
+                            var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor[i])).FirstOrDefault();
+                            contractorUpdate.ElementId = model.Id;
+                            asignDataListUpdate.Add(contractorUpdate);
+                        }
+                        else
+                        {
+                            var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor[i])).FirstOrDefault();
+                            contractorUpdate.ComponenteId = model.Id;
+                            asignDataListUpdate.Add(contractorUpdate);
+
+                        }
                     }
-                    else
-                    {
-                        var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor)).FirstOrDefault();
-                        contractorUpdate.ComponenteId = model.Id;
-                        _context.Contractor.Update(contractorUpdate);
-                        var res = await _context.SaveChangesAsync();
-                        return res != 0 ? true : false;
-                    }
+                    _context.Contractor.UpdateRange(asignDataListUpdate);
+                    var res = await _context.SaveChangesAsync();
+                    return res != 0 ? true : false;
+
                 }
                 catch (Exception ex)
                 {
                         throw new Exception("Error", ex);
                 }
-             
-
-
             }
             return false;
         }
-
-
         #endregion
     }
 }

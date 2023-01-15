@@ -80,10 +80,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _file.GetById(id);
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -93,14 +90,12 @@ namespace WebApiHiringItm.API.Controllers.Files
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GetAllFileById(GetFileDto model)
+        [HttpGet]
+        public async Task<IActionResult> GetFileContractorByFolder(int contractorId, int folderId, int contractId)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _file.GetAllById(model);
-
+                var Data = await _file.GetFileContractorByFolder(contractorId, folderId, contractId);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -109,6 +104,19 @@ namespace WebApiHiringItm.API.Controllers.Files
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetFileContractorByContract(int contractorId, int contractId)
+        {
+            try
+            {
+                var Data = await _file.GetAllByContract(contractorId, contractId);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAllFileContractById(int id)
         {
@@ -125,13 +133,12 @@ namespace WebApiHiringItm.API.Controllers.Files
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GetAllFileByDatePayments(GetFilesPaymentDto model)
+        [HttpGet]
+        public async Task<IActionResult> GetAllFileByDatePayments(int contractId, string type, string date)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _file.GetAllByDate(model);
+                var Data = await _file.GetAllByDate(contractId, type, date);
 
                 return Data != null ? Ok(Data) : NoContent();
             }
@@ -146,7 +153,6 @@ namespace WebApiHiringItm.API.Controllers.Files
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _file.GetAllByType(model);
 
                 return Data != null ? Ok(Data) : NoContent();
@@ -161,10 +167,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _file.Delete(id);
-
-                //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

@@ -10,12 +10,10 @@ namespace WebApiHiringItm.MODEL.Entities
         public int Id { get; set; }
         public int UserId { get; set; }
         public int? ContractorId { get; set; }
+        public int? ContractId { get; set; }
         public string FolderName { get; set; }
         public string DescriptionProject { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
-
-        public virtual Contractor Contractor { get; set; }
-        public virtual UserT User { get; set; }
     }
 }
