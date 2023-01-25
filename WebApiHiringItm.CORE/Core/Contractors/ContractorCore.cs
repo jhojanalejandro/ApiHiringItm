@@ -54,10 +54,10 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             return await Task.FromResult(map);
         }
 
-        public async Task<List<ContractorDto>> GetSeveralContractsByContractor(string contractorId)
+        public async Task<List<ContractsContractorDto>> GetSeveralContractsByContractor(string contractorId)
         {
             var result = _context.DetailProjectContractor.Where(x => x.Id.Equals(contractorId)).ToList();
-            var map = _mapper.Map<List<ContractorDto>>(result);
+            var map = _mapper.Map<List<ContractsContractorDto>>(result);
             return await Task.FromResult(map);
         }
 
