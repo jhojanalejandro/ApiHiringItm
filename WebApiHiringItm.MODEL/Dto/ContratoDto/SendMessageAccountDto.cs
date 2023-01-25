@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
 {
     public class SendMessageAccountDto
     {
-        public int IdContrato { get; set; }   
-        public int?[] IdContratistas { get; set; }
+        public Guid IdContrato { get; set; }   
+        public Guid?[] IdContratistas { get; set; }
     }
 }

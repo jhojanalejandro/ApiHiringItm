@@ -10,6 +10,6 @@ namespace WebApiHiringItm.MODEL.Dto.Componentes
     {
         public int Id { get; set; }
         public string NombreActividad { get; set; }
-        public int IdComponente { get; set; }
+        public Guid IdComponente { get; set; }
     }
 }

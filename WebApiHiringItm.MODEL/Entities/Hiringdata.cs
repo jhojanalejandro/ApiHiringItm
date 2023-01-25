@@ -12,8 +12,8 @@ namespace WebApiHiringItm.MODEL.Entities
             DetailProjectContractor = new HashSet<DetailProjectContractor>();
         }
 
-        public int Id { get; set; }
-        public int? ContractorId { get; set; }
+        public Guid Id { get; set; }
+        public Guid? ContractorId { get; set; }
         public int? UserId { get; set; }
         public DateTime? FechaFinalizacionConvenio { get; set; }
         public string Contrato { get; set; }

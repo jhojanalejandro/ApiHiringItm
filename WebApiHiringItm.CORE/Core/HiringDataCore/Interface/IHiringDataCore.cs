@@ -11,10 +11,10 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore.Interface
     public interface IHiringDataCore
     {
         Task<List<HiringDataDto>> GetAll();
-        Task<HiringDataDto> GetById(int id);
-        Task<bool> Delete(int id);
+        Task<HiringDataDto> GetById(Guid id, Guid contractId);
+        Task<bool> Delete(Guid id);
         Task<bool> Create(List<HiringDataDto> model);
-        Task<MinutaDto> GetByIdMinuta(int[] id);
+        Task<MinutaDto> GetByIdMinuta(Guid[] id);
 
     }
 }

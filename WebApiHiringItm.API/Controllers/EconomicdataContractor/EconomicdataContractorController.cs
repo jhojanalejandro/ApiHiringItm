@@ -36,7 +36,7 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetById(int[] id)
+        public async Task<IActionResult> GetById(Guid[] id)
         {
             try
             {
@@ -76,10 +76,8 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _economicData.Create(model);
 
-                //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

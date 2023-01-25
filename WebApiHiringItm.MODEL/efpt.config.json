@@ -63,10 +63,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ProfessionalRol]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[ProjectFolder]",
          "ObjectType": 0
       },
@@ -91,6 +87,7 @@
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseFluentApiOnly": true,
    "UseHandleBars": false,

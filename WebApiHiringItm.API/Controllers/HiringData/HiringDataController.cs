@@ -37,15 +37,12 @@ namespace WebApiHiringItm.API.Controllers.HiringData
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet]
+        public async Task<IActionResult> GetById(Guid contractorId, Guid contractId)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _hiringData.GetById(id);
-
-                //Retornamos datos.
+                var Data = await _hiringData.GetById(contractorId, contractId);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -56,7 +53,7 @@ namespace WebApiHiringItm.API.Controllers.HiringData
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetByIdMinuta(int[] id)
+        public async Task<IActionResult> GetByIdMinuta(Guid[] id)
         {
             try
             {
@@ -93,7 +90,7 @@ namespace WebApiHiringItm.API.Controllers.HiringData
 
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {

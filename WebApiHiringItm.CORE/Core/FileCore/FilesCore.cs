@@ -29,7 +29,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             _mapper = mapper;
         }
 
-        public async Task<List<FilesDto>> GetFileContractorByFolder(int contractorId, int folderId, int contractId)
+        public async Task<List<FilesDto>> GetFileContractorByFolder(Guid contractorId, int folderId, Guid contractId)
         {
             var result = _context.Files
                 .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId.Equals(contractId) && x.FolderId == folderId).ToList();
@@ -46,7 +46,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
         }
 
-        public async Task<List<FilesDto>> GetAllByContract(int contractorId, int contractId)
+        public async Task<List<FilesDto>> GetAllByContract(Guid contractorId, Guid contractId)
         {
             var result = _context.Files
                 .Where(x => x.ContractorId == contractorId && x.ContractId == contractId).ToList();
@@ -68,7 +68,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
         }
 
-        public async Task<List<FilesDto>> GetAllFileByIdContract(int id)
+        public async Task<List<FilesDto>> GetAllFileByIdContract(Guid id)
         {
             var result = _context.Files.Where(x => x.ContractId.Equals(id) && x.TypeFilePayment.Equals(CONTRATO)).ToList();
             var map = _mapper.Map<List<FilesDto>>(result);
@@ -76,16 +76,9 @@ namespace WebApiHiringItm.CORE.Core.FileCore
         }
 
 
-        public async Task<List<GetFilesPaymentDto>> GetAllByDate(int contractId, string type, string date)
+        public async Task<List<GetFilesPaymentDto>> GetAllByDate(Guid contractId, string type, string date)
         {
             var result = _context.Files.Where(x => x.ContractId.Equals(contractId) && x.MonthPayment.Equals(date) && x.TypeFilePayment.Equals(type)).ToList();
-            var map = _mapper.Map<List<GetFilesPaymentDto>>(result);
-            return await Task.FromResult(map);
-        }
-
-        public async Task<List<GetFilesPaymentDto>> GetAllByType(GetFilesPaymentDto model)
-        {
-            var result = _context.Files.Where(x => x.ContractId.Equals(model.ContractId)  && x.TypeFilePayment.Equals(model.TypeFilePayment)).ToList();
             var map = _mapper.Map<List<GetFilesPaymentDto>>(result);
             return await Task.FromResult(map);
         }
@@ -93,7 +86,10 @@ namespace WebApiHiringItm.CORE.Core.FileCore
         public async Task<FilesDto> GetById(int id)
         {
             var result = _context.Files.FirstOrDefault(x => x.Id == id);
+            var resultFile = _context.DetalleFile.FirstOrDefault(df => df.FileId == id);
+            var mapDf = _mapper.Map<DetailFileDto>(resultFile);
             var map = _mapper.Map<FilesDto>(result);
+            map.DetailFile = mapDf;
             return await Task.FromResult(map);
         }
 
@@ -161,12 +157,17 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             {
                 var map = _mapper.Map<DetalleFile>(model);
                 _context.DetalleFile.Add(map);
+                var fileData = _context.Files.FirstOrDefault(fl => fl.Id == model.FileId);
+                if (fileData != null)
+                    fileData.Passed = false;
+                _context.Files.Update(fileData);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
             }
             else
             {
                 model.Id = getData.Id;
+                model.Motivo += getData.Motivo;
                 var map = _mapper.Map(model, getData);
                 _context.DetalleFile.Update(map);
                 var res = await _context.SaveChangesAsync();
@@ -239,7 +240,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 sBase64 = null;
             }
         }
-
 
 
     }

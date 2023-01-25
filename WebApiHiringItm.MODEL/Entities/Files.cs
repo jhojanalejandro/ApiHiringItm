@@ -13,8 +13,8 @@ namespace WebApiHiringItm.MODEL.Entities
         }
 
         public int Id { get; set; }
-        public int ContractorId { get; set; }
-        public int? ContractId { get; set; }
+        public Guid ContractorId { get; set; }
+        public Guid? ContractId { get; set; }
         public string FilesName { get; set; }
         public string Filedata { get; set; }
         public string TypeFile { get; set; }

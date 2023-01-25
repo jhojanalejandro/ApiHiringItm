@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public int Id { get; set; }
         public string NombreActividad { get; set; }
-        public int IdComponente { get; set; }
+        public Guid IdComponente { get; set; }
 
         public virtual Componente IdComponenteNavigation { get; set; }
     }

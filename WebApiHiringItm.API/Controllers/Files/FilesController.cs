@@ -91,7 +91,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetFileContractorByFolder(int contractorId, int folderId, int contractId)
+        public async Task<IActionResult> GetFileContractorByFolder(Guid contractorId, int folderId, Guid contractId)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetFileContractorByContract(int contractorId, int contractId)
+        public async Task<IActionResult> GetFileContractorByContract(Guid contractorId, Guid contractId)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace WebApiHiringItm.API.Controllers.Files
             }
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAllFileContractById(int id)
+        public async Task<IActionResult> GetAllFileContractById(Guid id)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllFileByDatePayments(int contractId, string type, string date)
+        public async Task<IActionResult> GetAllFileByDatePayments(Guid contractId, string type, string date)
         {
             try
             {
@@ -148,20 +148,6 @@ namespace WebApiHiringItm.API.Controllers.Files
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GetAllByType(GetFilesPaymentDto model)
-        {
-            try
-            {
-                var Data = await _file.GetAllByType(model);
-
-                return Data != null ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error", ex);
-            }
-        }
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {

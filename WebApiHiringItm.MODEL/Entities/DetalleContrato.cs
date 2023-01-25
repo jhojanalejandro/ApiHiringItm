@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Entities
     public partial class DetalleContrato
     {
         public int Id { get; set; }
-        public int? Idcontrato { get; set; }
+        public Guid? Idcontrato { get; set; }
         public DateTime? FechaContrato { get; set; }
         public DateTime? FechaFinalizacion { get; set; }
         public DateTime? FechaInicioAmpliacion { get; set; }

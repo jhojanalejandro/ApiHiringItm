@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
 {
     public class RProjectForlderDto
     {
-        public int? Id { get; set; }
+        public Guid? Id { get; set; }
         public int UserId { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }

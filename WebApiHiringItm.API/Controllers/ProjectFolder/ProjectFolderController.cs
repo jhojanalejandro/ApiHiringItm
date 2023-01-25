@@ -39,7 +39,7 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
 
 
         [HttpGet]
-        public async Task<IActionResult> GetByIdDetail(int id, bool tipoConsulta)
+        public async Task<IActionResult> GetByIdDetail(Guid id, bool tipoConsulta)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
 
 
         [HttpGet]
-        public async Task<IActionResult> UpdateState(int id)
+        public async Task<IActionResult> UpdateState(Guid id)
         {
             try
             {
@@ -135,7 +135,7 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
 
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {

@@ -39,7 +39,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAllByFolder(int id)
+        public async Task<IActionResult> GetAllByFolder(Guid id)
         {
             try
             {
@@ -56,13 +56,13 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet]
+        public async Task<IActionResult> GetById(Guid contractorId, Guid contractId)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _contactor.GetById(id);
+                var Data = await _contactor.GetById(contractorId, contractId);
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
@@ -143,8 +143,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             try
             {
                 var Data = await _contactor.SendContractorCount(ids);
-
-                return Data != null ? Ok(Data) : NoContent();
+                return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -154,7 +153,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {

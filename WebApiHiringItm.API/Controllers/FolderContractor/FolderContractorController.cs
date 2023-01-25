@@ -18,8 +18,8 @@ namespace WebApiHiringItm.API.Controllers.FolderContractor
             _folder = folder;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAll(int contractorId, int contractId)
+        [HttpGet]
+        public async Task<IActionResult> GetAll(Guid contractorId, Guid contractId)
         {
             try
             {
@@ -76,10 +76,7 @@ namespace WebApiHiringItm.API.Controllers.FolderContractor
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _folder.Create(model);
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

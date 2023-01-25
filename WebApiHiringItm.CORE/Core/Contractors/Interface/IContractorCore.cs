@@ -8,12 +8,12 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
     public interface IContractorCore
     {
         Task<List<ContractorDto>> GetAll();
-        Task<CuentaCobroDto> GetById(int id);
-        Task<bool> Delete(int id);
+        Task<CuentaCobroDto> GetById(Guid contractorId, Guid ContractId);
+        Task<bool> Delete(Guid id);
         Task<bool> Create(ContractorDto model);
         Task<bool> SendContractorCount(SendMessageAccountDto ids);
         Task<string> ImportarExcel(FileRequest obj);
-        Task<List<ContractorDto>> GetByIdFolder(int id);
+        Task<List<ContractorDto>> GetByIdFolder(Guid id);
         AuthenticateResponse Authenticate(AuthenticateRequest model);
         Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model);
     }

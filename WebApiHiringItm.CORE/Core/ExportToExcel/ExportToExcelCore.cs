@@ -30,15 +30,15 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
         #endregion
 
         #region Methods
-        public async Task<MemoryStream> ExportToExcelViabilidad(ControllerBase controller, int idContrato)
+        public async Task<MemoryStream> ExportToExcelViabilidad(ControllerBase controller, Guid idContrato)
         {
             // Get the user list 
-            var data = _context.Contractor
-                .Include(x => x.Contract)
-                .Where(x => x.ContractId == idContrato).ToList();
-            var componentes = _context.Componente.ToList();
-            var elementos = _context.ElementosComponente.ToList();
-            var hiringData = _context.HiringData.ToList();
+            var data = _context.DetailProjectContractor.Where(x => x.ContractId == idContrato)
+                .Include(x => x.Contractor)
+                .Include(x => x.Element)
+                .Include(x => x.HiringData)
+                .Include(x => x.Componente)
+                .Include(x => x.Contract).ToList();
             var contract = _context.ProjectFolder.FirstOrDefault(x => x.Id == idContrato);
 
             var stream = new MemoryStream();
@@ -79,25 +79,23 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 row = 2;
                 foreach (var user in data)
                 {
-                    var componente = componentes.FirstOrDefault(x => x.IdContrato == user.ContractId);
-                    var elemento = elementos.FirstOrDefault(x => x.IdComponente == componente.Id);
-                    var hdata = hiringData.FirstOrDefault(x => x.ContractorId == user.Id);
-                    if (user.ComponenteId != 0 && user.ComponenteId != null && hdata != null)
+
+                    if (user.ComponenteId != null && user.ComponenteId != null && user.HiringDataId != null)
                     {
-                        worksheet.Cells[row, 1].Value = user.Convenio;
+                        worksheet.Cells[row, 1].Value = user.Contractor.Convenio;
                         worksheet.Cells[row, 2].Value = contract.CompanyName;
-                        worksheet.Cells[row, 3].Value = componente.NombreComponente;
+                        worksheet.Cells[row, 3].Value = user.Componente.NombreComponente;
                         worksheet.Cells[row, 4].Value = "";
                         worksheet.Cells[row, 5].Value = "";
-                        worksheet.Cells[row, 6].Value = elemento.Cpc;
-                        worksheet.Cells[row, 7].Value = user.Nombre + " " + user.Apellido;
-                        worksheet.Cells[row, 8].Value = user.Identificacion;
+                        worksheet.Cells[row, 6].Value = user.Element.Cpc;
+                        worksheet.Cells[row, 7].Value = user.Contractor.Nombre + " " + user.Contractor.Apellido;
+                        worksheet.Cells[row, 8].Value = user.Contractor.Identificacion;
                         worksheet.Cells[row, 9].Value = "";
                         worksheet.Cells[row, 10].Value = contract.DescriptionProject;
-                        worksheet.Cells[row, 11].Value = user.ObjetoConvenio;
-                        worksheet.Cells[row, 12].Value = elemento.ValorTotal;
-                        worksheet.Cells[row, 13].Value = componente.NombreComponente;
-                        worksheet.Cells[row, 14].Value = elemento.NombreElemento;
+                        worksheet.Cells[row, 11].Value = user.Contractor.ObjetoConvenio;
+                        worksheet.Cells[row, 12].Value = user.Element.ValorTotal;
+                        worksheet.Cells[row, 13].Value = user.Componente.NombreComponente;
+                        worksheet.Cells[row, 14].Value = user.Element.NombreElemento;
                         worksheet.Cells[row, 15].Value = "";
                         worksheet.Cells[row, 16].Value = "";
                         row++;
@@ -116,13 +114,14 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             return await Task.FromResult(stream);
         }
 
-        public async Task<MemoryStream> ExportContratacionDap(ControllerBase controller, int idContrato)
+        public async Task<MemoryStream> ExportContratacionDap(ControllerBase controller, Guid idContrato)
         {
-            var data = _context.Contractor
-                .Where(x => x.ContractId == idContrato).ToList(); 
-            var hiringData = _context.HiringData.ToList();
-            var componentes = _context.Componente.ToList();
-            var elementos = _context.ElementosComponente.ToList();
+            var data = _context.DetailProjectContractor.Where(x => x.ContractId == idContrato)
+                .Include(x => x.Contractor)
+                .Include(x => x.Element)
+                .Include(x => x.HiringData)
+                .Include(x => x.Componente)
+                .Include(x => x.Contract).ToList();
             var stream = new MemoryStream();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var xlPackage = new ExcelPackage(stream))
@@ -152,27 +151,16 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 int nro = 0;
                 foreach (var user in data)
                 {
-
-                    if (user.ComponenteId != 0)
+                    
+                    if (user.ComponenteId != null && user.Element.Cpc != null && user.HiringData != null)
                     {
-
-                        var componente = componentes.FirstOrDefault(x => x.IdContrato == user.ContractId);
-                        var elemento = elementos.FirstOrDefault(x => x.IdComponente == componente.Id);
-                        var hdata = hiringData.FirstOrDefault(x => x.ContractorId == user.Id);
-                        if (hdata != null )
-                        {
-                            if (hdata.Cdp != null)
-                            {
-                                worksheet.Cells[row, 1].Value = user.Convenio;
-                                worksheet.Cells[row, 2].Value = user.Nombre + " " + user.Apellido;
-                                worksheet.Cells[row, 3].Value = elemento.Cpc;
-                                worksheet.Cells[row, 4].Value = hdata.Cdp;
-                                worksheet.Cells[row, 5].Value = elemento.ValorTotal;
-                                worksheet.Cells[row, 6].Value = "";
-                                row++;
-                            }
-                        
-                        }
+                        worksheet.Cells[row, 1].Value = user.Contractor.Convenio;
+                        worksheet.Cells[row, 2].Value = user.Contractor.Nombre + " " + user.Contractor.Apellido;
+                        worksheet.Cells[row, 3].Value = user.Element.Cpc;
+                        worksheet.Cells[row, 4].Value = user.HiringData.Cdp;
+                        worksheet.Cells[row, 5].Value = user.Element.ValorTotal;
+                        worksheet.Cells[row, 6].Value = "";
+                        row++;
 
                     }
                 }
@@ -187,15 +175,18 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             return await Task.FromResult(stream);
         }
 
-        public async Task<MemoryStream> ExportCdp(ControllerBase controller, int idContrato)
+        public async Task<MemoryStream> ExportCdp(ControllerBase controller, Guid idContrato)
         {
             // Get the user list 
-            var data = _context.Contractor
-                   .Include(x => x.Contract)
-                   .Where(x => x.ContractId == idContrato).ToList(); var stream = new MemoryStream();
-            var componentes = _context.Componente.ToList();
-            var elementos = _context.ElementosComponente.ToList();
-            var hiring = _context.HiringData.ToList();
+            var data = _context.DetailProjectContractor.Where(x => x.ContractId == idContrato)
+                .Include(x => x.Contractor)
+                .Include(x => x.Element)
+                .Include(x => x.HiringData)
+                .Include(x => x.Componente)
+                .Include(x => x.Contract).ToList();
+
+            var stream = new MemoryStream();
+
             var contract = _context.ProjectFolder.FirstOrDefault(x => x.Id == idContrato);
 
 
@@ -229,23 +220,20 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
 
                 foreach (var user in data)
                 {
-                    if (user.ComponenteId != 0 && hiring != null)
+                    if (user.ComponenteId != null && user.HiringDataId != null)
                     {
                         nro++;
-                        var hdata = hiring.FirstOrDefault(x => x.ContractorId == user.Id);
-                        var componente = componentes.FirstOrDefault(x => x.IdContrato == user.ContractId);
-                        var elemento = elementos.FirstOrDefault(x => x.IdComponente == componente.Id);
-                        if (hdata != null)
+                        if (user.HiringData != null)
                         {
-                            if (hdata.Rubro != null && hdata.FuenteRubro != null)
+                            if (user.HiringData.Rubro != null && user.HiringData.FuenteRubro != null)
                             {
                                 worksheet.Cells[row, 3].Value = nro;
-                                worksheet.Cells[row, 2].Value = hdata.Rubro;
-                                worksheet.Cells[row, 1].Value = hdata.FuenteRubro;
+                                worksheet.Cells[row, 2].Value = user.HiringData.Rubro;
+                                worksheet.Cells[row, 1].Value = user.HiringData.FuenteRubro;
                                 worksheet.Cells[row, 4].Value = contract.DescriptionProject;
-                                worksheet.Cells[row, 5].Value = user.Convenio;
-                                worksheet.Cells[row, 6].Value = elemento.Cpc;
-                                worksheet.Cells[row, 7].Value = elemento.ValorTotal;
+                                worksheet.Cells[row, 5].Value = user.Contractor.Convenio;
+                                worksheet.Cells[row, 6].Value = user.Element.Cpc;
+                                worksheet.Cells[row, 7].Value = user.Element.ValorTotal;
                             }
                         }
                     }
@@ -263,15 +251,15 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             return await Task.FromResult(stream);
         }
 
-        public async Task<MemoryStream> ExportSolicitudPaa(ControllerBase controller, int idContrato)
+        public async Task<MemoryStream> ExportSolicitudPaa(ControllerBase controller, Guid idContrato)
         {
             // Get the user list 
-            var data = _context.Contractor
-                .Include(x => x.Contract)
-                .Where(x => x.ContractId == idContrato).ToList(); 
-            var hiringData = _context.HiringData.ToList();
-            var componentes = _context.Componente.ToList();
-            var elementos = _context.ElementosComponente.ToList();
+            var data = _context.DetailProjectContractor.Where(x => x.ContractId == idContrato)
+                .Include(x => x.Contractor)
+                .Include(x => x.Element)
+                .Include(x => x.HiringData)
+                .Include(x => x.Componente)
+                .Include(x => x.Contract).ToList();
 
             var stream = new MemoryStream();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -312,20 +300,17 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 {
 
                     nro++;
-                    var hdata = hiringData.FirstOrDefault(x => x.ContractorId == user.Id);
-                    var componente = componentes.FirstOrDefault(x => x.IdContrato == user.ContractId);
-                    var elemento = elementos.FirstOrDefault(x => x.IdComponente == componente.Id);
-                    if (hdata != null)
+                    if (user.HiringData != null)
                     {
-                        if (hdata.Rubro != null)
+                        if (user.HiringData != null)
                         {
                             worksheet.Cells[row, 1].Value = nro;
-                            worksheet.Cells[row, 2].Value = hdata.Rubro;
+                            worksheet.Cells[row, 2].Value = user.HiringData.Rubro;
                             worksheet.Cells[row, 3].Value = "";
-                            worksheet.Cells[row, 4].Value = user.ObjetoConvenio;
-                            worksheet.Cells[row, 5].Value = user.Convenio;
-                            worksheet.Cells[row, 6].Value = elemento.Cpc;
-                            worksheet.Cells[row, 7].Value = elemento.ValorTotal;
+                            worksheet.Cells[row, 4].Value = user.Contractor.ObjetoConvenio;
+                            worksheet.Cells[row, 5].Value = user.Contractor.Convenio;
+                            worksheet.Cells[row, 6].Value = user.Element.Cpc;
+                            worksheet.Cells[row, 7].Value = user.Element.ValorTotal;
                             row++;
                         }
                     }

@@ -23,7 +23,7 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
 
         #region Methods
         [HttpGet("{idContrato}")]
-        public async Task<IActionResult> GetViabilidadExcel(int idContrato)
+        public async Task<IActionResult> GetViabilidadExcel(Guid idContrato)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
         }
 
         [HttpGet("{idContrato}")]
-        public async Task<IActionResult> GetSolicitudContratacionDap(int idContrato)
+        public async Task<IActionResult> GetSolicitudContratacionDap(Guid idContrato)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
 
         [HttpGet("{idContrato}")]
         
-        public async Task<IActionResult> GetSolicitudCdp(int idContrato)
+        public async Task<IActionResult> GetSolicitudCdp(Guid idContrato)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
         }
 
         [HttpGet("{idContrato}")]
-        public async Task<IActionResult> GetSolicitudPpa(int idContrato)
+        public async Task<IActionResult> GetSolicitudPpa(Guid idContrato)
         {
             try
             {

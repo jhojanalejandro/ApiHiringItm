@@ -51,17 +51,30 @@ namespace WebApiHiringItm.API.Controllers.Componente
             }
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetComponent(Guid id)
         {
             var res = await _componente.Get(id);
             return Ok(res);
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetActivity(Guid id)
+        {
+
+            try
+            {
+                var res = await _componente.GetActivity(id);
+                return res != null ? Ok(res) : BadRequest();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
@@ -77,7 +90,7 @@ namespace WebApiHiringItm.API.Controllers.Componente
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             try
             {

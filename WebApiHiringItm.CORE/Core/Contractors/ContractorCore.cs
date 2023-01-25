@@ -49,34 +49,92 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         }
         public async Task<List<ContractorDto>> GetAll()
         {
-            var result = _context.Contractor.Where(x => x.Id > 0).ToList();
+            var result = _context.Contractor.Where(x => x.Id != null).ToList();
             var map = _mapper.Map<List<ContractorDto>>(result);
             return await Task.FromResult(map);
-
         }
 
-        public async Task<List<ContractorDto>> GetByIdFolder(int id)
+        public async Task<List<ContractorDto>> GetSeveralContractsByContractor(string contractorId)
         {
+            var result = _context.DetailProjectContractor.Where(x => x.Id.Equals(contractorId)).ToList();
+            var map = _mapper.Map<List<ContractorDto>>(result);
+            return await Task.FromResult(map);
+        }
 
-            var contractor = _context.Contractor.Where(x => x.ContractId == id && x.Habilitado == HABILITADO).ToList();
+
+        public async Task<List<ContractorDto>> GetByIdFolder(Guid id)
+        {
+            var contractor = _context.DetailProjectContractor.Where(x => x.ContractId == id)
+                .Include(dt => dt.Contractor).Where(ct => ct.Contractor.Habilitado == HABILITADO)
+                .Select(ct => new ContractorDto()
+                {
+                    Id = ct.Contractor.Id,  
+                    Codigo = ct.Contractor.Codigo,
+                    FechaInicio = ct.Contractor.FechaInicio,
+                    FechaFin = ct.Contractor.FechaFin,
+                    Nombre = ct.Contractor.Nombre,
+                    Apellido = ct.Contractor.Apellido,
+                    Identificacion = ct.Contractor.Identificacion,
+                    LugarExpedicion = ct.Contractor.LugarExpedicion,
+                    FechaNacimiento = ct.Contractor.FechaNacimiento,
+                    Telefono = ct.Contractor.Telefono,
+                    Celular = ct.Contractor.Celular,
+                    Correo = ct.Contractor.Correo,
+                    ComponenteId = ct.ComponenteId,
+                    ElementId = ct.ElementId,
+                    UserId = ct.Contractor.UserId
+                })
+                .ToList();
             var map = _mapper.Map<List<ContractorDto>>(contractor);
             return await Task.FromResult(map);
         }
-        public async Task<CuentaCobroDto> GetById(int id)
+        public async Task<CuentaCobroDto> GetById(Guid contractorId, Guid ContractId)
         {
-            var result = _context.Contractor.Include(co => co.ContractorPayments).Include(x => x.Contract)
-                .Where(x => x.Id == id).FirstOrDefault();
-            var payment =  result.ContractorPayments.OrderByDescending(X => X.FromDate).FirstOrDefault();
+            var result = _context.ContractorPayments
+                .Include(co => co.Contractor)
+                    .ThenInclude(x => x.DetailProjectContractor)
+                        .ThenInclude(x => x.Contract)
+                    .ThenInclude(x => x.DetailProjectContractor)
+                        .ThenInclude(x => x.Element)
+                 .Where(x => x.Contractor.Id == contractorId && x.Contract.Id == ContractId).OrderByDescending(x => x.FromDate);
 
-            var map = _mapper.Map<CuentaCobroDto>(result);
-            map.UnitValue = payment.Paymentcant;
-            map.From = payment.FromDate;
-            map.To = payment.ToDate;
-            map.Company = result.Contract.CompanyName;
-            return await Task.FromResult(map);
+            if (result != null)
+            {
+               var resultData = result.Select(cb => new CuentaCobroDto()
+                {
+                   Codigo = cb.Contractor.Codigo,
+                   Convenio = cb.Contractor.Convenio,
+                   Nombre = cb.Contractor.Nombre + " " + cb.Contractor.Apellido,
+                   Identificacion = cb.Contractor.Identificacion,
+                   Direccion = cb.Contractor.Direccion,
+                   Departamento = cb.Contractor.Departamento,
+                   Municipio = cb.Contractor.Municipio,
+                   Barrio = cb.Contractor.Barrio,
+                   Telefono = cb.Contractor.Telefono,
+                   Celular = cb.Contractor.Celular,
+                   Correo = cb.Contractor.Correo,
+                   TipoAdministradora = cb.Contractor.TipoAdministradora,
+                   Administradora = cb.Contractor.Administradora,
+                   CuentaBancaria = cb.Contractor.CuentaBancaria,
+                   TipoCuenta = cb.Contractor.TipoCuenta,
+                   EntidadCuentaBancaria = cb.Contractor.EntidadCuentaBancaria,
+                   ContractId = cb.Contract.Id,
+                   From = cb.FromDate,
+                   To = cb.ToDate,
+                   Company = cb.Contract.CompanyName,
+                   Paymentcant = cb.Paymentcant,
+                   ContractNumber = cb.Contract.NumberProject,
+                   LugarExpedicion = cb.Contractor.LugarExpedicion,
+                   NombreElemento = cb.Contract.DetailProjectContractor.Select(ne => ne.Element.NombreElemento).FirstOrDefault()
+               })
+                 .AsNoTracking()
+                 .FirstOrDefault();
+                return await Task.FromResult(resultData);
+            }
+            return null;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             try
             {
@@ -123,6 +181,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         #region PUBLIC METODS
         public async Task<string> ImportarExcel(FileRequest model)
         {
+            List<DetailProjectContractor> listDetail = new List<DetailProjectContractor>();
             string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", model.Excel.FileName);
             if (!Directory.Exists(path))
             {
@@ -147,12 +206,13 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             DataColumn newColumn = new DataColumn("User Id", typeof(int));
             newColumn.DefaultValue = model.UserId;
             dataTable.Columns.Add(newColumn);
-            DataColumn newColumnid = new DataColumn("Id", typeof(int));
+            DataColumn newColumnid = new DataColumn("Id", typeof(Guid));
+            newColumnid.DefaultValue = Guid.NewGuid();
             dataTable.Columns.Add(newColumnid);
             DataColumn newColumnPassword = new DataColumn("Clave Usuario", typeof(string));
             newColumnPassword.DefaultValue = "NoAsignada";
             dataTable.Columns.Add(newColumnPassword);
-            DataColumn newColumn2 = new DataColumn("Contract Id", typeof(int));
+            DataColumn newColumn2 = new DataColumn("Contract Id", typeof(Guid));
             newColumn2.DefaultValue = model.ContractId;
             dataTable.Columns.Add(newColumn2);
             DataColumn newColumn3 = new DataColumn("Fecha Creacion", typeof(DateTime));
@@ -161,12 +221,12 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             DataColumn newColumn4 = new DataColumn("Fecha Actualizacion", typeof(DateTime));
             newColumn4.DefaultValue = DateTime.Now;
             dataTable.Columns.Add(newColumn4);
-            DataColumn componentId = new DataColumn("Componente Id", typeof(int));
-            componentId.DefaultValue = 0;
-            dataTable.Columns.Add(componentId);
-            DataColumn elementId = new DataColumn("Element Id", typeof(int));
-            elementId.DefaultValue = 0;
-            dataTable.Columns.Add(elementId);
+            //DataColumn componentId = new DataColumn("Componente Id", typeof(int));
+            //componentId.DefaultValue = 0;
+            //dataTable.Columns.Add(componentId);
+            //DataColumn elementId = new DataColumn("Element Id", typeof(int));
+            //elementId.DefaultValue = 0;
+            //dataTable.Columns.Add(elementId);
             DataColumn objeto = new DataColumn("Objeto Convenio", typeof(string));
             objeto.DefaultValue = "vacio";
             dataTable.Columns.Add(objeto);
@@ -174,14 +234,14 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             habiliatdo.DefaultValue = true;
             dataTable.Columns.Add(habiliatdo);
             dataTable.Columns.Remove("Nombre Completo");
+
             for (int i = 0; i < dataTable.Columns.Count; i++)
             {
-
                 dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
                 var columna = dataTable.Columns[i].ColumnName;
                 var listaHring = _context.Contractor.ToList();
 
-                if (columna.Equals("Identificacion") && listaHring.Count > 0)
+                if (columna.Equals("Identificacion"))
                 {
                     for (int j = 0; j < dataTable.Rows.Count; j++)
                     {
@@ -196,16 +256,28 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                         }
 
                         var valor = dataTable.Rows[j]["Identificacion"];
-                        var resultado = _context.Contractor.FirstOrDefault(x => x.Identificacion.Equals(valor));
-                        if (resultado != null)
+                        Guid idValor = (Guid)dataTable.Rows[j]["Id"];
+                        if (valor != null)
+                        {
+                            DetailProjectContractor detailProjectContractor = new DetailProjectContractor();
+                            detailProjectContractor.ContractId = model.ContractId;
+                            var resultado = _context.Contractor.FirstOrDefault(x => x.Identificacion.Equals(valor));
+                            if (resultado != null)
                             {
-                            dataTable.Rows.Remove(dataTable.Rows[j]);
-                            j--;
+                                detailProjectContractor.ContractorId = resultado.Id;
+                                dataTable.Rows.Remove(dataTable.Rows[j]);
+                                j--;
+                            }
+                            else
+                            {
+                                detailProjectContractor.ContractorId = Guid.NewGuid();
+                                dataTable.Rows[j]["Id"] = detailProjectContractor.ContractorId;
+                            }
+                            listDetail.Add(detailProjectContractor);
                         }
 
                     }
                 }
-
 
             }
             test.Close();
@@ -242,6 +314,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                 filas.Add(row);
             }
             var result = JsonConvert.SerializeObject(filas);
+            await UpdateDetailContract(listDetail);
             return await Task.FromResult(result);
         }
         public static string ToCamelCase(string str)
@@ -256,17 +329,31 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         }
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var getUser = _context.Contractor.Where(x => x.Correo == model.Username && x.ClaveUsuario.Equals(model.Password)).FirstOrDefault();
+            var getUser = _context.DetailProjectContractor
+                .Include(c => c.Contractor)
+                .Include(c => c.Contract)
+                .Where(x => x.Contractor.Correo == model.Username && x.Contractor.ClaveUsuario.Equals(model.Password));
+            var select = getUser.Select(ct => new ContractorDto()
+            {
+                Id = ct.Contractor.Id,
+                ContractId = ct.Contract.Id,
+                Identificacion = ct.Contractor.Identificacion,
+                Correo = ct.Contractor.Correo,
+                ClaveUsuario = ct.Contractor.ClaveUsuario,
+                Nombre = ct.Contractor.Nombre + " " + ct.Contractor.Apellido
 
+            })
+            .AsNoTracking()
+            .FirstOrDefault();
             if (getUser == null)
             {
                 return null;
             }
-            var token = generateJwtToken(getUser);
+            var token = generateJwtToken(select);
 
-            return new AuthenticateResponse(getUser, token);
+            return new AuthenticateResponse(select, token);
         }
-        public string generateJwtToken(Contractor user)
+        public string generateJwtToken(ContractorDto user)
         {
             // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -311,10 +398,51 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                     item.ClaveUsuario = await createPassword(item.Correo);
                     _context.Contractor.Update(item);
                     var res = await _context.SaveChangesAsync();
-
                 }
                 return true;
 
+            }
+            return false;
+        }
+
+        public async Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model)
+        {
+            if (model.Id != null)
+            {
+                try
+                {
+                    List<DetailProjectContractor> asignDataListUpdate = new List<DetailProjectContractor>();
+                    for (int i = 0; i < model.IdContractor.Length; i++)
+                    {
+                        if (model.Type == TIPOASIGNACION)
+                        {
+                            var contractorUpdate = _context.DetailProjectContractor.FirstOrDefault(d => d.ContractId == model.ContractId && d.ContractorId.Equals(model.IdContractor[i]));
+                            if (contractorUpdate != null)
+                            {
+                                contractorUpdate.ElementId = model.Id;
+                                asignDataListUpdate.Add(contractorUpdate);
+                            }
+
+                        }
+                        else
+                        {
+                            var contractorUpdate = _context.DetailProjectContractor.FirstOrDefault(d => d.ContractId == model.ContractId && d.ContractorId.Equals(model.IdContractor[i]));
+                            if (contractorUpdate != null)
+                            {
+                                contractorUpdate.ComponenteId = model.Id;
+                                asignDataListUpdate.Add(contractorUpdate);
+                            }
+                        }
+                    }
+                    _context.DetailProjectContractor.UpdateRange(asignDataListUpdate);
+                    var res = await _context.SaveChangesAsync();
+                    return res != 0 ? true : false;
+
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error", ex);
+                }
             }
             return false;
         }
@@ -396,7 +524,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         }
         private async Task<bool> Update(AddPasswordContractorDto model)
         {
-            if (model.Id != 0)
+            if (model.Id != null)
 
             {
                 var userupdate = _context.Contractor.Where(x => x.Id.Equals(model.Id) && x.Identificacion.Equals(model.Documentodeidentificacion)).FirstOrDefault();
@@ -408,41 +536,37 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             }
             return false;
         }
-
-        public async Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model)
+        private async Task<bool> UpdateDetailContract(List<DetailProjectContractor> listDetail)
         {
-            if (model.Id != 0)
+            try
             {
-                try
+                for (int i = 0; i < listDetail.Count; i++)
                 {
-                    List<Contractor> asignDataListUpdate = new List<Contractor>();
-                    for (int i= 0; i < model.IdContractor.Length; i++)
+                    var resultDetail = _context.DetailProjectContractor.FirstOrDefault(dt => dt.ContractorId == listDetail[i].ContractorId && dt.ContractId == listDetail[i].ContractId);
+                    if (resultDetail != null)
                     {
-                        if (model.Type == TIPOASIGNACION)
-                        {
-                            var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor[i])).FirstOrDefault();
-                            contractorUpdate.ElementId = model.Id;
-                            asignDataListUpdate.Add(contractorUpdate);
-                        }
-                        else
-                        {
-                            var contractorUpdate = _context.Contractor.Where(x => x.Id.Equals(model.IdContractor[i])).FirstOrDefault();
-                            contractorUpdate.ComponenteId = model.Id;
-                            asignDataListUpdate.Add(contractorUpdate);
-
-                        }
+                        listDetail.Remove(listDetail[i]);
                     }
-                    _context.Contractor.UpdateRange(asignDataListUpdate);
-                    var res = await _context.SaveChangesAsync();
-                    return res != 0 ? true : false;
-
+                    else
+                    {
+                        Guid idD = Guid.NewGuid();
+                        listDetail[i].Id = idD;
+                    }
                 }
-                catch (Exception ex)
+                _context.DetailProjectContractor.AddRange(listDetail);
+                var result = await _context.SaveChangesAsync();
+                if (result != 0)
                 {
-                        throw new Exception("Error", ex);
+                    return true;
                 }
+                return false;
             }
-            return false;
+            catch(Exception ex)
+            {
+                throw new Exception("Error", ex);
+
+            }
+
         }
         #endregion
     }

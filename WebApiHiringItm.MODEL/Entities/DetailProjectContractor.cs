@@ -7,12 +7,12 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class DetailProjectContractor
     {
-        public int Id { get; set; }
-        public int? ContractId { get; set; }
-        public int? ContractorId { get; set; }
-        public int? HiringDataId { get; set; }
-        public int? ElementId { get; set; }
-        public int? ComponenteId { get; set; }
+        public Guid Id { get; set; }
+        public Guid? ContractId { get; set; }
+        public Guid? ContractorId { get; set; }
+        public Guid? HiringDataId { get; set; }
+        public Guid? ElementId { get; set; }
+        public Guid? ComponenteId { get; set; }
 
         public virtual Componente Componente { get; set; }
         public virtual ProjectFolder Contract { get; set; }

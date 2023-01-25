@@ -32,6 +32,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
 
             if (exist == null)
             {
+                model.Id = Guid.NewGuid();
                 var map = _mapper.Map<Componente>(model);
                 _context.Componente.Add(map);
                 _save.SaveChangesDB();
@@ -69,7 +70,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 return await Task.FromResult(true);
             }
         }
-        public async Task<List<ComponenteDto>?> Get(int id)
+        public async Task<List<ComponenteDto>?> Get(Guid id)
         {
             try
             {
@@ -94,15 +95,20 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 return new List<ComponenteDto>(); throw;
             }
         }
-
-        public async Task<ComponenteDto> GetById(int id)
+        public async Task<List<ActivityDto>?> GetActivity(Guid id)
+        {
+            var result = _context.Actividad.Where(x => x.IdComponente.Equals(id)).ToList();
+            var mapctivity = _mapper.Map<List<ActivityDto>>(result);
+            return await Task.FromResult(mapctivity);
+        }
+        public async Task<ComponenteDto> GetById(Guid id)
         {
             var result = _context.Componente.FirstOrDefault(x => x.Id.Equals(id));
             var map = _mapper.Map<ComponenteDto>(result);
             return await Task.FromResult(map);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             try
             {

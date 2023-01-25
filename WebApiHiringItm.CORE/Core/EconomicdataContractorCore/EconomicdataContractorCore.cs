@@ -31,7 +31,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
             return await Task.FromResult(map);
         }
 
-        public async Task<List<EconomicdataContractorDto>> GetById(int[] id)
+        public async Task<List<EconomicdataContractorDto>> GetById(Guid[] id)
         {
             List<EconomicdataContractorDto> economicDataContractorList = new List<EconomicdataContractorDto>();
             foreach (var item in id)

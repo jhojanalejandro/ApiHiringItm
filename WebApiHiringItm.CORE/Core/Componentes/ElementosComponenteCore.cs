@@ -31,18 +31,20 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             var exist = _context.ElementosComponente.Where(w => w.Id == model.Id).FirstOrDefault();
             if (exist == null)
             {
+                model.Id = Guid.NewGuid();
                 var map = _mapper.Map<ElementosComponente>(model);
                 _context.ElementosComponente.Add(map);
             }
             else
             {
-                _context.ElementosComponente.Update(exist);
+                var mapUpdate = _mapper.Map(model, exist);
+                _context.ElementosComponente.Update(mapUpdate);
             }
             await _save.SaveChangesDB();
             return true;
         }
 
-        public async Task<List<ElementosComponenteDto>?> Get(int id)
+        public async Task<List<ElementosComponenteDto>?> Get(Guid? id)
         {
             var result = _context.ElementosComponente.Where(x => x.IdComponente == id).ToList();
             if (result.Count != 0)
@@ -56,7 +58,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             }
         }
 
-        public async Task<ElementosComponenteDto> GetById(int id)
+        public async Task<ElementosComponenteDto> GetById(Guid id)
         {
             var result = _context.ElementosComponente.Where(x => x.Id.Equals(id)).FirstOrDefault();
             var map = _mapper.Map<ElementosComponenteDto>(result);

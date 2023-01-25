@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.MODEL.Models
@@ -10,6 +11,8 @@ namespace WebApiHiringItm.MODEL.Models
     public class AuthenticateResponse
     {
         public int Id { get; set; }
+        public Guid contractorId { get; set; }
+        public Guid? contractId { get; set; }
         public string UserName { get; set; }
         public string UserPassword { get; set; }
         public int IdRoll { get; set; }
@@ -26,10 +29,11 @@ namespace WebApiHiringItm.MODEL.Models
             IdRoll = user.RollId;
             accessToken = token;
         }
-        public AuthenticateResponse(Contractor user, string token)
+        public AuthenticateResponse(ContractorDto user, string token)
         {
-            Id = user.Id;
-            UserName = user.Nombre +  "" + user.Apellido;
+            contractorId = user.Id;
+            contractId = user.ContractId;
+            UserName = user.Nombre ;
             UserPassword = user.ClaveUsuario;
             UserEmail = user.Correo;
             IdRoll = 6;

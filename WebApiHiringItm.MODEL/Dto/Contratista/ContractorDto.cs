@@ -8,8 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
 {
     public class ContractorDto
     {
-
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string TipoContratacion { get; set; }
         public string Codigo { get; set; }
         public string FechaInicio { get; set; }
@@ -41,10 +40,10 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string EntidadCuentaBancaria { get; set; }
         public string Estado { get; set; }
         public string ObjetoConvenio { get; set; }
-        public int? ComponenteId { get; set; }
-        public int? ElementId { get; set; }
+        public Guid? ComponenteId { get; set; }
+        public Guid? ElementId { get; set; }
         public int UserId { get; set; }
-        public int ContractId { get; set; }
+        public Guid? ContractId { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public string ClaveUsuario { get; set; }
         public DateTime? FechaActualizacion { get; set; }

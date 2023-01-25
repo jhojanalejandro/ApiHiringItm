@@ -14,21 +14,8 @@ namespace WebApiHiringItm.MODEL.Dto.CuentaCobroDto
         public string TipoContratacion { get; set; }
         public string Codigo { get; set; }
         public string Convenio { get; set; }
-        public string FechaInicio { get; set; }
-        public string FechaFin { get; set; }
         public string Nombre { get; set; }
-        public string Apellido { get; set; }
         public string Identificacion { get; set; }
-        public string LugarExpedicion { get; set; }
-        public string Tecnico { get; set; }
-        public string Tecnologo { get; set; }
-        public string Pregrado { get; set; }
-        public string Especializacion { get; set; }
-        public string Maestria { get; set; }
-        public string Doctorado { get; set; }
-        public string Genero { get; set; }
-        public DateTime? FechaNacimiento { get; set; }
-        public string Nacionalidad { get; set; }
         public string Direccion { get; set; }
         public string Departamento { get; set; }
         public string Municipio { get; set; }
@@ -41,12 +28,13 @@ namespace WebApiHiringItm.MODEL.Dto.CuentaCobroDto
         public string CuentaBancaria { get; set; }
         public string TipoCuenta { get; set; }
         public string EntidadCuentaBancaria { get; set; }
-        public int ContractId { get; set; }
-        public decimal? UnitValue { get; set; }
+        public Guid? ContractId { get; set; }
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
         public string Company { get; set; }
-        public ContractorPayments Payment { get; set; }
-
+        public string ContractNumber { get; set; }
+        public string NombreElemento { get; set; }
+        public decimal? Paymentcant { get; set; }
+        public string LugarExpedicion { get; set; }
     }
 }

@@ -8,9 +8,10 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
 {
     public class AsignElementOrCompoenteDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Type { get; set; }
-        public int[] IdContractor { get; set; }
+        public Guid[] IdContractor { get; set; }
+        public Guid ContractId { get; set; }
 
     }
 }

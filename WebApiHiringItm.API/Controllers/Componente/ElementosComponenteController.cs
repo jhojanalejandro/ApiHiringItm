@@ -39,7 +39,7 @@ namespace WebApiHiringItm.API.Controllers.Componente
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(Guid id)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace WebApiHiringItm.API.Controllers.Componente
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             try
             {

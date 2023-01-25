@@ -32,7 +32,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
 
         public async Task<List<ProjectFolderDto>> GetAll()
         {
-            var result = _context.ProjectFolder.Where(x => x.Id > 0).ToList();
+            var result = _context.ProjectFolder.Where(x => x.Id != null).ToList();
             var map = _mapper.Map<List<ProjectFolderDto>>(result);
             if (result.Count != 0)
             {
@@ -53,7 +53,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
         }
         public async Task<List<ProjectFolderDto>> GetAllActivate()
         {
-            var result = _context.ProjectFolder.Where(x => x.Id > 0 && x.Activate == true).ToList();
+            var result = _context.ProjectFolder.Where(x => x.Id != null && x.Activate == true).ToList();
             var map = _mapper.Map<List<ProjectFolderDto>>(result);
             if (result.Count != 0)
             {
@@ -103,7 +103,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             }
             return await Task.FromResult(map);
         }
-        public async Task<List<DetalleContratoDto>> GetDetailById(int idContrato)
+        public async Task<List<DetalleContratoDto>> GetDetailById(Guid idContrato)
         {
 
             var result = _context.DetalleContrato.Where(x => x.Idcontrato == idContrato).ToList();
@@ -114,12 +114,12 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
 
         }
 
-        public async Task<DetalleContratoDto?> GetDetailByIdLastDate(int idContrato)
+        public async Task<DetalleContratoDto?> GetDetailByIdLastDate(Guid idContrato)
         {
 
             var result = _context.DetalleContrato.Where(x => x.Idcontrato == idContrato).Select(x => new DetalleContratoDto()
             {
-                Idcontrato = x.Id,
+                Idcontrato = x.Idcontrato,
                 FechaContrato = x.FechaContrato,
                 FechaFinalizacion = x.FechaFinalizacion,
                 TipoContrato = x.TipoContrato,
@@ -133,7 +133,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
         }
 
 
-        public async Task<ProjectFolderDto> GetById(int id)
+        public async Task<ProjectFolderDto> GetById(Guid id)
         {
             var result = _context.ProjectFolder.FirstOrDefault(x => x.Id == id);
             var map = _mapper.Map<ProjectFolderDto>(result);
@@ -146,11 +146,11 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
 
             if (getData == null)
             {
+                model.Id = Guid.NewGuid();
                 var map = _mapper.Map<ProjectFolder>(model);
                 _context.ProjectFolder.Add(map);
                 var res = await _context.SaveChangesAsync();
-
-                if (map.Id != null)
+                if (res != null)
                 {
                     DetalleContratoDto detalle = model.DetalleContratoDto;
                     detalle.Idcontrato = map.Id;
@@ -163,7 +163,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             {
                 model.Id = getData.Id;
                 var map = _mapper.Map(model, getData);
-                if (model.DetalleContratoDto.Idcontrato != 0 && model.DetalleContratoDto.Update)
+                if (model.DetalleContratoDto.Idcontrato != null && model.DetalleContratoDto.Update)
                 {
                     DetalleContratoDto detalle = model.DetalleContratoDto;
                     if (!await CreateDetail(detalle))
@@ -177,7 +177,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
 
         }
 
-        public async Task<bool> UpdateState(int id)
+        public async Task<bool> UpdateState(Guid id)
         {
             var getData = _context.ProjectFolder.FirstOrDefault(x => x.Id == id);
 
@@ -232,7 +232,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             }
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             var resultData = _context.ProjectFolder.FirstOrDefault(x => x.Id == id);
             if (resultData != null)
@@ -244,6 +244,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             }
             return false;
         }
+
         #endregion
 
     }

@@ -12,12 +12,12 @@ namespace WebApiHiringItm.MODEL.Entities
             DetailProjectContractor = new HashSet<DetailProjectContractor>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string NombreElemento { get; set; }
         public string ObligacionesGenerales { get; set; }
         public string ObligacionesEspecificas { get; set; }
         public string TipoElemento { get; set; }
-        public int IdComponente { get; set; }
+        public Guid IdComponente { get; set; }
         public int CantidadContratistas { get; set; }
         public int CantidadDias { get; set; }
         public decimal ValorUnidad { get; set; }

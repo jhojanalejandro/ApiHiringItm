@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
 {
     public class ProjectFolderCostsDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public decimal? ValorContrato { get; set; }
         public decimal? GastosOperativos { get; set; }
         public decimal? ValorSubTotal { get; set; }

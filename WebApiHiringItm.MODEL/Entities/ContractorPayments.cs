@@ -8,15 +8,16 @@ namespace WebApiHiringItm.MODEL.Entities
     public partial class ContractorPayments
     {
         public int Id { get; set; }
-        public int? ContractorId { get; set; }
+        public Guid ContractorId { get; set; }
+        public Guid ContractId { get; set; }
         public int? UserId { get; set; }
-        public decimal? MonthPayment { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
         public string DescriptionPayment { get; set; }
         public decimal? Paymentcant { get; set; }
         public bool? CashPayment { get; set; }
 
+        public virtual ProjectFolder Contract { get; set; }
         public virtual Contractor Contractor { get; set; }
         public virtual UserT User { get; set; }
     }

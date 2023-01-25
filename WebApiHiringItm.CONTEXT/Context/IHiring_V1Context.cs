@@ -21,7 +21,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<FolderContractor> FolderContractor { get; set; }
         DbSet<HiringData> HiringData { get; set; }
         DbSet<Actividad> Actividad { get; set; }
-        DbSet<ProfessionalRol> ProfessionalRol { get; set; }
+        //DbSet<ProfessionalRol> ProfessionalRol { get; set; }
         DbSet<ProjectFolder> ProjectFolder { get; set; }
         DbSet<Roll> Roll { get; set; }
         DbSet<SharedData> SharedData { get; set; }

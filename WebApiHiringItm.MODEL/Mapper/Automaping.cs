@@ -41,7 +41,6 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<DetailFileDto, DetalleFile>().ReverseMap();
             CreateMap<Actividad, ActivityDto>().ReverseMap();
 
-
         }
     }
 }

@@ -59,7 +59,7 @@ namespace WebApiHiringItm.CORE.Core.User
         }
         public async Task<List<UserTDto>> GetAll()
         {
-            var result = _context.UserT.Where(x => x.Id > 0).ToList();
+            var result = _context.UserT.Where(x => x.Id != null).ToList();
             var map = _mapper.Map<List<UserTDto>>(result);
             return await Task.FromResult(map);
         }
