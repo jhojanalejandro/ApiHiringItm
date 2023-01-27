@@ -167,7 +167,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             else
             {
                 model.Id = getData.Id;
-                model.Motivo += getData.Motivo;
+                model.Reason += getData.Reason;
                 var map = _mapper.Map(model, getData);
                 _context.DetalleFile.Update(map);
                 var res = await _context.SaveChangesAsync();

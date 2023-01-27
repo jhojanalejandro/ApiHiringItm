@@ -19,7 +19,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Filedata { get; set; }
         public string TypeFile { get; set; }
         public string DescriptionFile { get; set; }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public DateTime? RegisterDate { get; set; }
         public string TypeFilePayment { get; set; }
         public string MonthPayment { get; set; }

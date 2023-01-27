@@ -18,7 +18,7 @@ namespace WebApiHiringItm.MODEL.Entities
             FolderContractor = new HashSet<FolderContractor>();
         }
 
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         public int UserId { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }

@@ -8,7 +8,7 @@ using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CONTEXT.Context
 {
-    public partial class Hiring_V1Context : DbContext, IHiring_V1Context
+    public partial class Hiring_V1Context : DbContext,IHiring_V1Context
     {
         public Hiring_V1Context()
         {
@@ -290,17 +290,17 @@ namespace WebApiHiringItm.CONTEXT.Context
 
             modelBuilder.Entity<DetalleFile>(entity =>
             {
-                entity.Property(e => e.Motivo)
+                entity.Property(e => e.Observation).IsUnicode(false);
+
+                entity.Property(e => e.Reason)
                     .HasMaxLength(100)
                     .IsUnicode(false);
-
-                entity.Property(e => e.Observation).IsUnicode(false);
 
                 entity.HasOne(d => d.File)
                     .WithMany(p => p.DetalleFile)
                     .HasForeignKey(d => d.FileId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__DetalleFi__FileI__5535A963");
+                    .HasConstraintName("FK__DetalleFi__FileI__0A9D95DB");
             });
 
             modelBuilder.Entity<EconomicdataContractor>(entity =>
@@ -392,8 +392,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Files__UserId__46E78A0C");
+                    .HasConstraintName("FK__Files__UserId__09A971A2");
             });
 
             modelBuilder.Entity<FolderContractor>(entity =>

@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public int Id { get; set; }
         public int FileId { get; set; }
-        public string Motivo { get; set; }
+        public string Reason { get; set; }
         public string Observation { get; set; }
 
         public virtual Files File { get; set; }

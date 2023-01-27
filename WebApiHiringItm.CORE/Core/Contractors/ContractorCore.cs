@@ -56,7 +56,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
         public async Task<List<ContractsContractorDto>> GetSeveralContractsByContractor(string contractorId)
         {
-            var result = _context.DetailProjectContractor.Where(x => x.Id.Equals(contractorId)).ToList();
+            var result = _context.DetailProjectContractor.Where(x => x.ContractorId.Equals(contractorId)).ToList();
             var map = _mapper.Map<List<ContractsContractorDto>>(result);
             return await Task.FromResult(map);
         }

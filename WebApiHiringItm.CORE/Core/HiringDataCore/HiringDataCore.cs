@@ -42,6 +42,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                var hd = hiringResult.Select(hd => new HiringDataDto()
                 {
                     Id = hd.HiringData.Id,
+                    FechaRealDeInicio = hd.HiringData.FechaRealDeInicio,
                     FechaFinalizacionConvenio = hd.HiringData.FechaFinalizacionConvenio,
                     Contrato = hd.HiringData.Contrato,
                     Compromiso = hd.HiringData.Compromiso,
@@ -132,15 +133,14 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 List<HiringData> hiringDataListAdd = new List<HiringData>();
                 List<DetailProjectContractor> detailDataListAdd = new List<DetailProjectContractor>();
                 var getData = _context.DetailProjectContractor
-                    .Where(x => x.ContractId == model[0].ContractId)
+                    .Where(x => x.ContractId == model[0].ContractId && x.ContractorId.Equals(model[0].ContractorId))
                     .Include(dt => dt.HiringData)
-                    .ToList();
+                    .FirstOrDefault();
                 var hd = _context.HiringData.ToList();
                 var map = _mapper.Map<List<HiringData>>(model);
                 for (var i = 0; i < map.Count; i++)
                 {
-                    var hdata = hd.FirstOrDefault(x => x.Id == getData[i].HiringDataId);
-                    var dt = getData.FirstOrDefault(x => x.ContractId == model[i].ContractId && x.ContractorId == model[i].ContractorId);
+                    var hdata = hd.FirstOrDefault(x => x.Id == getData.HiringDataId);
 
                     if (hdata != null)
                     {
@@ -152,16 +152,16 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                     }
                     else
                     {
-                        if (dt != null)
+                        if (getData != null)
                         {
                             DetailProjectContractor detailProjectContractor = new DetailProjectContractor();
                             map[i].Id = Guid.NewGuid();
                             detailProjectContractor.HiringDataId = map[i].Id;
                             detailProjectContractor.ContractorId = map[i].ContractorId;
                             detailProjectContractor.ContractId = model[i].ContractId;
-                            detailProjectContractor.ElementId = dt.ElementId;
-                            detailProjectContractor.ComponenteId = dt.ComponenteId;
-                            detailProjectContractor.Id = dt.Id;
+                            detailProjectContractor.ElementId = getData.ElementId;
+                            detailProjectContractor.ComponenteId = getData.ComponenteId;
+                            detailProjectContractor.Id = getData.Id;
                             detailDataListAdd.Add(detailProjectContractor);
                             hiringDataListAdd.Add(map[i]);
                         }
