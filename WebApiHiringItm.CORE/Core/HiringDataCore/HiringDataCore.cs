@@ -71,21 +71,6 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             return null;
         }
 
-        public async Task<MinutaDto> GetByIdMinuta(Guid[] id)
-        {
-            var hiring = _context.DetailProjectContractor
-                .Include(hd => hd.HiringData).FirstOrDefault(x => x.ContractorId == id[0]);
-            var elemento = _context.ElementosComponente.FirstOrDefault(x => x.Id == id[1]);
-            MinutaDto minutaDto = new MinutaDto();
-            var hiringMap = _mapper.Map<HiringDataDto>(hiring);
-            var elementoMap = _mapper.Map<ElementosComponenteDto>(elemento);
-
-            minutaDto.HiringDataDto = hiringMap;
-            minutaDto.elementosComponenteDto = elementoMap;
-            var map = _mapper.Map<MinutaDto>(minutaDto);
-            return await Task.FromResult(map);
-        }
-
         public async Task<bool> Updates(string model)
         {
             try
@@ -133,14 +118,16 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 List<HiringData> hiringDataListAdd = new List<HiringData>();
                 List<DetailProjectContractor> detailDataListAdd = new List<DetailProjectContractor>();
                 var getData = _context.DetailProjectContractor
-                    .Where(x => x.ContractId == model[0].ContractId && x.ContractorId.Equals(model[0].ContractorId))
+                    .Where(x => x.ContractId == model[0].ContractId)
                     .Include(dt => dt.HiringData)
-                    .FirstOrDefault();
+                    .ToList();
+
                 var hd = _context.HiringData.ToList();
                 var map = _mapper.Map<List<HiringData>>(model);
                 for (var i = 0; i < map.Count; i++)
                 {
-                    var hdata = hd.FirstOrDefault(x => x.Id == getData.HiringDataId);
+                    var hiring = getData.FirstOrDefault(h => h.ContractorId.Equals(map[i].ContractorId));
+                    var hdata = hd.FirstOrDefault(x => x.Id == hiring.HiringDataId);
 
                     if (hdata != null)
                     {
@@ -159,9 +146,9 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                             detailProjectContractor.HiringDataId = map[i].Id;
                             detailProjectContractor.ContractorId = map[i].ContractorId;
                             detailProjectContractor.ContractId = model[i].ContractId;
-                            detailProjectContractor.ElementId = getData.ElementId;
-                            detailProjectContractor.ComponenteId = getData.ComponenteId;
-                            detailProjectContractor.Id = getData.Id;
+                            detailProjectContractor.ElementId = hiring.ElementId;
+                            detailProjectContractor.ComponenteId = hiring.ComponenteId;
+                            detailProjectContractor.Id = hiring.Id;
                             detailDataListAdd.Add(detailProjectContractor);
                             hiringDataListAdd.Add(map[i]);
                         }

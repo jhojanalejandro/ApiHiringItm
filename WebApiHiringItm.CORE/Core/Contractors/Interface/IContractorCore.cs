@@ -1,4 +1,5 @@
-﻿using WebApiHiringItm.MODEL.Dto.Contratista;
+﻿using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Dto.CuentaCobroDto;
 using WebApiHiringItm.MODEL.Models;
@@ -9,6 +10,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
     {
         Task<List<ContractorDto>> GetAll();
         Task<CuentaCobroDto> GetById(Guid contractorId, Guid ContractId);
+        Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors);
         Task<bool> Delete(Guid id);
         Task<bool> Create(ContractorDto model);
         Task<bool> SendContractorCount(SendMessageAccountDto ids);

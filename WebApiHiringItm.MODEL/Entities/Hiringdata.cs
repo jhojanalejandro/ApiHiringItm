@@ -21,6 +21,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? FechaExaPreocupacional { get; set; }
         public string SupervisorItm { get; set; }
         public string CargoSupervisorItm { get; set; }
+        public string IdentificacionSupervisor { get; set; }
         public DateTime? FechaRealDeInicio { get; set; }
         public DateTime? FechaDeComite { get; set; }
         public bool? RequierePoliza { get; set; }

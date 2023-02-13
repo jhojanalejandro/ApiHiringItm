@@ -27,6 +27,7 @@ using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Dto.CuentaCobroDto;
 using WebApiHiringItm.MODEL.Dto.FileDto;
+using WebApiHiringItm.MODEL.Dto;
 
 namespace WebApiHiringItm.CORE.Core.Contractors
 {
@@ -34,7 +35,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
     {
         private const string NOASIGNADA = "NoAsignada";
         private const bool HABILITADO = true;
-        private const string TIPOASIGNACION = "Elemento";
+        private const string TIPOASIGNACIONELEMENTO = "Elemento";
         private readonly Hiring_V1Context _context;
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
@@ -414,7 +415,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                     List<DetailProjectContractor> asignDataListUpdate = new List<DetailProjectContractor>();
                     for (int i = 0; i < model.IdContractor.Length; i++)
                     {
-                        if (model.Type == TIPOASIGNACION)
+                        if (model.Type == TIPOASIGNACIONELEMENTO)
                         {
                             var contractorUpdate = _context.DetailProjectContractor.FirstOrDefault(d => d.ContractId == model.ContractId && d.ContractorId.Equals(model.IdContractor[i]));
                             if (contractorUpdate != null)
@@ -422,7 +423,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                                 contractorUpdate.ElementId = model.Id;
                                 asignDataListUpdate.Add(contractorUpdate);
                             }
-
                         }
                         else
                         {
@@ -437,7 +437,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                     _context.DetailProjectContractor.UpdateRange(asignDataListUpdate);
                     var res = await _context.SaveChangesAsync();
                     return res != 0 ? true : false;
-
                 }
                 catch (Exception ex)
                 {
@@ -568,6 +567,97 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             }
 
         }
+
+
+
+        public async Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors)
+        {
+            try
+            {
+                List<MinutaDto> listContractor = new();
+
+                foreach (var d in contractors.contractors)
+                {
+                    var contractor = _context.DetailProjectContractor.Where(x => x.ContractId == contractors.contractId && x.ContractorId == d)
+                        .Include(dt => dt.Contractor).Where(ct => ct.Contractor.Habilitado == HABILITADO)
+                        .Include(hd => hd.HiringData)
+                        .Include(el => el.Element)
+                        .Include(el => el.Contract);
+                    var Hiringvalidate = contractor.Select(h => h.HiringData);
+                    var elementValidate = contractor.Select(h => h.Element);
+
+                    if (Hiringvalidate != null && elementValidate != null)
+                    {
+                        var data = contractor.Select(ct => new MinutaDto
+                        {
+                            ContractorId = d,
+                            FechaFinalizacionConvenio = ct.HiringData.FechaFinalizacionConvenio,
+                            Contrato = ct.HiringData.Contrato,
+                            Compromiso = ct.HiringData.Compromiso,
+                            SupervisorItm = ct.HiringData.SupervisorItm,
+                            CargoSupervisorItm = ct.HiringData.CargoSupervisorItm,
+                            IdentificacionSupervisor = ct.HiringData.IdentificacionSupervisor,
+                            FechaRealDeInicio = ct.HiringData.FechaRealDeInicio,
+                            FechaDeComite = ct.HiringData.FechaDeComite,
+                            Rubro = ct.HiringData.Rubro,
+                            NombreRubro = ct.HiringData.NombreRubro,
+                            FuenteRubro = ct.HiringData.FuenteRubro,
+                            Cdp = ct.HiringData.Cdp,
+                            NumeroActa = ct.HiringData.NumeroActa,
+                            NombreElemento = ct.Element.NombreElemento,
+                            ObligacionesGenerales = ct.Element.ObligacionesGenerales,
+                            ObligacionesEspecificas = ct.Element.ObligacionesEspecificas,
+                            CantidadDias = ct.Element.CantidadDias,
+                            ValorUnidad = ct.Element.ValorUnidad,
+                            ValorTotal = ct.Element.ValorTotal,
+                            Cpc = ct.Element.Cpc,
+                            NombreCpc = ct.Element.NombreCpc,
+                            Consecutivo = ct.Element.Consecutivo,
+                            ObjetoElemento = ct.Element.ObjetoElemento,
+                            TipoContratacion = ct.Contractor.TipoContratacion,
+                            Codigo = ct.Contractor.Codigo,
+                            Convenio = ct.Contractor.Convenio,
+                            FechaInicio = ct.Contractor.FechaInicio,
+                            FechaFin = ct.Contractor.FechaFin,
+                            Nombre = ct.Contractor.Nombre + " " + ct.Contractor.Apellido,
+                            Identificacion = ct.Contractor.Identificacion,
+                            LugarExpedicion = ct.Contractor.LugarExpedicion,
+                            FechaNacimiento = ct.Contractor.FechaNacimiento,
+                            Direccion = ct.Contractor.Direccion,
+                            Departamento = ct.Contractor.Departamento,
+                            Municipio = ct.Contractor.Municipio,
+                            Barrio = ct.Contractor.Barrio,
+                            Telefono = ct.Contractor.Telefono,
+                            Celular = ct.Contractor.Celular,
+                            Correo = ct.Contractor.Correo,
+                            TipoAdministradora = ct.Contractor.TipoAdministradora,
+                            Administradora = ct.Contractor.Administradora,
+                            CuentaBancaria = ct.Contractor.CuentaBancaria,
+                            TipoCuenta = ct.Contractor.TipoCuenta,
+                            EntidadCuentaBancaria = ct.Contractor.EntidadCuentaBancaria,
+                            FechaCreacion = ct.Contractor.FechaCreacion,
+                            FechaActualizacion = ct.Contractor.FechaActualizacion,
+                            ObjetoConvenio = ct.Contractor.ObjetoConvenio,
+                            CompanyName = ct.Contract.CompanyName,
+                            DescriptionProject = ct.Contract.DescriptionProject,
+                            NumberProject = ct.Contract.NumberProject,
+                        })
+                        .AsNoTracking()
+                        .FirstOrDefault();
+                        listContractor.Add(data);
+                    }        
+
+                }
+                return await Task.FromResult(listContractor);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+      
+        }
+
         #endregion
     }
 }

@@ -422,6 +422,8 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.CargoSupervisorItm).HasMaxLength(100);
 
+                entity.Property(e => e.IdentificacionSupervisor).HasMaxLength(50);
+
                 entity.Property(e => e.Cdp).HasMaxLength(50);
 
                 entity.Property(e => e.Compromiso).HasMaxLength(100);

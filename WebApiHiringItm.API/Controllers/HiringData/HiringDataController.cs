@@ -53,24 +53,6 @@ namespace WebApiHiringItm.API.Controllers.HiringData
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetByIdMinuta(Guid[] id)
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _hiringData.GetByIdMinuta(id);
-
-                //Retornamos datos.
-                return Data != null ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-        [HttpPost]
         public async Task<IActionResult> Add(List<HiringDataDto> model)
         {
             try
