@@ -18,5 +18,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
         Task<List<ContractorDto>> GetByIdFolder(Guid id);
         AuthenticateResponse Authenticate(AuthenticateRequest model);
         Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model);
+        Task<List<ContractorPaymentsDto>> GetPaymentsContractorList(Guid contractId, Guid contractorId);
     }
 }

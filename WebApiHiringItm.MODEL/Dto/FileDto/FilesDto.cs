@@ -20,7 +20,7 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public int? UserId { get; set; }
         public DateTime? RegisterDate { get; set; }
         public string TypeFilePayment { get; set; }
-        public string MonthPayment { get; set; }
+        public string? MonthPayment { get; set; }
         public int? FolderId { get; set; }
         public bool? Passed { get; set; }
 

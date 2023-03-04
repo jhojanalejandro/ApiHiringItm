@@ -26,10 +26,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _contactor.GetAll();
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -38,6 +35,22 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPaymentsContractorList(Guid contractId, Guid contractorId)
+        {
+            try
+            {
+                var Data = await _contactor.GetPaymentsContractorList(contractId, contractorId);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAllByFolder(Guid id)
