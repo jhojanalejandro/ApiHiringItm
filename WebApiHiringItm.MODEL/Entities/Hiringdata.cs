@@ -31,11 +31,11 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? FechaExpedicionPoliza { get; set; }
         public decimal? ValorAsegurado { get; set; }
         public int? Nivel { get; set; }
-        public string Rubro { get; set; }
         public string NombreRubro { get; set; }
         public string FuenteRubro { get; set; }
         public string Cdp { get; set; }
         public string NumeroActa { get; set; }
+        public string Caso { get; set; }
 
         public virtual Contractor Contractor { get; set; }
         public virtual UserT User { get; set; }

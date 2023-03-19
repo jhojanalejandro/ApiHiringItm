@@ -21,7 +21,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Avatar { get; set; }
         public string Professionalposition { get; set; }
         public string UserPassword { get; set; }
-        public int RollId { get; set; }
+        public Guid RollId { get; set; }
         public string UserEmail { get; set; }
         public string PhoneNumber { get; set; }
         public string Identification { get; set; }

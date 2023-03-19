@@ -18,6 +18,8 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public bool? EnableProject { get; set; }
         public int? ContractorsCant { get; set; }
         public string NumberProject { get; set; }
+        public string? Proyect { get; set; }
+        public string? Rubro { get; set; }
         public DetalleContratoDto DetalleContratoDto { get; set; }
 
     }

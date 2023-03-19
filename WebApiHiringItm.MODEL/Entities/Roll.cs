@@ -12,8 +12,9 @@ namespace WebApiHiringItm.MODEL.Entities
             UserT = new HashSet<UserT>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string RollName { get; set; }
+        public string Code { get; set; }
 
         public virtual ICollection<UserT> UserT { get; set; }
     }

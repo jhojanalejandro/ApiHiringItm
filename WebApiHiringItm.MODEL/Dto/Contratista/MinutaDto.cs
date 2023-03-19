@@ -30,10 +30,10 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string? NombreElemento { get; set; }
         public string? ObligacionesGenerales { get; set; }
         public string? ObligacionesEspecificas { get; set; }
-        public int CantidadDias { get; set; }
-        public decimal ValorUnidad { get; set; }
-        public decimal ValorTotal { get; set; }
-        public decimal ValorPorDia { get; set; }
+        public int? CantidadDias { get; set; }
+        public decimal? ValorUnidad { get; set; }
+        public decimal? ValorTotal { get; set; }
+        public decimal? ValorPorDia { get; set; }
         public string? Cpc { get; set; }
         public string? NombreCpc { get; set; }
         public bool? Modificacion { get; set; }
@@ -47,7 +47,6 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string Nombre { get; set; }
         public string Identificacion { get; set; }
         public string LugarExpedicion { get; set; }
-        public string Especializacion { get; set; }
         public DateTime? FechaNacimiento { get; set; }
         public string Direccion { get; set; }
         public string Departamento { get; set; }

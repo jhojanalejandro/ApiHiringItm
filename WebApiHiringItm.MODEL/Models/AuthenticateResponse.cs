@@ -15,7 +15,7 @@ namespace WebApiHiringItm.MODEL.Models
         public Guid? contractId { get; set; }
         public string UserName { get; set; }
         public string UserPassword { get; set; }
-        public int IdRoll { get; set; }
+        public Guid? IdRoll { get; set; }
         public string UserEmail { get; set; }
         public bool Permission { get; set; }
         public string accessToken { get; set; }
@@ -36,7 +36,7 @@ namespace WebApiHiringItm.MODEL.Models
             UserName = user.Nombre ;
             UserPassword = user.ClaveUsuario;
             UserEmail = user.Correo;
-            IdRoll = 6;
+            IdRoll = user.RollId;
             accessToken = token;
         }
     }

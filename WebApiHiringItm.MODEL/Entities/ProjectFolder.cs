@@ -31,6 +31,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? GastosOperativos { get; set; }
         public decimal? ValorSubTotal { get; set; }
         public string NumberProject { get; set; }
+        public string Proyect { get; set; }
+        public string Rubro { get; set; }
 
         public virtual UserT User { get; set; }
         public virtual ICollection<Componente> Componente { get; set; }

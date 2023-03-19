@@ -28,10 +28,11 @@ namespace WebApiHiringItm.MODEL.Dto
         public DateTime? FechaExpedicionPoliza { get; set; }
         public decimal? ValorAsegurado { get; set; }
         public int? Nivel { get; set; }
-        public string? Rubro { get; set; }
         public string? NombreRubro { get; set; }
         public string? FuenteRubro { get; set; }
         public string? Cdp { get; set; }
         public string? NumeroActa { get; set; }
+        public string? Caso { get; set; }
+
     }
 }

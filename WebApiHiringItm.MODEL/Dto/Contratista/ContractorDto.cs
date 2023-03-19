@@ -9,6 +9,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
     public class ContractorDto
     {
         public Guid Id { get; set; }
+        public Guid RollId { get; set; }
         public string TipoContratacion { get; set; }
         public string Codigo { get; set; }
         public string FechaInicio { get; set; }

@@ -9,6 +9,7 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public int Id { get; set; }
         public Guid? ContractorId { get; set; }
+        public Guid? ContractId { get; set; }
         public decimal? TotalValue { get; set; }
         public decimal? UnitValue { get; set; }
         public decimal? TotalPaidMonth { get; set; }
@@ -18,7 +19,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? Freed { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
-        public Guid? ContractId { get; set; }
 
         public virtual ProjectFolder Contract { get; set; }
         public virtual Contractor Contractor { get; set; }
