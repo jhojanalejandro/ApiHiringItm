@@ -14,14 +14,14 @@ namespace WebApiHiringItm.CORE.Core.User.Interface
     {
         AuthenticateResponse Authenticate(AuthenticateRequest model);
         Task<List<UserTDto>> GetAll();
+        Task<List<UserTDto>> GetAllAdmins();
         Task<UserTDto> GetById(int id);
         UserT GetByIdd(int id);
-        Task<int> Create(UserTDto model);
+        Task<int> SignUp(UserTDto model);
         Task<bool> Delete(int id);
         Task<bool> Update(UserTDto model);
         Task<bool> ValidateT(string authToken);
         Task<bool> UpdatePassword(UserUpdatePasswordDto model);
         Task<bool> GetUserForgetPassword(RetrievePassword model);
-        Task<List<UserTDto>> GetAllByRoll();
     }
 }

@@ -49,6 +49,21 @@ namespace WebApiHiringItm.API.Controllers.User
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllAdmins()
+        {
+            try
+            {
+                var Data = await _user.GetAllAdmins();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -68,29 +83,13 @@ namespace WebApiHiringItm.API.Controllers.User
 
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllByRoll()
-        {
-            try
-            {
-                var Data = await _user.GetAllByRoll();
-                return Data != null ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error", ex);
-            }
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Add(UserTDto model)
+        public async Task<IActionResult> SignUp(UserTDto model)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _user.Create(model);
+                var Data = await _user.SignUp(model);
 
-                //Retornamos datos.
                 return Data != 0 ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
