@@ -92,7 +92,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     NombreElemento = w.Element.NombreElemento,
                     FuenteRubro = w.HiringData.FuenteRubro,
                     NombreRubro = w.HiringData.NombreRubro,
-                    Rubro = w.HiringData.Rubro,
+                    Rubro = w.Contract.Rubro,
                 })
                 .AsNoTracking()
                 .ToList();
@@ -181,7 +181,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     NombreElemento = w.Element.NombreElemento,
                     FuenteRubro = w.HiringData.FuenteRubro,
                     NombreRubro = w.HiringData.NombreRubro,
-                    Rubro = w.HiringData.Rubro,
+                    Rubro = w.Contract.Rubro,
                     Cdp = w.HiringData.Cdp,
                 })
                 .AsNoTracking()
@@ -265,7 +265,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     NombreElemento = w.Element.NombreElemento,
                     FuenteRubro = w.HiringData.FuenteRubro,
                     NombreRubro = w.HiringData.NombreRubro,
-                    Rubro = w.HiringData.Rubro,
+                    Rubro = w.Contract.Rubro,
                 })
                 .AsNoTracking()
                 .ToList();
@@ -318,7 +318,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 const int startRow = 5;
                 var row = startRow;
                 //Create Headers and format them
-                worksheet.Cells["A1"].Value = "Con el fin de proceder a completar las columnas: Código UNSPSC, Duración del contrato (intervalo: días, meses, años), Modalidad de selección, Fuente de los recursos, ¿Se requieren vigencias futuras?, Estado de solicitud de vigencias futuras; vea la " + " Hoja de soporte " + " para saber cuáles son los códigos que aplican a cada columna.";
+                //worksheet.Cells["A1"].Value = "Con el fin de proceder a completar las columnas: Código UNSPSC, Duración del contrato (intervalo: días, meses, años), Modalidad de selección, Fuente de los recursos, ¿Se requieren vigencias futuras?, Estado de solicitud de vigencias futuras; vea la " + " Hoja de soporte " + " para saber cuáles son los códigos que aplican a cada columna.";
                 using (var r = worksheet.Cells["A1:Q3"])
                 {
                     r.Style.WrapText = true;
@@ -354,7 +354,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     NombreElemento = w.Element.NombreElemento,
                     FuenteRubro = w.HiringData.FuenteRubro,
                     NombreRubro = w.HiringData.NombreRubro,
-                    Rubro = w.HiringData.Rubro,
+                    Rubro = w.Contract.Rubro,
                 })
                 .AsNoTracking()
                 .ToList();
@@ -377,12 +377,20 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     }
                  
                 }
-                worksheet.Columns.AutoFit();
-                xlPackage.Workbook.Properties.Title = "Solicitud CDP - DAP";
-                xlPackage.Workbook.Properties.Author = "ITM";
-                xlPackage.Workbook.Properties.Created = DateTime.Now;
-                xlPackage.Workbook.Properties.Subject = "Solicitud CDP - DAP";
-                xlPackage.Save();
+                if (nro > 0)
+                {
+                    worksheet.Columns.AutoFit();
+                    xlPackage.Workbook.Properties.Title = "Solicitud CDP - DAP";
+                    xlPackage.Workbook.Properties.Author = "ITM";
+                    xlPackage.Workbook.Properties.Created = DateTime.Now;
+                    xlPackage.Workbook.Properties.Subject = "Solicitud CDP - DAP";
+                    xlPackage.Save();
+                }
+                else
+                {
+                    return null;
+                }
+
             }
             stream.Position = 0;
             return await Task.FromResult(stream);

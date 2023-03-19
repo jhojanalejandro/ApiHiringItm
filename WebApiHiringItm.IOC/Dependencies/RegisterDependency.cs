@@ -19,6 +19,7 @@ using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Core.Componentes;
 using WebApiHiringItm.CORE.Helpers.InterfacesHelpers;
 using WebApiHiringItm.CORE.Helpers;
+using WebApiHiringItm.Core.User;
 
 namespace WebApiHiringItm.IOC.Dependencies
 {

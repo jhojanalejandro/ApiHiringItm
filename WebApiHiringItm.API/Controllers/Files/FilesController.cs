@@ -59,6 +59,21 @@ namespace WebApiHiringItm.API.Controllers.Files
         }
 
         [HttpPost]
+        public async Task<IActionResult> AddBillsContractor(List<FilesDto> model)
+        {
+            try
+            {
+                var Data = await _file.Addbills(model);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddDetailFile(DetailFileDto model)
         {
             try

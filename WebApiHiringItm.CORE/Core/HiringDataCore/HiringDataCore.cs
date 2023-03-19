@@ -57,7 +57,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                     FechaExpedicionPoliza = hd.HiringData.FechaExpedicionPoliza,
                     ValorAsegurado = hd.HiringData.ValorAsegurado,
                     Nivel = hd.HiringData.Nivel,
-                    Rubro = hd.HiringData.Rubro,
+                    Caso = hd.HiringData.Caso,
                     NombreRubro = hd.HiringData.NombreRubro,
                     FuenteRubro = hd.HiringData.FuenteRubro,
                     Cdp = hd.HiringData.Cdp,
