@@ -291,7 +291,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                 _context.NewnessContractor.Add(map);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
-
             }
             else
             {
@@ -327,7 +326,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
             DataTable dataTable = worksheet.Cells.ExportDataTable(0, 0, worksheet.Cells.MaxRow + 1, worksheet.Cells.LastCell.Column + 1, true);
             dataTable.TableName = "Contractor";
-            DataColumn newColumn = new DataColumn("User Id", typeof(int));
+            DataColumn newColumn = new DataColumn("User Id", typeof(Guid));
             newColumn.DefaultValue = model.UserId;
             dataTable.Columns.Add(newColumn);
             DataColumn newColumnid = new DataColumn("Id", typeof(Guid));

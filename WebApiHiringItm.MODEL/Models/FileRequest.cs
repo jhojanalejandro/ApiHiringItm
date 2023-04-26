@@ -4,7 +4,7 @@ namespace WebApiHiringItm.MODEL.Models
 {
     public class FileRequest
     {
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public Guid ContractId { get; set; }
         public IFormFile? Excel { get; set; }
     }
