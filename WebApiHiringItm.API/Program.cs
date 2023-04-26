@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core;
 using WebApiHiringItm.CORE.Helpers;
@@ -34,9 +36,47 @@ builder.Services.AddCors(options =>
 #endregion
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
-        options => builder.Configuration.Bind("AppSettings", options));
+var secretKey = "401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1"; // reemplaza con tu clave secreta real
+var key = Encoding.ASCII.GetBytes(secretKey);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
+//        options => { options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateIssuer = true,
+//            ValidateAudience = true,
+//            ValidateLifetime = true,
+//            ValidateIssuerSigningKey = true,
+//            ValidIssuer = "HiringITM", // reemplaza con tu emisor real
+//            ValidAudience = "mi_audience", // reemplaza con tu audiencia real
+//            IssuerSigningKey = new SymmetricSecurityKey(key)
+//        };
+//            options.Events = new JwtBearerEvents
+//            {
+//                OnAuthenticationFailed = context =>
+//                {
+//                    Console.WriteLine(context.Exception);
+//                    return Task.CompletedTask;
+//                }
+//            };
+//        });
+builder.Services.AddAuthorization();
 var mapperConfig = new MapperConfiguration(mc =>
 {
     mc.AddProfile(new Automaping());
@@ -44,7 +84,7 @@ var mapperConfig = new MapperConfiguration(mc =>
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddDbContext<Hiring_V1Context>(options =>
+builder.Services.AddDbContext<HiringContext>(options =>
       options
       .UseLazyLoadingProxies()
       .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
@@ -52,7 +92,7 @@ builder.Services.AddDbContext<Hiring_V1Context>(options =>
       );
 
 
-builder.Services.AddScoped<IHiring_V1Context>(provider => provider.GetService<Hiring_V1Context>());
+builder.Services.AddScoped<IHiringContext>(provider => provider.GetService<HiringContext>());
 
 
 var app = builder.Build();

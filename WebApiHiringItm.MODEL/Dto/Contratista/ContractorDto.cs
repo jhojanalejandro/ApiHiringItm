@@ -43,8 +43,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string ObjetoConvenio { get; set; }
         public Guid? ComponenteId { get; set; }
         public Guid? ElementId { get; set; }
-        public int UserId { get; set; }
-        public Guid? ContractId { get; set; }
+        public Guid UserId { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public string ClaveUsuario { get; set; }
         public DateTime? FechaActualizacion { get; set; }

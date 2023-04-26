@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
 {
     public class FolderContractorDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public int UserId { get; set; }
         public Guid? ContractorId { get; set; }
         public Guid? ContractId { get; set; }
@@ -16,5 +16,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string DescriptionProject { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
+        public string TypeFolder { get; set; }
+
     }
 }

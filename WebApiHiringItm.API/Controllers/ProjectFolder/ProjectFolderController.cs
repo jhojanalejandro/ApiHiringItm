@@ -7,7 +7,7 @@ using WebApiHiringItm.MODEL.Dto.ContratoDto;
 namespace WebApiHiringItm.API.Controllers.ProjectFolder
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ProjectFolderController : ControllerBase
     {
@@ -16,6 +16,7 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
         public ProjectFolderController(IProjectFolder proeject)
         {
             _project = proeject;
+
         }
 
         [HttpGet]
@@ -43,10 +44,7 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _project.GetById(id);
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

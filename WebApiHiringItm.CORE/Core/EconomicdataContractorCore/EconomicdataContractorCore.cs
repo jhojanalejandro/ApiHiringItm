@@ -13,11 +13,11 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
 {
     public class EconomicdataContractorCore : IEconomicdataContractorCore
     {
-        private readonly Hiring_V1Context _context;
+        private readonly HiringContext _context;
         private readonly IMapper _mapper;
 
 
-        public EconomicdataContractorCore(Hiring_V1Context context, IMapper mapper)
+        public EconomicdataContractorCore(HiringContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

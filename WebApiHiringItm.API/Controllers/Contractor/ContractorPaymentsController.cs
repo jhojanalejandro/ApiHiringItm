@@ -7,7 +7,7 @@ using WebApiHiringItm.MODEL.Dto.Contratista;
 namespace WebApiHiringItm.API.Controllers.Contractor
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ContractorPaymentsController : ControllerBase
     {

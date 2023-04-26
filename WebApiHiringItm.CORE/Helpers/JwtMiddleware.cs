@@ -52,10 +52,10 @@ namespace WebApiHiringItm.CORE.Helpers
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                var userId = jwtToken.Claims.First(x => x.Type == "id").Value;
 
                 // attach user to context on successful jwt validation
-                context.Items["Users"] = userCore.GetByIdd(userId);
+                context.Items["Users"] = userCore.GetByIdd(Guid.Parse(userId));
             }
             catch
             {

@@ -25,23 +25,21 @@ using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using Microsoft.Extensions.Options;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
-using WebApiHiringItm.MODEL.Dto.CuentaCobroDto;
 using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Dto;
 
 namespace WebApiHiringItm.CORE.Core.Contractors
 {
-    public class ContractorCore : IContractorCore
+    public class ContractorCore : IContractorCore 
     {
         private const string NOASIGNADA = "NoAsignada";
         private const bool HABILITADO = true;
         private const string TIPOASIGNACIONELEMENTO = "Elemento";
-        private readonly Hiring_V1Context _context;
+        private readonly HiringContext _context;
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
         private readonly MailSettings _mailSettings;
-        static readonly byte[] keys = Encoding.UTF8.GetBytes("401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1");
-        public ContractorCore(Hiring_V1Context context, IMapper mapper, IOptions<AppSettings> appSettings, IOptions<MailSettings> mailSettings)
+        public ContractorCore(HiringContext context, IMapper mapper, IOptions<AppSettings> appSettings, IOptions<MailSettings> mailSettings)
         {
             _context = context;
             _mapper = mapper;
@@ -97,7 +95,8 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             var map = _mapper.Map<List<ContractorDto>>(contractor);
             return await Task.FromResult(map);
         }
-        public async Task<CuentaCobroDto> GetById(Guid contractorId, Guid ContractId)
+
+        public async Task<ChargeAccountDto?> ChargeAccountGetById(Guid contractorId, Guid ContractId)
         {
             var result = _context.ContractorPayments
                 .Include(co => co.Contractor)
@@ -109,60 +108,69 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
             if (result != null)
             {
-               var resultData = result.Select(cb => new CuentaCobroDto()
+                return await result.Select(cb => new ChargeAccountDto
                 {
-                   Codigo = cb.Contractor.Codigo,
-                   Convenio = cb.Contractor.Convenio,
-                   Nombre = cb.Contractor.Nombre + " " + cb.Contractor.Apellido,
-                   Identificacion = cb.Contractor.Identificacion,
-                   Direccion = cb.Contractor.Direccion,
-                   Departamento = cb.Contractor.Departamento,
-                   Municipio = cb.Contractor.Municipio,
-                   Barrio = cb.Contractor.Barrio,
-                   Telefono = cb.Contractor.Telefono,
-                   Celular = cb.Contractor.Celular,
-                   Correo = cb.Contractor.Correo,
-                   TipoAdministradora = cb.Contractor.TipoAdministradora,
-                   Administradora = cb.Contractor.Administradora,
-                   CuentaBancaria = cb.Contractor.CuentaBancaria,
-                   TipoCuenta = cb.Contractor.TipoCuenta,
-                   EntidadCuentaBancaria = cb.Contractor.EntidadCuentaBancaria,
-                   ContractId = cb.Contract.Id,
-                   From = cb.FromDate,
-                   To = cb.ToDate,
-                   Company = cb.Contract.CompanyName,
-                   Paymentcant = cb.Paymentcant,
-                   ContractNumber = cb.Contract.NumberProject,
-                   LugarExpedicion = cb.Contractor.LugarExpedicion,
-                   NombreElemento = cb.Contract.DetailProjectContractor.Select(ne => ne.Element.NombreElemento).FirstOrDefault()
-               })
-                 .AsNoTracking()
-                 .FirstOrDefault();
-                return await Task.FromResult(resultData);
+                    Codigo = cb.Contractor.Codigo,
+                    Convenio = cb.Contractor.Convenio,
+                    Nombre = cb.Contractor.Nombre + " " + cb.Contractor.Apellido,
+                    Identificacion = cb.Contractor.Identificacion,
+                    Direccion = cb.Contractor.Direccion,
+                    Departamento = cb.Contractor.Departamento,
+                    Municipio = cb.Contractor.Municipio,
+                    Barrio = cb.Contractor.Barrio,
+                    Telefono = cb.Contractor.Telefono,
+                    Celular = cb.Contractor.Celular,
+                    Correo = cb.Contractor.Correo,
+                    TipoAdministradora = cb.Contractor.TipoAdministradora,
+                    Administradora = cb.Contractor.Administradora,
+                    CuentaBancaria = cb.Contractor.CuentaBancaria,
+                    TipoCuenta = cb.Contractor.TipoCuenta,
+                    EntidadCuentaBancaria = cb.Contractor.EntidadCuentaBancaria,
+                    ContractId = cb.Contract.Id,
+                    From = cb.FromDate,
+                    To = cb.ToDate,
+                    Company = cb.Contract.CompanyName,
+                    Paymentcant = cb.Paymentcant,
+                    ContractNumber = cb.Contract.NumberProject,
+                    LugarExpedicion = cb.Contractor.LugarExpedicion,
+                    NombreElemento = cb.Contract.DetailProjectContractor.Select(ne => ne.Element.NombreElemento).FirstOrDefault()
+                })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
             }
             return null;
+
+        }
+
+        public async Task<FilesDto?> GetDocumentPdf(Guid contractId, Guid contractorId)
+        {
+            var result = _context.Files
+                 .Where(x => x.ContractId.Equals(contractId) && x.ContractorId.Equals(contractorId));
+
+            return await result.Select(fl => new FilesDto
+            {
+                Id = fl.Id,
+                FilesName = fl.FilesName,
+                Filedata = fl.Filedata,
+                TypeFile = fl.TypeFile,
+                DescriptionFile = fl.DescriptionFile
+            })
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
         }
 
         public async Task<bool> Delete(Guid id)
         {
-            try
+            var resultData = _context.Contractor.Where(x => x.Id == id).FirstOrDefault();
+            if (resultData != null)
             {
-                var resultData = _context.Contractor.Where(x => x.Id == id).FirstOrDefault();
-                if (resultData != null)
-                {
-                    resultData.Habilitado = false;
-                    var result = _context.Contractor.Update(resultData);
-                    await _context.SaveChangesAsync();
-
-                }
-                return true;
+                resultData.Habilitado = false;
+                var result = _context.Contractor.Update(resultData);
+                await _context.SaveChangesAsync();
 
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Error", ex);
-            }
-            return false;
+            return true;
         }
 
         public async Task<bool> Create(ContractorDto model)
@@ -186,6 +194,113 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             }
             return false;
 
+        }
+
+
+
+
+        public async Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors)
+        {
+            try
+            {
+                var contractor = _context.DetailProjectContractor.Where(x => x.ContractId == contractors.contractId)
+                .Include(dt => dt.Contractor).Where(ct => ct.Contractor.Habilitado == HABILITADO)
+                .Include(hd => hd.HiringData)
+                .Include(el => el.Element)
+                .Include(el => el.Contract)
+                .Where(w => contractors.contractors.Contains(w.Contractor.Id.ToString()));
+
+                return await contractor.Select(ct => new MinutaDto
+                {
+                    ContractorId = ct.ContractorId,
+                    FechaFinalizacionConvenio = ct.HiringData.FechaFinalizacionConvenio,
+                    Contrato = ct.HiringData.Contrato,
+                    Compromiso = ct.HiringData.Compromiso,
+                    SupervisorItm = ct.HiringData.SupervisorItm,
+                    CargoSupervisorItm = ct.HiringData.CargoSupervisorItm,
+                    IdentificacionSupervisor = ct.HiringData.IdentificacionSupervisor,
+                    FechaRealDeInicio = ct.HiringData.FechaRealDeInicio,
+                    FechaDeComite = ct.HiringData.FechaDeComite,
+                    Rubro = ct.Contract.Rubro,
+                    NombreRubro = ct.Contract.NombreRubro,
+                    FuenteRubro = ct.Contract.FuenteRubro,
+                    Cdp = ct.HiringData.Cdp,
+                    NumeroActa = ct.HiringData.NumeroActa,
+                    NombreElemento = ct.Element.NombreElemento,
+                    ObligacionesGenerales = ct.Element.ObligacionesGenerales,
+                    ObligacionesEspecificas = ct.Element.ObligacionesEspecificas,
+                    CantidadDias = ct.Element.CantidadDias,
+                    ValorUnidad = ct.Element.ValorUnidad,
+                    ValorTotal = ct.Element.ValorTotal,
+                    Cpc = ct.Element.Cpc,
+                    NombreCpc = ct.Element.NombreCpc,
+                    Consecutivo = ct.Element.Consecutivo,
+                    ObjetoElemento = ct.Element.ObjetoElemento,
+                    TipoContratacion = ct.Contractor.TipoContratacion,
+                    Codigo = ct.Contractor.Codigo,
+                    Convenio = ct.Contractor.Convenio,
+                    FechaInicio = ct.Contractor.FechaInicio,
+                    FechaFin = ct.Contractor.FechaFin,
+                    Nombre = ct.Contractor.Nombre + " " + ct.Contractor.Apellido,
+                    Identificacion = ct.Contractor.Identificacion,
+                    LugarExpedicion = ct.Contractor.LugarExpedicion,
+                    FechaNacimiento = ct.Contractor.FechaNacimiento,
+                    Direccion = ct.Contractor.Direccion,
+                    Departamento = ct.Contractor.Departamento,
+                    Municipio = ct.Contractor.Municipio,
+                    Barrio = ct.Contractor.Barrio,
+                    Telefono = ct.Contractor.Telefono,
+                    Celular = ct.Contractor.Celular,
+                    Correo = ct.Contractor.Correo,
+                    TipoAdministradora = ct.Contractor.TipoAdministradora,
+                    Administradora = ct.Contractor.Administradora,
+                    CuentaBancaria = ct.Contractor.CuentaBancaria,
+                    TipoCuenta = ct.Contractor.TipoCuenta,
+                    EntidadCuentaBancaria = ct.Contractor.EntidadCuentaBancaria,
+                    FechaCreacion = ct.Contractor.FechaCreacion,
+                    FechaActualizacion = ct.Contractor.FechaActualizacion,
+                    ObjetoConvenio = ct.Contractor.ObjetoConvenio,
+                    CompanyName = ct.Contract.CompanyName,
+                    DescriptionProject = ct.Contract.DescriptionProject,
+                    NumberProject = ct.Contract.NumberProject,
+                })
+                  .AsNoTracking()
+                  .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+
+        }
+
+
+        public async Task<bool> AddNewness(NewnessContractorDto model)
+        {
+            var getData = _context.NewnessContractor.Where(x => x.Id.Equals(model.Id)).FirstOrDefault();
+            var getContractor = _context.Contractor.Where(x => x.Id.Equals(Guid.Parse(model.ContractorId))).FirstOrDefault();
+            if (getContractor != null)
+            {
+                getContractor.Habilitado = false;
+                var result = _context.Contractor.Update(getContractor);
+            }
+            if (getData == null)
+            {
+                var map = _mapper.Map<NewnessContractor>(model);
+                _context.NewnessContractor.Add(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+
+            }
+            else
+            {
+                model.Id = getData.Id;
+                var map = _mapper.Map(model, getData);
+                _context.NewnessContractor.Update(map);
+                var res = await _context.SaveChangesAsync();
+                return res != 0 ? true : false;
+            }
         }
         #region PUBLIC METODS
         public async Task<string> ImportarExcel(FileRequest model)
@@ -336,47 +451,23 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
             return string.Join(string.Empty, words);
         }
-        public AuthenticateResponse Authenticate(AuthenticateRequest model)
-        {
-            var getUser = _context.DetailProjectContractor
-                .Include(c => c.Contractor)
-                .Include(c => c.Contract)
-                .Where(x => x.Contractor.Correo == model.Username && x.Contractor.ClaveUsuario.Equals(model.Password));
-            var select = getUser.Select(ct => new ContractorDto()
-            {
-                Id = ct.Contractor.Id,
-                ContractId = ct.Contract.Id,
-                Identificacion = ct.Contractor.Identificacion,
-                Correo = ct.Contractor.Correo,
-                ClaveUsuario = ct.Contractor.ClaveUsuario,
-                Nombre = ct.Contractor.Nombre + " " + ct.Contractor.Apellido
 
+        public async Task<List<ContractsContarctorDto>> getContractsByContractor(string contractorId)
+        {
+            return await _context.ProjectFolder
+            .Include(i => i.Contractor)
+            .Where(w => w.Contractor.Select(s => s.Id).FirstOrDefault().Equals(Guid.Parse(contractorId)))
+            .Select(s => new ContractsContarctorDto()
+            {
+                Id = s.Id.ToString(),
+                CompanyName = s.CompanyName
             })
             .AsNoTracking()
-            .FirstOrDefault();
+            .ToListAsync();
 
-            if (getUser == null)
-            {
-                return null;
-            }
-            var token = generateJwtToken(select);
 
-            return new AuthenticateResponse(select, token);
         }
-        public string generateJwtToken(ContractorDto user)
-        {
-            // generate token that is valid for 7 days
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
+
         //public async Task<Contractor> SendMessageById(int idFolder)
         //{
         //    var result = _context.Contractor.Where(x => x.IdFolder == idFolder).ToList();
@@ -516,20 +607,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             return false;
 
         }
-        private async Task<bool> Add(FilesDto model)
-        {
-            if (model.Id != 0)
 
-            {
-                var userupdate = _context.Files.Where(x => x.ContractorId.Equals(model.ContractorId) && x.ContractId.Equals(model.ContractId)).FirstOrDefault();
-                var map = _mapper.Map(model, userupdate);
-                _context.Files.Update(map);
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
-
-            }
-            return false;
-        }
         private async Task<bool> Update(AddPasswordContractorDto model)
         {
             if (model.Id != null)
@@ -575,84 +653,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
             }
 
-        }
-
-
-
-        public async Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors)
-        {
-            try
-            {
-                var contractor = _context.DetailProjectContractor.Where(x => x.ContractId == contractors.contractId)
-                .Include(dt => dt.Contractor).Where(ct => ct.Contractor.Habilitado == HABILITADO)
-                .Include(hd => hd.HiringData)
-                .Include(el => el.Element)
-                .Include(el => el.Contract)
-                .Where(w => contractors.contractors.Contains(w.Contractor.Id.ToString()));
-
-                return await contractor.Select(ct => new MinutaDto
-                {
-                    ContractorId = ct.ContractorId,
-                    FechaFinalizacionConvenio = ct.HiringData.FechaFinalizacionConvenio,
-                    Contrato = ct.HiringData.Contrato,
-                    Compromiso = ct.HiringData.Compromiso,
-                    SupervisorItm = ct.HiringData.SupervisorItm,
-                    CargoSupervisorItm = ct.HiringData.CargoSupervisorItm,
-                    IdentificacionSupervisor = ct.HiringData.IdentificacionSupervisor,
-                    FechaRealDeInicio = ct.HiringData.FechaRealDeInicio,
-                    FechaDeComite = ct.HiringData.FechaDeComite,
-                    Rubro = ct.Contract.Rubro,
-                    NombreRubro = ct.HiringData.NombreRubro,
-                    FuenteRubro = ct.HiringData.FuenteRubro,
-                    Cdp = ct.HiringData.Cdp,
-                    NumeroActa = ct.HiringData.NumeroActa,
-                    NombreElemento = ct.Element.NombreElemento,
-                    ObligacionesGenerales = ct.Element.ObligacionesGenerales,
-                    ObligacionesEspecificas = ct.Element.ObligacionesEspecificas,
-                    CantidadDias = ct.Element.CantidadDias,
-                    ValorUnidad = ct.Element.ValorUnidad,
-                    ValorTotal = ct.Element.ValorTotal,
-                    Cpc = ct.Element.Cpc,
-                    NombreCpc = ct.Element.NombreCpc,
-                    Consecutivo = ct.Element.Consecutivo,
-                    ObjetoElemento = ct.Element.ObjetoElemento,
-                    TipoContratacion = ct.Contractor.TipoContratacion,
-                    Codigo = ct.Contractor.Codigo,
-                    Convenio = ct.Contractor.Convenio,
-                    FechaInicio = ct.Contractor.FechaInicio,
-                    FechaFin = ct.Contractor.FechaFin,
-                    Nombre = ct.Contractor.Nombre + " " + ct.Contractor.Apellido,
-                    Identificacion = ct.Contractor.Identificacion,
-                    LugarExpedicion = ct.Contractor.LugarExpedicion,
-                    FechaNacimiento = ct.Contractor.FechaNacimiento,
-                    Direccion = ct.Contractor.Direccion,
-                    Departamento = ct.Contractor.Departamento,
-                    Municipio = ct.Contractor.Municipio,
-                    Barrio = ct.Contractor.Barrio,
-                    Telefono = ct.Contractor.Telefono,
-                    Celular = ct.Contractor.Celular,
-                    Correo = ct.Contractor.Correo,
-                    TipoAdministradora = ct.Contractor.TipoAdministradora,
-                    Administradora = ct.Contractor.Administradora,
-                    CuentaBancaria = ct.Contractor.CuentaBancaria,
-                    TipoCuenta = ct.Contractor.TipoCuenta,
-                    EntidadCuentaBancaria = ct.Contractor.EntidadCuentaBancaria,
-                    FechaCreacion = ct.Contractor.FechaCreacion,
-                    FechaActualizacion = ct.Contractor.FechaActualizacion,
-                    ObjetoConvenio = ct.Contractor.ObjetoConvenio,
-                    CompanyName = ct.Contract.CompanyName,
-                    DescriptionProject = ct.Contract.DescriptionProject,
-                    NumberProject = ct.Contract.NumberProject,
-                })
-                  .AsNoTracking()
-                  .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-      
         }
 
         #endregion

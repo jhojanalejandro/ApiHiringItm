@@ -20,6 +20,8 @@ using WebApiHiringItm.CORE.Core.Componentes;
 using WebApiHiringItm.CORE.Helpers.InterfacesHelpers;
 using WebApiHiringItm.CORE.Helpers;
 using WebApiHiringItm.Core.User;
+using WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore;
+using WebApiHiringItm.CORE.Core.PdfDataCore;
 
 namespace WebApiHiringItm.IOC.Dependencies
 {
@@ -40,7 +42,7 @@ namespace WebApiHiringItm.IOC.Dependencies
             services.AddScoped<IElementosComponenteCore, ElementosComponenteCore>();
             services.AddScoped<IUserFirmCore, UserFirmCore>();
             services.AddScoped<IContractorPaymentsCore, ContractorPaymentCore>();
-
+            services.AddScoped<IPdfDataCore, PdfDataCore>();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto.Usuario
 {
     public class UserUpdatePasswordDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string UserPassword { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
     public class ProjectFolderDto
     {
         public Guid Id { get; set; }
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
         public string DescriptionProject { get; set; }
@@ -22,12 +22,17 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public decimal? GastosOperativos { get; set; }
         public decimal? ValorSubTotal { get; set; }
         public string NumberProject { get; set; }
-        public string? Proyect { get; set; }
+        public string? Project { get; set; }
         public string? Rubro { get; set; }
+        public string? NombreRubro { get; set; }
+        public string? FuenteRubro { get; set; }
+
+        public string? FechaContrato { get; set; }
+        public string? FechaFinalizacion { get; set; }
 
 
-        public List<ComponenteDto> Componentes { get; set; }
-        //public List<DetalleContratoDto?> DetalleContrato { get; set; }
+        public List<ComponenteDto?> Componentes { get; set; }
+        //public DetalleContratoDto? DetalleContrato { get; set; }
 
     }
 }

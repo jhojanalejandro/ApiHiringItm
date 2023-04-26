@@ -11,7 +11,7 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
     {
 
         public int? Id { get; set; }
-        public Guid ContractorId { get; set; }
+        public Guid? ContractorId { get; set; }
         public Guid ContractId { get; set; }
         public string? FilesName { get; set; }
         public string Filedata { get; set; }
@@ -21,7 +21,7 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public DateTime? RegisterDate { get; set; }
         public string TypeFilePayment { get; set; }
         public string? MonthPayment { get; set; }
-        public int? FolderId { get; set; }
+        public Guid? FolderId { get; set; }
         public bool? Passed { get; set; }
 
         public DetailFileDto? DetailFile { get; set; }

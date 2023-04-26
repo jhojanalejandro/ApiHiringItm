@@ -14,7 +14,7 @@ namespace WebApiHiringItm.MODEL.Entities
 
         public Guid Id { get; set; }
         public Guid? ContractorId { get; set; }
-        public int? UserId { get; set; }
+        public Guid? UserId { get; set; }
         public DateTime? FechaFinalizacionConvenio { get; set; }
         public string Contrato { get; set; }
         public string Compromiso { get; set; }
@@ -31,10 +31,9 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? FechaExpedicionPoliza { get; set; }
         public decimal? ValorAsegurado { get; set; }
         public int? Nivel { get; set; }
-        public string NombreRubro { get; set; }
-        public string FuenteRubro { get; set; }
         public string Cdp { get; set; }
         public string NumeroActa { get; set; }
+        public string ClaveUsuario { get; set; }
         public string Caso { get; set; }
 
         public virtual Contractor Contractor { get; set; }

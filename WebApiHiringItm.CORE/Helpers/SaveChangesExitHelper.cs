@@ -11,11 +11,11 @@ namespace WebApiHiringItm.CORE.Helpers
     public class SaveChangesExitHelper : ISaveChangesExitHelper
     {
         #region Fields
-        private readonly Hiring_V1Context _context;
+        private readonly HiringContext _context;
         #endregion
 
         #region Builder
-        public SaveChangesExitHelper(Hiring_V1Context context)
+        public SaveChangesExitHelper(HiringContext context)
         {
             _context = context;
         }

@@ -17,5 +17,7 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.File
         CUENTADECOBRO = 2,
         [Display(Description = "Contrato")]
         CONTRATO = 3,
+        [Display(Description = "Minuta")]
+        MINUTA = 4,
     }
 }

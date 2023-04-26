@@ -10,34 +10,34 @@ namespace WebApiHiringItm.MODEL.Models
 {
     public class AuthenticateResponse
     {
-        public int Id { get; set; }
-        public Guid contractorId { get; set; }
-        public Guid? contractId { get; set; }
+        public string Id { get; set; }
         public string UserName { get; set; }
         public string UserPassword { get; set; }
         public Guid? IdRoll { get; set; }
         public string UserEmail { get; set; }
         public bool Permission { get; set; }
         public string accessToken { get; set; }
+        public string code { get; set; }
 
-        public AuthenticateResponse(UserT user, string token)
+
+        public AuthenticateResponse(UserT user, string token, string _code)
         {
-            Id = user.Id;
+            Id = user.Id.ToString();
             UserName = user.UserName;
-            UserPassword = user.UserPassword;
             UserEmail = user.UserEmail;         
             IdRoll = user.RollId;
             accessToken = token;
+            code = _code;
+
         }
-        public AuthenticateResponse(ContractorDto user, string token)
+        public AuthenticateResponse(Contractor user, string token, string _code)
         {
-            contractorId = user.Id;
-            contractId = user.ContractId;
+            Id = user.Id.ToString();
             UserName = user.Nombre ;
-            UserPassword = user.ClaveUsuario;
             UserEmail = user.Correo;
-            IdRoll = user.RollId;
             accessToken = token;
+            code = _code;
+
         }
     }
 }

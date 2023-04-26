@@ -10,7 +10,7 @@ using WebApiHiringItm.MODEL.Models;
 namespace WebApiHiringItm.API.Controllers.Contractor
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ContractorController : ControllerBase
     {
@@ -71,14 +71,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetById(Guid contractorId, Guid contractId)
+        public async Task<IActionResult> ChargeAccountGetById(Guid contractorId, Guid contractId)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _contactor.GetById(contractorId, contractId);
-
-                //Retornamos datos.
+                var Data = await _contactor.ChargeAccountGetById(contractorId, contractId);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -181,16 +178,27 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(Guid id)
+        //{
+        //    try
+        //    {
+        //        var Data = await _contactor.Delete(id);
+        //        return Data != false ? Ok(Data) : NoContent();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error", ex);
+        //    }
+        //}
+
+        [HttpGet("{contractorId}")]
+        public async Task<IActionResult> GetContractsByContractor(string contractorId)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _contactor.Delete(id);
-
-                //Retornamos datos.
-                return Data != false ? Ok(Data) : NoContent();
+                var Data = await _contactor.getContractsByContractor(contractorId);
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -198,15 +206,34 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
-        [HttpPost]
-        public IActionResult Authenticate(AuthenticateRequest model)
+        [HttpGet]
+        public async Task<IActionResult> GetDocumentMinutesPdf(Guid contractId, Guid contractorId)
         {
-            var response = _contactor.Authenticate(model);
-            if (response == null)
+            try
             {
-                return BadRequest(new { message = "Username or password is incorrect" });
+                var Data = await _contactor.GetDocumentPdf(contractId, contractorId);
+                return Data != null ? Ok(Data) : NoContent();
             }
-            return StatusCode(200, response);
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddNewness(NewnessContractorDto model)
+        {
+            try
+            {
+                var Data = await _contactor.AddNewness(model);
+                return Data != false ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
         }
 
     }

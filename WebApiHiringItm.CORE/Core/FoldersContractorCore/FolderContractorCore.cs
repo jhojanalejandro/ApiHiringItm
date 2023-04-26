@@ -14,10 +14,10 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
 {
     public class FolderContractorCore : IFolderContractorCore
     {
-        private readonly Hiring_V1Context _context;
+        private readonly HiringContext _context;
         private readonly IMapper _mapper;
 
-        public FolderContractorCore(Hiring_V1Context context, IMapper mapper)
+        public FolderContractorCore(HiringContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -31,18 +31,18 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
             return await Task.FromResult(map);
         }
 
-        public async Task<FolderContractorDto> GetById(int id)
+        public async Task<FolderContractorDto> GetById(string id)
         {
-            var result = _context.FolderContractor.Where(x => x.Id == id).FirstOrDefault();
+            var result = _context.FolderContractor.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
             var map = _mapper.Map<FolderContractorDto>(result);
             return await Task.FromResult(map);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(string id)
         {
             try
             {
-                var resultData = _context.FolderContractor.Where(x => x.Id == id).FirstOrDefault();
+                var resultData = _context.FolderContractor.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
                 if (resultData != null)
                 {
                     var result = _context.FolderContractor.Remove(resultData);

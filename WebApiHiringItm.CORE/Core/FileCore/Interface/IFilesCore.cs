@@ -10,7 +10,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore.Interface
 {
     public interface IFilesCore
     {
-        Task<List<FilesDto>> GetFileContractorByFolder(Guid contractorId, int folderId, Guid contractId);
+        Task<List<FilesDto>> GetFileContractorByFolder(Guid contractorId, string folderId, Guid contractId);
         Task<List<FilesDto>> GetAllByContract(Guid contractorId, Guid contractId);
 
         Task<FilesDto> GetById(int id);
@@ -19,6 +19,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore.Interface
         Task<List<GetFilesPaymentDto>> GetAllByDate(Guid contractId, string type, string date);
         Task<List<FilesDto>> GetAllFileByIdContract(Guid id);
         Task<bool> CreateDetail(DetailFileDto model);
-        Task<bool> Addbills(List<FilesDto> model);
+        Task<bool> Addbill(FilesDto model);
     }
 }

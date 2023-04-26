@@ -8,7 +8,7 @@
         public string? ObligacionesEspecificas { get; set; }
         public string? TipoElemento { get; set; }
         public Guid IdComponente { get; set; }
-        public int CantidadContratistas { get; set; }
+        public int? CantidadContratistas { get; set; }
         public int CantidadDias { get; set; }
         public decimal ValorUnidad { get; set; }
         public decimal ValorTotal { get; set; }

@@ -65,12 +65,12 @@ namespace WebApiHiringItm.API.Controllers.User
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(string id)
         {
             try
             {
                 //Obtenemos todos los registros.
-                var Data = await _user.GetById(id);
+                var Data = await _user.GetById(Guid.Parse(id));
 
                 //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
@@ -90,7 +90,7 @@ namespace WebApiHiringItm.API.Controllers.User
             {
                 var Data = await _user.SignUp(model);
 
-                return Data != 0 ? Ok(Data) : NoContent();
+                return Data != null ? StatusCode(200, Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -155,15 +155,20 @@ namespace WebApiHiringItm.API.Controllers.User
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _user.Delete(id);
+                if (string.IsNullOrEmpty(id))
+                {
+                    var Data = await _user.Delete(Guid.Parse(id));
+                    return Data != false ? Ok(Data) : NoContent();
+                }
+                else
+                {
+                    return NoContent();
+                }
 
-                //Retornamos datos.
-                return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {

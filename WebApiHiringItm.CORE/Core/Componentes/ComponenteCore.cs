@@ -11,13 +11,13 @@ namespace WebApiHiringItm.CORE.Core.Componentes
     public class ComponenteCore : IComponenteCore
     {
         #region Fields
-        private readonly Hiring_V1Context _context;
+        private readonly HiringContext _context;
         private readonly IMapper _mapper;
         private readonly ISaveChangesExitHelper _save;
         #endregion
 
         #region Builder
-        public ComponenteCore(Hiring_V1Context context, IMapper mapper, ISaveChangesExitHelper save)
+        public ComponenteCore(HiringContext context, IMapper mapper, ISaveChangesExitHelper save)
         {
             _context = context;
             _mapper = mapper;

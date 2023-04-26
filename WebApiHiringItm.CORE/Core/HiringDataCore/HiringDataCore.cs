@@ -12,12 +12,12 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
     public class HiringDataCore : IHiringDataCore
     {
         #region FIELDS
-        private readonly Hiring_V1Context _context;
+        private readonly HiringContext _context;
         private readonly IMapper _mapper;
         IQueryable<DetailProjectContractor> hiringResult;
         #endregion
 
-        public HiringDataCore(Hiring_V1Context context, IMapper mapper)
+        public HiringDataCore(HiringContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -58,8 +58,8 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                     ValorAsegurado = hd.HiringData.ValorAsegurado,
                     Nivel = hd.HiringData.Nivel,
                     Caso = hd.HiringData.Caso,
-                    NombreRubro = hd.HiringData.NombreRubro,
-                    FuenteRubro = hd.HiringData.FuenteRubro,
+                    NombreRubro = hd.Contract.NombreRubro,
+                    FuenteRubro = hd.Contract.FuenteRubro,
                     Cdp = hd.HiringData.Cdp,
                     NumeroActa = hd.HiringData.NumeroActa
                 })

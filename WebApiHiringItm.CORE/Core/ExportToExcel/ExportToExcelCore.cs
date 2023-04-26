@@ -12,18 +12,19 @@ using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces;
 using System.Data.Entity;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
+using WebApiHiringItm.MODEL.Dto;
 
 namespace WebApiHiringItm.CORE.Core.ExportToExcel
 {
     public class ExportToExcelCore : IExportToExcelCore
     {
         #region Dependency
-        private readonly Hiring_V1Context _context;
+        private readonly HiringContext _context;
         private readonly IMapper _mapper;
         #endregion
 
         #region Constructor
-        public ExportToExcelCore(Hiring_V1Context context, IMapper mapper)
+        public ExportToExcelCore(HiringContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -90,8 +91,8 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     ObjetoConvenio = w.Contractor.ObjetoConvenio,
                     ValorTotal = w.Element.ValorTotal,
                     NombreElemento = w.Element.NombreElemento,
-                    FuenteRubro = w.HiringData.FuenteRubro,
-                    NombreRubro = w.HiringData.NombreRubro,
+                    FuenteRubro = w.Contract.FuenteRubro,
+                    NombreRubro = w.Contract.NombreRubro,
                     Rubro = w.Contract.Rubro,
                 })
                 .AsNoTracking()
@@ -179,8 +180,8 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     ObjetoConvenio = w.Contractor.ObjetoConvenio,
                     ValorTotal = w.Element.ValorTotal,
                     NombreElemento = w.Element.NombreElemento,
-                    FuenteRubro = w.HiringData.FuenteRubro,
-                    NombreRubro = w.HiringData.NombreRubro,
+                    FuenteRubro = w.Contract.FuenteRubro,
+                    NombreRubro = w.Contract.NombreRubro,
                     Rubro = w.Contract.Rubro,
                     Cdp = w.HiringData.Cdp,
                 })
@@ -234,13 +235,32 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 const int startRow = 1;
                 var row = startRow;
 
-                worksheet.Cells["A1"].Value = "N°";
-                worksheet.Cells["B1"].Value = "Rubro";
-                worksheet.Cells["C1"].Value = "Fuente de recursos";
-                worksheet.Cells["D1"].Value = "Objeto";
-                worksheet.Cells["E1"].Value = "Proyecto o Convenio";
-                worksheet.Cells["F1"].Value = "CPC";
-                worksheet.Cells["G1"].Value = "Valor";
+                worksheet.Cells["A1"].Value = "CODIGO DE LA EMPRESA";
+                worksheet.Cells["B1"].Value = "CONSECUTIVO";
+                worksheet.Cells["C1"].Value = "CODIGO TIPO DE OPERACIÓN";
+                worksheet.Cells["D1"].Value = "NÚMERO DEL DOCUMENTO";
+                worksheet.Cells["E1"].Value = "FECHA SOLICITUD";
+                worksheet.Cells["F1"].Value = "CODIGO DE LA SUCURSAL";
+                worksheet.Cells["G1"].Value = "DESCRIPCIÓN DEL MOVIMIENTO";
+                worksheet.Cells["H1"].Value = "CODIGO DEL TERCERO";
+                worksheet.Cells["I1"].Value = "DOCUMENTO DEL SUPERVISOR";
+                worksheet.Cells["J1"].Value = "CLASE DE DOCUMENTO";
+                worksheet.Cells["K1"].Value = "TIPO DE DOCUMENTO SOPORTE";
+                worksheet.Cells["L1"].Value = "NÚMERO DE DOCUMENTO SOPORTE";
+                worksheet.Cells["M1"].Value = "NÚMERO DEL SIIF";
+                worksheet.Cells["N1"].Value = "NÚMERO DEL MES ASOCIADO A LA FECHA";
+                worksheet.Cells["O1"].Value = "NÚMERO DEL DÍA ASOCIADO A LA FECHA";
+                worksheet.Cells["P1"].Value = "CODIGO DEL RUBRO";
+                worksheet.Cells["Q1"].Value = "DESCRIPCIÓN DEL DETALLE DEL MOVIMIENTO ASOCIADO AL RUBRO";
+                worksheet.Cells["R1"].Value = "CODIGO DEL CENTRO DE COSTOS";
+                worksheet.Cells["S1"].Value = "CODIGO DEL PROYECTO";
+                worksheet.Cells["T1"].Value = "CPC";
+                worksheet.Cells["U1"].Value = "SIGNO";
+                worksheet.Cells["V1"].Value = "VALOR ASOCIADO AL RUBRO";
+                worksheet.Cells["W1"].Value = "CONSECUTIVO REGISTRO BASE";
+                worksheet.Cells["X1"].Value = "CEDULA";
+                worksheet.Cells["Y1"].Value = "NOMBRE";
+
                 worksheet.Cells["A1:G1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
                 worksheet.Cells["A1:G1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
                 worksheet.Cells["A1:G1"].Style.Font.Bold = true;
@@ -251,45 +271,67 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                
                 row = 2;
                 int nro = 0;
-                var dataList = data.Select(w => new DetailProjectContractorDto()
+                var dataList = data.Select(w => new SolicitudCdpDto()
                 {
-                    Convenio = w.Contractor.Convenio,
-                    CompanyName = w.Contract.CompanyName,
-                    NombreComponente = w.Componente.NombreComponente,
-                    Cpc = w.Element.Cpc,
-                    Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
-                    Identificacion = w.Contractor.Identificacion,
-                    DescriptionProject = w.Contract.DescriptionProject,
-                    ObjetoConvenio = w.Contractor.ObjetoConvenio,
-                    ValorTotal = w.Element.ValorTotal,
+                    Consecutivo = w.Element.Consecutivo,
                     NombreElemento = w.Element.NombreElemento,
-                    FuenteRubro = w.HiringData.FuenteRubro,
-                    NombreRubro = w.HiringData.NombreRubro,
+                    NombreComponente = w.Componente.NombreComponente,
+                    NumeroConvenio = w.Contract.NumberProject,
+                    CedulaSupervisor = w.HiringData.IdentificacionSupervisor,
+                    NombreSupervisor = w.HiringData.SupervisorItm,
                     Rubro = w.Contract.Rubro,
+                    Cpc = w.Element.Cpc,
+                    Projecto = w.Contract.Project,
+                    Nombre = w.Contractor.Nombre,
+                    Cedula = w.Contractor.Identificacion
                 })
                 .AsNoTracking()
                 .ToList();
+                var year = DateTime.Now.Year;
+                var month = DateTime.Now.Month;
+                var day = DateTime.Now.Day;
+                var date = DateTime.Now.ToString("dd/MM/yyyy");
+
                 foreach (var user in dataList)
                 {
-                    if (user.Rubro != null && user.FuenteRubro != null && user.Cpc != null && user.ValorTotal != null)
+                    if (user.Consecutivo != null && user.NombreElemento != null && user.NumeroConvenio != null && user.Cpc != null)
                     {
                         nro++;
-                        worksheet.Cells[row, 3].Value = nro;
-                        worksheet.Cells[row, 2].Value = user.Rubro;
-                        worksheet.Cells[row, 1].Value = user.FuenteRubro;
-                        worksheet.Cells[row, 4].Value = user.DescriptionProject;
-                        worksheet.Cells[row, 5].Value = user.Convenio;
-                        worksheet.Cells[row, 6].Value = user.Cpc;
-                        worksheet.Cells[row, 7].Value = user.ValorTotal;
+                        worksheet.Cells[row, 3].Value = 108;
+                        worksheet.Cells[row, 2].Value = nro;
+                        worksheet.Cells[row, 1].Value = 49;
+                        worksheet.Cells[row, 4].Value = nro;
+                        worksheet.Cells[row, 5].Value = date;
+                        worksheet.Cells[row, 6].Value = 1;
+                        worksheet.Cells[row, 7].Value = user.NumeroConvenio + "/" + year + user.NombreElemento + "("+user.Consecutivo+")";
+                        worksheet.Cells[row, 8].Value = 800214750;
+                        worksheet.Cells[row, 9].Value = user.CedulaSupervisor;
+                        worksheet.Cells[row, 10].Value = "SCDP";
+                        worksheet.Cells[row, 11].Value = 0;
+                        worksheet.Cells[row, 12].Value = 0;
+                        worksheet.Cells[row, 13].Value = 0;
+                        worksheet.Cells[row, 14].Value = month;
+                        worksheet.Cells[row, 15].Value = day;
+                        worksheet.Cells[row, 16].Value = user.NumeroConvenio + "/" + year + user.NombreElemento + "(" + user.Consecutivo + ")";
+                        worksheet.Cells[row, 17].Value = user.Rubro;
+                        worksheet.Cells[row, 18].Value = "1016231102123";
+                        worksheet.Cells[row, 19].Value = user.Projecto;
+                        worksheet.Cells[row, 20].Value = user.Cpc;
+                        worksheet.Cells[row, 21].Value = "S";
+                        worksheet.Cells[row, 22].Value = user.Rubro;
+                        worksheet.Cells[row, 23].Value = 0;
+                        worksheet.Cells[row, 24].Value = user.Cedula;
+                        worksheet.Cells[row, 25].Value = user.Nombre;
+
                         row++;
                     }
                 }
                 { }
                 worksheet.Columns.AutoFit();
-                xlPackage.Workbook.Properties.Title = "Solicitud CDP - DAP";
+                xlPackage.Workbook.Properties.Title = "Solicitud CDP";
                 xlPackage.Workbook.Properties.Author = "ITM";
                 xlPackage.Workbook.Properties.Created = DateTime.Now;
-                xlPackage.Workbook.Properties.Subject = "Solicitud CDP - DAP";
+                xlPackage.Workbook.Properties.Subject = "Solicitud CDP";
                 xlPackage.Save();
             }
             stream.Position = 0;
@@ -352,8 +394,8 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     ObjetoConvenio = w.Contractor.ObjetoConvenio,
                     ValorTotal = w.Element.ValorTotal,
                     NombreElemento = w.Element.NombreElemento,
-                    FuenteRubro = w.HiringData.FuenteRubro,
-                    NombreRubro = w.HiringData.NombreRubro,
+                    FuenteRubro = w.Contract.FuenteRubro,
+                    NombreRubro = w.Contract.NombreRubro,
                     Rubro = w.Contract.Rubro,
                 })
                 .AsNoTracking()

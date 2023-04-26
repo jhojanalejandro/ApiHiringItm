@@ -13,11 +13,11 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 {
     public class ContractorPaymentCore : IContractorPaymentsCore
     {
-        private readonly Hiring_V1Context _context;
+        private readonly HiringContext _context;
         private readonly IMapper _mapper;
 
 
-        public ContractorPaymentCore(Hiring_V1Context context, IMapper mapper)
+        public ContractorPaymentCore(HiringContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

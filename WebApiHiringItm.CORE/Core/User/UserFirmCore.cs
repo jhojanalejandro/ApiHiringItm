@@ -13,10 +13,10 @@ namespace WebApiHiringItm.CORE.Core.User
 {
     public class UserFirmCore : IUserFirmCore
     {
-        private readonly Hiring_V1Context _context;
+        private readonly HiringContext _context;
         private readonly IMapper _mapper;
 
-        public UserFirmCore(Hiring_V1Context context, IMapper mapper)
+        public UserFirmCore(HiringContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

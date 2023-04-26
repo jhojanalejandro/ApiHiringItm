@@ -10,7 +10,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public int Id { get; set; }
         public Guid ContractorId { get; set; }
         public Guid ContractId { get; set; }
-        public int? UserId { get; set; }
+        public Guid? UserId { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
         public string DescriptionPayment { get; set; }

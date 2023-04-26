@@ -15,13 +15,13 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
 {
     public class ProjectFolderCore : IProjectFolder
     {
-        private readonly Hiring_V1Context _context;
+        private readonly HiringContext _context;
         private readonly IMapper _mapper;
         private readonly IComponenteCore _componente;
         private readonly IElementosComponenteCore _elementos;
         private const string MODULONOMINA = "Nomina";
 
-        public ProjectFolderCore(Hiring_V1Context context, IMapper mapper, IComponenteCore componente, IElementosComponenteCore elementos)
+        public ProjectFolderCore(HiringContext context, IMapper mapper, IComponenteCore componente, IElementosComponenteCore elementos)
         {
             _context = context;
             _mapper = mapper;
@@ -46,7 +46,6 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
                             element.Elementos = await _elementos.Get(element.Id);
                         }
                     }
-                    //item.DetalleContrato = await GetDetailById(item.Id);
                 }
             }
             return await Task.FromResult(map);
@@ -54,11 +53,15 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
         public async Task<List<ProjectFolderDto>> GetAllActivate()
         {
             var result = _context.ProjectFolder.Where(x => x.Id != null && x.Activate == true).ToList();
+            var resultDetail = _context.DetalleContrato.Where(x => x.Id != null).ToList();
+
             var map = _mapper.Map<List<ProjectFolderDto>>(result);
             if (result.Count != 0)
             {
                 foreach (var item in map)
                 {
+                    item.FechaFinalizacion = resultDetail.Where(f => f.Idcontrato.Equals(item.Id)).Select(s => s.FechaFinalizacion.Value.ToString("MM/dd/yyyy")).FirstOrDefault();
+                    item.FechaContrato = resultDetail.Where(f => f.Idcontrato.Equals(item.Id)).Select( s => s.FechaContrato.Value.ToString("MM/dd/yyyy")).FirstOrDefault();
                     item.Componentes = await _componente.Get(item.Id);
                     if (item.Componentes.Count != 0)
                     {
@@ -67,7 +70,6 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
                             element.Elementos = await _elementos.Get(element.Id);
                         }
                     }
-                    //item.DetalleContrato = await GetDetailById(item.Id);
                 }
             }
             return await Task.FromResult(map);
@@ -98,7 +100,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
                             element.Elementos = await _elementos.Get(element.Id);
                         }
                     }
-                    //item.DetalleContrato = await GetDetailById(item.Id);
+                    //item.DetalleContrato = await GetDetailsById(item.Id);
                 }
             }
             return await Task.FromResult(map);

@@ -8,7 +8,7 @@ using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CONTEXT.Context
 {
-    public interface IHiring_V1Context
+    public interface IHiringContext
     {
         DbSet<Componente> Componente { get; set; }
         DbSet<Contractor> Contractor { get; set; }
@@ -22,6 +22,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<HiringData> HiringData { get; set; }
         DbSet<Actividad> Actividad { get; set; }
         //DbSet<ProfessionalRol> ProfessionalRol { get; set; }
+        DbSet<NewnessContractor> NewnessContractor { get; set; }
         DbSet<ProjectFolder> ProjectFolder { get; set; }
         DbSet<Roll> Roll { get; set; }
         DbSet<SharedData> SharedData { get; set; }

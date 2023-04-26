@@ -14,5 +14,8 @@ namespace WebApiHiringItm.MODEL.Models
 
         [Required]
         public string Password { get; set; }
+
+        [Required]
+        public string UserType { get; set; }
     }
 }

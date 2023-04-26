@@ -59,11 +59,11 @@ namespace WebApiHiringItm.API.Controllers.Files
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBillsContractor(List<FilesDto> model)
+        public async Task<IActionResult> AddBillsContractor(FilesDto model)
         {
             try
             {
-                var Data = await _file.Addbills(model);
+                var Data = await _file.Addbill(model);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -106,7 +106,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetFileContractorByFolder(Guid contractorId, int folderId, Guid contractId)
+        public async Task<IActionResult> GetFileContractorByFolder(Guid contractorId, string folderId, Guid contractId)
         {
             try
             {

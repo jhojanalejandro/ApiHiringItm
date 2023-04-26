@@ -1,6 +1,6 @@
 ﻿{
    "CodeGenerationMode": 2,
-   "ContextClassName": "Hiring_V1Context",
+   "ContextClassName": "HiringContext",
    "ContextNamespace": "WebApiHiringItm.CONTEXT.Context",
    "DefaultDacpacSchema": null,
    "FilterSchemas": false,
@@ -60,6 +60,10 @@
       },
       {
          "Name": "[dbo].[HiringData]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[NewnessContractor]",
          "ObjectType": 0
       },
       {

@@ -16,10 +16,11 @@ namespace WebApiHiringItm.MODEL.Entities
             DetalleContrato = new HashSet<DetalleContrato>();
             EconomicdataContractor = new HashSet<EconomicdataContractor>();
             FolderContractor = new HashSet<FolderContractor>();
+            NewnessContractor = new HashSet<NewnessContractor>();
         }
 
         public Guid Id { get; set; }
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
         public string DescriptionProject { get; set; }
@@ -31,8 +32,10 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? GastosOperativos { get; set; }
         public decimal? ValorSubTotal { get; set; }
         public string NumberProject { get; set; }
-        public string Proyect { get; set; }
+        public string Project { get; set; }
         public string Rubro { get; set; }
+        public string NombreRubro { get; set; }
+        public string FuenteRubro { get; set; }
 
         public virtual UserT User { get; set; }
         public virtual ICollection<Componente> Componente { get; set; }
@@ -42,5 +45,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual ICollection<DetalleContrato> DetalleContrato { get; set; }
         public virtual ICollection<EconomicdataContractor> EconomicdataContractor { get; set; }
         public virtual ICollection<FolderContractor> FolderContractor { get; set; }
+        public virtual ICollection<NewnessContractor> NewnessContractor { get; set; }
     }
 }

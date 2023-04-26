@@ -29,14 +29,14 @@ namespace WebApiHiringItm.Core.User
     public class UserCore : IUserCore
     {
         #region VARIABLE
-        private readonly Hiring_V1Context _context;
+        private readonly HiringContext _context;
         private readonly IMapper _mapper;
         private readonly MailSettings _mailSettings;
         static readonly byte[] keys = Encoding.UTF8.GetBytes("401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1");
         private readonly AppSettings _appSettings;
         #endregion
         #region CONTRUCTOR
-        public UserCore(Hiring_V1Context context, IMapper mapper, IOptions<AppSettings> appSettings, IOptions<MailSettings> mailSettings)
+        public UserCore(HiringContext context, IMapper mapper, IOptions<AppSettings> appSettings, IOptions<MailSettings> mailSettings)
         {
             _context = context;
             _mapper = mapper;
@@ -48,18 +48,37 @@ namespace WebApiHiringItm.Core.User
         #region PUBLIC METODS
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var getUser = _context.UserT
-                .Include(r => r.Roll)
-                .FirstOrDefault(x => x.UserEmail.Equals(model.Username) && x.UserPassword.Equals(model.Password) && !x.Roll.Code.Equals(RollEnum.Desactivada.Description()));
-
-            if (getUser == null)
+            if (model.UserType.Equals(RollEnum.Contratista.Description()))
             {
-                return null;
+                var getUserC = _context.Contractor
+                    .FirstOrDefault(x => x.Correo.Equals(model.Username) && x.ClaveUsuario.Equals(model.Password));
+
+                if (getUserC == null)
+                {
+                    return null;
+                }
+                var map = _mapper.Map<AuthDto>(getUserC);
+
+                var token = generateJwtToken(map);
+
+                return new AuthenticateResponse(getUserC, token, model.UserType);
             }
-            var token = generateJwtToken(getUser);
+            else
+            {
+                var getUser = _context.UserT
+                    .Include(r => r.Roll)
+                    .FirstOrDefault(x => x.UserEmail.Equals(model.Username) && x.UserPassword.Equals(model.Password) && !x.Roll.Code.Equals(RollEnum.Desactivada.Description()));
 
-            return new AuthenticateResponse(getUser, token);
+                if (getUser == null)
+                {
+                    return null;
+                }
+                var map = _mapper.Map<AuthDto>(getUser);
 
+                var token = generateJwtToken(map);
+
+                return new AuthenticateResponse(getUser, token, model.UserType);
+            }
 
         }
 
@@ -107,11 +126,11 @@ namespace WebApiHiringItm.Core.User
 
         }
 
-        public UserT GetByIdd(int id)
+        public UserT GetByIdd(Guid id)
         {
             return _context.UserT.FirstOrDefault(x => x.Id == id);
         }
-        public async Task<UserTDto> GetById(int id)
+        public async Task<UserTDto> GetById(Guid id)
         {
             var result = _context.UserT.FirstOrDefault(x => x.Id == id);
             var map = _mapper.Map<UserTDto>(result);
@@ -138,7 +157,7 @@ namespace WebApiHiringItm.Core.User
         }
         public async Task<bool> Update(UserTDto model)
         {
-            if (model.Id != 0)
+            if (model.Id != null)
             {
                 try
                 {
@@ -166,7 +185,7 @@ namespace WebApiHiringItm.Core.User
 
         public async Task<bool> UpdatePassword(UserUpdatePasswordDto model)
         {
-            if (model.Id != 0)
+            if (model.Id != null)
             {
                 var userupdate = _context.UserT.FirstOrDefault(x => x.Id == model.Id);
                 var map = _mapper.Map(model, userupdate);
@@ -181,8 +200,7 @@ namespace WebApiHiringItm.Core.User
         {
             try
             {
-                if (model.Id != 0)
-
+                if (model.Id != null)
                 {
                     var userupdate = _context.UserT.FirstOrDefault(x => x.Id == model.Id);
                     var map = _mapper.Map(model, userupdate);
@@ -200,7 +218,7 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
             var user = _context.UserT.Where(x => x.Id == id).FirstOrDefault();
             if (user != null)
@@ -212,25 +230,26 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
-        public async Task<int> SignUp(UserTDto model)
+        public async Task<string> SignUp(UserTDto model)
         {
             var getRoll = _context.Roll.FirstOrDefault(x => x.Code.Equals(RollEnum.Desactivada.Description()));
             var userupdate = _context.UserT.FirstOrDefault(x => x.UserEmail.Equals(model.UserEmail));
             if (userupdate != null)
             {
-                return 0;
+                return null;
             }
             else
             {
                 var map = _mapper.Map<UserT>(model);
+                map.Id = Guid.NewGuid();
                 map.RollId = getRoll.Id;
                 _context.UserT.Add(map);
                 await _context.SaveChangesAsync();
-                return map.Id != 0 ? map.Id : 0;
+                return map.Id != null ? "Registro Exitoso" : null;
             }
-            return 0;
+            return null;
         }
-        public string generateJwtToken(UserT user)
+        public string generateJwtToken(AuthDto user)
         {
             // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();

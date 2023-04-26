@@ -5,17 +5,13 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class FolderContractor
+    public partial class NewnessContractor
     {
         public Guid Id { get; set; }
-        public Guid UserId { get; set; }
         public Guid? ContractorId { get; set; }
+        public string DescripcionNovedad { get; set; }
+        public string TipoNovedad { get; set; }
         public Guid? ContractId { get; set; }
-        public string FolderName { get; set; }
-        public string DescriptionProject { get; set; }
-        public DateTime? RegisterDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string TypeFolder { get; set; }
 
         public virtual ProjectFolder Contract { get; set; }
         public virtual Contractor Contractor { get; set; }
