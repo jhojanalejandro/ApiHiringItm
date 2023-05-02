@@ -236,5 +236,20 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetHistoryContractor()
+        {
+            try
+            {
+                var Data = await _contactor.GetHistoryContractor();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
     }
 }

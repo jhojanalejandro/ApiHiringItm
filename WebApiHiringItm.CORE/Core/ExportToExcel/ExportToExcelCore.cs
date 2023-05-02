@@ -261,13 +261,13 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["X1"].Value = "CEDULA";
                 worksheet.Cells["Y1"].Value = "NOMBRE";
 
-                worksheet.Cells["A1:G1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["A1:G1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
-                worksheet.Cells["A1:G1"].Style.Font.Bold = true;
-                worksheet.Cells["A1:G1"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:G1"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:G1"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:G1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:Y1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A1:Y1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
+                worksheet.Cells["A1:Y1"].Style.Font.Bold = true;
+                worksheet.Cells["A1:Y1"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:Y1"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:Y1"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:Y1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
                
                 row = 2;
                 int nro = 0;

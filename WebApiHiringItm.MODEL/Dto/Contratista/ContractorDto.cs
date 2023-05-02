@@ -47,6 +47,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public DateTime? FechaCreacion { get; set; }
         public string ClaveUsuario { get; set; }
         public DateTime? FechaActualizacion { get; set; }
-
+        public bool? Habilitado { get; set; }
+        public bool? Proccess { get; set; }
     }
 }

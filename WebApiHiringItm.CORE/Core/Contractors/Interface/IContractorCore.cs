@@ -20,5 +20,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
         Task<List<ContractsContarctorDto>> getContractsByContractor(string contractorId);
         Task<FilesDto?> GetDocumentPdf(Guid contractId, Guid contractorId);
         Task<bool> AddNewness(NewnessContractorDto model);
+        Task<List<HistoryContractorDto>> GetHistoryContractor();
     }
 }

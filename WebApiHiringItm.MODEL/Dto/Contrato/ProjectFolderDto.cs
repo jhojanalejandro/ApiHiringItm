@@ -27,8 +27,8 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public string? NombreRubro { get; set; }
         public string? FuenteRubro { get; set; }
 
-        public string? FechaContrato { get; set; }
-        public string? FechaFinalizacion { get; set; }
+        public DateTime? FechaContrato { get; set; }
+        public DateTime? FechaFinalizacion { get; set; }
 
 
         public List<ComponenteDto?> Componentes { get; set; }

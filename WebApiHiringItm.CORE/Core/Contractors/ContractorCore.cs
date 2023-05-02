@@ -17,9 +17,6 @@ using WebApiHiringItm.CORE.Helpers;
 using System.Net;
 using MimeKit;
 using MailKit.Security;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using AutoMapper;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using Microsoft.Extensions.Options;
@@ -72,7 +69,8 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         public async Task<List<ContractorDto>> GetByIdFolder(Guid id)
         {
             var contractor = _context.DetailProjectContractor.Where(x => x.ContractId == id)
-                .Include(dt => dt.Contractor).Where(ct => ct.Contractor.Habilitado == HABILITADO)
+                .Include(dt => dt.Contractor)
+                .Include(dt => dt.HiringData)
                 .Select(ct => new ContractorDto()
                 {
                     Id = ct.Contractor.Id,  
@@ -89,8 +87,11 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                     Correo = ct.Contractor.Correo,
                     ComponenteId = ct.ComponenteId,
                     ElementId = ct.ElementId,
-                    UserId = ct.Contractor.UserId
+                    UserId = ct.Contractor.UserId,
+                    Habilitado = ct.Contractor.Habilitado,
+                    Proccess = ct.HiringData != null ? true : false
                 })
+                .AsNoTracking()
                 .ToList();
             var map = _mapper.Map<List<ContractorDto>>(contractor);
             return await Task.FromResult(map);
@@ -288,7 +289,10 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             if (getData == null)
             {
                 var map = _mapper.Map<NewnessContractor>(model);
+                map.Id = Guid.NewGuid();
+
                 _context.NewnessContractor.Add(map);
+                UpdateResource(Guid.Parse(model.ContractorId), Guid.Parse(model.ContractId));
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
             }
@@ -544,6 +548,32 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             }
             return false;
         }
+
+        public async Task<List<HistoryContractorDto>> GetHistoryContractor()
+        {
+            try
+            {
+                return await _context.Contractor.
+                Select(ct => new HistoryContractorDto
+                {
+                    Id = ct.Id,
+                    Nombre = ct.Nombre + " " + ct.Apellido,
+                    Identificacion = ct.Identificacion,
+                    FechaNacimiento = ct.FechaNacimiento,
+                    Direccion = ct.Direccion,
+                    Telefono = ct.Telefono,
+                    Correo = ct.Correo
+                })
+                  .AsNoTracking()
+                  .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+
+        }
         #endregion
 
         #region METODS PRIVATE
@@ -652,6 +682,25 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
             }
 
+        }
+
+        private void UpdateResource(Guid contractorId, Guid contractId)
+        {
+            var getData = _context.DetailProjectContractor.Where(x => x.ContractId.Equals(contractId) && x.ContractorId.Equals(contractorId))
+                .Include(i => i.Element)
+                .Include(i => i.Contract)
+                .FirstOrDefault();
+            var getEconomicDataContractor = _context.EconomicdataContractor.Where(x => x.ContractId.Equals(contractId) && x.ContractorId.Equals(contractorId)).FirstOrDefault();
+            if (getEconomicDataContractor != null)
+            {
+                if (getData.Id != null)
+                {
+                    ElementosComponente elemento = new();
+                    elemento = getData.Element;
+                    elemento.Recursos += getEconomicDataContractor.Debt;
+                    _context.ElementosComponente.Update(elemento);
+                }
+            }
         }
 
         #endregion

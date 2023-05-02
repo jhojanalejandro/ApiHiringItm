@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
@@ -60,8 +57,8 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             {
                 foreach (var item in map)
                 {
-                    item.FechaFinalizacion = resultDetail.Where(f => f.Idcontrato.Equals(item.Id)).Select(s => s.FechaFinalizacion.Value.ToString("MM/dd/yyyy")).FirstOrDefault();
-                    item.FechaContrato = resultDetail.Where(f => f.Idcontrato.Equals(item.Id)).Select( s => s.FechaContrato.Value.ToString("MM/dd/yyyy")).FirstOrDefault();
+                    item.FechaFinalizacion = resultDetail.Where(f => f.Idcontrato.Equals(item.Id)).Select(s => s.FechaFinalizacion).FirstOrDefault();
+                    item.FechaContrato = resultDetail.Where(f => f.Idcontrato.Equals(item.Id)).Select( s => s.FechaContrato).FirstOrDefault();
                     item.Componentes = await _componente.Get(item.Id);
                     if (item.Componentes.Count != 0)
                     {
@@ -247,6 +244,35 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             return false;
         }
 
+        public async Task<List<ProjectFolderDto>> GetAllProjectsRegistered()
+        {
+             var projects = _context.ProjectFolder
+                .Include(i => i.DetalleContrato);
+            return await  projects
+                .Select(s => new ProjectFolderDto
+                {
+                    Id = s.Id,
+                    Project = s.Project,
+                    CompanyName = s.CompanyName,
+                    ProjectName = s.ProjectName,
+                    DescriptionProject = s.DescriptionProject,
+                    Execution = s.Execution,
+                    Activate = s.EnableProject,
+                    EnableProject = s.EnableProject,
+                    ContractorsCant = s.ContractorsCant,
+                    ValorContrato = s.ValorContrato,
+                    GastosOperativos = s.GastosOperativos,
+                    ValorSubTotal = s.ValorSubTotal,
+                    NumberProject = s.NumberProject,
+                    Rubro = s.Rubro,
+                    NombreRubro = s.NombreRubro,
+                    FuenteRubro = s.FuenteRubro,
+                    FechaContrato = s.DetalleContrato.Select(s => s.FechaContrato).FirstOrDefault(),
+                    FechaFinalizacion = s.DetalleContrato.Select(s => s.FechaFinalizacion).FirstOrDefault()
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
         #endregion
 
     }

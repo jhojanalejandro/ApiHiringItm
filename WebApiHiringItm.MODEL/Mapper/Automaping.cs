@@ -40,11 +40,8 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<DetailFileDto, DetalleFile>().ReverseMap();
             CreateMap<Actividad, ActivityDto>().ReverseMap();
             CreateMap<AuthDto, UserT>().ReverseMap();
-            CreateMap<AuthDto, Contractor>()
-            .ForMember(f => f.Nombre, opt => opt.MapFrom(src => src.UserName))
-            .ForMember(f => f.Correo, opt => opt.MapFrom(src => src.UserEmail))
-            .ForMember(f => f.Id, opt => opt.MapFrom(src => src.Id)).ReverseMap();
-
+            CreateMap<AuthDto, Contractor>().ReverseMap();
+            CreateMap<NewnessContractorDto, NewnessContractor>();
         }
     }
 }
