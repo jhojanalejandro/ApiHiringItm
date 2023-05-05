@@ -12,6 +12,6 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore.Interface
         Task<List<EconomicdataContractorDto>> GetAll();
         Task<List<EconomicdataContractorDto>> GetById(Guid[] id);
         Task<bool> Create(List<EconomicdataContractorDto> model);
-        Task<bool> Delete(int id);
+        Task<bool> Delete(string id);
     }
 }

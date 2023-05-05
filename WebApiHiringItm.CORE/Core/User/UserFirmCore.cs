@@ -24,22 +24,22 @@ namespace WebApiHiringItm.CORE.Core.User
 
         public async Task<List<UserFirmDto>> GetAllFirms()
         {
-            var result = _context.UserFirm.Where(x => x.Id > 0).ToList();
+            var result = _context.UserFirm.ToList();
             var map = _mapper.Map<List<UserFirmDto>>(result);
             return await Task.FromResult(map);
         }
 
-        public async Task<UserFirmDto> GetByIdFirm(int id)
+        public async Task<UserFirmDto> GetByIdFirm(string id)
         {
-            var result = _context.UserFirm.Where(x => x.Id == id).FirstOrDefault();
+            var result = _context.UserFirm.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
             var map = _mapper.Map<UserFirmDto>(result);
             return await Task.FromResult(map);
         }
 
 
-        public async Task<bool> DeleteFirm(int id)
+        public async Task<bool> DeleteFirm(string id)
         {
-            var getData = _context.UserFirm.Where(x => x.Id == id).FirstOrDefault();
+            var getData = _context.UserFirm.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
             if (getData != null)
             {
 
@@ -59,9 +59,10 @@ namespace WebApiHiringItm.CORE.Core.User
             if (getData == null)
             {
                 var map = _mapper.Map<UserFirm>(model);
+                map.Id = Guid.NewGuid();
                 var res = _context.UserFirm.Add(map);
-                await _context.SaveChangesAsync();
-                return map.Id != 0 ? true : false;
+                var result = await _context.SaveChangesAsync();
+                return result != null ? true : false;
             }
             else
             {

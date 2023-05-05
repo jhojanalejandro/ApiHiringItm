@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto.Componentes
 {
     public class ActivityDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string NombreActividad { get; set; }
         public Guid IdComponente { get; set; }
     }

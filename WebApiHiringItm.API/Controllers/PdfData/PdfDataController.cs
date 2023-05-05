@@ -40,5 +40,29 @@ namespace WebApiHiringItm.API.Controllers.PdfData
                 throw new Exception("Error", ex);
             }
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> ChargeAccountGetById(string contractId, string ContractorId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(contractId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var Data = await _pdfData.GetChargeAccount(Guid.Parse(contractId), Guid.Parse(ContractorId));
+                    return Data != null ? Ok(Data) : NoContent();
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
     }
 }

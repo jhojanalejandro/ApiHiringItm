@@ -217,6 +217,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders
             if (getData == null)
             {
                 var map = _mapper.Map<DetalleContrato>(model);
+                map.Id = Guid.NewGuid();
                 _context.DetalleContrato.Add(map);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;

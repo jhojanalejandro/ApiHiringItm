@@ -374,13 +374,33 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                 }
-                worksheet.Cells["A4"].Value = "N°";
-                worksheet.Cells["B4"].Value = "Rubro";
-                worksheet.Cells["C4"].Value = "Fuente de recursos";
-                worksheet.Cells["D4"].Value = "Objeto";
-                worksheet.Cells["E4"].Value = "Proyecto o Convenio";
-                worksheet.Cells["F4"].Value = "CPC";
-                worksheet.Cells["G4"].Value = "Valor";               
+                worksheet.Cells["A4"].Value = "Código UNSPSC";
+                worksheet.Cells["B4"].Value = "Descripción";
+                worksheet.Cells["C4"].Value = "Fecha estimada de inicio de proceso de selección";
+                worksheet.Cells["D4"].Value = "Fecha estimada de presentación de ofertas";
+                worksheet.Cells["E4"].Value = "Duración del contrato";
+                worksheet.Cells["F4"].Value = "Duración del contrato";
+                worksheet.Cells["G4"].Value = "Modalidad de selección ";
+                worksheet.Cells["H4"].Value = "Fuente de los recursos";
+                worksheet.Cells["I4"].Value = "Valor total estimado";
+                worksheet.Cells["J4"].Value = "Valor estimado en la vigencia actual";
+                worksheet.Cells["K4"].Value = "¿Se requieren vigencias futuras?";
+                worksheet.Cells["L4"].Value = "Estado de solicitud de vigencias futuras";
+                worksheet.Cells["M4"].Value = "Unidad de contratación";
+                worksheet.Cells["N4"].Value = "Ubicación";
+                worksheet.Cells["O4"].Value = "Nombre del responsable";
+                worksheet.Cells["P4"].Value = "Teléfono del responsable ";
+                worksheet.Cells["R4"].Value = "Correo electrónico del responsable";
+                worksheet.Cells["R4"].Value = "Proyecto de inversión";
+                worksheet.Cells["S4"].Value = "DOCUMENTO";
+                worksheet.Cells["T4"].Value = "NOMBRE";
+                worksheet.Cells["U4"].Value = "HONORARIOS 2022";
+                worksheet.Cells["V4"].Value = "FECHA REQUERIDA DE INICIO PIMER SEMESTRE";
+                worksheet.Cells["W4"].Value = "FECHA TERMINACIÓN PRIMER CONTRATO";
+                worksheet.Cells["X4"].Value = "DURACION";
+                worksheet.Cells["Y4"].Value = "TOTAL CONTRATO";
+                worksheet.Cells["Z4"].Value = "¿Debe cumplir con invertir mínimo el 30% de los recursos del presupuesto destinados a comprar alimentos, cumpliendo con lo establecido en la Ley 2046 de 2020, reglamentada por el Decreto 248 de 2021?";
+                worksheet.Cells["AA4"].Value = "¿El contrato incluye el suministro de bienes y servicios distintos a alimentos?";
 
                 var dataList = data.Select(w => new DetailProjectContractorDto()
                 {

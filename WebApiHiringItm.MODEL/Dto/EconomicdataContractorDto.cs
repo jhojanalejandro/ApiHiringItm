@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto
 {
     public class EconomicdataContractorDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public Guid? ContractorId { get; set; }
         public Guid? ContractId { get; set; }
         public decimal? TotalValue { get; set; }

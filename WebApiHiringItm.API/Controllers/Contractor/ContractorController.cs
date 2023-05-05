@@ -70,20 +70,6 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ChargeAccountGetById(Guid contractorId, Guid contractId)
-        {
-            try
-            {
-                var Data = await _contactor.ChargeAccountGetById(contractorId, contractId);
-                return Data != null ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
 
         [HttpPost]
         public async Task<IActionResult> GetDataBill(ContractContractorsDto contractors)

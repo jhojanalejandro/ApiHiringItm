@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using WebApiHiringItm.MODEL.Entities;
 
-namespace WebApiHiringItm.CONTEXT.Context
+namespace WebApiHiringItm.MODEL.WebApiHiringItm.CONTEXT.Context
 {
-    public partial class HiringContext : DbContext, IHiringContext
+    public partial class HiringContext : DbContext
     {
         public HiringContext()
         {

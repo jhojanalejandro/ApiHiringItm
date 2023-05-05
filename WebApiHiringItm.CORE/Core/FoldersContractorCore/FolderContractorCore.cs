@@ -66,6 +66,7 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
             if (getData == null)
             {
                 var map = _mapper.Map<FolderContractor>(model);
+                map.Id = Guid.NewGuid();
                 _context.FolderContractor.Add(map);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;

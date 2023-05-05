@@ -9,6 +9,6 @@ namespace WebApiHiringItm.MODEL.Dto.Usuario
     public class UpdateRollDto
     {
         public Guid Id { get; set; }
-        public int IdRoll { get; set; }
+        public Guid IdRoll { get; set; }
     }
 }

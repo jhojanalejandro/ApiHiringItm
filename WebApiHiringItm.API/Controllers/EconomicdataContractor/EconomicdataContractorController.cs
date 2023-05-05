@@ -88,7 +88,7 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             try
             {

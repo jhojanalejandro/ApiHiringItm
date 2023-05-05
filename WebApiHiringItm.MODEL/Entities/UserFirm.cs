@@ -7,7 +7,7 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class UserFirm
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public Guid? UserId { get; set; }
         public string FirmUser { get; set; }
         public string FirmData { get; set; }

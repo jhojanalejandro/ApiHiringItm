@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto
 {
     public class ShareDataDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string TypeDataShare { get; set; }
         public string DescriptionData { get; set; }
         public string TypedataRegistered { get; set; }

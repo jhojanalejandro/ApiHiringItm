@@ -8,8 +8,8 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
 {
     public class DetailFileDto
     {
-        public int? Id { get; set; }
-        public int FileId { get; set; }
+        public Guid? Id { get; set; }
+        public Guid FileId { get; set; }
         public string Reason { get; set; }
         public string Observation { get; set; }
 

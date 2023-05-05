@@ -16,7 +16,7 @@
         public decimal ValorPorDia { get; set; }
         public string? Cpc { get; set; }
         public string? NombreCpc { get; set; }
-        public int? IdDetalle { get; set; }
+        public Guid? IdDetalle { get; set; }
         public bool? Modificacion { get; set; }
         public string Consecutivo { get; set; }
         public decimal? ValorTotalContratista { get; set; }

@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
     public class ContractorStudyDto
     {
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string TypeStudy { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? FinalDate { get; set; }

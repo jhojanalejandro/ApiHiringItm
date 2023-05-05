@@ -12,7 +12,7 @@ namespace WebApiHiringItm.MODEL.Entities
             DetalleFile = new HashSet<DetalleFile>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public Guid ContractorId { get; set; }
         public Guid? ContractId { get; set; }
         public string FilesName { get; set; }

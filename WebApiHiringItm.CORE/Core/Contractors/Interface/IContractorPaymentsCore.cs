@@ -10,8 +10,8 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
     public interface IContractorPaymentsCore
     {
         Task<List<ContractorPaymentsDto>> GetAll();
-        Task<ContractorPaymentsDto> GetById(int id);
+        Task<ContractorPaymentsDto> GetById(string id);
         Task<bool> Create(List<ContractorPaymentsDto> model);
-        Task<bool> Delete(int id);
+        Task<bool> Delete(string id);
     }
 }
