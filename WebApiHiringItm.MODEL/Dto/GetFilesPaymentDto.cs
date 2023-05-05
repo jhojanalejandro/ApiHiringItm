@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Dto
     public class GetFilesPaymentDto
     {
 
-        public int? Id { get; set; }
+        public Guid? Id { get; set; }
         public Guid ContractorId { get; set; }
         public Guid? ContractId { get; set; }
         public string FilesName { get; set; }
@@ -20,7 +20,7 @@ namespace WebApiHiringItm.MODEL.Dto
         public DateTime? RegisterDate { get; set; }
         public string TypeFilePayment { get; set; }
         public string MonthPayment { get; set; }
-        public int? FolderId { get; set; }
+        public string? FolderId { get; set; }
         public bool? Passed { get; set; }
     }
 }

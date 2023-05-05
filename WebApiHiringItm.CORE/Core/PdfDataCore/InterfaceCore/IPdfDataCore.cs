@@ -9,6 +9,8 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore
 {
     public interface IPdfDataCore
     {
-        Task<List<ExecutionReportDto>> GetExecutionReport(Guid contractId, Guid ContractorId);
+        Task<ExecutionReportDto> GetExecutionReport(Guid contractId, Guid ContractorId);
+        Task<ChargeAccountDto> GetChargeAccount(Guid contractId, Guid ContractorId);
+
     }
 }

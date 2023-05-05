@@ -36,7 +36,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(string id)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             try
             {

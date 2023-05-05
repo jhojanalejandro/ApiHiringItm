@@ -56,6 +56,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             if (exist == null)
             {
                 var map = _mapper.Map<Actividad>(model);
+                map.Id = Guid.NewGuid();
                 _context.Actividad.Add(map);
                 _save.SaveChangesDB();
                 return await Task.FromResult(true);

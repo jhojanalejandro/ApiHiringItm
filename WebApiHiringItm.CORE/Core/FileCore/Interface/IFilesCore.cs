@@ -13,8 +13,8 @@ namespace WebApiHiringItm.CORE.Core.FileCore.Interface
         Task<List<FilesDto>> GetFileContractorByFolder(Guid contractorId, string folderId, Guid contractId);
         Task<List<FilesDto>> GetAllByContract(Guid contractorId, Guid contractId);
 
-        Task<FilesDto> GetById(int id);
-        Task<bool> Delete(int id);
+        Task<FilesDto> GetById(string id);
+        Task<bool> Delete(string id);
         Task<bool> Create(FilesDto model);
         Task<List<GetFilesPaymentDto>> GetAllByDate(Guid contractId, string type, string date);
         Task<List<FilesDto>> GetAllFileByIdContract(Guid id);

@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
 {
     public class DetalleContratoDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public Guid? Idcontrato { get; set; }
         public DateTime? FechaContrato { get; set; }
         public DateTime? FechaFinalizacion { get; set; }

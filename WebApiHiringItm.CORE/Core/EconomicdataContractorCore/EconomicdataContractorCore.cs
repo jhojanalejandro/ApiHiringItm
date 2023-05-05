@@ -26,7 +26,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
 
         public async Task<List<EconomicdataContractorDto>> GetAll()
         {
-            var result = _context.EconomicdataContractor.Where(x => x.Id > 0).ToList();
+            var result = _context.EconomicdataContractor.ToList();
             var map = _mapper.Map<List<EconomicdataContractorDto>>(result);
             return await Task.FromResult(map);
         }
@@ -40,6 +40,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                 if (result != null)
                 {
                     var map = _mapper.Map<EconomicdataContractorDto>(result);
+                    map.Id = Guid.NewGuid();
                     economicDataContractorList.Add(map);
                 }
 
@@ -47,9 +48,9 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
             return await Task.FromResult(economicDataContractorList);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(string id)
         {
-            var getData = _context.EconomicdataContractor.FirstOrDefault(x => x.Id == id);
+            var getData = _context.EconomicdataContractor.FirstOrDefault(x => x.Id.Equals(Guid.Parse(id)));
             if (getData != null)
             {
                 var result = _context.EconomicdataContractor.Remove(getData);
@@ -84,6 +85,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                     }
                     else
                     {
+                        map[i].Id = Guid.NewGuid();
                         economicDataListAdd.Add(map[i]);
                     }
                 }

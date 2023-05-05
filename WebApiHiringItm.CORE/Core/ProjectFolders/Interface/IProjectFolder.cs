@@ -19,5 +19,6 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders.Interface
         Task<List<ProjectFolderDto>> GetAllInProgess(string typeModule);
         Task<List<ProjectFolderDto>> GetAllActivate();
         Task<bool> UpdateState(Guid id);
+        Task<List<ProjectFolderDto>> GetAllProjectsRegistered();
     }
 }

@@ -70,20 +70,6 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ChargeAccountGetById(Guid contractorId, Guid contractId)
-        {
-            try
-            {
-                var Data = await _contactor.ChargeAccountGetById(contractorId, contractId);
-                return Data != null ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
 
         [HttpPost]
         public async Task<IActionResult> GetDataBill(ContractContractorsDto contractors)
@@ -229,6 +215,21 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             {
                 var Data = await _contactor.AddNewness(model);
                 return Data != false ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetHistoryContractor()
+        {
+            try
+            {
+                var Data = await _contactor.GetHistoryContractor();
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {

@@ -7,7 +7,7 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class EconomicdataContractor
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public Guid? ContractorId { get; set; }
         public Guid? ContractId { get; set; }
         public decimal? TotalValue { get; set; }

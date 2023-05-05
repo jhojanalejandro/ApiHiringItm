@@ -8,8 +8,8 @@ namespace WebApiHiringItm.MODEL.Dto.Usuario
 {
     public class UserFirmDto
     {
-        public int Id { get; set; }
-        public int? RollId { get; set; }
+        public Guid Id { get; set; }
+        public Guid? RollId { get; set; }
         public string FirmUser { get; set; }
         public string FirmData { get; set; }
     }

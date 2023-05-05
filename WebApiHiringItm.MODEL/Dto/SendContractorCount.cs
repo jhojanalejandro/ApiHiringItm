@@ -8,6 +8,6 @@ namespace WebApiHiringItm.MODEL.Dto
 {
     public class SendContractorCountDto
     {
-        public int FolderId { get; set; }
+        public Guid FolderId { get; set; }
     }
 }

@@ -148,5 +148,21 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProjectRegistered()
+        {
+            try
+            {
+                var projects = await _project.GetAllProjectsRegistered();
+
+                return projects != null ? Ok(projects) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
     }
 }

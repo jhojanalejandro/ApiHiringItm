@@ -80,21 +80,21 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             return await Task.FromResult(map);
         }
 
-        public async Task<FilesDto> GetById(int id)
+        public async Task<FilesDto> GetById(string id)
         {
-            var result = _context.Files.FirstOrDefault(x => x.Id == id);
-            var resultFile = _context.DetalleFile.FirstOrDefault(df => df.FileId == id);
+            var result = _context.Files.FirstOrDefault(x => x.Id.Equals(Guid.Parse(id)));
+            var resultFile = _context.DetalleFile.FirstOrDefault(df => df.FileId.Equals(Guid.Parse(id)));
             var mapDf = _mapper.Map<DetailFileDto>(resultFile);
             var map = _mapper.Map<FilesDto>(result);
             map.DetailFile = mapDf;
             return await Task.FromResult(map);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(string id)
         {
             try
             {
-                var resultData = _context.Files.FirstOrDefault(x => x.Id == id);
+                var resultData = _context.Files.FirstOrDefault(x => x.Id.Equals(Guid.Parse(id)));
                 if (resultData != null)
                 {
                     var result = _context.Files.Remove(resultData);
@@ -132,6 +132,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                     }
                 }
                 var map = _mapper.Map<Files>(model);
+                map.Id = Guid.NewGuid();
                 _context.Files.Add(map);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
@@ -197,6 +198,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
             }
             var mapModel = _mapper.Map<Files>(model);
+            mapModel.Id = Guid.NewGuid();
             _context.Files.Add(mapModel);
             var res = await _context.SaveChangesAsync();
             return res != 0 ? true : false;
@@ -208,6 +210,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             if (getData == null)
             {
                 var map = _mapper.Map<DetalleFile>(model);
+                map.Id = Guid.NewGuid();
                 _context.DetalleFile.Add(map);
                 var fileData = _context.Files.FirstOrDefault(fl => fl.Id == model.FileId);
                 if (fileData != null)
