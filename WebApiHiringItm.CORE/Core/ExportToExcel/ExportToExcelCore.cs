@@ -239,7 +239,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["B1"].Value = "CONSECUTIVO";
                 worksheet.Cells["C1"].Value = "CODIGO TIPO DE OPERACIÓN";
                 worksheet.Cells["D1"].Value = "NÚMERO DEL DOCUMENTO";
-                worksheet.Cells["E1"].Value = "FECHA SOLICITUD";
+                worksheet.Cells["E1"].Value = "FECHA MOVIMIENTO";
                 worksheet.Cells["F1"].Value = "CODIGO DE LA SUCURSAL";
                 worksheet.Cells["G1"].Value = "DESCRIPCIÓN DEL MOVIMIENTO";
                 worksheet.Cells["H1"].Value = "CODIGO DEL TERCERO";
@@ -297,9 +297,9 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     if (user.Consecutivo != null && user.NombreElemento != null && user.NumeroConvenio != null && user.Cpc != null)
                     {
                         nro++;
-                        worksheet.Cells[row, 3].Value = 108;
+                        worksheet.Cells[row, 1].Value = 108;
                         worksheet.Cells[row, 2].Value = nro;
-                        worksheet.Cells[row, 1].Value = 49;
+                        worksheet.Cells[row, 3].Value = 49;
                         worksheet.Cells[row, 4].Value = nro;
                         worksheet.Cells[row, 5].Value = date;
                         worksheet.Cells[row, 6].Value = 1;

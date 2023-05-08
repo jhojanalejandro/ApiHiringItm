@@ -25,7 +25,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         }
         #endregion
 
-        #region Methods
+        #region PUBLIC METHODS
         public async Task<bool> Add(ElementosComponenteDto model)
         {
             var exist = _context.ElementosComponente.Where(w => w.Id == model.Id).FirstOrDefault();

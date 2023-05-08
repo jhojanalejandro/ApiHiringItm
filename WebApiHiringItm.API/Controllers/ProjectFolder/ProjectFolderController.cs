@@ -56,6 +56,31 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
 
 
         [HttpGet]
+        public async Task<IActionResult> GetByIdDetailList(Guid id, bool tipoConsulta)
+        {
+            try
+            {
+                if (tipoConsulta)
+                {
+                    var Data = await _project.GetDetailByIdList(id);
+                    return Data != null ? Ok(Data) : NoContent();
+                }
+                else
+                {
+                    var Data = await _project.GetDetailByIdLastDate(id);
+                    return Data != null ? Ok(Data) : NoContent();
+                }
+                return NoContent();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetByIdDetail(Guid id, bool tipoConsulta)
         {
             try
@@ -79,8 +104,6 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
                 throw new Exception("Error", ex);
             }
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> Add(RProjectForlderDto model)

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.FileDto;
+using WebApiHiringItm.MODEL.Dto.Usuario;
 
 namespace WebApiHiringItm.CORE.Core.FileCore.Interface
 {

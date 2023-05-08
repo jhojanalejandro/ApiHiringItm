@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ using WebApiHiringItm.CORE.Helpers.Enums.File;
 using WebApiHiringItm.CORE.Helpers.Enums.Folder;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.FileDto;
+using WebApiHiringItm.MODEL.Dto.Usuario;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.FileCore
@@ -26,6 +28,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             _mapper = mapper;
         }
 
+        #region PUBLIC METHODS
         public async Task<List<FilesDto>> GetFileContractorByFolder(Guid contractorId, string folderId, Guid contractId)
         {
             var result = _context.Files
@@ -71,7 +74,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             var map = _mapper.Map<List<FilesDto>>(result);
             return await Task.FromResult(map);
         }
-
 
         public async Task<List<GetFilesPaymentDto>> GetAllByDate(Guid contractId, string type, string date)
         {
@@ -175,7 +177,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
                 }
             }
-            else 
+            else
             {
                 if (getFolder != null)
                 {
@@ -232,7 +234,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         }
 
-
         public string CodificarArchivo(string sNombreArchivo)
         {
             string sBase64 = "";
@@ -266,8 +267,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
         }
 
-
-
         public string DecodificarArchivo(string sBase64)
         {
             // Declaramos fs para tener crear un nuevo archivo temporal en la maquina cliente.
@@ -296,6 +295,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
         }
 
+        #endregion
 
     }
 }

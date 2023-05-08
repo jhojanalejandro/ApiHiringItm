@@ -15,12 +15,14 @@ namespace WebApiHiringItm.API.Controllers.Contractor
     public class ContractorController : ControllerBase
     {
         private readonly IContractorCore _contactor;
-
+        #region BUILDER
         public ContractorController(IContractorCore contactor)
         {
             _contactor = contactor;
         }
+        #endregion
 
+        #region PUBLIC METHODS
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -51,7 +53,6 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAllByFolder(Guid id)
         {
@@ -69,7 +70,6 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 throw new Exception("Error", ex);
             }
         }
-
 
         [HttpPost]
         public async Task<IActionResult> GetDataBill(ContractContractorsDto contractors)
@@ -102,6 +102,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
 
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> AddExcel([FromForm] FileRequest model)
         {
@@ -222,7 +223,6 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GetHistoryContractor()
         {
@@ -236,6 +236,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 throw new Exception("Error", ex);
             }
         }
+        #endregion
 
     }
 }

@@ -275,13 +275,11 @@ namespace WebApiHiringItm.CONTEXT.Context
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.ContractId).HasColumnName("contractId");
+
                 entity.Property(e => e.FechaContrato).HasColumnType("date");
 
-                entity.Property(e => e.FechaDeTerminacionAmpliacion).HasColumnType("date");
-
                 entity.Property(e => e.FechaFinalizacion).HasColumnType("date");
-
-                entity.Property(e => e.FechaInicioAmpliacion).HasColumnType("date");
 
                 entity.Property(e => e.NoAdicion).HasMaxLength(20);
 
@@ -289,10 +287,10 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.IdcontratoNavigation)
+                entity.HasOne(d => d.Contract)
                     .WithMany(p => p.DetalleContrato)
-                    .HasForeignKey(d => d.Idcontrato)
-                    .HasConstraintName("FK__DetalleCo__Idcon__59FA5E80");
+                    .HasForeignKey(d => d.ContractId)
+                    .HasConstraintName("FK__DetalleCo__contr__71D1E811");
             });
 
             modelBuilder.Entity<DetalleFile>(entity =>
@@ -562,16 +560,21 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.TypedataRegistered).HasMaxLength(100);
             });
 
+
             modelBuilder.Entity<UserFirm>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.FirmUser).HasMaxLength(50);
+                entity.Property(e => e.OwnerFirm)
+                    .HasMaxLength(50)
+                    .HasColumnName("ownerFirm");
+
+                entity.Property(e => e.UserCharge).HasMaxLength(100);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserFirm)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__UserFirm__UserId__5DCAEF64");
+                    .HasConstraintName("FK__UserFirm__UserId__74AE54BC");
             });
 
             modelBuilder.Entity<UserT>(entity =>

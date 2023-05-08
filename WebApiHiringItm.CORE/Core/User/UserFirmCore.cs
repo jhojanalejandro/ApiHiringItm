@@ -53,29 +53,35 @@ namespace WebApiHiringItm.CORE.Core.User
             }
         }
 
-        public async Task<bool> CreateFirm(UserFirmDto model)
+
+        public async Task<bool> SaveUserFirm(UserFirmDto modelFirm)
         {
-            var getData = _context.UserFirm.Where(x => x.Id == model.Id).FirstOrDefault();
-            if (getData == null)
+            if (!modelFirm.IsOwner)
             {
-                var map = _mapper.Map<UserFirm>(model);
-                map.Id = Guid.NewGuid();
-                var res = _context.UserFirm.Add(map);
-                var result = await _context.SaveChangesAsync();
-                return result != null ? true : false;
-            }
-            else
-            {
-                model.Id = getData.Id;
-                var map = _mapper.Map(model, getData);
-                var res = _context.UserFirm.Update(map);
-                await _context.SaveChangesAsync();
-                if (res.State != 0)
+                var getUser = _context.UserT
+                                .Where(w => w.Id.Equals(modelFirm.UserId)).FirstOrDefault();
+                var getFirm = _context.UserFirm.Where(w => w.UserId.Equals(modelFirm.UserId)).FirstOrDefault();
+                if (getFirm != null)
                 {
-                    return true;
+                    getFirm.FirmData = modelFirm.FirmData;
+                    _context.UserFirm.Update(getFirm);
                 }
+                else
+                {
+                    modelFirm.OwnerFirm = getUser.UserName;
+                    modelFirm.UserCharge = getUser.Professionalposition;
+                    var map = _mapper.Map<UserFirm>(modelFirm);
+                    map.Id = Guid.NewGuid();
+
+                    _context.UserFirm.Add(map);
+
+                }
+                _context.SaveChanges();
+                return true;
             }
             return false;
+
         }
+
     }
 }

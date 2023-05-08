@@ -43,6 +43,8 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             _appSettings = appSettings.Value;
             _mailSettings = mailSettings.Value;
         }
+
+        #region PUBLIC METODS
         public async Task<List<ContractorDto>> GetAll()
         {
             var result = _context.Contractor.Where(x => x.Id != null).ToList();
@@ -66,35 +68,29 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         }
 
 
-        public async Task<List<ContractorDto>> GetByIdFolder(Guid id)
+        public async Task<List<ContractorByContractDto>> GetByIdFolder(Guid id)
         {
-            var contractor = _context.DetailProjectContractor.Where(x => x.ContractId == id)
+            var contractor = _context.DetailProjectContractor.Where(x => x.ContractId.Equals(id))
                 .Include(dt => dt.Contractor)
-                .Include(dt => dt.HiringData)
-                .Select(ct => new ContractorDto()
+                .Include(dt => dt.HiringData);
+
+               return await contractor.Select(ct => new ContractorByContractDto
                 {
                     Id = ct.Contractor.Id,  
-                    Codigo = ct.Contractor.Codigo,
-                    FechaInicio = ct.Contractor.FechaInicio,
-                    FechaFin = ct.Contractor.FechaFin,
-                    Nombre = ct.Contractor.Nombre,
-                    Apellido = ct.Contractor.Apellido,
+                    Nombre = ct.Contractor.Nombre+ " " + ct.Contractor.Apellido,
                     Identificacion = ct.Contractor.Identificacion,
-                    LugarExpedicion = ct.Contractor.LugarExpedicion,
                     FechaNacimiento = ct.Contractor.FechaNacimiento,
                     Telefono = ct.Contractor.Telefono,
                     Celular = ct.Contractor.Celular,
                     Correo = ct.Contractor.Correo,
-                    ComponenteId = ct.ComponenteId,
-                    ElementId = ct.ElementId,
-                    UserId = ct.Contractor.UserId,
+                    Direccion = ct.Contractor.Direccion,
                     Habilitado = ct.Contractor.Habilitado,
+                    ElementId = ct.ElementId.ToString(),
+                    ComponentId = ct.ComponenteId.ToString(),
                     Proccess = ct.HiringData != null ? true : false
-                })
+               })
                 .AsNoTracking()
-                .ToList();
-            var map = _mapper.Map<List<ContractorDto>>(contractor);
-            return await Task.FromResult(map);
+                .ToListAsync();
         }
 
         //public async Task<ChargeAccountDto?> ChargeAccountGetById(Guid contractorId, Guid ContractId)
@@ -305,7 +301,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                 return res != 0 ? true : false;
             }
         }
-        #region PUBLIC METODS
+
         public async Task<string> ImportarExcel(FileRequest model)
         {
             List<DetailProjectContractor> listDetail = new List<DetailProjectContractor>();

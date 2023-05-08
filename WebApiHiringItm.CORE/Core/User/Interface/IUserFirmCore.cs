@@ -12,7 +12,7 @@ namespace WebApiHiringItm.CORE.Core.User.Interface
         Task<List<UserFirmDto>> GetAllFirms();
         Task<UserFirmDto> GetByIdFirm(string id);
         Task<bool> DeleteFirm(string id);
-        Task<bool> CreateFirm(UserFirmDto model);
+        Task<bool> SaveUserFirm(UserFirmDto modelFirm);
 
     }
 }
