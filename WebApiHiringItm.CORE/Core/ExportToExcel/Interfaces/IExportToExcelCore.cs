@@ -4,9 +4,9 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces
 {
     public interface IExportToExcelCore
     {
-        Task<MemoryStream> ExportToExcelViabilidad(ControllerBase controller, Guid idContrato);
-        Task<MemoryStream> ExportContratacionDap(ControllerBase controller, Guid idContrato);
-        Task<MemoryStream> ExportCdp(ControllerBase controller, Guid idContrato);
-        Task<MemoryStream> ExportSolicitudPaa(ControllerBase controller, Guid idContrato);
+        Task<MemoryStream> ExportContratacionDap(ControllerBase controller, Guid ContractId);
+        Task<MemoryStream> ExportCdp(ControllerBase controller, Guid ContractId);
+        Task<MemoryStream> ExportSolicitudPaa(ControllerBase controller, Guid ContractId);
+        Task<MemoryStream> ExportToExcelCdp(Guid ContractId);
     }
 }

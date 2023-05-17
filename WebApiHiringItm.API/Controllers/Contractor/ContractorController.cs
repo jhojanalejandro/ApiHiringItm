@@ -10,7 +10,7 @@ using WebApiHiringItm.MODEL.Models;
 namespace WebApiHiringItm.API.Controllers.Contractor
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("[controller]/[action]")]
     public class ContractorController : ControllerBase
     {
@@ -58,10 +58,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _contactor.GetByIdFolder(id);
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -104,21 +101,6 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddExcel([FromForm] FileRequest model)
-        {
-            try
-            {
-                var result = await _contactor.ImportarExcel(model);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-        [HttpPost]
         public async Task<IActionResult> Update(ContractorDto model)
         {
             try
@@ -150,20 +132,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SendContractorAccount(SendMessageAccountDto ids)
-        {
-            try
-            {
-                var Data = await _contactor.SendContractorCount(ids);
-                return Data != false ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
 
-                throw new Exception("Error", ex);
-            }
-        }
 
         //[HttpDelete("{id}")]
         //public async Task<IActionResult> Delete(Guid id)

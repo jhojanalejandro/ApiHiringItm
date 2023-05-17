@@ -12,12 +12,14 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? ContractorId { get; set; }
         public Guid? HiringDataId { get; set; }
         public Guid? ElementId { get; set; }
-        public Guid? ComponenteId { get; set; }
+        public Guid? ComponentId { get; set; }
+        public Guid? ActivityId { get; set; }
 
-        public virtual Componente Componente { get; set; }
-        public virtual ProjectFolder Contract { get; set; }
+        public virtual Activity Activity { get; set; }
+        public virtual Component Component { get; set; }
+        public virtual ContractFolder Contract { get; set; }
         public virtual Contractor Contractor { get; set; }
-        public virtual ElementosComponente Element { get; set; }
+        public virtual ElementComponent Element { get; set; }
         public virtual HiringData HiringData { get; set; }
     }
 }

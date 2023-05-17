@@ -11,6 +11,7 @@ using WebApiRifa.CORE.Helpers;
 namespace WebApiHiringItm.API.Controllers.Files
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class FilesController : ControllerBase
     {

@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class ElementosComponente
+    public partial class ElementComponent
     {
-        public ElementosComponente()
+        public ElementComponent()
         {
             DetailProjectContractor = new HashSet<DetailProjectContractor>();
         }
@@ -16,8 +16,9 @@ namespace WebApiHiringItm.MODEL.Entities
         public string NombreElemento { get; set; }
         public string ObligacionesGenerales { get; set; }
         public string ObligacionesEspecificas { get; set; }
-        public string TipoElemento { get; set; }
-        public Guid IdComponente { get; set; }
+        public Guid? TipoElemento { get; set; }
+        public Guid? ComponentId { get; set; }
+        public Guid? ActivityId { get; set; }
         public int CantidadContratistas { get; set; }
         public int CantidadDias { get; set; }
         public decimal ValorUnidad { get; set; }
@@ -26,14 +27,16 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? ValorPorDiaContratista { get; set; }
         public decimal? Recursos { get; set; }
         public decimal ValorPorDia { get; set; }
-        public string Cpc { get; set; }
-        public string NombreCpc { get; set; }
-        public Guid? IdDetalle { get; set; }
+        public Guid? DetailId { get; set; }
         public bool? Modificacion { get; set; }
         public string Consecutivo { get; set; }
         public string ObjetoElemento { get; set; }
+        public Guid? CpcId { get; set; }
 
-        public virtual Componente IdComponenteNavigation { get; set; }
+        public virtual Activity Activity { get; set; }
+        public virtual Component Component { get; set; }
+        public virtual CpcType Cpc { get; set; }
+        public virtual ElementType TipoElementoNavigation { get; set; }
         public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
     }
 }

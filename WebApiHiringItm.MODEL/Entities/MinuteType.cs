@@ -5,13 +5,10 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class DetalleFile
+    public partial class MinuteType
     {
         public Guid Id { get; set; }
-        public Guid FileId { get; set; }
-        public string Reason { get; set; }
-        public string Observation { get; set; }
-
-        public virtual Files File { get; set; }
+        public string MinuteType1 { get; set; }
+        public string Code { get; set; }
     }
 }

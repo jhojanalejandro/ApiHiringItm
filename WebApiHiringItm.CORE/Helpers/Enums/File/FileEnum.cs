@@ -19,5 +19,7 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.File
         CONTRATO = 3,
         [Display(Description = "Minuta")]
         MINUTA = 4,
+        [Display(Description = "Otros")]
+        OTROS = 5,
     }
 }

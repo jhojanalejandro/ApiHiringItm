@@ -17,7 +17,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? Paymentcant { get; set; }
         public bool? CashPayment { get; set; }
 
-        public virtual ProjectFolder Contract { get; set; }
+        public virtual ContractFolder Contract { get; set; }
         public virtual Contractor Contractor { get; set; }
         public virtual UserT User { get; set; }
     }

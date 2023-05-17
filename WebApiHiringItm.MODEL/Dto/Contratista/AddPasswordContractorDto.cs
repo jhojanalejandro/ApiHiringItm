@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
     public class AddPasswordContractorDto
     {
         public Guid Id { get; set; }
-        public string Documentodeidentificacion { get; set; }
+        public string DocumentodeIdentificacion { get; set; }
         public string ClaveUsuario { get; set; }
 
     }

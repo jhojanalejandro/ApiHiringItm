@@ -1,19 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.X509;
 using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
+using WebApiHiringItm.MODEL.Dto.Contrato;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 
-namespace WebApiHiringItm.API.Controllers.ProjectFolder
+namespace WebApiHiringItm.API.Controllers.ContractFolder
 {
     [ApiController]
     [Authorize]
     [Route("[controller]/[action]")]
-    public class ProjectFolderController : ControllerBase
+    public class ContractFolderController : ControllerBase
     {
         private readonly IProjectFolder _project;
 
-        public ProjectFolderController(IProjectFolder proeject)
+        public ContractFolderController(IProjectFolder proeject)
         {
             _project = proeject;
 
@@ -24,13 +26,28 @@ namespace WebApiHiringItm.API.Controllers.ProjectFolder
         {
             try
             {
-                List<ProjectFolderDto> projectFolders = new List<ProjectFolderDto>();
+                List<ContractListDto> projectFolders = new List<ContractListDto>();
                 if (inProgress)
                     projectFolders = await _project.GetAllInProgess(tipoModulo);
                 else
                     projectFolders = await _project.GetAllActivate();
 
                 return projectFolders != null ? Ok(projectFolders) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllHistory()
+        {
+            try
+            {
+                var Data = await _project.GetAllHistory();
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {

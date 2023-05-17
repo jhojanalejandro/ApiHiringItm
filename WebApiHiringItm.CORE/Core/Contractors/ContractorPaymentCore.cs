@@ -23,7 +23,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             _mapper = mapper;
         }
 
-
         public async Task<List<ContractorPaymentsDto>> GetAll()
         {
             var result = _context.ContractorPayments.ToList();
@@ -43,7 +42,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             var getData = _context.ContractorPayments.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
             if (getData != null)
             {
-
                 var result = _context.ContractorPayments.Remove(getData);
                 await _context.SaveChangesAsync();
                 return true;

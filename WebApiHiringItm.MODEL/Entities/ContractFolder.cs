@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class ProjectFolder
+    public partial class ContractFolder
     {
-        public ProjectFolder()
+        public ContractFolder()
         {
-            Componente = new HashSet<Componente>();
+            Component = new HashSet<Component>();
             Contractor = new HashSet<Contractor>();
             ContractorPayments = new HashSet<ContractorPayments>();
+            DetailContract = new HashSet<DetailContract>();
             DetailProjectContractor = new HashSet<DetailProjectContractor>();
-            DetalleContrato = new HashSet<DetalleContrato>();
             EconomicdataContractor = new HashSet<EconomicdataContractor>();
             FolderContractor = new HashSet<FolderContractor>();
             NewnessContractor = new HashSet<NewnessContractor>();
@@ -23,8 +23,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid UserId { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
-        public string DescriptionProject { get; set; }
-        public bool Execution { get; set; }
         public bool Activate { get; set; }
         public bool EnableProject { get; set; }
         public int? ContractorsCant { get; set; }
@@ -36,13 +34,16 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Rubro { get; set; }
         public string NombreRubro { get; set; }
         public string FuenteRubro { get; set; }
+        public Guid? StatusContractId { get; set; }
+        public string ObjectContract { get; set; }
 
+        public virtual StatusContract StatusContract { get; set; }
         public virtual UserT User { get; set; }
-        public virtual ICollection<Componente> Componente { get; set; }
+        public virtual ICollection<Component> Component { get; set; }
         public virtual ICollection<Contractor> Contractor { get; set; }
         public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
+        public virtual ICollection<DetailContract> DetailContract { get; set; }
         public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
-        public virtual ICollection<DetalleContrato> DetalleContrato { get; set; }
         public virtual ICollection<EconomicdataContractor> EconomicdataContractor { get; set; }
         public virtual ICollection<FolderContractor> FolderContractor { get; set; }
         public virtual ICollection<NewnessContractor> NewnessContractor { get; set; }
