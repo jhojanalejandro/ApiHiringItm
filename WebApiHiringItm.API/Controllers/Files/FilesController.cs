@@ -11,6 +11,7 @@ using WebApiRifa.CORE.Helpers;
 namespace WebApiHiringItm.API.Controllers.Files
 {
     [ApiController]
+    //[Authorize]
     [Route("[controller]/[action]")]
     public class FilesController : ControllerBase
     {
@@ -21,16 +22,13 @@ namespace WebApiHiringItm.API.Controllers.Files
             _file = file;
         }
 
-
+        #region PUBLIC METOHODS
         [HttpPost]
         public async Task<IActionResult> Update(FilesDto model)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _file.Create(model);
-
-                //Retornamos datos.
+                var Data = await _file.AddFileContractor(model);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -45,10 +43,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _file.Create(model);
-
-                //Retornamos datos.
+                var Data = await _file.AddFileContractor(model);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -78,10 +73,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _file.CreateDetail(model);
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -177,6 +169,21 @@ namespace WebApiHiringItm.API.Controllers.Files
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddFileContract(FileContractDto model)
+        {
+            try
+            {
+                var Data = await _file.AddFileContract(model);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+        #endregion
 
     }
 }

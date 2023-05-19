@@ -26,14 +26,14 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
 
         public async Task<List<FolderContractorDto>> GetAllById(Guid contractorId, Guid contractId)
         {
-            var result = _context.FolderContractor.Where(x => x.ContractorId.Equals(contractorId) && x.ContractId == contractId).ToList();
+            var result = _context.Folder.Where(x => x.ContractorId.Equals(contractorId) && x.ContractId == contractId).ToList();
             var map = _mapper.Map<List<FolderContractorDto>>(result);
             return await Task.FromResult(map);
         }
 
         public async Task<FolderContractorDto> GetById(string id)
         {
-            var result = _context.FolderContractor.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
+            var result = _context.Folder.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
             var map = _mapper.Map<FolderContractorDto>(result);
             return await Task.FromResult(map);
         }
@@ -42,10 +42,10 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
         {
             try
             {
-                var resultData = _context.FolderContractor.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
+                var resultData = _context.Folder.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
                 if (resultData != null)
                 {
-                    var result = _context.FolderContractor.Remove(resultData);
+                    var result = _context.Folder.Remove(resultData);
                     await _context.SaveChangesAsync();
 
                 }
@@ -61,13 +61,13 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
 
         public async Task<bool> Create(FolderContractorDto model)
         {
-            var getData = _context.FolderContractor.Where(x => x.Id == model.Id).FirstOrDefault();
+            var getData = _context.Folder.Where(x => x.Id == model.Id).FirstOrDefault();
 
             if (getData == null)
             {
-                var map = _mapper.Map<FolderContractor>(model);
+                var map = _mapper.Map<Folder>(model);
                 map.Id = Guid.NewGuid();
-                _context.FolderContractor.Add(map);
+                _context.Folder.Add(map);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
 
@@ -76,7 +76,7 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
             {
                 model.Id = getData.Id;
                 var map = _mapper.Map(model, getData);
-                _context.FolderContractor.Update(map);
+                _context.Folder.Update(map);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
             }

@@ -3,7 +3,6 @@ using WebApiHiringItm.CORE.Core.User.Interface;
 using WebApiHiringItm.CORE.Core.User;
 using WebApiHiringItm.CORE.Core.FileCore.Interface;
 using WebApiHiringItm.CORE.Core.FileCore;
-using WebApiHiringItm.CORE.Core.ProjectFolders;
 using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
 using WebApiHiringItm.CORE.Core.Contractors;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
@@ -22,6 +21,15 @@ using WebApiHiringItm.CORE.Helpers;
 using WebApiHiringItm.Core.User;
 using WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore;
 using WebApiHiringItm.CORE.Core.PdfDataCore;
+using WebApiHiringItm.CORE.Core.MasterDataCore.Interface;
+using WebApiHiringItm.CORE.Core.MasterDataCore;
+using WebApiHiringItm.CORE.Core.ImportExcelCore.Interface;
+using WebApiHiringItm.CORE.Core.ImportExcelCore;
+using WebApiHiringItm.CORE.Core.MessageHandlingCore.Interface;
+using WebApiHiringItm.CORE.Core.MessageHandlingCore;
+using WebApiHiringItm.CORE.Core.ContractFolders;
+using WebApiHiringItm.CORE.Core.FileMnager.Interface;
+using WebApiHiringItm.CORE.Core.FileMnager;
 
 namespace WebApiHiringItm.IOC.Dependencies
 {
@@ -33,7 +41,7 @@ namespace WebApiHiringItm.IOC.Dependencies
             services.AddScoped<IHiringDataCore, HiringDataCore>();
             services.AddScoped<IFilesCore, FilesCore>();
             services.AddScoped<IContractorCore, ContractorCore>();
-            services.AddScoped<IProjectFolder, ProjectFolderCore>();
+            services.AddScoped<IProjectFolder, ContractFolderCore>();
             services.AddScoped<IFolderContractorCore, FolderContractorCore>();
             services.AddScoped<IExportToExcelCore, ExportToExcelCore>();
             services.AddScoped<IEconomicdataContractorCore, EconomicdataContractorCore>();
@@ -43,6 +51,11 @@ namespace WebApiHiringItm.IOC.Dependencies
             services.AddScoped<IUserFirmCore, UserFirmCore>();
             services.AddScoped<IContractorPaymentsCore, ContractorPaymentCore>();
             services.AddScoped<IPdfDataCore, PdfDataCore>();
+            services.AddScoped<IMasterDataCore, MasterDataCore>();
+            services.AddScoped<IImportExcelCore, ImportExcelCore>();
+            services.AddScoped<IMessageHandlingCore, MessageHandlingCore>();
+            services.AddScoped<IFileManagerCore, FileManagerCore>();
+
         }
     }
 }

@@ -12,7 +12,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? ContractId { get; set; }
         public decimal? TotalValue { get; set; }
         public decimal? UnitValue { get; set; }
-        public decimal? TotalPaidMonth { get; set; }
+        public decimal? TotalPaIdMonth { get; set; }
         public bool? CashPayment { get; set; }
         public decimal? Missing { get; set; }
         public decimal? Debt { get; set; }
@@ -20,7 +20,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
 
-        public virtual ProjectFolder Contract { get; set; }
+        public virtual ContractFolder Contract { get; set; }
         public virtual Contractor Contractor { get; set; }
     }
 }

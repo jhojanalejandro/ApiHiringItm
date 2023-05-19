@@ -9,8 +9,10 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public Guid Id { get; set; }
         public Guid? UserId { get; set; }
-        public string FirmUser { get; set; }
         public string FirmData { get; set; }
+        public string UserCharge { get; set; }
+        public string OwnerFirm { get; set; }
+        public string UserfileName { get; set; }
 
         public virtual UserT User { get; set; }
     }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.FoldersContractorCore.Interface;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 
-namespace WebApiHiringItm.API.Controllers.FolderContractor
+namespace WebApiHiringItm.API.Controllers.Folder
 {
     [ApiController]
     //[Authorize]
@@ -23,10 +23,7 @@ namespace WebApiHiringItm.API.Controllers.FolderContractor
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _folder.GetAllById(contractorId, contractId);
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -35,6 +32,7 @@ namespace WebApiHiringItm.API.Controllers.FolderContractor
                 throw new Exception("Error", ex);
             }
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)

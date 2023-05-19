@@ -55,14 +55,11 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(UserFirmDto model)
+        public async Task<IActionResult> SaveFirm(UserFirmDto model)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _userFirm.CreateFirm(model);
-
-                //Retornamos datos.
+                var Data = await _userFirm.SaveUserFirm(model);
                 return Data != true ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -72,24 +69,6 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
             }
         }
 
-
-        [HttpPost]
-        public async Task<IActionResult> Update(UserFirmDto model)
-        {
-            try
-            {
-                //Obtenemos todos los registros.
-                var Data = await _userFirm.CreateFirm(model);
-
-                //Retornamos datos.
-                return Data != true ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
 
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)

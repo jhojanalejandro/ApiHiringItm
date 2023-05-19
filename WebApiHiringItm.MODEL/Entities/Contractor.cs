@@ -12,7 +12,8 @@ namespace WebApiHiringItm.MODEL.Entities
             ContractorPayments = new HashSet<ContractorPayments>();
             DetailProjectContractor = new HashSet<DetailProjectContractor>();
             EconomicdataContractor = new HashSet<EconomicdataContractor>();
-            FolderContractor = new HashSet<FolderContractor>();
+            Files = new HashSet<Files>();
+            Folder = new HashSet<Folder>();
             HiringData = new HashSet<HiringData>();
             NewnessContractor = new HashSet<NewnessContractor>();
         }
@@ -55,15 +56,17 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaActualizacion { get; set; }
         public string ObjetoConvenio { get; set; }
-        public bool? Habilitado { get; set; }
+        public Guid? StatusContractor { get; set; }
         public Guid? RollId { get; set; }
 
-        public virtual ProjectFolder Contract { get; set; }
+        public virtual ContractFolder Contract { get; set; }
+        public virtual StatusContractor StatusContractorNavigation { get; set; }
         public virtual UserT User { get; set; }
         public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
         public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
         public virtual ICollection<EconomicdataContractor> EconomicdataContractor { get; set; }
-        public virtual ICollection<FolderContractor> FolderContractor { get; set; }
+        public virtual ICollection<Files> Files { get; set; }
+        public virtual ICollection<Folder> Folder { get; set; }
         public virtual ICollection<HiringData> HiringData { get; set; }
         public virtual ICollection<NewnessContractor> NewnessContractor { get; set; }
     }

@@ -11,6 +11,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore
     {
         Task<ExecutionReportDto> GetExecutionReport(Guid contractId, Guid ContractorId);
         Task<ChargeAccountDto> GetChargeAccount(Guid contractId, Guid ContractorId);
+        Task<MacroMinuteDto?> GetminuteMacroContract(Guid contractId);
 
     }
 }

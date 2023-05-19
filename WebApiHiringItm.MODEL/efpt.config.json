@@ -12,14 +12,18 @@
    "ProjectRootNamespace": "WebApiHiringItm.MODEL",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
-   "SelectedToBeGenerated": 0,
+   "SelectedToBeGenerated": 2,
    "Tables": [
       {
-         "Name": "[dbo].[Actividad]",
+         "Name": "[dbo].[Activity]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Componente]",
+         "Name": "[dbo].[Component]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractFolder]",
          "ObjectType": 0
       },
       {
@@ -31,15 +35,23 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[CpcType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DetailContract]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DetailFile]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[DetailProjectContractor]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[DetalleContrato]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[DetalleFile]",
+         "Name": "[dbo].[DocumentType]",
          "ObjectType": 0
       },
       {
@@ -47,7 +59,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ElementosComponente]",
+         "Name": "[dbo].[ElementComponent]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ElementType]",
          "ObjectType": 0
       },
       {
@@ -55,7 +71,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[FolderContractor]",
+         "Name": "[dbo].[Folder]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FolderType]",
          "ObjectType": 0
       },
       {
@@ -63,11 +83,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[MinuteType]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[NewnessContractor]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ProjectFolder]",
+         "Name": "[dbo].[NewnessType]",
          "ObjectType": 0
       },
       {
@@ -76,6 +100,18 @@
       },
       {
          "Name": "[dbo].[sharedData]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StatusContract]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StatusContractor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StatusFile]",
          "ObjectType": 0
       },
       {

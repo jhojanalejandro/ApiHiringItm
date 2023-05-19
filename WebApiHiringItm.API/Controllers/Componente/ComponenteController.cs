@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 
-namespace WebApiHiringItm.API.Controllers.Componente
+namespace WebApiHiringItm.API.Controllers.Component
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ComponenteController : ControllerBase
     {
@@ -16,9 +16,9 @@ namespace WebApiHiringItm.API.Controllers.Componente
         #endregion
 
         #region Builder
-        public ComponenteController(IComponenteCore componente)
+        public ComponenteController(IComponenteCore Component)
         {
-            _componente = componente;
+            _componente = Component;
         }
         #endregion
 
@@ -58,12 +58,27 @@ namespace WebApiHiringItm.API.Controllers.Componente
             return Ok(res);
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetActivity(Guid id)
+        public async Task<IActionResult> GetActivityById(Guid id)
         {
 
             try
             {
-                var res = await _componente.GetActivity(id);
+                var res = await _componente.GetActivityById(id);
+                return res != null ? Ok(res) : BadRequest();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetActivityByComponent(Guid id)
+        {
+
+            try
+            {
+                var res = await _componente.GetActivityByComponent(id);
                 return res != null ? Ok(res) : BadRequest();
             }
             catch (Exception e)

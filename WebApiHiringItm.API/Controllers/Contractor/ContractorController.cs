@@ -14,13 +14,16 @@ namespace WebApiHiringItm.API.Controllers.Contractor
     [Route("[controller]/[action]")]
     public class ContractorController : ControllerBase
     {
+        #region BUILDER
         private readonly IContractorCore _contactor;
 
         public ContractorController(IContractorCore contactor)
         {
             _contactor = contactor;
         }
+        #endregion
 
+        #region PUBLIC METHODS
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -51,16 +54,12 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAllByFolder(Guid id)
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _contactor.GetByIdFolder(id);
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -69,7 +68,6 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 throw new Exception("Error", ex);
             }
         }
-
 
         [HttpPost]
         public async Task<IActionResult> GetDataBill(ContractContractorsDto contractors)
@@ -100,20 +98,6 @@ namespace WebApiHiringItm.API.Controllers.Contractor
 
                 throw new Exception("Error", ex);
 
-            }
-        }
-        [HttpPost]
-        public async Task<IActionResult> AddExcel([FromForm] FileRequest model)
-        {
-            try
-            {
-                var result = await _contactor.ImportarExcel(model);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
             }
         }
 
@@ -149,20 +133,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SendContractorAccount(SendMessageAccountDto ids)
-        {
-            try
-            {
-                var Data = await _contactor.SendContractorCount(ids);
-                return Data != false ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
 
-                throw new Exception("Error", ex);
-            }
-        }
 
         //[HttpDelete("{id}")]
         //public async Task<IActionResult> Delete(Guid id)
@@ -222,7 +193,6 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GetHistoryContractor()
         {
@@ -236,6 +206,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 throw new Exception("Error", ex);
             }
         }
+        #endregion
 
     }
 }

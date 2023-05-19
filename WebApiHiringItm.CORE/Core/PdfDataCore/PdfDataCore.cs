@@ -116,5 +116,29 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
             .AsNoTracking()
             .FirstOrDefaultAsync();
         }
+
+
+        public async Task<MacroMinuteDto?> GetminuteMacroContract(Guid contractId)
+        {
+            var result = _context.DetailContract
+                .Include(i => i.Contract)
+                .Where(x => x.ContractId.Equals(contractId));
+
+            return await result.Select(report => new MacroMinuteDto
+            {
+                ContractNumber = report.Contract.NumberProject,
+                ContractName = report.Contract.CompanyName,
+                PeriodInitialDate = report.FechaContrato,
+                PeriodFinalDate = report.FechaFinalizacion,
+                Object = report.Contract.ObjectContract,
+                TotalValueContract = report.Contract.ValorContrato,
+                CompanyName = report.Contract.CompanyName
+                //Supervisor = report.HiringData.SupervisorItm,
+                //SupervisorCharge = report.HiringData.CargoSupervisorItm,
+                //SupervisorIdentification = report.HiringData.IdentificacionSupervisor
+            })
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+        }
     }
 }

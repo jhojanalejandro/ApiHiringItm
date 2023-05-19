@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
 using WebApiHiringItm.MODEL.Dto;
@@ -31,44 +31,38 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             return await Task.FromResult(map);
         }
 
-        public async Task<HiringDataDto> GetById(Guid contractorId, Guid contractId)
+        public async Task<HiringDataDto?> GetById(Guid contractorId, Guid contractId)
         {
-           var hiringResult = _context.DetailProjectContractor
-                .Where(x => x.ContractorId == contractorId && x.ContractId == x.ContractId)
-                .Include(x => x.HiringData)
-                .Where(w => w.HiringData != null);
-            if (hiringResult != null)
+            var hiringResult = _context.DetailProjectContractor
+                 .Include(x => x.HiringData)
+                 .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId.Equals(x.ContractId));
+            
+            return await hiringResult.Select(hd => new HiringDataDto
             {
-               var hd = hiringResult.Select(hd => new HiringDataDto()
-                {
-                    Id = hd.HiringData.Id,
-                    FechaRealDeInicio = hd.HiringData.FechaRealDeInicio,
-                    FechaFinalizacionConvenio = hd.HiringData.FechaFinalizacionConvenio,
-                    Contrato = hd.HiringData.Contrato,
-                    Compromiso = hd.HiringData.Compromiso,
-                    FechaExaPreocupacional = hd.HiringData.FechaExaPreocupacional,
-                    SupervisorItm = hd.HiringData.SupervisorItm,
-                    CargoSupervisorItm = hd.HiringData.CargoSupervisorItm,
-                    FechaDeComite = hd.HiringData.FechaDeComite,
-                    RequierePoliza = hd.HiringData.RequierePoliza,
-                    NoPoliza = hd.HiringData.NoPoliza,
-                    VigenciaInicial = hd.HiringData.VigenciaInicial,
-                    VigenciaFinal = hd.HiringData.VigenciaFinal,
-                    FechaExpedicionPoliza = hd.HiringData.FechaExpedicionPoliza,
-                    ValorAsegurado = hd.HiringData.ValorAsegurado,
-                    Nivel = hd.HiringData.Nivel,
-                    Caso = hd.HiringData.Caso,
-                    NombreRubro = hd.Contract.NombreRubro,
-                    FuenteRubro = hd.Contract.FuenteRubro,
-                    Cdp = hd.HiringData.Cdp,
-                    NumeroActa = hd.HiringData.NumeroActa
-                })
-                .AsNoTracking()
-                .FirstOrDefault();
-                return hd;
-
-            }
-            return null;
+                Id = hd.HiringData.Id,
+                FechaRealDeInicio = hd.HiringData.FechaRealDeInicio,
+                FechaFinalizacionConvenio = hd.HiringData.FechaFinalizacionConvenio,
+                Contrato = hd.HiringData.Contrato,
+                Compromiso = hd.HiringData.Compromiso,
+                FechaExaPreocupacional = hd.HiringData.FechaExaPreocupacional,
+                SupervisorItm = hd.HiringData.SupervisorItm,
+                CargoSupervisorItm = hd.HiringData.CargoSupervisorItm,
+                FechaDeComite = hd.HiringData.FechaDeComite,
+                RequierePoliza = hd.HiringData.RequierePoliza,
+                NoPoliza = hd.HiringData.NoPoliza,
+                VigenciaInicial = hd.HiringData.VigenciaInicial,
+                VigenciaFinal = hd.HiringData.VigenciaFinal,
+                FechaExpedicionPoliza = hd.HiringData.FechaExpedicionPoliza,
+                ValorAsegurado = hd.HiringData.ValorAsegurado,
+                Nivel = hd.HiringData.Nivel,
+                Caso = hd.HiringData.Caso,
+                NombreRubro = hd.Contract.NombreRubro,
+                FuenteRubro = hd.Contract.FuenteRubro,
+                Cdp = hd.HiringData.Cdp,
+                NumeroActa = hd.HiringData.NumeroActa
+            })
+             .AsNoTracking()
+             .FirstOrDefaultAsync();
         }
 
         public async Task<bool> Updates(string model)
@@ -147,7 +141,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                             detailProjectContractor.ContractorId = map[i].ContractorId;
                             detailProjectContractor.ContractId = model[i].ContractId;
                             detailProjectContractor.ElementId = hiring.ElementId;
-                            detailProjectContractor.ComponenteId = hiring.ComponenteId;
+                            detailProjectContractor.ComponentId = hiring.ComponentId;
                             detailProjectContractor.Id = hiring.Id;
                             detailDataListAdd.Add(detailProjectContractor);
                             hiringDataListAdd.Add(map[i]);
@@ -178,6 +172,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             return false;
         }
         #endregion
+        
         #region PRIVATE METHODS
         private async Task<bool> updateDetails(List<DetailProjectContractor> detailProjectContractors)
         {

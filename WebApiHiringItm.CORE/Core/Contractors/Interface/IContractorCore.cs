@@ -11,9 +11,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
         Task<List<ContractorDto>> GetAll();
         Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors);
         Task<bool> Create(ContractorDto model);
-        Task<bool> SendContractorCount(SendMessageAccountDto ids);
-        Task<string> ImportarExcel(FileRequest obj);
-        Task<List<ContractorDto>> GetByIdFolder(Guid id);
+        Task<List<ContractorByContractDto>> GetByIdFolder(Guid id);
         Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model);
         Task<List<ContractorPaymentsDto>> GetPaymentsContractorList(Guid contractId, Guid contractorId);
         Task<List<ContractsContarctorDto>> getContractsByContractor(string contractorId);
