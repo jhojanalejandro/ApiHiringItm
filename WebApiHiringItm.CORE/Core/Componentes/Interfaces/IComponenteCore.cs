@@ -9,6 +9,8 @@ namespace WebApiHiringItm.CORE.Core.Componentes.Interfaces
         Task<bool> Delete(Guid id);
         Task<ComponenteDto> GetById(Guid id);
         Task<bool> AddActivity(ActivityDto model);
-        Task<List<ActivityDto>?> GetActivity(Guid id);
+        Task<List<ActivityDto>?> GetActivityByComponent(Guid id);
+        Task<ActivityDto> GetActivityById(Guid id);
+
     }
 }

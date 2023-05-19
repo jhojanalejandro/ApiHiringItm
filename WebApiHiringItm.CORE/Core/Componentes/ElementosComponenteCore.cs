@@ -26,42 +26,50 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         #endregion
 
         #region PUBLIC METHODS
-        public async Task<bool> Add(ElementosComponenteDto model)
+        public async Task<bool> Add(ElementComponentDto model)
         {
-            var exist = _context.ElementosComponente.Where(w => w.Id == model.Id).FirstOrDefault();
-            if (exist == null)
+            try
             {
-                model.Id = Guid.NewGuid();
-                var map = _mapper.Map<ElementosComponente>(model);
-                _context.ElementosComponente.Add(map);
+                var exist = _context.ElementComponent.Where(w => w.Id.Equals(model.Id)).FirstOrDefault();
+                if (exist == null)
+                {
+                    model.Id = Guid.NewGuid();
+                    var map = _mapper.Map<ElementComponent>(model);
+                    _context.ElementComponent.Add(map);
+                }
+                else
+                {
+                    var mapUpdate = _mapper.Map(model, exist);
+                    _context.ElementComponent.Update(mapUpdate);
+                }
+                await _save.SaveChangesDB();
+                return true;
             }
-            else
+            catch(Exception ex)
             {
-                var mapUpdate = _mapper.Map(model, exist);
-                _context.ElementosComponente.Update(mapUpdate);
+               return false;
             }
-            await _save.SaveChangesDB();
-            return true;
+
         }
 
-        public async Task<List<ElementosComponenteDto>?> Get(Guid? id)
+        public async Task<List<ElementComponentDto>?> Get(Guid? id)
         {
-            var result = _context.ElementosComponente.Where(x => x.IdComponente == id).ToList();
+            var result = _context.ElementComponent.Where(x => x.ComponentId == id).ToList();
             if (result.Count != 0)
             {
-                var map = _mapper.Map<List<ElementosComponenteDto>>(result);
+                var map = _mapper.Map<List<ElementComponentDto>>(result);
                 return await Task.FromResult(map);
             }
             else
             {
-                return new List<ElementosComponenteDto>();
+                return new List<ElementComponentDto>();
             }
         }
 
-        public async Task<ElementosComponenteDto> GetById(Guid id)
+        public async Task<ElementComponentDto> GetById(Guid id)
         {
-            var result = _context.ElementosComponente.Where(x => x.Id.Equals(id)).FirstOrDefault();
-            var map = _mapper.Map<ElementosComponenteDto>(result);
+            var result = _context.ElementComponent.Where(x => x.Id.Equals(id)).FirstOrDefault();
+            var map = _mapper.Map<ElementComponentDto>(result);
             return await Task.FromResult(map);
         }
 

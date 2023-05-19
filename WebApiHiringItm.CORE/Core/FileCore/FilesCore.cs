@@ -41,7 +41,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
             else
             {
-                return new List<FilesDto>();
+                return null;
 
             }
         }
@@ -55,8 +55,8 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 var map = _mapper.Map<List<FilesDto>>(result);
                 //map.ForEach(e =>
                 //{
-                //    var detail = _context.ElementosComponente.Where(d => d.IdComponente == e.Id).ToList();
-                //    e.DetalleFile = _mapper.Map<List<DetailFileDto>>(detail);
+                //    var detail = _context.ElementComponent.Where(d => d.ComponentId == e.Id).ToList();
+                //    e.DetailFile = _mapper.Map<List<DetailFileDto>>(detail);
                 //});
                 return await Task.FromResult(map);
 
@@ -85,7 +85,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
         public async Task<FilesDto> GetById(string id)
         {
             var result = _context.Files.FirstOrDefault(x => x.Id.Equals(Guid.Parse(id)));
-            var resultFile = _context.DetalleFile.FirstOrDefault(df => df.FileId.Equals(Guid.Parse(id)));
+            var resultFile = _context.DetailFile.FirstOrDefault(df => df.FileId.Equals(Guid.Parse(id)));
             var mapDf = _mapper.Map<DetailFileDto>(resultFile);
             var map = _mapper.Map<FilesDto>(result);
             map.DetailFile = mapDf;
@@ -115,7 +115,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<bool> Create(FilesDto model)
         {
-            var getData = _context.Files.FirstOrDefault(x => x.Id == model.Id);
+            var getData = _context.Files.FirstOrDefault(x => x.Id.Equals(model.Id));
             if (getData == null)
             {
                 if (model.TypeFilePayment.Equals(FileEnum.INFORME.Description()) || model.TypeFilePayment.Equals(FileEnum.CUENTADECOBRO.Description()) || model.TypeFilePayment.Equals(FileEnum.PLANILLA.Description()))
@@ -208,12 +208,12 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<bool> CreateDetail(DetailFileDto model)
         {
-            var getData = _context.DetalleFile.FirstOrDefault(x => x.Id == model.Id);
+            var getData = _context.DetailFile.FirstOrDefault(x => x.Id == model.Id);
             if (getData == null)
             {
-                var map = _mapper.Map<DetalleFile>(model);
+                var map = _mapper.Map<DetailFile>(model);
                 map.Id = Guid.NewGuid();
-                _context.DetalleFile.Add(map);
+                _context.DetailFile.Add(map);
                 var fileData = _context.Files.FirstOrDefault(fl => fl.Id == model.FileId);
                 if (fileData != null)
                     fileData.Passed = false;
@@ -226,7 +226,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 model.Id = getData.Id;
                 model.Reason += getData.Reason;
                 var map = _mapper.Map(model, getData);
-                _context.DetalleFile.Update(map);
+                _context.DetailFile.Update(map);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
             }

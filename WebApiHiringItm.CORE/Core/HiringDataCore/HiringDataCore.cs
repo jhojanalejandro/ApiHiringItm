@@ -141,7 +141,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                             detailProjectContractor.ContractorId = map[i].ContractorId;
                             detailProjectContractor.ContractId = model[i].ContractId;
                             detailProjectContractor.ElementId = hiring.ElementId;
-                            detailProjectContractor.ComponenteId = hiring.ComponenteId;
+                            detailProjectContractor.ComponentId = hiring.ComponentId;
                             detailProjectContractor.Id = hiring.Id;
                             detailDataListAdd.Add(detailProjectContractor);
                             hiringDataListAdd.Add(map[i]);
@@ -172,6 +172,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             return false;
         }
         #endregion
+        
         #region PRIVATE METHODS
         private async Task<bool> updateDetails(List<DetailProjectContractor> detailProjectContractors)
         {

@@ -12,8 +12,10 @@ namespace WebApiHiringItm.MODEL.Dto.Componentes
 
         public Guid? Id { get; set; }
         public string NombreComponente { get; set; }
-        public Guid IdContrato { get; set; }
+        public Guid ContractId { get; set; }
 
-        public List<ElementosComponenteDto> Elementos { get; set; } = null;
+        public List<ElementComponentDto?> Elementos { get; set; } = null;
+        public List<ActivityDto?> Activities { get; set; } = null;
+
     }
 }

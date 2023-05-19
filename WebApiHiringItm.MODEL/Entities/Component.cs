@@ -5,22 +5,22 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class Componente
+    public partial class Component
     {
-        public Componente()
+        public Component()
         {
-            Actividad = new HashSet<Actividad>();
+            Activity = new HashSet<Activity>();
             DetailProjectContractor = new HashSet<DetailProjectContractor>();
-            ElementosComponente = new HashSet<ElementosComponente>();
+            ElementComponent = new HashSet<ElementComponent>();
         }
 
         public Guid Id { get; set; }
         public string NombreComponente { get; set; }
-        public Guid IdContrato { get; set; }
+        public Guid ContractId { get; set; }
 
-        public virtual ProjectFolder IdContratoNavigation { get; set; }
-        public virtual ICollection<Actividad> Actividad { get; set; }
+        public virtual ContractFolder Contract { get; set; }
+        public virtual ICollection<Activity> Activity { get; set; }
         public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
-        public virtual ICollection<ElementosComponente> ElementosComponente { get; set; }
+        public virtual ICollection<ElementComponent> ElementComponent { get; set; }
     }
 }

@@ -55,10 +55,11 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaActualizacion { get; set; }
         public string ObjetoConvenio { get; set; }
-        public bool? Habilitado { get; set; }
+        public Guid? StatusContractor { get; set; }
         public Guid? RollId { get; set; }
 
-        public virtual ProjectFolder Contract { get; set; }
+        public virtual ContractFolder Contract { get; set; }
+        public virtual StatusContractor StatusContractorNavigation { get; set; }
         public virtual UserT User { get; set; }
         public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
         public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }

@@ -12,6 +12,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public string FirmData { get; set; }
         public string UserCharge { get; set; }
         public string OwnerFirm { get; set; }
+        public string UserfileName { get; set; }
 
         public virtual UserT User { get; set; }
     }

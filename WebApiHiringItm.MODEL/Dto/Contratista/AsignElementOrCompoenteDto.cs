@@ -10,8 +10,9 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
     {
         public Guid Id { get; set; }
         public string Type { get; set; }
-        public Guid[] IdContractor { get; set; }
+        public Guid[] ContractorId { get; set; }
         public Guid ContractId { get; set; }
+        public string? ActivityId { get; set; }
 
     }
 }

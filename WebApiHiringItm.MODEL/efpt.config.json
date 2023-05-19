@@ -7,15 +7,115 @@
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": "Context",
-   "OutputPath": "Entities1",
+   "OutputPath": "Entities",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "WebApiHiringItm.MODEL",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
-   "SelectedToBeGenerated": 0,
+   "SelectedToBeGenerated": 2,
    "Tables": [
       {
+         "Name": "[dbo].[Activity]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Component]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractFolder]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Contractor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractorPayments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CpcType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DetailContract]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DetailFile]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DetailProjectContractor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DocumentType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EconomicdataContractor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ElementComponent]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ElementType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Files]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FileType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FolderContractor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FolderType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[HiringData]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MinuteType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[NewnessContractor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[NewnessType]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Roll]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[sharedData]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StatusContract]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StatusContractor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StatusFile]",
          "ObjectType": 0
       },
       {

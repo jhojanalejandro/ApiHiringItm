@@ -9,9 +9,9 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
     public class ContractorDto
     {
         public Guid Id { get; set; }
-        public Guid RollId { get; set; }
         public string TipoContratacion { get; set; }
         public string Codigo { get; set; }
+        public string Convenio { get; set; }
         public string FechaInicio { get; set; }
         public string FechaFin { get; set; }
         public string Nombre { get; set; }
@@ -37,17 +37,16 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string TipoAdministradora { get; set; }
         public string Administradora { get; set; }
         public string CuentaBancaria { get; set; }
-        public string TipoDeCuenta { get; set; }
+        public string TipoCuenta { get; set; }
         public string EntidadCuentaBancaria { get; set; }
         public string Estado { get; set; }
-        public string ObjetoConvenio { get; set; }
-        public Guid? ComponenteId { get; set; }
-        public Guid? ElementId { get; set; }
         public Guid UserId { get; set; }
-        public DateTime? FechaCreacion { get; set; }
         public string ClaveUsuario { get; set; }
+        public Guid ContractId { get; set; }
+        public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaActualizacion { get; set; }
-        public bool? Habilitado { get; set; }
-        public bool? Proccess { get; set; }
+        public string ObjetoConvenio { get; set; }
+        public Guid? StatusContractor { get; set; }
+        public Guid? RollId { get; set; }
     }
 }

@@ -10,23 +10,30 @@ namespace WebApiHiringItm.CONTEXT.Context
 {
     public interface IHiringContext
     {
-        DbSet<Componente> Componente { get; set; }
+        DbSet<Component> Component { get; set; }
         DbSet<Contractor> Contractor { get; set; }
         DbSet<ContractorPayments> ContractorPayments { get; set; }
-        DbSet<DetalleContrato> DetalleContrato { get; set; }
-        DbSet<DetalleFile> DetalleFile { get; set; }
+        DbSet<DetailContract> DetailContract { get; set; }
+        DbSet<DetailFile> DetailFile { get; set; }
         DbSet<EconomicdataContractor> EconomicdataContractor { get; set; }
-        DbSet<ElementosComponente> ElementosComponente { get; set; }
+        DbSet<ElementComponent> ElementComponent { get; set; }
         DbSet<Files> Files { get; set; }
         DbSet<FolderContractor> FolderContractor { get; set; }
         DbSet<HiringData> HiringData { get; set; }
-        DbSet<Actividad> Actividad { get; set; }
-        //DbSet<ProfessionalRol> ProfessionalRol { get; set; }
+        DbSet<Activity> Activity { get; set; }
         DbSet<NewnessContractor> NewnessContractor { get; set; }
-        DbSet<ProjectFolder> ProjectFolder { get; set; }
+        DbSet<ContractFolder> ContractFolder { get; set; }
         DbSet<Roll> Roll { get; set; }
         DbSet<SharedData> SharedData { get; set; }
         DbSet<UserFirm> UserFirm { get; set; }
         DbSet<UserT> UserT { get; set; }
+        DbSet<ElementType> ElementType { get; set; }
+        DbSet<FileType> FileType { get; set; }
+        DbSet<FolderType> FolderType { get; set; }
+        DbSet<NewnessType> NewnessType { get; set; }
+        DbSet<StatusContractor> StatusContractor { get; set; }
+        DbSet<StatusContract> StatusContract { get; set; }
+        DbSet<StatusFile> StatusFile { get; set; }
+        DbSet<CpcType> CpcType { get; set; }
     }
 }

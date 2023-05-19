@@ -9,11 +9,13 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public Guid Id { get; set; }
         public Guid? ContractorId { get; set; }
-        public string DescripcionNovedad { get; set; }
-        public string TipoNovedad { get; set; }
+        public string NewnessDescripcion { get; set; }
+        public Guid? NewnessType { get; set; }
         public Guid? ContractId { get; set; }
+        public DateTime? RegisterDate { get; set; }
 
-        public virtual ProjectFolder Contract { get; set; }
+        public virtual ContractFolder Contract { get; set; }
         public virtual Contractor Contractor { get; set; }
+        public virtual NewnessType NewnessTypeNavigation { get; set; }
     }
 }

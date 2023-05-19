@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class DetalleContrato
+    public partial class DetailContract
     {
         public Guid Id { get; set; }
         public Guid? ContractId { get; set; }
@@ -14,6 +14,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public string NoAdicion { get; set; }
         public string TipoContrato { get; set; }
 
-        public virtual ProjectFolder Contract { get; set; }
+        public virtual ContractFolder Contract { get; set; }
     }
 }

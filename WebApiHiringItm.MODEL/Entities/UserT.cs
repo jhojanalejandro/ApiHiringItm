@@ -9,11 +9,11 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public UserT()
         {
+            ContractFolder = new HashSet<ContractFolder>();
             Contractor = new HashSet<Contractor>();
             ContractorPayments = new HashSet<ContractorPayments>();
             Files = new HashSet<Files>();
             HiringData = new HashSet<HiringData>();
-            ProjectFolder = new HashSet<ProjectFolder>();
             UserFirm = new HashSet<UserFirm>();
         }
 
@@ -28,11 +28,11 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Identification { get; set; }
 
         public virtual Roll Roll { get; set; }
+        public virtual ICollection<ContractFolder> ContractFolder { get; set; }
         public virtual ICollection<Contractor> Contractor { get; set; }
         public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
         public virtual ICollection<Files> Files { get; set; }
         public virtual ICollection<HiringData> HiringData { get; set; }
-        public virtual ICollection<ProjectFolder> ProjectFolder { get; set; }
         public virtual ICollection<UserFirm> UserFirm { get; set; }
     }
 }

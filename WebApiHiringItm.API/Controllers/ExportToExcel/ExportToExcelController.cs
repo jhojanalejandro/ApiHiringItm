@@ -21,33 +21,14 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
         }
         #endregion
 
-        #region Methods
-        [HttpGet("{idContrato}")]
-        public async Task<IActionResult> GetViabilidadExcel(Guid idContrato)
+        #region PUBLIC METHODS
+
+        [HttpGet("{ContractId}")]
+        public async Task<IActionResult> GetSolicitudContratacionDap(Guid ContractId)
         {
             try
             {
-                var result = await _export.ExportToExcelViabilidad(this, idContrato);
-                Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
-                 if (result == null)
-                {
-                    return NoContent();
-                }
-                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Solicitud Viabilidad.xlsx");
-            }
-            catch (Exception e)
-            {
-
-                throw new Exception("Error", e);
-            }
-        }
-
-        [HttpGet("{idContrato}")]
-        public async Task<IActionResult> GetSolicitudContratacionDap(Guid idContrato)
-        {
-            try
-            {
-                var result = await _export.ExportContratacionDap(this, idContrato);
+                var result = await _export.ExportContratacionDap(this, ContractId);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
                 if (result == null)
                 {
@@ -55,20 +36,19 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
                 }
                 return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contratación DAP.xlsx");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception("Error", ex);
             }
         }
 
-        [HttpGet("{idContrato}")]
+        [HttpGet("{ContractId}")]
         
-        public async Task<IActionResult> GetSolicitudCdp(Guid idContrato)
+        public async Task<IActionResult> GetSolicitudCdp(Guid ContractId)
         {
             try
             {
-                var result = await _export.ExportCdp(this, idContrato);
+                var result = await _export.ExportCdp(this, ContractId);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
                 if (result == null)
                 {
@@ -76,19 +56,18 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
                 }
                 return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Solicitud CDP - DAP.xlsx");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception("Error", ex);
             }
         }
 
-        [HttpGet("{idContrato}")]
-        public async Task<IActionResult> GetSolicitudPpa(Guid idContrato)
+        [HttpGet("{ContractId}")]
+        public async Task<IActionResult> GetSolicitudPpa(Guid ContractId)
         {
             try
             {
-                var result = await _export.ExportSolicitudPaa(this, idContrato);
+                var result = await _export.ExportSolicitudPaa(this, ContractId);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
                 if (result == null)
                 {
@@ -96,12 +75,32 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
                 }
                 return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Solicitud PPA.xlsx");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception("Error", ex);
             }
         }
+
+
+        [HttpGet("{ContractId}")]
+        public async Task<IActionResult> ExportToExcelCdp(Guid ContractId)
+        {
+            try
+            {
+                var result = await _export.ExportToExcelCdp(ContractId);
+                Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
+                if (result == null)
+                {
+                    return NoContent();
+                }
+                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Exportar CDP.xlsx");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
         #endregion
     }
 }

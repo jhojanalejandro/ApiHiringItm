@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 
-namespace WebApiHiringItm.API.Controllers.Componente
+namespace WebApiHiringItm.API.Controllers.Component
 {
     [ApiController]
     //[Authorize]
@@ -24,7 +24,7 @@ namespace WebApiHiringItm.API.Controllers.Componente
 
         #region Methods
         [HttpPost]
-        public async Task<IActionResult> Add(ElementosComponenteDto model)
+        public async Task<IActionResult> Add(ElementComponentDto model)
         {
             try
             {

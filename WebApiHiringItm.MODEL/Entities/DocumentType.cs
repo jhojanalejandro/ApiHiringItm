@@ -5,12 +5,10 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class Actividad
+    public partial class DocumentType
     {
         public Guid Id { get; set; }
-        public string NombreActividad { get; set; }
-        public Guid IdComponente { get; set; }
-
-        public virtual Componente IdComponenteNavigation { get; set; }
+        public string DocumentType1 { get; set; }
+        public string Code { get; set; }
     }
 }

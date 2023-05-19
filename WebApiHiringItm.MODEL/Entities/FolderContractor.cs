@@ -17,7 +17,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? ModifyDate { get; set; }
         public string TypeFolder { get; set; }
 
-        public virtual ProjectFolder Contract { get; set; }
+        public virtual ContractFolder Contract { get; set; }
         public virtual Contractor Contractor { get; set; }
     }
 }

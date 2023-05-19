@@ -9,6 +9,7 @@ using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Dto.FileDto;
+using WebApiHiringItm.MODEL.Dto.MasterDataDto;
 using WebApiHiringItm.MODEL.Dto.Usuario;
 using WebApiHiringItm.MODEL.Entities;
 
@@ -24,23 +25,28 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<AddPasswordContractorDto, Contractor>().ReverseMap();
             CreateMap<FilesDto, Files>().ReverseMap();
             CreateMap<GetFilesPaymentDto, Files>().ReverseMap();
-            CreateMap<ProjectFolderDto, ProjectFolder>().ReverseMap();
+            CreateMap<ContractFolderDto, ContractFolder>().ReverseMap();
             CreateMap<UserUpdatePasswordDto, UserT>().ReverseMap();
             CreateMap<FolderContractorDto, FolderContractor>().ReverseMap();
             CreateMap<GetFileDto, Files>().ReverseMap();
             CreateMap<ContractorPayments, ContractorPaymentsDto>().ReverseMap();
             CreateMap<EconomicdataContractor, EconomicdataContractorDto>().ReverseMap(); 
-            CreateMap<ComponenteDto, Componente>().ReverseMap();
-            CreateMap<ElementosComponenteDto, ElementosComponente>().ReverseMap();
-            CreateMap<DetalleContratoDto, DetalleContrato>().ReverseMap();
+            CreateMap<ComponenteDto, Component>().ReverseMap();
+            CreateMap<ElementComponentDto, ElementComponent>().ReverseMap();
+            CreateMap<DetalleContratoDto, DetailContract>().ReverseMap();
             CreateMap<UserFirmDto, UserFirm>().ReverseMap();
-            CreateMap<RProjectForlderDto, ProjectFolder>().ReverseMap();
-            CreateMap<ProjectFolderCostsDto, ProjectFolder>().ReverseMap();
-            CreateMap<DetailFileDto, DetalleFile>().ReverseMap();
-            CreateMap<Actividad, ActivityDto>().ReverseMap();
+            CreateMap<RProjectForlderDto, ContractFolder>().ReverseMap();
+            CreateMap<ProjectFolderCostsDto, ContractFolder>().ReverseMap();
+            CreateMap<DetailFileDto, DetailFile>().ReverseMap();
+            CreateMap<Activity, ActivityDto>().ReverseMap();
             CreateMap<AuthDto, UserT>().ReverseMap();
             CreateMap<AuthDto, Contractor>().ReverseMap();
-            CreateMap<NewnessContractorDto, NewnessContractor>();
+            CreateMap<NewnessContractorDto, NewnessContractor>().ReverseMap();
+            CreateMap<FileType, TypeFileDto>().ReverseMap();
+            CreateMap<ElementTypeDto, ElementType>().ReverseMap();
+            CreateMap<CpcTypeDto, CpcType>().ReverseMap();
+            CreateMap<StatusContractDto, StatusContract>().ReverseMap();
+
         }
     }
 }
