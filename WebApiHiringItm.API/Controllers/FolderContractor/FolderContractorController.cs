@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.FoldersContractorCore.Interface;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 
-namespace WebApiHiringItm.API.Controllers.FolderContractor
+namespace WebApiHiringItm.API.Controllers.Folder
 {
     [ApiController]
     //[Authorize]

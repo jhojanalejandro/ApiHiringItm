@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class FolderContractor
+    public partial class Folder
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

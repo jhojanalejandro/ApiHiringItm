@@ -71,11 +71,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[FileType]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[FolderContractor]",
+         "Name": "[dbo].[Folder]",
          "ObjectType": 0
       },
       {

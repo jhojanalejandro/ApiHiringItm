@@ -108,11 +108,11 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             IQueryable<ContractFolder> result; 
             if (typeModule.Equals(MODULONOMINA))
             {
-                result = _context.ContractFolder.Where(x => x.Activate == true && !x.StatusContractId.Equals(getStatusContract)  && x.EnableProject == true);
+                result = _context.ContractFolder.Where(x => x.Activate && !x.StatusContractId.Equals(getStatusContract)  && x.EnableProject == true);
             }
             else
             {
-                result = _context.ContractFolder.Where(x => x.Activate == true && !x.StatusContractId.Equals(getStatusContract));
+                result = _context.ContractFolder.Where(x => x.Activate && !x.StatusContractId.Equals(getStatusContract));
 
             }
             return await result.Select(contract => new ContractListDto

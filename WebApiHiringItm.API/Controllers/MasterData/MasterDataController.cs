@@ -20,11 +20,11 @@ namespace WebApiHiringItm.API.Controllers.MasterData
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllMinutes()
+        public async Task<IActionResult> GetDocumentType()
         {
             try
             {
-                var Data = await _masterDataCore.GetAllMinutesType();
+                var Data = await _masterDataCore.GetDocumentType();
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

@@ -28,6 +28,8 @@ using WebApiHiringItm.CORE.Core.ImportExcelCore;
 using WebApiHiringItm.CORE.Core.MessageHandlingCore.Interface;
 using WebApiHiringItm.CORE.Core.MessageHandlingCore;
 using WebApiHiringItm.CORE.Core.ContractFolders;
+using WebApiHiringItm.CORE.Core.FileMnager.Interface;
+using WebApiHiringItm.CORE.Core.FileMnager;
 
 namespace WebApiHiringItm.IOC.Dependencies
 {
@@ -52,6 +54,7 @@ namespace WebApiHiringItm.IOC.Dependencies
             services.AddScoped<IMasterDataCore, MasterDataCore>();
             services.AddScoped<IImportExcelCore, ImportExcelCore>();
             services.AddScoped<IMessageHandlingCore, MessageHandlingCore>();
+            services.AddScoped<IFileManagerCore, FileManagerCore>();
 
         }
     }
