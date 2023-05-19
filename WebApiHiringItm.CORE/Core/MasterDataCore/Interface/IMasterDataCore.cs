@@ -10,8 +10,8 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore.Interface
 {
     public interface IMasterDataCore
     {
-        Task<List<FilesDto>> GetAllMinutesType();
-        Task<List<TypeFileDto>> GetAllFileType();
+        Task<List<DocumentTypeDto>> GetDocumentType();
+        Task<List<DocumentTypeDto>> GetAllFileType();
         Task<List<ElementTypeDto>> GetAllElementType();
         Task<List<CpcTypeDto>> GetAllCpcType();
         Task<List<StatusContractDto>> GetSatatusContract();

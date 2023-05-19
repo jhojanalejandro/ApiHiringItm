@@ -32,9 +32,8 @@ namespace WebApiHiringItm.CONTEXT.Context
         public virtual DbSet<EconomicdataContractor> EconomicdataContractor { get; set; }
         public virtual DbSet<ElementComponent> ElementComponent { get; set; }
         public virtual DbSet<ElementType> ElementType { get; set; }
-        public virtual DbSet<FileType> FileType { get; set; }
         public virtual DbSet<Files> Files { get; set; }
-        public virtual DbSet<FolderContractor> FolderContractor { get; set; }
+        public virtual DbSet<Folder> Folder { get; set; }
         public virtual DbSet<FolderType> FolderType { get; set; }
         public virtual DbSet<HiringData> HiringData { get; set; }
         public virtual DbSet<NewnessContractor> NewnessContractor { get; set; }
@@ -340,12 +339,12 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .WithMany(p => p.DetailFile)
                     .HasForeignKey(d => d.FileId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__DetailFil__FileI__6FE99F9F");
+                    .HasConstraintName("FK__DetailFil__FileI__2180FB33");
 
                 entity.HasOne(d => d.StatusFile)
                     .WithMany(p => p.DetailFile)
                     .HasForeignKey(d => d.StatusFileId)
-                    .HasConstraintName("FK__DetailFil__statu__74AE54BC");
+                    .HasConstraintName("FK__DetailFil__statu__208CD6FA");
             });
 
             modelBuilder.Entity<DetailProjectContractor>(entity =>
@@ -487,24 +486,13 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasColumnName("ElementType");
             });
 
-            modelBuilder.Entity<FileType>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Code).HasMaxLength(5);
-
-                entity.Property(e => e.FileType1)
-                    .HasMaxLength(100)
-                    .HasColumnName("FileType");
-            });
-
             modelBuilder.Entity<Files>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.DescriptionFile).HasMaxLength(100);
 
-                entity.Property(e => e.DocumentType).HasMaxLength(5);
+                entity.Property(e => e.FileType).HasMaxLength(30);
 
                 entity.Property(e => e.FilesName).HasMaxLength(100);
 
@@ -514,18 +502,28 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.TypeFilePayment).HasMaxLength(50);
 
-                entity.HasOne(d => d.FileTypeNavigation)
+                entity.HasOne(d => d.Contract)
                     .WithMany(p => p.Files)
-                    .HasForeignKey(d => d.FileType)
-                    .HasConstraintName("FK__Files__FileType__7A672E12");
+                    .HasForeignKey(d => d.ContractId)
+                    .HasConstraintName("FK__Files__ContractI__1EA48E88");
+
+                entity.HasOne(d => d.Contractor)
+                    .WithMany(p => p.Files)
+                    .HasForeignKey(d => d.ContractorId)
+                    .HasConstraintName("FK__Files__Contracto__1F98B2C1");
+
+                entity.HasOne(d => d.DocumentTypeNavigation)
+                    .WithMany(p => p.Files)
+                    .HasForeignKey(d => d.DocumentType)
+                    .HasConstraintName("FK__Files__DocumentT__1DB06A4F");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Files__UserId__5DCAEF64");
+                    .HasConstraintName("FK__Files__UserId__22751F6C");
             });
 
-            modelBuilder.Entity<FolderContractor>(entity =>
+            modelBuilder.Entity<Folder>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
@@ -540,14 +538,14 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.TypeFolder).HasMaxLength(30);
 
                 entity.HasOne(d => d.Contract)
-                    .WithMany(p => p.FolderContractor)
+                    .WithMany(p => p.Folder)
                     .HasForeignKey(d => d.ContractId)
-                    .HasConstraintName("FK__FolderCon__Contr__5CD6CB2B");
+                    .HasConstraintName("FK__Folder__Contract__2645B050");
 
                 entity.HasOne(d => d.Contractor)
-                    .WithMany(p => p.FolderContractor)
+                    .WithMany(p => p.Folder)
                     .HasForeignKey(d => d.ContractorId)
-                    .HasConstraintName("FK__FolderCon__Contr__5BE2A6F2");
+                    .HasConstraintName("FK__Folder__Contract__25518C17");
             });
 
             modelBuilder.Entity<FolderType>(entity =>

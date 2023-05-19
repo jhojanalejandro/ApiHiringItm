@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace WebApiHiringItm.MODEL.Dto.MasterDataDto
 {
-    public class TypeFileDto
+    public class DocumentTypeDto
     {
-        public Guid? Id { get; set; }
-        public string ElementType { get; set; }
-        public string ElementDescription { get; set; }
+        public Guid Id { get; set; }
+        public string DocumentType1 { get; set; }
         public string Code { get; set; }
     }
 }

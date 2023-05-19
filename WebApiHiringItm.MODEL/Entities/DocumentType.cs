@@ -7,8 +7,15 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class DocumentType
     {
+        public DocumentType()
+        {
+            Files = new HashSet<Files>();
+        }
+
         public Guid Id { get; set; }
         public string DocumentType1 { get; set; }
         public string Code { get; set; }
+
+        public virtual ICollection<Files> Files { get; set; }
     }
 }

@@ -15,7 +15,8 @@ namespace WebApiHiringItm.MODEL.Entities
             DetailContract = new HashSet<DetailContract>();
             DetailProjectContractor = new HashSet<DetailProjectContractor>();
             EconomicdataContractor = new HashSet<EconomicdataContractor>();
-            FolderContractor = new HashSet<FolderContractor>();
+            Files = new HashSet<Files>();
+            Folder = new HashSet<Folder>();
             NewnessContractor = new HashSet<NewnessContractor>();
         }
 
@@ -45,7 +46,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual ICollection<DetailContract> DetailContract { get; set; }
         public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
         public virtual ICollection<EconomicdataContractor> EconomicdataContractor { get; set; }
-        public virtual ICollection<FolderContractor> FolderContractor { get; set; }
+        public virtual ICollection<Files> Files { get; set; }
+        public virtual ICollection<Folder> Folder { get; set; }
         public virtual ICollection<NewnessContractor> NewnessContractor { get; set; }
     }
 }

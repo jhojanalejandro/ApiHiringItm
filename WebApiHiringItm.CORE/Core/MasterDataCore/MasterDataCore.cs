@@ -26,17 +26,17 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore
             _mapper = mapper;
         }
 
-        public async Task<List<FilesDto>> GetAllMinutesType()
+        public async Task<List<DocumentTypeDto>> GetDocumentType()
         {
-            var result = _context.Files.ToList();
-            var map = _mapper.Map<List<FilesDto>>(result);
+            var result = _context.DocumentType.ToList();
+            var map = _mapper.Map<List<DocumentTypeDto>>(result);
             return await Task.FromResult(map);
         }
 
-        public async Task<List<TypeFileDto>> GetAllFileType()
+        public async Task<List<DocumentTypeDto>> GetAllFileType()
         {
             var result = _context.Files.ToList();
-            var map = _mapper.Map<List<TypeFileDto>>(result);
+            var map = _mapper.Map<List<DocumentTypeDto>>(result);
             return await Task.FromResult(map);
         }
 
@@ -93,25 +93,25 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore
             return false;
         }
 
-        public async Task<bool> Create(TypeFileDto model)
-        {
-            var getData = _context.FileType.FirstOrDefault(x => x.Id.Equals(model.Id));
-            if (getData == null)
-            {
-                var map = _mapper.Map<FileType>(model);
-                map.Id = Guid.NewGuid();
-                _context.FileType.Add(map);
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
-            }
-            else
-            {
-                model.Id = getData.Id;
-                var map = _mapper.Map(model, getData);
-                _context.FileType.Update(map);
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
-            }
-        }
+        //public async Task<bool> Create(TypeFileDto model)
+        //{
+        //    var getData = _context.FileType.FirstOrDefault(x => x.Id.Equals(model.Id));
+        //    if (getData == null)
+        //    {
+        //        var map = _mapper.Map<FileType>(model);
+        //        map.Id = Guid.NewGuid();
+        //        _context.FileType.Add(map);
+        //        var res = await _context.SaveChangesAsync();
+        //        return res != 0 ? true : false;
+        //    }
+        //    else
+        //    {
+        //        model.Id = getData.Id;
+        //        var map = _mapper.Map(model, getData);
+        //        _context.FileType.Update(map);
+        //        var res = await _context.SaveChangesAsync();
+        //        return res != 0 ? true : false;
+        //    }
+        //}
     }
 }
