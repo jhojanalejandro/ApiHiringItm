@@ -15,7 +15,19 @@
    "SelectedToBeGenerated": 1,
    "Tables": [
       {
+         "Name": "[dbo].[AcademicInformation]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AccountType]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Activity]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Banks]",
          "ObjectType": 0
       },
       {
@@ -67,6 +79,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[EmptityHealth]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Files]",
          "ObjectType": 0
       },
@@ -80,6 +96,10 @@
       },
       {
          "Name": "[dbo].[HiringData]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MinuteType]",
          "ObjectType": 0
       },
       {

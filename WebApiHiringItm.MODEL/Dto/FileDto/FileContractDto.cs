@@ -18,6 +18,10 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public Guid? UserId { get; set; }
         public DateTime? RegisterDate { get; set; }
         public Guid? FolderId { get; set; }
+        public bool? Passed { get; set; }
+        public string? Type { get; set; }
+        public string? DocumentTypes { get; set; }
+        public Guid? StatusFile { get; set; }
 
     }
 }

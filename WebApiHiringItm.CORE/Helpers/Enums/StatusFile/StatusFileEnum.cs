@@ -9,14 +9,14 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.StatusFile
 {
     public enum StatusFileEnum
     {
-        [Display(Description = "RTD")]
+        [Display(Description = "RE")]
         REMITIDO = 0,
-        [Display(Description = "APD")]
+        [Display(Description = "AP")]
         APROBADO = 1,
-        [Display(Description = "SBND")]
+        [Display(Description = "SU")]
         SUBSANADO = 2,
-        [Display(Description = "NRBD")]
-        NORECIBIDO = 3,
+        [Display(Description = "PR")]
+        ENPROCESO = 3,
 
     }
 }

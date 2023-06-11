@@ -21,11 +21,9 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? DocumentType { get; set; }
         public string DescriptionFile { get; set; }
         public Guid? UserId { get; set; }
-        public DateTime? RegisterDate { get; set; }
         public string TypeFilePayment { get; set; }
         public string MonthPayment { get; set; }
         public Guid? FolderId { get; set; }
-        public bool? Passed { get; set; }
 
         public virtual ContractFolder Contract { get; set; }
         public virtual Contractor Contractor { get; set; }

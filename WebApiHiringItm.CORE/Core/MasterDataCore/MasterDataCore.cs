@@ -93,25 +93,11 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore
             return false;
         }
 
-        //public async Task<bool> Create(TypeFileDto model)
-        //{
-        //    var getData = _context.FileType.FirstOrDefault(x => x.Id.Equals(model.Id));
-        //    if (getData == null)
-        //    {
-        //        var map = _mapper.Map<FileType>(model);
-        //        map.Id = Guid.NewGuid();
-        //        _context.FileType.Add(map);
-        //        var res = await _context.SaveChangesAsync();
-        //        return res != 0 ? true : false;
-        //    }
-        //    else
-        //    {
-        //        model.Id = getData.Id;
-        //        var map = _mapper.Map(model, getData);
-        //        _context.FileType.Update(map);
-        //        var res = await _context.SaveChangesAsync();
-        //        return res != 0 ? true : false;
-        //    }
-        //}
+        public async Task<List<StatusFileDto>> GetStatusFile()
+        {
+            var result = _context.StatusFile.ToList();
+            var map = _mapper.Map<List<StatusFileDto>>(result);
+            return await Task.FromResult(map);
+        }
     }
 }

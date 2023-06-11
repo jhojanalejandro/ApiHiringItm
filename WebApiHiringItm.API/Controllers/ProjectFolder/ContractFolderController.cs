@@ -112,7 +112,6 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
                     var Data = await _project.GetDetailByIdLastDate(id);
                     return Data != null ? Ok(Data) : NoContent();
                 }
-                return NoContent();
 
             }
             catch (Exception ex)
@@ -136,7 +135,6 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
                 throw new Exception("Error", ex);
             }
         }
-
 
 
         [HttpGet]
@@ -177,10 +175,7 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _project.Delete(id);
-
-                //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
-using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Contratista;
-using WebApiHiringItm.MODEL.Dto.ContratoDto;
-using WebApiHiringItm.MODEL.Models;
+
 
 namespace WebApiHiringItm.API.Controllers.Contractor
 {
@@ -70,22 +68,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetDataBill(ContractContractorsDto contractors)
-        {
-            try
-            {
-                var Data = await _contactor.GetDataBill(contractors);
-                return Data != null ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Add(ContractorDto model)
+        public async Task<IActionResult> SaveDataContractor(ContractorDto model)
         {
             try
             {

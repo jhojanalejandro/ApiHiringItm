@@ -94,5 +94,21 @@ namespace WebApiHiringItm.API.Controllers.MasterData
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetStatusFile()
+        {
+            try
+            {
+                var Data = await _masterDataCore.GetStatusFile();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
     }
 }

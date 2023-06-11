@@ -5,7 +5,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes.Interfaces
     public interface IComponenteCore
     {
         Task<bool> Add(ComponenteDto model);
-        Task<List<ComponenteDto>?> Get(Guid id);
+        Task<List<ComponenteDto>?> GetComponentsByContract(Guid id);
         Task<bool> Delete(Guid id);
         Task<ComponenteDto> GetById(Guid id);
         Task<bool> AddActivity(ActivityDto model);

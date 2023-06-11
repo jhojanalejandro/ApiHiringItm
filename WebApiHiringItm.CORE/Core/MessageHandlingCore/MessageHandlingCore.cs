@@ -41,15 +41,16 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
         {
             if (ids.IdContratistas.Length > 0)
             {
-                                        
+
                 var getStatusId = _context.StatusContractor.Where(x => x.Id.Equals(StatusContractorEnum.INVITADO.Description())).Select(s => s.Id).FirstOrDefault();
                 foreach (Guid idContractor in ids.IdContratistas)
                 {
-                    var result = _context.Contractor.Where(x => x.ContractId.Equals(ids.ContractId) && x.Id.Equals(idContractor)).FirstOrDefault();
+                    var result = _context.Contractor.Where(x => x.Id.Equals(idContractor)).FirstOrDefault();
+                    var resultDetail = _context.DetailProjectContractor.Where(x => x.Id.Equals(idContractor)).FirstOrDefault();
                     if (result != null)
                     {
                         result.ClaveUsuario = await createPassword(result.Correo);
-                        result.StatusContractor = getStatusId;
+                        resultDetail.StatusContractor = getStatusId;
                         _context.Contractor.Update(result);
                         var res = await _context.SaveChangesAsync();
                     }

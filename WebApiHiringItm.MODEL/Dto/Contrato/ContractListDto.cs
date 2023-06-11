@@ -22,6 +22,9 @@ namespace WebApiHiringItm.MODEL.Dto.Contrato
         public string NumberProject { get; set; }
         public string? Project { get; set; }
         public string? StatusContract { get; set; }
+        public string? Rubro { get; set; }
+        public string? FuenteRubro { get; set; }
+        public string? NombreRubro { get; set; }
 
         public DateTime? FechaContrato { get; set; }
         public DateTime? FechaFinalizacion { get; set; }

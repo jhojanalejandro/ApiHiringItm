@@ -85,9 +85,6 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             DataColumn newColumn4 = new DataColumn("Fecha Actualizacion", typeof(DateTime));
             newColumn4.DefaultValue = DateTime.Now;
             dataTable.Columns.Add(newColumn4);
-            DataColumn objeto = new DataColumn("Objeto Convenio", typeof(string));
-            objeto.DefaultValue = "vacio";
-            dataTable.Columns.Add(objeto);
             DataColumn newColumnStatusContractId = new DataColumn("Status Contractor", typeof(Guid));
             newColumnStatusContractId.DefaultValue = statusContractId;
             dataTable.Columns.Add(newColumnStatusContractId);
@@ -224,17 +221,21 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
                             return "No se agrego la Información por que es repetida";
                         }
 
-                        Guid idValor = (Guid)dataTable.Rows[j]["IdentificadorBaseDedatos"];
+                        string idValor = (string)dataTable.Rows[j]["IdentificadorBaseDedatos"];
                         if (idValor != null)
                         {
-                            var resultado = _context.HiringData.FirstOrDefault(x => x.ContractorId.Equals(idValor));
+                            var resultado = _context.HiringData.FirstOrDefault(x => x.ContractorId.Equals(Guid.Parse(idValor)));
                             if (resultado != null)
                             {
-                                var cdp = (string)dataTable.Rows[j]["CDP"];
-                                var contrato = (string)dataTable.Rows[j]["Contrato"];
-                                resultado.Cdp = cdp;
-                                resultado.Contrato = contrato;
-                                hiringDataList.Add(resultado);
+                                if ((double)dataTable.Rows[j]["CDP"] != null && (double)dataTable.Rows[j]["Número Contrato"] != null)
+                                {
+                                    var cdp = dataTable.Rows[j]["CDP"];
+                                    var contrato = dataTable.Rows[j]["Número Contrato"];
+                                    resultado.Cdp = Convert.ToString(cdp);
+                                    resultado.Contrato = Convert.ToString(contrato);
+                                    hiringDataList.Add(resultado);
+                                }
+
                             }
                         }
 
@@ -244,41 +245,8 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
 
             test.Close();
             _context.HiringData.UpdateRange(hiringDataList);
+            _context.SaveChanges();
             return "Registro exitoso";
-            //var conn = _context.Database.GetConnectionString();
-            //File.Delete(filePath);
-            //using (SqlConnection connection = new SqlConnection(conn))
-            //{
-            //    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn))
-            //    {
-            //        connection.Open();
-            //        foreach (DataColumn c in dataTable.Columns)
-            //            bulkCopy.ColumnMappings.Add(c.ColumnName, c.ColumnName);
-            //        bulkCopy.DestinationTableName = dataTable.TableName;
-            //        try
-            //        {
-            //            bulkCopy.WriteToServer(dataTable);
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Console.WriteLine(ex.Message);
-            //        }
-            //    }
-            //    connection.Close();
-            //}
-            //List<Dictionary<string, object>> filas = new List<Dictionary<string, object>>();
-            //Dictionary<string, object> row;
-            //foreach (DataRow dr in dataTable.Rows)
-            //{
-            //    row = new Dictionary<string, object>();
-            //    foreach (DataColumn col in dataTable.Columns)
-            //    {
-            //        row.Add(col.ColumnName, dr[col]);
-            //    }
-            //    filas.Add(row);
-            //}
-            //var result = JsonConvert.SerializeObject(filas);
-            //return await Task.FromResult(result);
         }
 
         public static string ToCamelCase(string str)

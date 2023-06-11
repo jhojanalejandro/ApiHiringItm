@@ -14,6 +14,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? ElementId { get; set; }
         public Guid? ComponentId { get; set; }
         public Guid? ActivityId { get; set; }
+        public Guid? StatusContractor { get; set; }
 
         public virtual Activity Activity { get; set; }
         public virtual Component Component { get; set; }
@@ -21,5 +22,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual Contractor Contractor { get; set; }
         public virtual ElementComponent Element { get; set; }
         public virtual HiringData HiringData { get; set; }
+        public virtual StatusContractor StatusContractorNavigation { get; set; }
     }
 }

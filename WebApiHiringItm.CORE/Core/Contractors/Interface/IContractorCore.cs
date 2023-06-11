@@ -9,7 +9,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
     public interface IContractorCore
     {
         Task<List<ContractorDto>> GetAll();
-        Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors);
+        
         Task<bool> Create(ContractorDto model);
         Task<List<ContractorByContractDto>> GetByIdFolder(Guid id);
         Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model);

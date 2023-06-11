@@ -44,6 +44,7 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
         {
             FolderManagerContractDto folderManagerContractDto = new FolderManagerContractDto();
             var getStatusContract = _context.StatusContract.Where(x => x.Code.Equals(StatusContractEnum.TERMINADO.Description())).Select(s => s.Id).FirstOrDefault();
+            var getStatusContractInprogess = _context.StatusContract.Where(x => x.Code.Equals(StatusContractEnum.ENPROCESO.Description())).Select(s => s.Id).FirstOrDefault();
             var contractor = _context.DetailContract
                 .Include(dt => dt.Contract)
                 .Where(w => !w.Contract.StatusContractId.Equals(getStatusContract) && w.Contract.Activate);
@@ -51,9 +52,9 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
             {
                 Type = FOLDERTYPE,
                 Id = ct.Contract.Id.ToString(),
-                NombreEmpresa = ct.Contract.CompanyName,
-                NombreProyecto = ct.Contract.ProjectName,
-                NumeroContrato = ct.Contract.NumberProject
+                CompanyName = ct.Contract.CompanyName,
+                ProjectName = ct.Contract.ProjectName,
+                ProjectNumber = ct.Contract.NumberProject
             })
              .AsNoTracking()
              .ToListAsync();
@@ -78,7 +79,6 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
                 FileType = ct.FileType,
                 DocumentTypes = ct.DocumentTypeNavigation.DocumentType1,
                 DescriptionFile = ct.DescriptionFile,
-                RegisterDate = ct.RegisterDate,
                 UserId = ct.UserId,
             })
              .AsNoTracking()

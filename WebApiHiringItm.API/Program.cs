@@ -55,27 +55,7 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false
     };
 });
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
-//        options => { options.TokenValidationParameters = new TokenValidationParameters
-//        {
-//            ValidateIssuer = true,
-//            ValidateAudience = true,
-//            ValidateLifetime = true,
-//            ValidateIssuerSigningKey = true,
-//            ValidIssuer = "HiringITM", // reemplaza con tu emisor real
-//            ValidAudience = "mi_audience", // reemplaza con tu audiencia real
-//            IssuerSigningKey = new SymmetricSecurityKey(key)
-//        };
-//            options.Events = new JwtBearerEvents
-//            {
-//                OnAuthenticationFailed = context =>
-//                {
-//                    Console.WriteLine(context.Exception);
-//                    return Task.CompletedTask;
-//                }
-//            };
-//        });
+
 builder.Services.AddAuthorization();
 var mapperConfig = new MapperConfiguration(mc =>
 {
@@ -111,6 +91,6 @@ app.UseMiddleware<JwtMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors(MyAllowSpecificOrigins);
 app.MapControllers();
+app.UseCors(MyAllowSpecificOrigins);
 app.Run();

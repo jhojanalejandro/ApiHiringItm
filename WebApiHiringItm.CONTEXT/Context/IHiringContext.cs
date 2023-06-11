@@ -35,5 +35,9 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<StatusContract> StatusContract { get; set; }
         DbSet<StatusFile> StatusFile { get; set; }
         DbSet<CpcType> CpcType { get; set; }
+        DbSet<AcademicInformation> AcademicInformation { get; set; }
+        DbSet<AccountType> AccountType { get; set; }
+        DbSet<Banks> Banks { get; set; }
+        DbSet<EmptityHealth> EmptityHealth { get; set; }
     }
 }

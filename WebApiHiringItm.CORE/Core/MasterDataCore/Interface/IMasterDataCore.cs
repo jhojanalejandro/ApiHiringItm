@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Dto.MasterDataDto;
+using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.MasterDataCore.Interface
 {
@@ -15,5 +16,6 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore.Interface
         Task<List<ElementTypeDto>> GetAllElementType();
         Task<List<CpcTypeDto>> GetAllCpcType();
         Task<List<StatusContractDto>> GetSatatusContract();
+        Task<List<StatusFileDto>> GetStatusFile();
     }
 }

@@ -21,6 +21,8 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string ElementId { get; set; }
         public string ComponentId { get; set; }
         public string ActivityId { get; set; }
+        public string LegalProccess { get; set; }
+        public string HiringStatus { get; set; }
 
     }
 }

@@ -11,6 +11,7 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.FolderType
     {
         [Display(Description = "Contratista")]
         CONTRATISTA = 0,
+
         [Display(Description = "Contrato")]
         CONTRATO = 1,
 

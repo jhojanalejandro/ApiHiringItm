@@ -9,11 +9,11 @@ namespace WebApiHiringItm.API.Controllers.Folder
     [ApiController]
     //[Authorize]
     [Route("[controller]/[action]")]
-    public class FolderContractorController : ControllerBase
+    public class FolderController : ControllerBase
     {
         private readonly IFolderContractorCore _folder;
 
-        public FolderContractorController(IFolderContractorCore folder)
+        public FolderController(IFolderContractorCore folder)
         {
             _folder = folder;
         }
@@ -53,7 +53,7 @@ namespace WebApiHiringItm.API.Controllers.Folder
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(FolderContractorDto model)
+        public async Task<IActionResult> Add(FolderDto model)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace WebApiHiringItm.API.Controllers.Folder
 
 
         [HttpPost]
-        public async Task<IActionResult> Update(FolderContractorDto model)
+        public async Task<IActionResult> Update(FolderDto model)
         {
             try
             {

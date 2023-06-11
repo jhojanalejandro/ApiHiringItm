@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
@@ -51,6 +52,9 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 ValorContrato = contract.ValorContrato,
                 NumberProject = contract.NumberProject,
                 Project = contract.Project,
+                Rubro = contract.Rubro,
+                NombreRubro = contract.NombreRubro,
+                FuenteRubro = contract.FuenteRubro,
                 StatusContract = contract.StatusContract.StatusContract1,
                 FechaContrato = contract.DetailContract.Select(s => s.FechaContrato).FirstOrDefault(),
                 FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault()
@@ -62,7 +66,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
         public async Task<List<ContractListDto>> GetAllActivate()
         {
             var getStatusContract = _context.StatusContract.Where(x => x.Code.Equals(StatusContractEnum.TERMINADO.Description())).ToList();
-            var result = _context.ContractFolder.Where(x => x.Id != null && x.Activate == true && !x.StatusContractId.Equals(getStatusContract));
+            var result = _context.ContractFolder.Where(x => x.Activate  && !x.StatusContractId.Equals(getStatusContract));
             var resultDetail = _context.DetailContract.ToList();
             return await result.Select(contract => new ContractListDto
             {
@@ -80,39 +84,27 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault(),
                 ValorSubTotal = contract.ValorSubTotal,
                 GastosOperativos = contract.GastosOperativos,
+                Rubro = contract.Rubro,
+                NombreRubro = contract.NombreRubro,
+                FuenteRubro = contract.FuenteRubro,
 
             }).AsNoTracking()
               .ToListAsync();
-            //var map = _mapper.Map<List<ContractFolderDto>>(result);
-            //if (result.Count != 0)
-            //{
-            //    foreach (var item in map)
-            //    {
-            //        item.Componentes = await _componente.Get(item.Id);
-            //        if (item.Componentes.Count != 0)
-            //        {
-            //            foreach (var element in item.Componentes)
-            //            {
-            //                element.Elementos = await _elementos.Get(element.Id);
-            //            }
-            //        }
-            //    }
-            //}
-            //return await Task.FromResult(map);
         }
 
         public async Task<List<ContractListDto>> GetAllInProgess(string typeModule)
         {
             var getStatusContract = _context.StatusContract.Where(x =>  x.Code.Equals(StatusContractEnum.TERMINADO.Description())).Select(s => s.Id).FirstOrDefault();
+            var getStatusContractInprogess = _context.StatusContract.Where(x => x.Code.Equals(StatusContractEnum.ENPROCESO.Description())).Select(s => s.Id).FirstOrDefault();
 
             IQueryable<ContractFolder> result; 
             if (typeModule.Equals(MODULONOMINA))
             {
-                result = _context.ContractFolder.Where(x => x.Activate && !x.StatusContractId.Equals(getStatusContract)  && x.EnableProject == true);
+                result = _context.ContractFolder.Where(x => x.Activate && !x.StatusContractId.Equals(getStatusContract)  && x.EnableProject && x.StatusContractId.Equals(getStatusContractInprogess));
             }
             else
             {
-                result = _context.ContractFolder.Where(x => x.Activate && !x.StatusContractId.Equals(getStatusContract));
+                result = _context.ContractFolder.Where(x => x.Activate && !x.StatusContractId.Equals(getStatusContract) && x.StatusContractId.Equals(getStatusContractInprogess));
 
             }
             return await result.Select(contract => new ContractListDto
@@ -131,26 +123,12 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault(),
                 ValorSubTotal = contract.ValorSubTotal,
                 GastosOperativos = contract.GastosOperativos,
-
+                Rubro = contract.Rubro,
+                FuenteRubro = contract.FuenteRubro,
+                NombreRubro = contract.NombreRubro
             }).AsNoTracking()
-                .ToListAsync();
-            //var map = _mapper.Map<List<ContractFolderDto>>(result);
-            //if (result.Count != 0)
-            //{
-            //    foreach (var item in map)
-            //    {
-            //        item.Componentes = await _componente.Get(item.Id);
-            //        if (item.Componentes.Count != 0)
-            //        {
-            //            foreach (var element in item.Componentes)
-            //            {
-            //                element.Elementos = await _elementos.Get(element.Id);
-            //            }
-            //        }
-            //        //item.DetailContract = await GetDetailsById(item.Id);
-            //    }
-            //}
-            //return await Task.FromResult(map);
+              .ToListAsync();
+
         }
         public async Task<List<DetalleContratoDto>> GetDetailByIdList(Guid ContractId)
         {
@@ -198,7 +176,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
 
         public async Task<bool> Create(RProjectForlderDto model)
         {
-            var getData = _context.ContractFolder.FirstOrDefault(x => x.Id == model.Id);
+            var getData = _context.ContractFolder.FirstOrDefault(x => x.Id.Equals(model.Id));
 
             if (getData == null)
             {
@@ -238,8 +216,6 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             if (getData != null)
             {
                 getData.EnableProject = true;
-                getData.CompanyName = getData.CompanyName;
-                getData.Activate = getData.Activate;
                 _context.ContractFolder.Update(getData);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
@@ -266,10 +242,12 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
 
         public async Task<bool> Delete(Guid id)
         {
+            var getStatusContract = _context.StatusContract.Where(x => x.Code.Equals(StatusContractEnum.TERMINADO.Description())).Select(s => s.Id).FirstOrDefault();
             var resultData = _context.ContractFolder.FirstOrDefault(x => x.Id == id);
             if (resultData != null)
             {
                 resultData.Activate = false;
+                resultData.StatusContractId = getStatusContract;
                 var result = _context.ContractFolder.Update(resultData);
                 await _context.SaveChangesAsync();
                 return true;

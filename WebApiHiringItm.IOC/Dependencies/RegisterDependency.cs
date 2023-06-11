@@ -42,7 +42,7 @@ namespace WebApiHiringItm.IOC.Dependencies
             services.AddScoped<IFilesCore, FilesCore>();
             services.AddScoped<IContractorCore, ContractorCore>();
             services.AddScoped<IProjectFolder, ContractFolderCore>();
-            services.AddScoped<IFolderContractorCore, FolderContractorCore>();
+            services.AddScoped<IFolderContractorCore, FolderCore>();
             services.AddScoped<IExportToExcelCore, ExportToExcelCore>();
             services.AddScoped<IEconomicdataContractorCore, EconomicdataContractorCore>();
             services.AddScoped<IComponenteCore, ComponenteCore>();

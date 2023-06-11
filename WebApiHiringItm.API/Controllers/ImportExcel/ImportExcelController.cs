@@ -42,7 +42,7 @@ namespace WebApiHiringItm.API.Controllers.ImportExcel
             try
             {
                 var result = await _importExcel.ImportCdp(model);
-                return Ok(result);
+                return StatusCode(200,result);
             }
             catch (Exception ex)
             {

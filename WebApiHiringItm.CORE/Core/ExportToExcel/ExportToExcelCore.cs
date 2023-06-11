@@ -32,7 +32,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
         }
         #endregion
 
-        #region Methods
+        #region PUBLIC METHODS
         public async Task<MemoryStream> ExportToExcelCdp(Guid ContractId)
         {
 
@@ -77,7 +77,6 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 var dataList = data.Select(w => new DetailProjectContractorDto()
                 {
                     ContractorId = w.ContractorId.ToString(),
-                    Convenio = w.Contractor.Convenio,
                     NombreComponente = w.Component.NombreComponente,
                     Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
                     Identificacion = w.Contractor.Identificacion,
@@ -86,6 +85,9 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     NombreElemento = w.Element.NombreElemento,
                     GeneralObligation = w.Element.ObligacionesGenerales,
                     SpecificObligation = w.Element.ObligacionesEspecificas,
+                    InitialDate = w.HiringData.FechaRealDeInicio,
+                    FinalDate = w.HiringData.FechaFinalizacionConvenio,
+                    Convenio = w.Contract.ProjectName
 
                 })
                 .AsNoTracking()
@@ -93,10 +95,10 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 int nro = 0;
                 foreach (var user in dataList)
                 {
-                    if (user.Convenio != null && user.NombreElemento != null && user.ValorTotal != null && user.ObjetoConvenio != null && user.NombreElemento != null)
+                    if (user.InitialDate.HasValue && user.FinalDate.HasValue && user.NombreElemento != null && user.ValorTotal != null && user.ObjetoConvenio != null && user.NombreElemento != null)
                     {
                         nro++;
-                        var durationContract = CalculateDateContract(user.InitialDate, user.FinalDate);
+                        var durationContract = CalculateDateContract(user.InitialDate.Value, user.FinalDate.Value);
                         var unifyObligation = SeparateObligation(user.GeneralObligation, user.SpecificObligation);
                         worksheet.Cells[row, 1].Value = user.ContractorId;
                         worksheet.Cells[row, 2].Value = nro;
@@ -165,13 +167,13 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 row = 2;
                 var dataList = data.Select(w => new DetailProjectContractorDto()
                 {
-                    Convenio = w.Contractor.Convenio,
+                    Convenio = w.Contract.ProjectName,
                     CompanyName = w.Contract.CompanyName,
                     NombreComponente = w.Component.NombreComponente,
                     Cpc = w.Element.Cpc.CpcName,
                     Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
                     Identificacion = w.Contractor.Identificacion,
-                    ObjetoConvenio = w.Contractor.ObjetoConvenio,
+                    ObjetoConvenio = w.Contract.ObjectContract,
                     ValorTotal = w.Element.ValorTotal,
                     NombreElemento = w.Element.NombreElemento,
 
@@ -398,7 +400,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
 
                 var dataList = data.Select(w => new DetailProjectContractorDto()
                 {
-                    Convenio = w.Contractor.Convenio,
+                    Convenio = w.Contract.ProjectName,
                     CompanyName = w.Contract.CompanyName,
                     NombreComponente = w.Component.NombreComponente,
                     Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
@@ -422,9 +424,9 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 int nro = 0;
                 foreach (var user in dataList)
                 {
-                    var durationContract = CalculateDateContract(user.InitialDate, user.FinalDate);
-                    if ( user.ObjetoConvenio != null && user.Cpc != null && user.ValorTotal != null)
+                    if ( user.ObjetoConvenio != null && user.Cpc != null && user.ValorTotal != null && user.InitialDate.HasValue && user.FinalDate.HasValue)
                     {
+                        var durationContract = CalculateDateContract(user.InitialDate.Value, user.FinalDate.Value);
                         nro++;
                         worksheet.Cells[row, 1].Value = 80111600;
                         worksheet.Cells[row, 2].Value = user.ObjetoConvenio;
@@ -479,9 +481,10 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
 
         #region PRIVATE METHODS
 
-        private string CalculateDateContract(DateTime? initialDate, DateTime? finalDate)
+        private string CalculateDateContract(DateTime initialDate, DateTime finalDate)
         {
-            TimeSpan diferencia = initialDate.Value - finalDate.Value;
+
+            TimeSpan diferencia = finalDate - initialDate;
 
             int totalDias = (int)diferencia.TotalDays;
             int totalMeses = (int)(diferencia.TotalDays / 30.436875); // Promedio de días por mes
@@ -500,7 +503,6 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             else
             {
                 return $"{dias} días";
-
             }
 
         }
