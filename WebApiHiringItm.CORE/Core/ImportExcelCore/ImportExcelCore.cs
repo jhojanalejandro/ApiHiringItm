@@ -86,32 +86,6 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             DataColumn newColumnRollId = new DataColumn("Roll Id", typeof(Guid));
             newColumnRollId.DefaultValue = RollIdId;
             dataTable.Columns.Add(newColumnRollId);
-            //DataColumn EntidadCuentaBancaria = new DataColumn("Entidad Cuenta Bancaria", typeof(Guid));
-            //dataTable.Columns.Add(EntidadCuentaBancaria);
-            //DataColumn CuentaBancaria = new DataColumn("Cuenta Bancaria", typeof(string));
-            //dataTable.Columns.Add(CuentaBancaria);
-            //DataColumn TipoCuenta = new DataColumn("Tipo Cuenta", typeof(string));
-            //dataTable.Columns.Add(TipoCuenta);
-            //DataColumn Celular = new DataColumn("Celular", typeof(string));
-            //dataTable.Columns.Add(Celular);
-            //DataColumn Barrio = new DataColumn("Barrio", typeof(string));
-            //dataTable.Columns.Add(Barrio);
-            //DataColumn Nacionalidad = new DataColumn("Nacionalidad", typeof(string));
-            //dataTable.Columns.Add(Nacionalidad);
-            //DataColumn Genero = new DataColumn("Genero", typeof(string));
-            //dataTable.Columns.Add(Genero);
-            //DataColumn Departamento = new DataColumn("Departamento", typeof(string));
-            //dataTable.Columns.Add(Departamento);
-            //DataColumn Municipio = new DataColumn("Municipio", typeof(string));
-            //dataTable.Columns.Add(Municipio);
-            //DataColumn FechaNacimiento = new DataColumn("Fecha Nacimiento", typeof(string));
-            //dataTable.Columns.Add(FechaNacimiento);
-            //DataColumn LugarExpedicion = new DataColumn("Lugar Expedicion", typeof(string));
-            //dataTable.Columns.Add(LugarExpedicion);
-            //DataColumn Telefono = new DataColumn("Telefono", typeof(string));
-            //dataTable.Columns.Add(Telefono);
-            //DataColumn Direccion = new DataColumn("Direccion", typeof(string));
-            //dataTable.Columns.Add(Direccion);
             for (int i = 0; i < dataTable.Columns.Count; i++)
             {
                 dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
