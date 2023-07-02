@@ -19,10 +19,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[AccountType]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Activity]",
          "ObjectType": 0
       },
@@ -60,6 +56,10 @@
       },
       {
          "Name": "[dbo].[DetailProjectContractor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DocumentNoGenerate]",
          "ObjectType": 0
       },
       {
@@ -115,6 +115,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[RubroType]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[sharedData]",
          "ObjectType": 0
       },
@@ -131,7 +135,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[UserFirm]",
+         "Name": "[dbo].[TypeUserFile]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserFile]",
          "ObjectType": 0
       },
       {
