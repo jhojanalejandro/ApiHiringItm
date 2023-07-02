@@ -32,11 +32,10 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? ValorSubTotal { get; set; }
         public string NumberProject { get; set; }
         public string Project { get; set; }
-        public string Rubro { get; set; }
-        public string NombreRubro { get; set; }
-        public string FuenteRubro { get; set; }
+        public Guid? Rubro { get; set; }
         public Guid? StatusContractId { get; set; }
 
+        public virtual RubroType RubroNavigation { get; set; }
         public virtual StatusContract StatusContract { get; set; }
         public virtual UserT User { get; set; }
         public virtual ICollection<Component> Component { get; set; }

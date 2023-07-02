@@ -36,7 +36,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Celular { get; set; }
         public string Correo { get; set; }
         public string CuentaBancaria { get; set; }
-        public Guid? TipoCuenta { get; set; }
+        public string TipoCuenta { get; set; }
         public Guid? EntidadCuentaBancaria { get; set; }
         public Guid UserId { get; set; }
         public string ClaveUsuario { get; set; }
@@ -45,7 +45,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? RollId { get; set; }
 
         public virtual Banks EntidadCuentaBancariaNavigation { get; set; }
-        public virtual AccountType TipoCuentaNavigation { get; set; }
         public virtual UserT User { get; set; }
         public virtual ICollection<AcademicInformation> AcademicInformation { get; set; }
         public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }

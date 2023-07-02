@@ -18,12 +18,6 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string Apellido { get; set; }
         public string Identificacion { get; set; }
         public string LugarExpedicion { get; set; }
-        public string Tecnico { get; set; }
-        public string Tecnologo { get; set; }
-        public string Pregrado { get; set; }
-        public string Especializacion { get; set; }
-        public string Maestria { get; set; }
-        public string Doctorado { get; set; }
         public string Genero { get; set; }
         public DateTime? FechaNacimiento { get; set; }
         public string Nacionalidad { get; set; }

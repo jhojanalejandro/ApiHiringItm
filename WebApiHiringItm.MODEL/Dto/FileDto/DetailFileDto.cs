@@ -16,6 +16,7 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public Guid? StatusFileId { get; set; }
         public bool Passed { get; set; }
         public bool Code { get; set; }
+        public Guid? UserId { get; set; }
 
         public List<FilesDto>? Files { get; set; } = null;
     }

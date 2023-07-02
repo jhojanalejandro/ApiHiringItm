@@ -13,12 +13,12 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string ContractorName { get; set; }
         public string ContractorIdentification { get; set; }
         public string ContractNumber { get; set; }
-        public string? ContractInitialDate { get; set; }
-        public string? ContractFinalDate { get; set; }
+        public DateTime? ContractInitialDate { get; set; }
+        public DateTime? ContractFinalDate { get; set; }
         public string SpecificObligations { get; set; }
         public string GeneralObligations { get; set; }
         public string User { get; set; }
-        public string UserCharge { get; set; }
+        public string? UserCharge { get; set; }
         public string? UserIdentification { get; set; }
         public string? UserJuridic { get; set; }
         public string? UserFirm { get; set; }
@@ -26,6 +26,8 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string SupervisorItmName { get; set; }
         public string? SupervisorFirm { get; set; }
         public string ElementObject { get; set; }
-        public string? TotalValue { get; set; }
+        public decimal? TotalValue { get; set; }
+        public string MinuteNumber { get; set; }
+
     }
 }

@@ -5,16 +5,17 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class AccountType
+    public partial class TypeUserFile
     {
-        public AccountType()
+        public TypeUserFile()
         {
-            Contractor = new HashSet<Contractor>();
+            UserFile = new HashSet<UserFile>();
         }
 
         public Guid Id { get; set; }
-        public string AccountType1 { get; set; }
+        public string TypeFile { get; set; }
+        public string Code { get; set; }
 
-        public virtual ICollection<Contractor> Contractor { get; set; }
+        public virtual ICollection<UserFile> UserFile { get; set; }
     }
 }

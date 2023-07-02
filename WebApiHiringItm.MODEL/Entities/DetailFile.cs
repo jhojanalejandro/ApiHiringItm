@@ -14,8 +14,10 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? RegisterDate { get; set; }
         public Guid? StatusFileId { get; set; }
         public bool? Passed { get; set; }
+        public Guid? UserId { get; set; }
 
         public virtual Files File { get; set; }
         public virtual StatusFile StatusFile { get; set; }
+        public virtual UserT User { get; set; }
     }
 }
