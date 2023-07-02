@@ -18,9 +18,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public int? ContractorsCant { get; set; }
         public string? NumberProject { get; set; }
         public string? Project { get; set; }
-        public string? Rubro { get; set; }
-        public string? NombreRubro { get; set; }
-        public string? FuenteRubro { get; set; }
+        public Guid? Rubro { get; set; }
         public Guid? StatusContractId { get; set; }
 
 

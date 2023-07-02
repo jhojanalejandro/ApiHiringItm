@@ -20,6 +20,8 @@ using WebApiHiringItm.CORE.Core.ImportExcelCore.Interface;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
 using WebApiHiringItm.CORE.Helpers.Enums.Rolls;
 using WebApiHiringItm.MODEL.Dto;
+using NPOI.SS.Formula.Functions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WebApiHiringItm.CORE.Core.ImportExcelCore
 {
@@ -63,7 +65,6 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             Workbook workbook = new Workbook(test);
 
             Worksheet worksheet = workbook.Worksheets[0];
-            Guid statusContractId = _context.StatusContractor.Where(w => w.Code.Equals(StatusContractorEnum.ENREVISIÓN.Description())).Select(s => s.Id).FirstOrDefault();
             Guid RollIdId = _context.Roll.Where(w => w.Code.Equals(RollEnum.Contratista.Description())).Select(s => s.Id).FirstOrDefault();
             DataTable dataTable = worksheet.Cells.ExportDataTable(0, 0, worksheet.Cells.MaxRow + 1, worksheet.Cells.LastCell.Column + 1, true);
             dataTable.TableName = "Contractor";
@@ -76,25 +77,41 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             DataColumn newColumnPassword = new DataColumn("Clave Usuario", typeof(string));
             newColumnPassword.DefaultValue = "NoAsignada";
             dataTable.Columns.Add(newColumnPassword);
-            DataColumn newColumn2 = new DataColumn("Contract Id", typeof(Guid));
-            newColumn2.DefaultValue = model.ContractId;
-            dataTable.Columns.Add(newColumn2);
             DataColumn newColumn3 = new DataColumn("Fecha Creacion", typeof(DateTime));
             newColumn3.DefaultValue = DateTime.Now;
             dataTable.Columns.Add(newColumn3);
             DataColumn newColumn4 = new DataColumn("Fecha Actualizacion", typeof(DateTime));
             newColumn4.DefaultValue = DateTime.Now;
             dataTable.Columns.Add(newColumn4);
-            DataColumn objeto = new DataColumn("Objeto Convenio", typeof(string));
-            objeto.DefaultValue = "vacio";
-            dataTable.Columns.Add(objeto);
-            DataColumn newColumnStatusContractId = new DataColumn("Status Contractor", typeof(Guid));
-            newColumnStatusContractId.DefaultValue = statusContractId;
-            dataTable.Columns.Add(newColumnStatusContractId);
             DataColumn newColumnRollId = new DataColumn("Roll Id", typeof(Guid));
             newColumnRollId.DefaultValue = RollIdId;
             dataTable.Columns.Add(newColumnRollId);
-
+            //DataColumn EntidadCuentaBancaria = new DataColumn("Entidad Cuenta Bancaria", typeof(Guid));
+            //dataTable.Columns.Add(EntidadCuentaBancaria);
+            //DataColumn CuentaBancaria = new DataColumn("Cuenta Bancaria", typeof(string));
+            //dataTable.Columns.Add(CuentaBancaria);
+            //DataColumn TipoCuenta = new DataColumn("Tipo Cuenta", typeof(string));
+            //dataTable.Columns.Add(TipoCuenta);
+            //DataColumn Celular = new DataColumn("Celular", typeof(string));
+            //dataTable.Columns.Add(Celular);
+            //DataColumn Barrio = new DataColumn("Barrio", typeof(string));
+            //dataTable.Columns.Add(Barrio);
+            //DataColumn Nacionalidad = new DataColumn("Nacionalidad", typeof(string));
+            //dataTable.Columns.Add(Nacionalidad);
+            //DataColumn Genero = new DataColumn("Genero", typeof(string));
+            //dataTable.Columns.Add(Genero);
+            //DataColumn Departamento = new DataColumn("Departamento", typeof(string));
+            //dataTable.Columns.Add(Departamento);
+            //DataColumn Municipio = new DataColumn("Municipio", typeof(string));
+            //dataTable.Columns.Add(Municipio);
+            //DataColumn FechaNacimiento = new DataColumn("Fecha Nacimiento", typeof(string));
+            //dataTable.Columns.Add(FechaNacimiento);
+            //DataColumn LugarExpedicion = new DataColumn("Lugar Expedicion", typeof(string));
+            //dataTable.Columns.Add(LugarExpedicion);
+            //DataColumn Telefono = new DataColumn("Telefono", typeof(string));
+            //dataTable.Columns.Add(Telefono);
+            //DataColumn Direccion = new DataColumn("Direccion", typeof(string));
+            //dataTable.Columns.Add(Direccion);
             for (int i = 0; i < dataTable.Columns.Count; i++)
             {
                 dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
@@ -118,10 +135,12 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
 
                         var valor = dataTable.Rows[j]["Identificacion"];
                         Guid idValor = (Guid)dataTable.Rows[j]["Id"];
+                        dataTable.Rows[j]["Id"] = Guid.NewGuid();
                         if (valor != null)
                         {
                             DetailProjectContractor detailProjectContractor = new DetailProjectContractor();
                             detailProjectContractor.ContractId = model.ContractId;
+                            detailProjectContractor.ContractorId = (Guid)dataTable.Rows[j]["Id"];
                             var resultado = _context.Contractor.FirstOrDefault(x => x.Identificacion.Equals(valor));
                             if (resultado != null)
                             {
@@ -141,9 +160,11 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             //File.Delete(filePath);
             using (SqlConnection connection = new SqlConnection(conn))
             {
+
                 using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn))
                 {
                     connection.Open();
+
                     foreach (DataColumn c in dataTable.Columns)
                         bulkCopy.ColumnMappings.Add(c.ColumnName, c.ColumnName);
                     bulkCopy.DestinationTableName = dataTable.TableName;
@@ -224,17 +245,21 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
                             return "No se agrego la Información por que es repetida";
                         }
 
-                        Guid idValor = (Guid)dataTable.Rows[j]["IdentificadorBaseDedatos"];
+                        string idValor = (string)dataTable.Rows[j]["IdentificadorBaseDedatos"];
                         if (idValor != null)
                         {
-                            var resultado = _context.HiringData.FirstOrDefault(x => x.ContractorId.Equals(idValor));
+                            var resultado = _context.HiringData.FirstOrDefault(x => x.ContractorId.Equals(Guid.Parse(idValor)));
                             if (resultado != null)
                             {
-                                var cdp = (string)dataTable.Rows[j]["CDP"];
-                                var contrato = (string)dataTable.Rows[j]["Contrato"];
-                                resultado.Cdp = cdp;
-                                resultado.Contrato = contrato;
-                                hiringDataList.Add(resultado);
+                                if ((double)dataTable.Rows[j]["CDP"] != null && (double)dataTable.Rows[j]["Número Contrato"] != null)
+                                {
+                                    var cdp = dataTable.Rows[j]["CDP"];
+                                    var contrato = dataTable.Rows[j]["Número Contrato"];
+                                    resultado.Cdp = Convert.ToString(cdp);
+                                    resultado.Contrato = Convert.ToString(contrato);
+                                    hiringDataList.Add(resultado);
+                                }
+
                             }
                         }
 
@@ -244,41 +269,8 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
 
             test.Close();
             _context.HiringData.UpdateRange(hiringDataList);
+            _context.SaveChanges();
             return "Registro exitoso";
-            //var conn = _context.Database.GetConnectionString();
-            //File.Delete(filePath);
-            //using (SqlConnection connection = new SqlConnection(conn))
-            //{
-            //    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn))
-            //    {
-            //        connection.Open();
-            //        foreach (DataColumn c in dataTable.Columns)
-            //            bulkCopy.ColumnMappings.Add(c.ColumnName, c.ColumnName);
-            //        bulkCopy.DestinationTableName = dataTable.TableName;
-            //        try
-            //        {
-            //            bulkCopy.WriteToServer(dataTable);
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Console.WriteLine(ex.Message);
-            //        }
-            //    }
-            //    connection.Close();
-            //}
-            //List<Dictionary<string, object>> filas = new List<Dictionary<string, object>>();
-            //Dictionary<string, object> row;
-            //foreach (DataRow dr in dataTable.Rows)
-            //{
-            //    row = new Dictionary<string, object>();
-            //    foreach (DataColumn col in dataTable.Columns)
-            //    {
-            //        row.Add(col.ColumnName, dr[col]);
-            //    }
-            //    filas.Add(row);
-            //}
-            //var result = JsonConvert.SerializeObject(filas);
-            //return await Task.FromResult(result);
         }
 
         public static string ToCamelCase(string str)
@@ -298,8 +290,10 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
         {
             try
             {
+                var GetstatusContractor = _context.StatusContractor.FirstOrDefault(dt => dt.Code.Equals(StatusContractorEnum.ENREVISIÓN.Description()));
                 for (int i = 0; i < listDetail.Count; i++)
                 {
+
                     var resultDetail = _context.DetailProjectContractor.FirstOrDefault(dt => dt.ContractorId == listDetail[i].ContractorId && dt.ContractId == listDetail[i].ContractId);
                     if (resultDetail != null)
                     {
@@ -309,6 +303,7 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
                     {
                         Guid idD = Guid.NewGuid();
                         listDetail[i].Id = idD;
+                        listDetail[i].StatusContractor = GetstatusContractor.Id;
                     }
                 }
                 _context.DetailProjectContractor.AddRange(listDetail);

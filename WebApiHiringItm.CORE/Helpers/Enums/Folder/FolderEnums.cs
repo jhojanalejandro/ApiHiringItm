@@ -9,9 +9,9 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.Folder
 {
     public enum FolderEnums
     {
-        [Display(Description = "Cargar a gmas")]
-        SUBIRGMAS = 0,
-        [Display(Description = "Carpeta pagos")]
+        [Display(Description = "DOCUMENTOS CONTRATO")]
+        CONTRATOS = 0,
+        [Display(Description = "CARPETA PAGOS")]
         CARPETAPAGOS = 1,
         [Display(Description = "Archivos adicionales")]
         ARCHIVOSADICIONALES = 2,

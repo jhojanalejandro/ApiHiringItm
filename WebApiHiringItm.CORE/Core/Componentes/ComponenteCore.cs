@@ -44,8 +44,6 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 _context.Component.Update(mapUpdate);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
-
-                return await Task.FromResult(true);
             }
         }
 
@@ -58,7 +56,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 var map = _mapper.Map<Activity>(model);
                 map.Id = Guid.NewGuid();
                 _context.Activity.Add(map);
-                _save.SaveChangesDB();
+                await _save.SaveChangesDB();
                 return await Task.FromResult(true);
             }
             else
@@ -66,22 +64,19 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 var mapUpdate = _mapper.Map(model, exist);
                 _context.Activity.Update(mapUpdate);
                 var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
-
-                return await Task.FromResult(true);
-            }
+                return res != 0 ? true : false;            }
         }
-        public async Task<List<ComponenteDto>?> Get(Guid id)
+        public async Task<List<ComponenteDto>?> GetComponentsByContract(Guid contractId)
         {
             try
             {
-                var result = _context.Component.Where(x => x.ContractId == id).ToList();
+                var result = _context.Component.Where(x => x.ContractId == contractId).ToList();
                 if (result.Count != 0)
                 {
                     var map = _mapper.Map<List<ComponenteDto>>(result);
                     map.ForEach(e =>
                     {
-                        var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(w.Id) && w.ActivityId == null).ToList();
+                        var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(e.Id) && w.ActivityId == null).ToList();
                         e.Elementos = _mapper.Map<List<ElementComponentDto>>(element);
                         var activity = _context.Activity.Where(d => d.ComponentId == e.Id).ToList();
                         e.Activities = _mapper.Map<List<ActivityDto>>(activity);

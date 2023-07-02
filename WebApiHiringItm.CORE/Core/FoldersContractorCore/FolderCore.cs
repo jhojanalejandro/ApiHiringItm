@@ -12,29 +12,29 @@ using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
 {
-    public class FolderContractorCore : IFolderContractorCore
+    public class FolderCore : IFolderContractorCore
     {
         private readonly HiringContext _context;
         private readonly IMapper _mapper;
 
-        public FolderContractorCore(HiringContext context, IMapper mapper)
+        public FolderCore(HiringContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
 
-        public async Task<List<FolderContractorDto>> GetAllById(Guid contractorId, Guid contractId)
+        public async Task<List<FolderDto>> GetAllById(Guid contractorId, Guid contractId)
         {
             var result = _context.Folder.Where(x => x.ContractorId.Equals(contractorId) && x.ContractId == contractId).ToList();
-            var map = _mapper.Map<List<FolderContractorDto>>(result);
+            var map = _mapper.Map<List<FolderDto>>(result);
             return await Task.FromResult(map);
         }
 
-        public async Task<FolderContractorDto> GetById(string id)
+        public async Task<FolderDto> GetById(string id)
         {
             var result = _context.Folder.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
-            var map = _mapper.Map<FolderContractorDto>(result);
+            var map = _mapper.Map<FolderDto>(result);
             return await Task.FromResult(map);
         }
 
@@ -56,10 +56,9 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
             {
                 throw new Exception("Error", ex);
             }
-            return false;
         }
 
-        public async Task<bool> Create(FolderContractorDto model)
+        public async Task<bool> Create(FolderDto model)
         {
             var getData = _context.Folder.Where(x => x.Id == model.Id).FirstOrDefault();
 
@@ -80,8 +79,6 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
             }
-            return false;
-
         }
 
     }

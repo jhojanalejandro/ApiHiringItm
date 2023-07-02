@@ -27,14 +27,14 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<GetFilesPaymentDto, Files>().ReverseMap();
             CreateMap<ContractFolderDto, ContractFolder>().ReverseMap();
             CreateMap<UserUpdatePasswordDto, UserT>().ReverseMap();
-            CreateMap<FolderContractorDto, Folder>().ReverseMap();
+            CreateMap<FolderDto, Folder>().ReverseMap();
             CreateMap<GetFileDto, Files>().ReverseMap();
             CreateMap<ContractorPayments, ContractorPaymentsDto>().ReverseMap();
             CreateMap<EconomicdataContractor, EconomicdataContractorDto>().ReverseMap(); 
             CreateMap<ComponenteDto, Component>().ReverseMap();
             CreateMap<ElementComponentDto, ElementComponent>().ReverseMap();
             CreateMap<DetalleContratoDto, DetailContract>().ReverseMap();
-            CreateMap<UserFirmDto, UserFirm>().ReverseMap();
+            CreateMap<UserFirmDto, UserFile>().ReverseMap();
             CreateMap<RProjectForlderDto, ContractFolder>().ReverseMap();
             CreateMap<ProjectFolderCostsDto, ContractFolder>().ReverseMap();
             CreateMap<DetailFileDto, DetailFile>().ReverseMap();
@@ -48,6 +48,15 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<StatusContractDto, StatusContract>().ReverseMap();
             CreateMap<FileContractDto, Files>().ReverseMap();
             CreateMap<DocumentTypeDto, DocumentType>().ReverseMap();
+            CreateMap<StatusFileDto, StatusFile>().ReverseMap();
+            CreateMap<ContractorPersonalInformationDto, Contractor>().ReverseMap();
+            CreateMap<MinuteTypeDto, MinuteType>().ReverseMap();
+            CreateMap<BanksDto, Banks>().ReverseMap();
+            CreateMap<RubroTypeDto, RubroType>().ReverseMap();
+            CreateMap<AcademicInformationDto, AcademicInformation>().ReverseMap();
+            CreateMap<EmptityHealthDto, EmptityHealth>().ReverseMap();
+            CreateMap<RollDto, Roll>().ReverseMap();
+            CreateMap<TypeUserFileDto, TypeUserFile>().ReverseMap();
 
 
         }

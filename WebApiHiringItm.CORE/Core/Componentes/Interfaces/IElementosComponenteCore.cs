@@ -4,8 +4,8 @@ namespace WebApiHiringItm.CORE.Core.Componentes.Interfaces
 {
     public interface IElementosComponenteCore
     {
-        Task<bool> Add(ElementComponentDto model);
-        Task<List<ElementComponentDto>?> Get(Guid? id);
+        Task<bool> SaveElement(ElementComponentDto model);
+        Task<List<ElementComponentDto>?> GetElementsByComponent(Guid? id);
         Task<ElementComponentDto> GetById(Guid id);
     }
 }

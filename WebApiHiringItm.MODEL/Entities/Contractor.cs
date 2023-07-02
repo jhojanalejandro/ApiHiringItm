@@ -9,9 +9,11 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public Contractor()
         {
+            AcademicInformation = new HashSet<AcademicInformation>();
             ContractorPayments = new HashSet<ContractorPayments>();
             DetailProjectContractor = new HashSet<DetailProjectContractor>();
             EconomicdataContractor = new HashSet<EconomicdataContractor>();
+            EmptityHealth = new HashSet<EmptityHealth>();
             Files = new HashSet<Files>();
             Folder = new HashSet<Folder>();
             HiringData = new HashSet<HiringData>();
@@ -19,21 +21,10 @@ namespace WebApiHiringItm.MODEL.Entities
         }
 
         public Guid Id { get; set; }
-        public string TipoContratacion { get; set; }
-        public string Codigo { get; set; }
-        public string Convenio { get; set; }
-        public string FechaInicio { get; set; }
-        public string FechaFin { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string Identificacion { get; set; }
         public string LugarExpedicion { get; set; }
-        public string Tecnico { get; set; }
-        public string Tecnologo { get; set; }
-        public string Pregrado { get; set; }
-        public string Especializacion { get; set; }
-        public string Maestria { get; set; }
-        public string Doctorado { get; set; }
         public string Genero { get; set; }
         public DateTime? FechaNacimiento { get; set; }
         public string Nacionalidad { get; set; }
@@ -44,27 +35,22 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Telefono { get; set; }
         public string Celular { get; set; }
         public string Correo { get; set; }
-        public string TipoAdministradora { get; set; }
-        public string Administradora { get; set; }
         public string CuentaBancaria { get; set; }
         public string TipoCuenta { get; set; }
-        public string EntidadCuentaBancaria { get; set; }
-        public string Estado { get; set; }
+        public Guid? EntidadCuentaBancaria { get; set; }
         public Guid UserId { get; set; }
         public string ClaveUsuario { get; set; }
-        public Guid ContractId { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaActualizacion { get; set; }
-        public string ObjetoConvenio { get; set; }
-        public Guid? StatusContractor { get; set; }
         public Guid? RollId { get; set; }
 
-        public virtual ContractFolder Contract { get; set; }
-        public virtual StatusContractor StatusContractorNavigation { get; set; }
+        public virtual Banks EntidadCuentaBancariaNavigation { get; set; }
         public virtual UserT User { get; set; }
+        public virtual ICollection<AcademicInformation> AcademicInformation { get; set; }
         public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
         public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
         public virtual ICollection<EconomicdataContractor> EconomicdataContractor { get; set; }
+        public virtual ICollection<EmptityHealth> EmptityHealth { get; set; }
         public virtual ICollection<Files> Files { get; set; }
         public virtual ICollection<Folder> Folder { get; set; }
         public virtual ICollection<HiringData> HiringData { get; set; }

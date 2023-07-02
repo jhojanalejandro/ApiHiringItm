@@ -15,7 +15,15 @@
    "SelectedToBeGenerated": 1,
    "Tables": [
       {
+         "Name": "[dbo].[AcademicInformation]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Activity]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Banks]",
          "ObjectType": 0
       },
       {
@@ -51,6 +59,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[DocumentNoGenerate]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[DocumentType]",
          "ObjectType": 0
       },
@@ -64,6 +76,10 @@
       },
       {
          "Name": "[dbo].[ElementType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EmptityHealth]",
          "ObjectType": 0
       },
       {
@@ -83,6 +99,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[MinuteType]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[NewnessContractor]",
          "ObjectType": 0
       },
@@ -92,6 +112,10 @@
       },
       {
          "Name": "[dbo].[Roll]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RubroType]",
          "ObjectType": 0
       },
       {
@@ -111,7 +135,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[UserFirm]",
+         "Name": "[dbo].[TypeUserFile]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserFile]",
          "ObjectType": 0
       },
       {

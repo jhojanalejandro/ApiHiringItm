@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiHiringItm.MODEL.Dto.Contratista;
+using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.PdfDto;
 
 namespace WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore
@@ -12,6 +14,8 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore
         Task<ExecutionReportDto> GetExecutionReport(Guid contractId, Guid ContractorId);
         Task<ChargeAccountDto> GetChargeAccount(Guid contractId, Guid ContractorId);
         Task<MacroMinuteDto?> GetminuteMacroContract(Guid contractId);
-
+        Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors);
+        Task<List<PreviusStudyDto>> GetPreviusStudy(ContractContractorsDto contractors);
+        Task<List<CommitteeRequestDto>> GetCommitteeRequest(ContractContractorsDto contractors);
     }
 }

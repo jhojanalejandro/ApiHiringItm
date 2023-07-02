@@ -87,7 +87,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         {
             try
             {
-                var Data = await _file.GetById(id);
+                var Data = await _file.GetByIdFile(Guid.Parse(id));
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -103,6 +103,21 @@ namespace WebApiHiringItm.API.Controllers.Files
             try
             {
                 var Data = await _file.GetFileContractorByFolder(contractorId, folderId, contractId);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetFileContractByFolder(string folderId, Guid contractId)
+        {
+            try
+            {
+                var Data = await _file.GetFileContractByFolder(folderId, contractId);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -155,13 +170,13 @@ namespace WebApiHiringItm.API.Controllers.Files
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Delete(string id)
+        [HttpDelete("{fileId}")]
+        public async Task<IActionResult> Delete(string fileId)
         {
             try
             {
-                var Data = await _file.Delete(id);
-                return Data != false ? Ok(Data) : NoContent();
+                var Data = await _file.Delete(fileId);
+                return Data != false ? StatusCode(200, Data) : NoContent();
             }
             catch (Exception ex)
             {

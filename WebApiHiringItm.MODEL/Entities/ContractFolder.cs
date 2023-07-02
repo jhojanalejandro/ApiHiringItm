@@ -10,7 +10,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public ContractFolder()
         {
             Component = new HashSet<Component>();
-            Contractor = new HashSet<Contractor>();
             ContractorPayments = new HashSet<ContractorPayments>();
             DetailContract = new HashSet<DetailContract>();
             DetailProjectContractor = new HashSet<DetailProjectContractor>();
@@ -24,6 +23,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid UserId { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
+        public string ObjectContract { get; set; }
         public bool Activate { get; set; }
         public bool EnableProject { get; set; }
         public int? ContractorsCant { get; set; }
@@ -32,16 +32,13 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? ValorSubTotal { get; set; }
         public string NumberProject { get; set; }
         public string Project { get; set; }
-        public string Rubro { get; set; }
-        public string NombreRubro { get; set; }
-        public string FuenteRubro { get; set; }
+        public Guid? Rubro { get; set; }
         public Guid? StatusContractId { get; set; }
-        public string ObjectContract { get; set; }
 
+        public virtual RubroType RubroNavigation { get; set; }
         public virtual StatusContract StatusContract { get; set; }
         public virtual UserT User { get; set; }
         public virtual ICollection<Component> Component { get; set; }
-        public virtual ICollection<Contractor> Contractor { get; set; }
         public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
         public virtual ICollection<DetailContract> DetailContract { get; set; }
         public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }

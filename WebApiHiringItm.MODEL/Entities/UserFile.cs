@@ -5,15 +5,22 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class UserFirm
+    public partial class UserFile
     {
+        public UserFile()
+        {
+            UserT = new HashSet<UserT>();
+        }
+
         public Guid Id { get; set; }
-        public Guid? UserId { get; set; }
+        public Guid? TypeUserFile { get; set; }
         public string FirmData { get; set; }
-        public string UserCharge { get; set; }
+        public Guid? RollId { get; set; }
         public string OwnerFirm { get; set; }
         public string UserfileName { get; set; }
 
-        public virtual UserT User { get; set; }
+        public virtual Roll Roll { get; set; }
+        public virtual TypeUserFile TypeUserFileNavigation { get; set; }
+        public virtual ICollection<UserT> UserT { get; set; }
     }
 }

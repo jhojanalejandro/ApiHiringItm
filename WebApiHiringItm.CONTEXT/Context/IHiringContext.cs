@@ -25,15 +25,19 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<ContractFolder> ContractFolder { get; set; }
         DbSet<Roll> Roll { get; set; }
         DbSet<SharedData> SharedData { get; set; }
-        DbSet<UserFirm> UserFirm { get; set; }
+        DbSet<UserFile> UserFile { get; set; }
         DbSet<UserT> UserT { get; set; }
         DbSet<ElementType> ElementType { get; set; }
-        //DbSet<FileType> FileType { get; set; }
+        DbSet<TypeUserFile> TypeUserFile { get; set; }
         DbSet<FolderType> FolderType { get; set; }
         DbSet<NewnessType> NewnessType { get; set; }
         DbSet<StatusContractor> StatusContractor { get; set; }
         DbSet<StatusContract> StatusContract { get; set; }
         DbSet<StatusFile> StatusFile { get; set; }
         DbSet<CpcType> CpcType { get; set; }
+        DbSet<AcademicInformation> AcademicInformation { get; set; }
+        DbSet<Banks> Banks { get; set; }
+        DbSet<EmptityHealth> EmptityHealth { get; set; }
+        DbSet<RubroType> RubroType { get; set; }
     }
 }

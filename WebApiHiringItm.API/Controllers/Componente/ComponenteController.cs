@@ -54,7 +54,7 @@ namespace WebApiHiringItm.API.Controllers.Component
         [HttpGet("{id}")]
         public async Task<IActionResult> GetComponent(Guid id)
         {
-            var res = await _componente.Get(id);
+            var res = await _componente.GetComponentsByContract(id);
             return Ok(res);
         }
         [HttpGet("{id}")]

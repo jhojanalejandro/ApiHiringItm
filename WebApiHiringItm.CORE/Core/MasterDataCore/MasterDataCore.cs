@@ -90,28 +90,34 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore
             {
                 throw new Exception("Error", ex);
             }
-            return false;
         }
 
-        //public async Task<bool> Create(TypeFileDto model)
-        //{
-        //    var getData = _context.FileType.FirstOrDefault(x => x.Id.Equals(model.Id));
-        //    if (getData == null)
-        //    {
-        //        var map = _mapper.Map<FileType>(model);
-        //        map.Id = Guid.NewGuid();
-        //        _context.FileType.Add(map);
-        //        var res = await _context.SaveChangesAsync();
-        //        return res != 0 ? true : false;
-        //    }
-        //    else
-        //    {
-        //        model.Id = getData.Id;
-        //        var map = _mapper.Map(model, getData);
-        //        _context.FileType.Update(map);
-        //        var res = await _context.SaveChangesAsync();
-        //        return res != 0 ? true : false;
-        //    }
-        //}
+        public async Task<List<StatusFileDto>> GetStatusFile()
+        {
+            var result = _context.StatusFile.ToList();
+            var map = _mapper.Map<List<StatusFileDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<MinuteTypeDto>> GetAllMinuteType()
+        {
+            var result = _context.MinuteType.ToList();
+            var map = _mapper.Map<List<MinuteTypeDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<BanksDto>> GetBanks()
+        {
+            var result = _context.Banks.ToList();
+            var map = _mapper.Map<List<BanksDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<RubroTypeDto>> GetAllRubroType()
+        {
+            var result = _context.RubroType.ToList();
+            var map = _mapper.Map<List<RubroTypeDto>>(result);
+            return await Task.FromResult(map);
+        }
     }
 }

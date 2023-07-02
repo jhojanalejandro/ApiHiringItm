@@ -102,7 +102,6 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                 throw new Exception("Error", ex);
 
             }
-            return false;
         }
 
     }

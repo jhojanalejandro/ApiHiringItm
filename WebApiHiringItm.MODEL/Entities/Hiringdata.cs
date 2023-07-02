@@ -33,7 +33,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public int? Nivel { get; set; }
         public string Cdp { get; set; }
         public string NumeroActa { get; set; }
-        public string ClaveUsuario { get; set; }
         public string Caso { get; set; }
 
         public virtual Contractor Contractor { get; set; }
