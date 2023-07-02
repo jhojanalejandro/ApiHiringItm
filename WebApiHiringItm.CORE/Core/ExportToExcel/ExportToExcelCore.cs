@@ -40,7 +40,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var xlPackage = new ExcelPackage(stream))
             {
-                var worksheet = xlPackage.Workbook.Worksheets.Add("DAP");
+                var worksheet = xlPackage.Workbook.Worksheets.Add("CDP");
                 var namedStyle = xlPackage.Workbook.Styles.CreateNamedStyle("HyperLink");
                 namedStyle.Style.Font.UnderLine = true;
                 namedStyle.Style.Font.Color.SetColor(Color.Blue);
@@ -274,7 +274,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     NumeroConvenio = w.Contract.NumberProject,
                     CedulaSupervisor = w.HiringData.IdentificacionSupervisor,
                     NombreSupervisor = w.HiringData.SupervisorItm,
-                    Rubro = w.Contract.Rubro,
+                    Rubro = w.Contract.RubroNavigation.RubroNumber,
                     Cpc = w.Element.Cpc.CpcName,
                     Projecto = w.Contract.Project,
                     Nombre = w.Contractor.Nombre,
@@ -424,7 +424,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 int nro = 0;
                 foreach (var user in dataList)
                 {
-                    if ( user.ObjetoConvenio != null && user.Cpc != null && user.ValorTotal != null && user.InitialDate.HasValue && user.FinalDate.HasValue)
+                    if ( user.ObjetoConvenio != null && user.ValorTotal != null && user.InitialDate.HasValue && user.FinalDate.HasValue)
                     {
                         var durationContract = CalculateDateContract(user.InitialDate.Value, user.FinalDate.Value);
                         nro++;
@@ -467,6 +467,80 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     xlPackage.Workbook.Properties.Created = DateTime.Now;
                     xlPackage.Workbook.Properties.Subject = "Solicitud PAA";
                     xlPackage.Save();
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            stream.Position = 0;
+            return await Task.FromResult(stream);
+        }
+
+        public async Task<MemoryStream> ExportElement(ControllerBase controller, Guid ContractId)
+        {
+
+            var stream = new MemoryStream();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                var worksheet = xlPackage.Workbook.Worksheets.Add("Hoja1");
+                var namedStyle = xlPackage.Workbook.Styles.CreateNamedStyle("HyperLink");
+                namedStyle.Style.Font.UnderLine = true;
+                namedStyle.Style.Font.Color.SetColor(Color.Blue);
+                const int startRow = 1;
+                var row = startRow;
+
+                worksheet.Cells["A1"].Value = "Identificador Interno";
+                worksheet.Cells["B1"].Value = "Consecutivo";
+                worksheet.Cells["C1"].Value = "Nombre Elemento";
+                worksheet.Cells["D1"].Value = "Perfil Requerido";
+
+                worksheet.Cells["A1:D1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A1:D1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
+                worksheet.Cells["A1:D1"].Style.Font.Bold = true;
+                worksheet.Cells["A1:D1"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:D1"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:D1"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:D1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+
+                var data = _context.DetailProjectContractor.Where(x => x.ContractId.Equals(ContractId));
+
+                var dataList = data.Select(w => new ExportElementDto()
+                {
+                    Id = w.Element.Id.ToString(),
+                    Consecutive = w.Element.Consecutivo,
+                    ElementName = w.Element.NombreElemento,
+                })
+                .AsNoTracking()
+                .ToList();
+                row = 2;
+                int nro = 0;
+                foreach (var user in dataList)
+                {
+                    if (user.ElementName != null && user.Consecutive != null && user.Id != null)
+                    {
+                        nro++;
+                        worksheet.Cells[row, 1].Value = user.Id;
+                        worksheet.Cells[row, 2].Value = user.Consecutive;
+                        worksheet.Cells[row, 3].Value = user.ElementName;
+                        worksheet.Cells[row, 4].Value = "";
+                        row++;
+                    }
+
+                }
+                if (nro > 0)
+                {
+                    worksheet.Columns.AutoFit();
+                    xlPackage.Workbook.Properties.Title = "EXPORTAR ELEMENTO";
+                    xlPackage.Workbook.Properties.Author = "ITM";
+                    xlPackage.Workbook.Properties.Created = DateTime.Now;
+                    xlPackage.Workbook.Properties.Subject = "EXPORTAR ELEMENTO";
+                    xlPackage.Save();
+
+
                 }
                 else
                 {

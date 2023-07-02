@@ -17,5 +17,6 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.Hiring
 
         [Display(Description = "EN PROCESO")]
         ENPROCESO = 2,
+
     }
 }

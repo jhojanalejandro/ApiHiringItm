@@ -10,7 +10,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
     {
         Task<List<ContractorDto>> GetAll();
         
-        Task<bool> Create(ContractorDto model);
+        Task<bool> SavePersonalInformation(PersonalInformation model);
         Task<List<ContractorByContractDto>> GetByIdFolder(Guid id);
         Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model);
         Task<List<ContractorPaymentsDto>> GetPaymentsContractorList(Guid contractId, Guid contractorId);

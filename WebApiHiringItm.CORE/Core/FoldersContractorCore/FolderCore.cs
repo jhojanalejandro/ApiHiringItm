@@ -56,7 +56,6 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
             {
                 throw new Exception("Error", ex);
             }
-            return false;
         }
 
         public async Task<bool> Create(FolderDto model)

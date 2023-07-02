@@ -26,6 +26,9 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.File
 
         [Display(Description = "Otros")]
         OTROS = 5,
+
+        [Display(Description = "MNTA")]
+        MINUTA = 6,
     }
 
 }

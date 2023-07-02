@@ -90,13 +90,33 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore
             {
                 throw new Exception("Error", ex);
             }
-            return false;
         }
 
         public async Task<List<StatusFileDto>> GetStatusFile()
         {
             var result = _context.StatusFile.ToList();
             var map = _mapper.Map<List<StatusFileDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<MinuteTypeDto>> GetAllMinuteType()
+        {
+            var result = _context.MinuteType.ToList();
+            var map = _mapper.Map<List<MinuteTypeDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<BanksDto>> GetBanks()
+        {
+            var result = _context.Banks.ToList();
+            var map = _mapper.Map<List<BanksDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<RubroTypeDto>> GetAllRubroType()
+        {
+            var result = _context.RubroType.ToList();
+            var map = _mapper.Map<List<RubroTypeDto>>(result);
             return await Task.FromResult(map);
         }
     }

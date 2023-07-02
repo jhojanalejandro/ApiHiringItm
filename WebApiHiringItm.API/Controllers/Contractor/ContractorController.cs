@@ -68,11 +68,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveDataContractor(ContractorDto model)
+        public async Task<IActionResult> SaveDataContractor(PersonalInformation model)
         {
             try
             {
-                var Data = await _contactor.Create(model);
+                var Data = await _contactor.SavePersonalInformation(model);
 
                 return Data != null ? Ok(Data) : NoContent();
             }
@@ -85,11 +85,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(ContractorDto model)
+        public async Task<IActionResult> Update(PersonalInformation model)
         {
             try
             {
-                var Data = await _contactor.Create(model);
+                var Data = await _contactor.SavePersonalInformation(model);
 
                 return Data != null ? Ok(Data) : NoContent();
             }

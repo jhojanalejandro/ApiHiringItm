@@ -17,5 +17,8 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore.Interface
         Task<List<CpcTypeDto>> GetAllCpcType();
         Task<List<StatusContractDto>> GetSatatusContract();
         Task<List<StatusFileDto>> GetStatusFile();
+        Task<List<RubroTypeDto>> GetAllRubroType();
+        Task<List<BanksDto>> GetBanks();
+        Task<List<MinuteTypeDto>> GetAllMinuteType();
     }
 }

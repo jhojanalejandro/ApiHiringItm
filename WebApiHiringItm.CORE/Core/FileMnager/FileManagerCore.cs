@@ -66,19 +66,20 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
         public async Task<List<FilesDto>?> GetFileContract(Guid id)
         {
 
-            var getFiles = _context.Files
-                .Include(i => i.DocumentTypeNavigation)
-                .Where(w => w.ContractId.Equals(id));
+            var getFiles = _context.DetailFile
+                .Include(i => i.File)
+                    .ThenInclude(i => i.DocumentTypeNavigation)
+                .Where(w => w.File.ContractId.Equals(id));
 
             return await getFiles.Select(ct => new FilesDto
             {
                 Id = ct.Id,
                 Type = FILETYPE,
-                FilesName = ct.FilesName,
-                Filedata = ct.Filedata,
-                FileType = ct.FileType,
-                DocumentTypes = ct.DocumentTypeNavigation.DocumentType1,
-                DescriptionFile = ct.DescriptionFile,
+                FilesName = ct.File.FilesName,
+                Filedata = ct.File.Filedata,
+                FileType = ct.File.FileType,
+                DocumentTypes = ct.File.DocumentTypeNavigation.DocumentType1,
+                DescriptionFile = ct.File.DescriptionFile,
                 UserId = ct.UserId,
             })
              .AsNoTracking()

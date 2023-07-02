@@ -53,7 +53,7 @@ namespace WebApiHiringItm.API.Controllers.HiringData
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(List<HiringDataDto> model)
+        public async Task<IActionResult> SaveHiring(List<HiringDataDto> model)
         {
             try
             {

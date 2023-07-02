@@ -11,11 +11,11 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.StatusFile
     {
         [Display(Description = "RE")]
         REMITIDO = 0,
-        [Display(Description = "AP")]
+        [Display(Description = "APD")]
         APROBADO = 1,
         [Display(Description = "SU")]
         SUBSANADO = 2,
-        [Display(Description = "PR")]
+        [Display(Description = "PRCS")]
         ENPROCESO = 3,
 
     }

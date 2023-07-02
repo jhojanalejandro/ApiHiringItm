@@ -122,11 +122,11 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(RProjectForlderDto model)
+        public async Task<IActionResult> SaveContract(RProjectForlderDto model)
         {
             try
             {
-                var Data = await _project.Create(model);
+                var Data = await _project.SaveContract(model);
                 return Data == true ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

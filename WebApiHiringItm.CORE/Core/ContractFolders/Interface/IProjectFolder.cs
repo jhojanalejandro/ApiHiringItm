@@ -13,7 +13,7 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders.Interface
         Task<List<ContractListDto>> GetAllHistory();
         Task<ContractFolderDto> GetById(Guid id);
         Task<bool> Delete(Guid id);
-        Task<bool> Create(RProjectForlderDto model);
+        Task<bool> SaveContract(RProjectForlderDto model);
         Task<bool> UpdateCost(ProjectFolderCostsDto model);
         Task<List<DetalleContratoDto>> GetDetailByIdList(Guid ContractId);
         Task<DetalleContratoDto> GetDetailById(Guid ContractId);

@@ -56,8 +56,8 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 ValorAsegurado = hd.HiringData.ValorAsegurado,
                 Nivel = hd.HiringData.Nivel,
                 Caso = hd.HiringData.Caso,
-                NombreRubro = hd.Contract.NombreRubro,
-                FuenteRubro = hd.Contract.FuenteRubro,
+                NombreRubro = hd.Contract.RubroNavigation.Rubro,
+                FuenteRubro = hd.Contract.RubroNavigation.RubroOrigin,
                 Cdp = hd.HiringData.Cdp,
                 NumeroActa = hd.HiringData.NumeroActa
             })
@@ -67,30 +67,22 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
 
         public async Task<bool> Updates(string model)
         {
-            try
+            if (model != null)
             {
-                if (model != null)
-
+                var map = _mapper.Map<HiringDataDto>(model);
+                await _context.BulkInsertAsync(_context.HiringData, options => options.InsertKeepIdentity = true);
+                var res = _context.BulkSaveChangesAsync(bulk => bulk.BatchSize = 100);
+                if (res.IsCompleted)
                 {
-                    var map = _mapper.Map<HiringDataDto>(model);
-                    await _context.BulkInsertAsync(_context.HiringData, options => options.InsertKeepIdentity = true);
-                    var res = _context.BulkSaveChangesAsync(bulk => bulk.BatchSize = 100);
-                    if (res.IsCompleted)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
-            }
-            catch (Exception e)
-            {
-                new Exception("Error", e);
             }
             return false;
         }
 
         public async Task<bool> Delete(Guid id)
         {
-            var getData = _context.HiringData.Where(x => x.Id == id).FirstOrDefault();
+            var getData = _context.HiringData.Where(x => x.Id.Equals(id)).FirstOrDefault();
             if (getData != null)
             {
 
@@ -106,88 +98,78 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
 
         public async Task<bool> Create(List<HiringDataDto> model)
         {
-            try
+            var getStatusId = _context.StatusContractor.ToList();
+
+            List<HiringData> hiringDataListUpdate = new List<HiringData>();
+            List<HiringData> hiringDataListAdd = new List<HiringData>();
+            List<DetailProjectContractor> detailDataListAdd = new List<DetailProjectContractor>();
+            var getData = _context.DetailProjectContractor
+                .Where(x => x.ContractId == model[0].ContractId)
+                .Include(dt => dt.HiringData)
+                .ToList();
+
+            var hd = _context.HiringData.ToList();
+            var map = _mapper.Map<List<HiringData>>(model);
+            for (var i = 0; i < map.Count; i++)
             {
-                List<HiringData> hiringDataListUpdate = new List<HiringData>();
-                List<HiringData> hiringDataListAdd = new List<HiringData>();
-                List<DetailProjectContractor> detailDataListAdd = new List<DetailProjectContractor>();
-                var getData = _context.DetailProjectContractor
-                    .Where(x => x.ContractId == model[0].ContractId)
-                    .Include(dt => dt.HiringData)
-                    .ToList();
+                var hiring = getData.FirstOrDefault(h => h.ContractorId.Equals(map[i].ContractorId));
+                var hdata = hd.FirstOrDefault(x => x.Id == hiring.HiringDataId);
 
-                var hd = _context.HiringData.ToList();
-                var map = _mapper.Map<List<HiringData>>(model);
-                for (var i = 0; i < map.Count; i++)
+                if (hdata != null)
                 {
-                    var hiring = getData.FirstOrDefault(h => h.ContractorId.Equals(map[i].ContractorId));
-                    var hdata = hd.FirstOrDefault(x => x.Id == hiring.HiringDataId);
-
-                    if (hdata != null)
+                    model[i].Id = hdata.Id;
+                    var mapData = _mapper.Map(model[i], hdata);
+                    hiringDataListUpdate.Add(mapData);
+                    map.Remove(map[i]);
+                    i--;
+                }
+                else
+                {
+                    if (getData != null)
                     {
-                        model[i].Id = hdata.Id;
-                        var mapData = _mapper.Map(model[i], hdata);
-                        hiringDataListUpdate.Add(mapData);
-                        map.Remove(map[i]);
-                        i--;
+                        var stattusId = getStatusId.Find(f => f.StatusContractor1.Equals(model[i].StatusContractor))?.Id;
+                        DetailProjectContractor detailProjectContractor = new DetailProjectContractor();
+                        map[i].Id = Guid.NewGuid();
+                        detailProjectContractor.HiringDataId = map[i].Id;
+                        detailProjectContractor.ContractorId = map[i].ContractorId;
+                        detailProjectContractor.ContractId = model[i].ContractId;
+                        detailProjectContractor.ElementId = hiring.ElementId;
+                        detailProjectContractor.ComponentId = hiring.ComponentId;
+                        detailProjectContractor.StatusContractor = stattusId;
+                        detailProjectContractor.Id = hiring.Id;
+                        detailDataListAdd.Add(detailProjectContractor);
+                        hiringDataListAdd.Add(map[i]);
                     }
                     else
                     {
-                        if (getData != null)
-                        {
-                            DetailProjectContractor detailProjectContractor = new DetailProjectContractor();
-                            map[i].Id = Guid.NewGuid();
-                            detailProjectContractor.HiringDataId = map[i].Id;
-                            detailProjectContractor.ContractorId = map[i].ContractorId;
-                            detailProjectContractor.ContractId = model[i].ContractId;
-                            detailProjectContractor.ElementId = hiring.ElementId;
-                            detailProjectContractor.ComponentId = hiring.ComponentId;
-                            detailProjectContractor.Id = hiring.Id;
-                            detailDataListAdd.Add(detailProjectContractor);
-                            hiringDataListAdd.Add(map[i]);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-
+                        return false;
                     }
+
                 }
-
-                if (hiringDataListUpdate.Count > 0)
-                    _context.HiringData.UpdateRange(hiringDataListUpdate);
-                if (hiringDataListAdd.Count > 0)
-                    _context.HiringData.AddRange(hiringDataListAdd);
-                await _context.SaveChangesAsync();
-
-                if (detailDataListAdd.Count > 0)
-                    return await updateDetails(detailDataListAdd);
-
-                return true;
             }
-            catch(Exception ex)
-            {
-                throw new Exception("Error", ex);
-            }
-            return false;
+
+            if (hiringDataListUpdate.Count > 0)
+                _context.HiringData.UpdateRange(hiringDataListUpdate);
+            if (hiringDataListAdd.Count > 0)
+                _context.HiringData.AddRange(hiringDataListAdd);
+            await _context.SaveChangesAsync();
+
+            if (detailDataListAdd.Count > 0)
+                return await updateDetails(detailDataListAdd);
+
+            return true;
         }
         #endregion
         
         #region PRIVATE METHODS
         private async Task<bool> updateDetails(List<DetailProjectContractor> detailProjectContractors)
         {
-            try
+            _context.DetailProjectContractor.UpdateRange(detailProjectContractors);
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
             {
-                _context.DetailProjectContractor.UpdateRange(detailProjectContractors);
-                var result = await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Error", ex);
-
-            }
-
             return false;
         }
         #endregion

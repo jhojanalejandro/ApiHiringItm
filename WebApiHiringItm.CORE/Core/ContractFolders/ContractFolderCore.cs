@@ -39,6 +39,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
         public async Task<List<ContractListDto>> GetAllHistory()
         {
             var result = _context.ContractFolder
+                .Include(i => i.RubroNavigation)
                 .Include(i => i.StatusContract);
 
             return await result.Select(contract => new ContractListDto
@@ -52,9 +53,9 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 ValorContrato = contract.ValorContrato,
                 NumberProject = contract.NumberProject,
                 Project = contract.Project,
-                Rubro = contract.Rubro,
-                NombreRubro = contract.NombreRubro,
-                FuenteRubro = contract.FuenteRubro,
+                Rubro = contract.RubroNavigation.RubroNumber,
+                NombreRubro = contract.RubroNavigation.Rubro,
+                FuenteRubro = contract.RubroNavigation.RubroOrigin,
                 StatusContract = contract.StatusContract.StatusContract1,
                 FechaContrato = contract.DetailContract.Select(s => s.FechaContrato).FirstOrDefault(),
                 FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault()
@@ -84,9 +85,9 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault(),
                 ValorSubTotal = contract.ValorSubTotal,
                 GastosOperativos = contract.GastosOperativos,
-                Rubro = contract.Rubro,
-                NombreRubro = contract.NombreRubro,
-                FuenteRubro = contract.FuenteRubro,
+                Rubro = contract.RubroNavigation.RubroNumber,
+                NombreRubro = contract.RubroNavigation.Rubro,
+                FuenteRubro = contract.RubroNavigation.RubroOrigin,
 
             }).AsNoTracking()
               .ToListAsync();
@@ -123,9 +124,9 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault(),
                 ValorSubTotal = contract.ValorSubTotal,
                 GastosOperativos = contract.GastosOperativos,
-                Rubro = contract.Rubro,
-                FuenteRubro = contract.FuenteRubro,
-                NombreRubro = contract.NombreRubro
+                Rubro = contract.RubroNavigation.RubroNumber,
+                NombreRubro = contract.RubroNavigation.Rubro,
+                FuenteRubro = contract.RubroNavigation.RubroOrigin
             }).AsNoTracking()
               .ToListAsync();
 
@@ -174,7 +175,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             return await Task.FromResult(map);
         }
 
-        public async Task<bool> Create(RProjectForlderDto model)
+        public async Task<bool> SaveContract(RProjectForlderDto model)
         {
             var getData = _context.ContractFolder.FirstOrDefault(x => x.Id.Equals(model.Id));
 
@@ -274,9 +275,9 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                     GastosOperativos = s.GastosOperativos,
                     ValorSubTotal = s.ValorSubTotal,
                     NumberProject = s.NumberProject,
-                    Rubro = s.Rubro,
-                    NombreRubro = s.NombreRubro,
-                    FuenteRubro = s.FuenteRubro,
+                    Rubro = s.RubroNavigation.RubroNumber,
+                    NombreRubro = s.RubroNavigation.Rubro,
+                    FuenteRubro = s.RubroNavigation.RubroOrigin,
                     FechaContrato = s.DetailContract.Select(s => s.FechaContrato).FirstOrDefault(),
                     FechaFinalizacion = s.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault()
                 })

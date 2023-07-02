@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS8634: El tipo no se puede usar como parámetro de tipo en el tipo o método genérico. La nulabilidad del argumento de tipo no coincide con la restricción "class"
+dotnet_diagnostic.CS8634.severity = silent

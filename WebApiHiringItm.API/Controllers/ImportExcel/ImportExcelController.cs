@@ -50,5 +50,20 @@ namespace WebApiHiringItm.API.Controllers.ImportExcel
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ImportExcelElement([FromForm] FileRequest model)
+        {
+            try
+            {
+                var result = await _importExcel.ImportCdp(model);
+                return StatusCode(200, result);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
     }
 }

@@ -27,6 +27,7 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.Rolls
         Contratista = 7,
         [Display(Description = "DTV")]
         Desactivada = 8,
-
+        [Display(Description = "RCTR")]
+        RECTOR = 9,
     }
 }
