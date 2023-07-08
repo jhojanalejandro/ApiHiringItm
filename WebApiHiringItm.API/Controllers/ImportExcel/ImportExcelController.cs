@@ -56,7 +56,7 @@ namespace WebApiHiringItm.API.Controllers.ImportExcel
         {
             try
             {
-                var result = await _importExcel.ImportCdp(model);
+                var result = await _importExcel.ImportElement(model);
                 return StatusCode(200, result);
             }
             catch (Exception ex)
