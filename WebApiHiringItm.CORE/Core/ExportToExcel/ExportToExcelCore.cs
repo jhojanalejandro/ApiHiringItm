@@ -348,7 +348,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 const int startRow = 5;
                 var row = startRow;
                 //Create Headers and format them
-                //worksheet.Cells["A1"].Value = "Con el fin de proceder a completar las columnas: Código UNSPSC, Duración del contrato (intervalo: días, meses, años), Modalidad de selección, Fuente de los recursos, ¿Se requieren vigencias futuras?, Estado de solicitud de vigencias futuras; vea la " + " Hoja de soporte " + " para saber cuáles son los códigos que aplican a cada columna.";
+                worksheet.Cells["A1"].Value = "Con el fin de proceder a completar las columnas: Código UNSPSC, Duración del contrato (intervalo: días, meses, años), Modalidad de selección, Fuente de los recursos, ¿Se requieren vigencias futuras?, Estado de solicitud de vigencias futuras; vea la " + " Hoja de soporte " + " para saber cuáles son los códigos que aplican a cada columna.";
                 using (var r = worksheet.Cells["A1:Q3"])
                 {
                     r.Style.WrapText = true;
@@ -382,7 +382,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["R4"].Value = "Proyecto de inversión";
                 worksheet.Cells["S4"].Value = "DOCUMENTO";
                 worksheet.Cells["T4"].Value = "NOMBRE";
-                worksheet.Cells["U4"].Value = "HONORARIOS 2022";
+                worksheet.Cells["U4"].Value = "HONORARIOS";
                 worksheet.Cells["V4"].Value = "FECHA REQUERIDA DE INICIO PIMER SEMESTRE";
                 worksheet.Cells["W4"].Value = "FECHA TERMINACIÓN PRIMER CONTRATO";
                 worksheet.Cells["X4"].Value = "DURACION";
@@ -390,6 +390,14 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["Z4"].Value = "¿Debe cumplir con invertir mínimo el 30% de los recursos del presupuesto destinados a comprar alimentos, cumpliendo con lo establecido en la Ley 2046 de 2020, reglamentada por el Decreto 248 de 2021?";
                 worksheet.Cells["AA4"].Value = "¿El contrato incluye el suministro de bienes y servicios distintos a alimentos?";
 
+
+                worksheet.Cells["A4:AA4"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A4:AA4"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(70, 130, 180));
+                worksheet.Cells["A4:AA4"].Style.Font.Bold = true;
+                worksheet.Cells["A4:AA4"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A4:AA4"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A4:AA4"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A4:AA4"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
                 var data = _context.DetailProjectContractor.Where(x => x.ContractId == ContractId)
                                     .Include(x => x.Contractor)
                                         .ThenInclude(i => i.EconomicdataContractor)
@@ -420,7 +428,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 var month = DateTime.Now.Month;
                 var day = DateTime.Now.Day;
                 var date = DateTime.Now.ToString("dd/MM/yyyy");
-                row = 2;
+                row = 5;
                 int nro = 0;
                 foreach (var user in dataList)
                 {
@@ -445,16 +453,16 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                         worksheet.Cells[row, 15].Value = user.User;
                         worksheet.Cells[row, 16].Value = 4405100;
                         worksheet.Cells[row, 17].Value = user.Email;
-                        worksheet.Cells[row, 17].Value = "Convenios-funcionamiento";
-                        worksheet.Cells[row, 18].Value = user.Identificacion;
-                        worksheet.Cells[row, 19].Value = user.Nombre;
-                        worksheet.Cells[row, 20].Value = user.UnitValue;
-                        worksheet.Cells[row, 20].Value = user.InitialDate;
-                        worksheet.Cells[row, 20].Value = user.FinalDate;
-                        worksheet.Cells[row, 20].Value = durationContract;
-                        worksheet.Cells[row, 20].Value = user.ValorTotal;
-                        worksheet.Cells[row, 20].Value = 0;
-                        worksheet.Cells[row, 20].Value = 0;
+                        worksheet.Cells[row, 18].Value = "Convenios-funcionamiento";
+                        worksheet.Cells[row, 19].Value = user.Identificacion;
+                        worksheet.Cells[row, 20].Value = user.Nombre;
+                        worksheet.Cells[row, 21].Value = user.UnitValue;
+                        worksheet.Cells[row, 22].Value = user.InitialDate;
+                        worksheet.Cells[row, 23].Value = user.FinalDate;
+                        worksheet.Cells[row, 24].Value = durationContract;
+                        worksheet.Cells[row, 25].Value = user.ValorTotal;
+                        worksheet.Cells[row, 26].Value = 0;
+                        worksheet.Cells[row, 27].Value = 0;
                         row++;
                     }
                  
@@ -494,25 +502,33 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 var row = startRow;
 
                 worksheet.Cells["A1"].Value = "Identificador Interno";
-                worksheet.Cells["B1"].Value = "Consecutivo";
-                worksheet.Cells["C1"].Value = "Nombre Elemento";
-                worksheet.Cells["D1"].Value = "Perfil Requerido";
+                worksheet.Cells["B1"].Value = "Consecutivo Registro";
+                worksheet.Cells["C1"].Value = "Componente";
+                worksheet.Cells["D1"].Value = "Actividad";
+                worksheet.Cells["E1"].Value = "Consecutivo Elemento";
+                worksheet.Cells["F1"].Value = "Nombre Elemento";
+                worksheet.Cells["G1"].Value = "Perfil Requerido";
 
-                worksheet.Cells["A1:D1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["A1:D1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
-                worksheet.Cells["A1:D1"].Style.Font.Bold = true;
-                worksheet.Cells["A1:D1"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:D1"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:D1"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:D1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:G1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A1:G1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
+                worksheet.Cells["A1:G1"].Style.Font.Bold = true;
+                worksheet.Cells["A1:G1"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:G1"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:G1"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:G1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
 
-                var data = _context.DetailProjectContractor.Where(x => x.ContractId.Equals(ContractId));
+                var data = _context.ElementComponent
+                    .Include(i => i.Component)
+                    .Include(i => i.Activity)
+                    .Where(x => x.Component.ContractId.Equals(ContractId));
 
                 var dataList = data.Select(w => new ExportElementDto()
                 {
-                    Id = w.Element.Id.ToString(),
-                    Consecutive = w.Element.Consecutivo,
-                    ElementName = w.Element.NombreElemento,
+                    Id = w.Id.ToString(),
+                    Consecutive = w.Consecutivo,
+                    ElementName = w.NombreElemento,
+                    ComponentName = w.Component.NombreComponente,
+                    ActivityName = w.Activity.NombreActividad
                 })
                 .AsNoTracking()
                 .ToList();
@@ -524,9 +540,12 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     {
                         nro++;
                         worksheet.Cells[row, 1].Value = user.Id;
-                        worksheet.Cells[row, 2].Value = user.Consecutive;
-                        worksheet.Cells[row, 3].Value = user.ElementName;
-                        worksheet.Cells[row, 4].Value = "";
+                        worksheet.Cells[row, 2].Value = nro;
+                        worksheet.Cells[row, 3].Value = user.ComponentName;
+                        worksheet.Cells[row, 4].Value = user.ActivityName;
+                        worksheet.Cells[row, 5].Value = user.Consecutive;
+                        worksheet.Cells[row, 6].Value = user.ElementName;
+                        worksheet.Cells[row, 7].Value = "";
                         row++;
                     }
 
