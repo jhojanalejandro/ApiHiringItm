@@ -276,12 +276,14 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 ContractorIdentification = study.Contractor.Identificacion,
                 ContractNumber = study.Contract.NumberProject,
                 ElementName = study.Element.NombreElemento,
+                ElementObject = study.Element.ObjetoElemento,
                 User = study.Contractor.User.UserName,
                 UserFirm = study.Contractor.User.UserFirm.FirmData,
                 UserIdentification = study.Contractor.User.Identification,
                 ContractInitialDate = study.Contractor.ContractorPayments.OrderByDescending(d => d.FromDate).Select(s => s.FromDate.ToString()).FirstOrDefault(),
                 ContractFinalDate = study.Contractor.ContractorPayments.OrderByDescending(d => d.ToDate).Select(s => s.ToDate.ToString()).FirstOrDefault(),
-                TotalValue = study.Contractor.ContractorPayments.OrderByDescending(d => d.FromDate.ToString()).Select(s => s.Paymentcant.ToString()).FirstOrDefault()
+                TotalValue = study.Contractor.ContractorPayments.OrderByDescending(d => d.FromDate.ToString()).Select(s => s.Paymentcant.ToString()).FirstOrDefault(),
+                ProfileRequire = study.Element.PerfilRequerido
             })
             .AsNoTracking()
             .ToListAsync();
