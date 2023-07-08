@@ -17,7 +17,6 @@ using Aspose.Cells;
 using Microsoft.EntityFrameworkCore;
 using System.Data.SqlClient;
 using WebApiHiringItm.CORE.Core.ImportExcelCore.Interface;
-using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
 using WebApiHiringItm.CORE.Helpers.Enums.Rolls;
 using WebApiHiringItm.MODEL.Dto;
 using NPOI.SS.Formula.Functions;
@@ -86,32 +85,6 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             DataColumn newColumnRollId = new DataColumn("Roll Id", typeof(Guid));
             newColumnRollId.DefaultValue = RollIdId;
             dataTable.Columns.Add(newColumnRollId);
-            //DataColumn EntidadCuentaBancaria = new DataColumn("Entidad Cuenta Bancaria", typeof(Guid));
-            //dataTable.Columns.Add(EntidadCuentaBancaria);
-            //DataColumn CuentaBancaria = new DataColumn("Cuenta Bancaria", typeof(string));
-            //dataTable.Columns.Add(CuentaBancaria);
-            //DataColumn TipoCuenta = new DataColumn("Tipo Cuenta", typeof(string));
-            //dataTable.Columns.Add(TipoCuenta);
-            //DataColumn Celular = new DataColumn("Celular", typeof(string));
-            //dataTable.Columns.Add(Celular);
-            //DataColumn Barrio = new DataColumn("Barrio", typeof(string));
-            //dataTable.Columns.Add(Barrio);
-            //DataColumn Nacionalidad = new DataColumn("Nacionalidad", typeof(string));
-            //dataTable.Columns.Add(Nacionalidad);
-            //DataColumn Genero = new DataColumn("Genero", typeof(string));
-            //dataTable.Columns.Add(Genero);
-            //DataColumn Departamento = new DataColumn("Departamento", typeof(string));
-            //dataTable.Columns.Add(Departamento);
-            //DataColumn Municipio = new DataColumn("Municipio", typeof(string));
-            //dataTable.Columns.Add(Municipio);
-            //DataColumn FechaNacimiento = new DataColumn("Fecha Nacimiento", typeof(string));
-            //dataTable.Columns.Add(FechaNacimiento);
-            //DataColumn LugarExpedicion = new DataColumn("Lugar Expedicion", typeof(string));
-            //dataTable.Columns.Add(LugarExpedicion);
-            //DataColumn Telefono = new DataColumn("Telefono", typeof(string));
-            //dataTable.Columns.Add(Telefono);
-            //DataColumn Direccion = new DataColumn("Direccion", typeof(string));
-            //dataTable.Columns.Add(Direccion);
             for (int i = 0; i < dataTable.Columns.Count; i++)
             {
                 dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
@@ -269,6 +242,79 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
 
             test.Close();
             _context.HiringData.UpdateRange(hiringDataList);
+            _context.SaveChanges();
+            return "Registro exitoso";
+        }
+
+        public async Task<string> ImportElement(FileRequest model)
+        {
+
+            string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcelElemento\", model.Excel.FileName);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            //Save the uploaded Excel file.
+            string fileName = Path.GetFileName(model.Excel.FileName);
+            string filePath = Path.Combine(path, fileName);
+            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            {
+                model.Excel.CopyTo(stream);
+            }
+            FileStream test = new FileStream(filePath, FileMode.Open);
+
+            Workbook workbook = new Workbook(test);
+
+            Worksheet worksheet = workbook.Worksheets[0];
+
+            DataTable dataTable = worksheet.Cells.ExportDataTable(0, 0, worksheet.Cells.MaxRow + 1, worksheet.Cells.LastCell.Column + 1, true);
+            dataTable.TableName = "ElementComponent";
+            List<ElementComponent> elementDataList = new();
+
+            for (int i = 0; i < dataTable.Columns.Count; i++)
+            {
+                dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
+                var columna = dataTable.Columns[i].ColumnName;
+                var listaHring = _context.Contractor.ToList();
+
+                if (columna.Equals("IdentificadorInterno"))
+                {
+                    for (int j = 0; j < dataTable.Rows.Count; j++)
+                    {
+                        int posicion = j;
+                        if (dataTable.Rows.Count == 1)
+                        {
+                            posicion = 0;
+
+                        }
+                        else if (dataTable.Rows.Count == 0)
+                        {
+                            return "No se agrego la Información por que es repetida";
+                        }
+
+                        string idValor = (string)dataTable.Rows[j]["IdentificadorInterno"];
+                        if (idValor != null)
+                        {
+                            var resultado = _context.ElementComponent.FirstOrDefault(x => x.Id.Equals(Guid.Parse(idValor)));
+                            if (resultado != null)
+                            {
+                                if (dataTable.Rows[j]["Perfil Requerido"] != null)
+                                {
+                                    var perfil = dataTable.Rows[j]["Perfil Requerido"];
+                                    resultado.PerfilRequerido = Convert.ToString(perfil);
+                                    elementDataList.Add(resultado);
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            test.Close();
+            _context.ElementComponent.UpdateRange(elementDataList);
             _context.SaveChanges();
             return "Registro exitoso";
         }

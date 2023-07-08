@@ -28,16 +28,8 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
         public async Task<FileManagerDto> GetFolderFilesContract(Guid id)
         {
             FileManagerDto fileManagerDto = new FileManagerDto();
-            try
-            {
-                fileManagerDto.Folders = await GetFolderContract(id);
-                fileManagerDto.FolderContract = await GetFoldersContract(id);
-            }catch (Exception ex)
-            {
-                throw new Exception("Error", ex);
-            }
-
-
+            fileManagerDto.Folders = await GetFolderContract(id);
+            fileManagerDto.FolderContract = await GetFoldersContract(id);
             return fileManagerDto;
         }
         public async Task<FolderManagerContractDto> GetAllContract()

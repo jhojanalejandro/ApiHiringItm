@@ -11,5 +11,8 @@ namespace WebApiHiringItm.MODEL.Dto
         public string? Id { get; set; }
         public string? Consecutive { get; set; }
         public string? ElementName { get; set; }
+        public string? ComponentName { get; set; }
+        public string? ActivityName { get; set; }
+
     }
 }

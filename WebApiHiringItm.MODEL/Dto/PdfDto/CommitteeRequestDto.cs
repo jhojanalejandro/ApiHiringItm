@@ -21,5 +21,7 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string ElementObject { get; set; }
         public string ElementName { get; set; }
         public string? TotalValue { get; set; }
+        public string ProfileRequire { get; set; }
+
     }
 }

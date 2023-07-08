@@ -103,7 +103,7 @@ namespace WebApiHiringItm.API.Controllers.PdfData
         {
             try
             {
-                var Data = await _pdfData.GetPreviusStudy(contractors);
+                var Data = await _pdfData.GetCommitteeRequest(contractors);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
