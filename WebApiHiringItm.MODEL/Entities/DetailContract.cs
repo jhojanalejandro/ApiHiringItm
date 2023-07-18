@@ -7,13 +7,21 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class DetailContract
     {
+        public DetailContract()
+        {
+            TermContract = new HashSet<TermContract>();
+        }
+
         public Guid Id { get; set; }
+        public int? Consecutive { get; set; }
         public Guid? ContractId { get; set; }
         public DateTime? FechaContrato { get; set; }
         public DateTime? FechaFinalizacion { get; set; }
-        public string NoAdicion { get; set; }
         public string TipoContrato { get; set; }
+        public Guid? DetailType { get; set; }
 
         public virtual ContractFolder Contract { get; set; }
+        public virtual DetailType DetailTypeNavigation { get; set; }
+        public virtual ICollection<TermContract> TermContract { get; set; }
     }
 }

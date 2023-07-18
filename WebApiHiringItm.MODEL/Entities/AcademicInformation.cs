@@ -8,9 +8,9 @@ namespace WebApiHiringItm.MODEL.Entities
     public partial class AcademicInformation
     {
         public Guid Id { get; set; }
-        public Guid? Contractor { get; set; }
+        public Guid Contractor { get; set; }
         public string Institution { get; set; }
-        public string TypeAcademicInformation { get; set; }
+        public string AcademicInformationType { get; set; }
         public string CollegeDegree { get; set; }
 
         public virtual Contractor ContractorNavigation { get; set; }

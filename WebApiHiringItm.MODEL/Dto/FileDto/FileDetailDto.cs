@@ -16,12 +16,12 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public string AsistencialUser { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
-        public string? TypeFilePayment { get; set; }
         public string? MonthPayment { get; set; }
         public bool? Passed { get; set; }
         public string? Type { get; set; }
         public string? DocumentTypes { get; set; }
         public string? StatusPayment { get; set; }
+        public string? DocumentTypesCode { get; set; }
 
         public DetailFileDto? DetailFile { get; set; } = null;
 

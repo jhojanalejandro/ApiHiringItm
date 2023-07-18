@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Dto
     public class TypeUserFileDto
     {
         public Guid Id { get; set; }
-        public string TypeFile { get; set; }
+        public string FileTypeDescription { get; set; }
         public string Code { get; set; }
     }
 }

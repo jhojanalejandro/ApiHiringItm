@@ -23,11 +23,13 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string? UserJuridic { get; set; }
         public string? UserFirm { get; set; }
         public string? UserJuridicFirm { get; set; }
-        public string SupervisorItmName { get; set; }
+        public string? SupervisorItmName { get; set; }
         public string? SupervisorFirm { get; set; }
+        public string? SupervisorCharge { get; set; }
         public string ElementObject { get; set; }
         public decimal? TotalValue { get; set; }
         public string MinuteNumber { get; set; }
+        public string UnifiedProfile { get; set; }
 
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Dto.Contratista;
+using WebApiHiringItm.MODEL.Dto.Contrato;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Dto.MasterDataDto;
@@ -34,7 +35,7 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<ComponenteDto, Component>().ReverseMap();
             CreateMap<ElementComponentDto, ElementComponent>().ReverseMap();
             CreateMap<DetalleContratoDto, DetailContract>().ReverseMap();
-            CreateMap<UserFirmDto, UserFile>().ReverseMap();
+            CreateMap<UserFileDto, UserFile>().ReverseMap();
             CreateMap<RProjectForlderDto, ContractFolder>().ReverseMap();
             CreateMap<ProjectFolderCostsDto, ContractFolder>().ReverseMap();
             CreateMap<DetailFileDto, DetailFile>().ReverseMap();
@@ -56,8 +57,11 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<AcademicInformationDto, AcademicInformation>().ReverseMap();
             CreateMap<EmptityHealthDto, EmptityHealth>().ReverseMap();
             CreateMap<RollDto, Roll>().ReverseMap();
-            CreateMap<TypeUserFileDto, TypeUserFile>().ReverseMap();
-
+            CreateMap<TypeUserFileDto, UserFileType>().ReverseMap();
+            CreateMap<AssignmentUserDto, AssigmentContract>().ReverseMap();
+            CreateMap<AssignmentTypeDto, AssignmentType>().ReverseMap();
+            CreateMap<TermTypeDto, TermType>().ReverseMap();
+            CreateMap<TermContractDto, TermContract>().ReverseMap();
 
         }
     }

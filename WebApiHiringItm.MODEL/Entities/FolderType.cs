@@ -7,9 +7,16 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class FolderType
     {
+        public FolderType()
+        {
+            Folder = new HashSet<Folder>();
+        }
+
         public Guid Id { get; set; }
-        public string FolderType1 { get; set; }
+        public string FolderTypeDescription { get; set; }
         public string FolderDescription { get; set; }
         public string Code { get; set; }
+
+        public virtual ICollection<Folder> Folder { get; set; }
     }
 }

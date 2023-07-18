@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public Activity()
         {
-            DetailProjectContractor = new HashSet<DetailProjectContractor>();
+            DetailContractor = new HashSet<DetailContractor>();
             ElementComponent = new HashSet<ElementComponent>();
         }
 
@@ -18,7 +18,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid ComponentId { get; set; }
 
         public virtual Component Component { get; set; }
-        public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
+        public virtual ICollection<DetailContractor> DetailContractor { get; set; }
         public virtual ICollection<ElementComponent> ElementComponent { get; set; }
     }
 }

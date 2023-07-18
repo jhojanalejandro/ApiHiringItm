@@ -10,7 +10,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public Component()
         {
             Activity = new HashSet<Activity>();
-            DetailProjectContractor = new HashSet<DetailProjectContractor>();
+            DetailContractor = new HashSet<DetailContractor>();
             ElementComponent = new HashSet<ElementComponent>();
         }
 
@@ -20,7 +20,7 @@ namespace WebApiHiringItm.MODEL.Entities
 
         public virtual ContractFolder Contract { get; set; }
         public virtual ICollection<Activity> Activity { get; set; }
-        public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
+        public virtual ICollection<DetailContractor> DetailContractor { get; set; }
         public virtual ICollection<ElementComponent> ElementComponent { get; set; }
     }
 }

@@ -6,18 +6,17 @@ using System.Threading.Tasks;
 
 namespace WebApiHiringItm.MODEL.Dto.Usuario
 {
-    public class UserTDto
+    public class TeamDto
     {
         public Guid? Id { get; set; }
         public string UserName { get; set; }
-        public string? Code { get; set; }
-        public string? Professionalposition { get; set; }
-        public string? UserPassword { get; set; }
         public string UserEmail { get; set; }
         public string? PhoneNumber { get; set; }
         public string Identification { get; set; }
         public Guid? UserFirmId { get; set; }
-        public string? PasswordMail { get; set; }
-        public Guid? RollId { get; set; }
+        public string? RollCode { get; set; }
+        public string? RollId { get; set; }
+        public string? Professionalposition { get; set; }
+
     }
 }

@@ -16,7 +16,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string? DescriptionProject { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
-        public string TypeFolder { get; set; }
+        public string FolderType { get; set; }
 
     }
 }

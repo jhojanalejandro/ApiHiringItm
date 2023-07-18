@@ -5,17 +5,17 @@ using System.Collections.Generic;
 
 namespace WebApiHiringItm.MODEL.Entities
 {
-    public partial class ElementType
+    public partial class TermType
     {
-        public ElementType()
+        public TermType()
         {
-            ElementComponent = new HashSet<ElementComponent>();
+            TermContract = new HashSet<TermContract>();
         }
 
         public Guid Id { get; set; }
-        public string ElementTypeDescription { get; set; }
+        public string TermDescription { get; set; }
         public string Code { get; set; }
 
-        public virtual ICollection<ElementComponent> ElementComponent { get; set; }
+        public virtual ICollection<TermContract> TermContract { get; set; }
     }
 }

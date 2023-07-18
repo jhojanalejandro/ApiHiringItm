@@ -14,14 +14,14 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string ContractNumber { get; set; }
         public string? ContractInitialDate { get; set; }
         public string? ContractFinalDate { get; set; }
-        public string SupervisorContract { get; set; }
-        public string SupervisorIdentification { get; set; }
-        public string PeriodExecutedInitialDate { get; set; }
+        public string? SupervisorContract { get; set; }
+        public string? SupervisorIdentification { get; set; }
+        public string? PeriodExecutedInitialDate { get; set; }
         public string PeriodExecutedFinalDate { get; set; }
 
         public string SpecificObligations { get; set; }
         public string ElementObject { get; set; }
-        public string? TotalValue { get; set; }
+        public decimal? TotalValue { get; set; }
         public string? TotalValuePeriod { get; set; }
 
 

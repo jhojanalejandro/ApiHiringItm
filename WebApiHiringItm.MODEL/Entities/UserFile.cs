@@ -7,20 +7,18 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class UserFile
     {
-        public UserFile()
-        {
-            UserT = new HashSet<UserT>();
-        }
-
         public Guid Id { get; set; }
-        public Guid? TypeUserFile { get; set; }
-        public string FirmData { get; set; }
+        public Guid UserFileType { get; set; }
+        public string FileData { get; set; }
         public Guid? RollId { get; set; }
         public string OwnerFirm { get; set; }
         public string UserfileName { get; set; }
+        public Guid? UserId { get; set; }
+        public string FileType { get; set; }
+        public string FileNameC { get; set; }
 
         public virtual Roll Roll { get; set; }
-        public virtual TypeUserFile TypeUserFileNavigation { get; set; }
-        public virtual ICollection<UserT> UserT { get; set; }
+        public virtual UserT User { get; set; }
+        public virtual UserFileType UserFileTypeNavigation { get; set; }
     }
 }

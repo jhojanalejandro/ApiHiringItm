@@ -23,6 +23,8 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string? ActivityId { get; set; }
         public string? LegalProccess { get; set; }
         public string? HiringStatus { get; set; }
+        public List<Guid> AssignmentUser { get; set; }
+
 
     }
 }
