@@ -52,7 +52,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         public virtual DbSet<StatusContract> StatusContract { get; set; }
         public virtual DbSet<StatusContractor> StatusContractor { get; set; }
         public virtual DbSet<StatusFile> StatusFile { get; set; }
-        public virtual DbSet<TermContractor> TermContractor { get; set; }
+        public virtual DbSet<TermContract> TermContract { get; set; }
         public virtual DbSet<TermType> TermType { get; set; }
         public virtual DbSet<UserFile> UserFile { get; set; }
         public virtual DbSet<UserFileType> UserFileType { get; set; }
@@ -810,7 +810,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.StatusFileDescription).HasMaxLength(100);
             });
 
-            modelBuilder.Entity<TermContractor>(entity =>
+            modelBuilder.Entity<TermContract>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
@@ -818,17 +818,17 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.FechaTermino).HasColumnType("date");
 
-                entity.HasOne(d => d.DetailContractorNavigation)
-                    .WithMany(p => p.TermContractor)
-                    .HasForeignKey(d => d.DetailContractor)
+                entity.HasOne(d => d.DetailContractNavigation)
+                    .WithMany(p => p.TermContract)
+                    .HasForeignKey(d => d.DetailContract)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__TermContr__Detai__1AD3FDA4");
+                    .HasConstraintName("FK__TermContr__Detai__2180FB33");
 
                 entity.HasOne(d => d.TermTypeNavigation)
-                    .WithMany(p => p.TermContractor)
+                    .WithMany(p => p.TermContract)
                     .HasForeignKey(d => d.TermType)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__TermContr__TermT__19DFD96B");
+                    .HasConstraintName("FK__TermContr__TermT__208CD6FA");
             });
 
             modelBuilder.Entity<TermType>(entity =>

@@ -41,7 +41,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<StatusContract> StatusContract { get; set; }
         DbSet<StatusContractor> StatusContractor { get; set; }
         DbSet<StatusFile> StatusFile { get; set; }
-        DbSet<TermContractor> TermContractor { get; set; }
+        DbSet<TermContract> TermContract { get; set; }
         DbSet<AssignmentType> AssignmentType { get; set; }
         DbSet<DetailType> DetailType { get; set; }
         DbSet<UserFileType> UserFileType { get; set; }
