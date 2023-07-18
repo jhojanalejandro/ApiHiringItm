@@ -38,11 +38,11 @@ namespace WebApiHiringItm.API.Controllers.HiringData
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetById(Guid contractorId, Guid contractId)
+        public async Task<IActionResult> GetByIdHinringData(Guid contractorId, Guid contractId)
         {
             try
             {
-                var Data = await _hiringData.GetById(contractorId, contractId);
+                var Data = await _hiringData.GetByIdHinringData(contractorId, contractId);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

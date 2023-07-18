@@ -7,8 +7,15 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class MinuteType
     {
+        public MinuteType()
+        {
+            ChangeContractContractor = new HashSet<ChangeContractContractor>();
+        }
+
         public Guid Id { get; set; }
-        public string MinuteType1 { get; set; }
+        public string MinuteTypeDescription { get; set; }
         public string Code { get; set; }
+
+        public virtual ICollection<ChangeContractContractor> ChangeContractContractor { get; set; }
     }
 }

@@ -77,49 +77,24 @@ namespace WebApiHiringItm.Core.User
 
                 var token = generateJwtToken(map);
 
-                return new AuthenticateResponse(getUser, token, model.UserType);
+                return new AuthenticateResponse(getUser, token, getUser.Roll.Code);
             }
 
         }
 
-        public async Task<List<UserTDto>> GetAll()
+        public async Task<List<TeamDto>> GetTeam()
         {
-            var result = _context.UserT
-                .Include(x => x.Roll)
-                .Where(x => !x.Roll.Code.Equals(RollEnum.Contratista.Description()));
-
-            return await result.Select(ct => new UserTDto()
+            return await _context.UserT
+                .Include(x => x.Roll).Select(ct => new TeamDto()
             {
                 Id = ct.Id,
                 UserName = ct.UserName,
-                Code = ct.Roll.Code,
-                Avatar = ct.Avatar,
                 UserEmail = ct.UserEmail,
-                Professionalposition = ct.Professionalposition,
                 Identification = ct.Identification,
                 PhoneNumber  = ct.PhoneNumber,
-            })
-            .AsNoTracking()
-            .ToListAsync();
-
-        }
-
-        public async Task<List<UserTDto>> GetAllAdmins()
-        {
-            var result = _context.UserT
-                .Include(x => x.Roll)
-                .Where(x => !x.Roll.Code.Equals(RollEnum.Desactivada.Description()) && !x.Roll.Code.Equals(RollEnum.Contratista.Description()) && (x.Roll.Code.Equals(RollEnum.Supervisor.Description()) || x.Roll.Code.Equals(RollEnum.Admin.Description())));
-
-            return await result.Select(ct => new UserTDto()
-            {
-                Id = ct.Id,
-                UserName = ct.UserName,
-                Code = ct.Roll.Code,
-                Avatar = ct.Avatar,
-                UserEmail = ct.UserEmail,
+                RollCode = ct.Roll.Code,
                 Professionalposition = ct.Professionalposition,
-                Identification = ct.Identification,
-                PhoneNumber = ct.PhoneNumber,
+                RollId = ct.Roll.Id.ToString()
             })
             .AsNoTracking()
             .ToListAsync();
@@ -130,11 +105,25 @@ namespace WebApiHiringItm.Core.User
         {
             return _context.UserT.FirstOrDefault(x => x.Id == id);
         }
-        public async Task<UserTDto> GetById(Guid id)
+
+        public async Task<UserTDto?> GetById(Guid id)
         {
-            var result = _context.UserT.FirstOrDefault(x => x.Id == id);
-            var map = _mapper.Map<UserTDto>(result);
-            return await Task.FromResult(map);
+            var result = _context.UserT.Where(x => x.Id == id);
+            return await result.Select(us => new UserTDto
+            {
+                Id = us.Id,
+                UserName = us.UserName, 
+                UserEmail = us.UserEmail,
+                Code = us.Roll.Code,
+                UserPassword = us.UserPassword,
+                PhoneNumber = us.PhoneNumber,
+                Professionalposition = us.Professionalposition,
+                Identification = us.Identification,
+                PasswordMail = us.PasswordMail
+
+            })
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
         }
         public async Task<bool> GetUserForgetPassword(RetrievePassword model)
         {
@@ -155,18 +144,17 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
-        public async Task<bool> Update(UserTDto model)
+        public async Task<bool> UpdateTeamRoll(UserTDto model)
         {
             if (model.Id != null)
             {
                 try
                 {
-                    var rollId = _context.Roll.Where(x => x.Code.Equals(model.Code)).Select(w => w.Id).FirstOrDefault();
                     var userupdate = _context.UserT.FirstOrDefault(x => x.Id.Equals(model.Id));
                     if (userupdate != null)
                     {
-                        userupdate.RollId = rollId;
                         model.UserPassword = userupdate.UserPassword;
+                        model.PasswordMail = userupdate.PasswordMail;
                         var map = _mapper.Map(model, userupdate);
                         _context.UserT.Update(map);
                         var res = await _context.SaveChangesAsync();
@@ -271,6 +259,8 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
+
+
         #endregion
 
         #region PRIVATE METODS

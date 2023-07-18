@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.X509;
 using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
+using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Contrato;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 
@@ -22,7 +23,7 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(bool inProgress, string tipoModulo)
+        public async Task<IActionResult> GetAllContracts(bool inProgress, string tipoModulo)
         {
             try
             {
@@ -98,13 +99,13 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByIdDetail(Guid id, bool tipoConsulta)
+        public async Task<IActionResult> GetDetailByIdContract(Guid id, bool tipoConsulta)
         {
             try
             {
                 if (tipoConsulta)
                 {
-                    var Data = await _project.GetDetailById(id);
+                    var Data = await _project.GetDetailByIdContract(id);
                     return Data != null ? Ok(Data) : NoContent();
                 }
                 else
@@ -138,11 +139,11 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
 
 
         [HttpGet]
-        public async Task<IActionResult> UpdateState(Guid id)
+        public async Task<IActionResult> UpdateStateContract(Guid id)
         {
             try
             {
-                var Data = await _project.UpdateState(id);
+                var Data = await _project.UpdateStateContract(id);
 
                 return Data == true ? Ok(Data) : NoContent();
             }
@@ -199,5 +200,37 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignmentUserContract(List<AssignmentUserDto> assignmentUser)
+        {
+            try
+            {
+                var Data = await _project.AssignmentUser(assignmentUser);
+                return Data == true ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveTermFileContract(TermContractDto modelTermContract)
+        {
+            try
+            {
+                var Data = await _project.SaveTermFileContract(modelTermContract);
+                return Data == true ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
     }
 }

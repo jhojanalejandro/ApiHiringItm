@@ -29,6 +29,6 @@ namespace WebApiHiringItm.MODEL.Dto.FileManagerDo
         public Guid? Id { get; set; }
         public string FolderName { get; set; }
         public string NumberProject { get; set; }
-        public string TypeFolder { get; set; }
+        public string FolderType { get; set; }
     }
 }

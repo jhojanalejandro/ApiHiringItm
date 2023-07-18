@@ -1,13 +1,17 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
 using WebApiHiringItm.CORE.Helpers.Enums;
+using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusContract;
+using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
+using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Contrato;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Entities;
@@ -18,18 +22,13 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
     {
         private readonly HiringContext _context;
         private readonly IMapper _mapper;
-        private readonly IComponenteCore _componente;
-        private readonly IElementosComponenteCore _elementos;
         private const string MODULONOMINA = "Nomina";
-        private const string TIPOCONTRATOINICIO = "Inicial";
 
         #region Builder
-        public ContractFolderCore(HiringContext context, IMapper mapper, IComponenteCore Component, IElementosComponenteCore elementos)
+        public ContractFolderCore(HiringContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-            _componente = Component;
-            _elementos = elementos;
         }
 
         #endregion
@@ -56,7 +55,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 Rubro = contract.RubroNavigation.RubroNumber,
                 NombreRubro = contract.RubroNavigation.Rubro,
                 FuenteRubro = contract.RubroNavigation.RubroOrigin,
-                StatusContract = contract.StatusContract.StatusContract1,
+                StatusContract = contract.StatusContract.StatusContractDescription,
                 FechaContrato = contract.DetailContract.Select(s => s.FechaContrato).FirstOrDefault(),
                 FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault()
             })
@@ -80,14 +79,17 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 ValorContrato = contract.ValorContrato,
                 NumberProject = contract.NumberProject,
                 Project = contract.Project,
-                StatusContract = contract.StatusContract.StatusContract1,
+                StatusContract = contract.StatusContract.StatusContractDescription,
+                StatusContractId = contract.StatusContract.Id.ToString().ToLower(),
                 FechaContrato = contract.DetailContract.Select(s => s.FechaContrato).FirstOrDefault(),
                 FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault(),
                 ValorSubTotal = contract.ValorSubTotal,
                 GastosOperativos = contract.GastosOperativos,
                 Rubro = contract.RubroNavigation.RubroNumber,
+                RubroId = contract.RubroNavigation.Id.ToString().ToLower(),
                 NombreRubro = contract.RubroNavigation.Rubro,
-                FuenteRubro = contract.RubroNavigation.RubroOrigin,
+                FuenteRubro = contract.FuenteRubro,
+                ObjectContract = contract.ObjectContract
 
             }).AsNoTracking()
               .ToListAsync();
@@ -114,19 +116,21 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 CompanyName = contract.CompanyName,
                 ProjectName = contract.ProjectName,
                 Activate = contract.Activate,
+                ObjectContract = contract.ObjectContract,
                 EnableProject = contract.EnableProject,
                 ContractorsCant = contract.ContractorsCant,
                 ValorContrato = contract.ValorContrato,
                 NumberProject = contract.NumberProject,
                 Project = contract.Project,
-                StatusContract = contract.StatusContract.StatusContract1,
+                StatusContract = contract.StatusContract.StatusContractDescription,
                 FechaContrato = contract.DetailContract.Select(s => s.FechaContrato).FirstOrDefault(),
                 FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault(),
                 ValorSubTotal = contract.ValorSubTotal,
                 GastosOperativos = contract.GastosOperativos,
                 Rubro = contract.RubroNavigation.RubroNumber,
                 NombreRubro = contract.RubroNavigation.Rubro,
-                FuenteRubro = contract.RubroNavigation.RubroOrigin
+                FuenteRubro = contract.FuenteRubro,
+                IsAssigmentUser = contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.RESPONSABLECONTRATO.Description())).Select(s => s.User).ToList().Count > 0 ? "ASIGNADO" : "NO ASIGNADO",
             }).AsNoTracking()
               .ToListAsync();
 
@@ -141,10 +145,10 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
 
         }
 
-        public async Task<DetalleContratoDto> GetDetailById(Guid ContractId)
+        public async Task<DetalleContratoDto> GetDetailByIdContract(Guid ContractId)
         {
 
-            var result = _context.DetailContract.Where(x => x.ContractId.Equals(ContractId) && x.TipoContrato.Equals(TIPOCONTRATOINICIO)).FirstOrDefault();
+            var result = _context.DetailContract.Where(x => x.ContractId.Equals(ContractId)).FirstOrDefault();
             var mapp = _mapper.Map<DetalleContratoDto>(result);
 
             return await Task.FromResult(mapp);
@@ -210,14 +214,21 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             } 
         }
 
-        public async Task<bool> UpdateState(Guid id)
+        public async Task<bool> UpdateStateContract(Guid id)
         {
             var getData = _context.ContractFolder.FirstOrDefault(x => x.Id.Equals(id));
+            var getStatusContractId = _context.StatusContractor.FirstOrDefault(x => x.Code.Equals(StatusContractorEnum.CONTRATADO.Description()));
+            var getContracts = _context.DetailContractor.Where(w => w.ContractId.Equals(id)).ToList();
+            foreach(var item in getContracts)
+            {
+                item.StatusContractor = getStatusContractId.Id;
+            }
 
             if (getData != null)
             {
                 getData.EnableProject = true;
                 _context.ContractFolder.Update(getData);
+                _context.DetailContractor.UpdateRange(getContracts);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
             }
@@ -284,8 +295,65 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<bool> AssignmentUser(List<AssignmentUserDto> modelAssignment)
+        {
+            var getContractAssignment = _context.AssigmentContract.Where(x => x.ContractId == modelAssignment[0].Id).ToList();
+            List<AssignmentUserDto> updateAssignment = new();
+            List<AssignmentUserDto> addAssignment = new();
+            if (getContractAssignment.Count > 0)
+            {
+                updateAssignment = modelAssignment.Where(w =>
+                         getContractAssignment.Any(a => a.UserId.Equals(w.UserId) && a.ContractId.Equals(w.ContractId))).ToList();
+                addAssignment = modelAssignment.Where(w =>
+                         getContractAssignment.Any(a => a.UserId != w.UserId && a.ContractId.Equals(w.ContractId))).ToList();
+
+                if (updateAssignment.Count > 0)
+                {
+                    var map = _mapper.Map(updateAssignment, getContractAssignment);
+                    _context.AssigmentContract.UpdateRange(map);
+                }
+                if (addAssignment.Count > 0)
+                {
+                    var mapAdd = _mapper.Map<List<AssigmentContract>>(addAssignment);
+                    _context.AssigmentContract.AddRange(mapAdd);
+                }
+
+            }
+            else
+            {
+                var mapAdd = _mapper.Map<List<AssigmentContract>>(modelAssignment);
+                _context.AssigmentContract.AddRange(mapAdd);
+            }
+            var res = await _context.SaveChangesAsync();
+            return res != 0 ? true : false;
+
+        }
+
+        public async Task<bool> SaveTermFileContract(TermContractDto modelTermContract)
+        {
+            var getDetailConttract = _context.DetailContract.FirstOrDefault(x => x.ContractId.Equals(modelTermContract.DetailContract));
+            var getTermContract = _context.TermContract.FirstOrDefault(x => x.DetailContract.Equals(getDetailConttract.Id));
+
+            if (getTermContract == null)
+            {
+                modelTermContract.Id = Guid.NewGuid();
+                modelTermContract.DetailContract = getDetailConttract.Id;
+                var mapTermContract = _mapper.Map<TermContract>(modelTermContract);
+                _context.TermContract.Add(mapTermContract);
+            }
+            else
+            {
+                modelTermContract.Id = getTermContract.Id;
+                modelTermContract.DetailContract = getTermContract.DetailContract;
+                var mapTermContractUpdate = _mapper.Map(modelTermContract, getTermContract);
+                _context.TermContract.Update(mapTermContractUpdate);
+            }
+            var res = await _context.SaveChangesAsync();
+            return res != 0 ? true : false;
+        }
         #endregion
-       
+
         #region METODOS PRIVADOS
         private async Task<bool> CreateDetail(DetalleContratoDto model)
         {

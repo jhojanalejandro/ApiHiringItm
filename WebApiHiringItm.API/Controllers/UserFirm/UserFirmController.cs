@@ -23,10 +23,7 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _userFirm.GetAllFirms();
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -66,11 +63,11 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveFirm(UserFirmDto model)
+        public async Task<IActionResult> SaveUserDocument(UserFileDto model)
         {
             try
             {
-                var Data = await _userFirm.SaveUserFirm(model);
+                var Data = await _userFirm.SaveUserDocument(model);
                 return Data == true ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

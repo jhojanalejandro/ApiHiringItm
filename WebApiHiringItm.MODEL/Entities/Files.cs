@@ -20,7 +20,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public string FileType { get; set; }
         public Guid? DocumentType { get; set; }
         public string DescriptionFile { get; set; }
-        public string TypeFilePayment { get; set; }
         public string MonthPayment { get; set; }
         public Guid? FolderId { get; set; }
 

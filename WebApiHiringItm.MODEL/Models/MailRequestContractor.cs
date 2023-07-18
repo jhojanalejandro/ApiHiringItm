@@ -14,6 +14,16 @@ namespace WebApiHiringItm.MODEL.Models
         public string Subject { get; set; }
         public string Body { get; set; }
         public string ImageMessage { get; set; }
+        public string ContractNumber { get; set; }
+        public List<FileAttach> ImageMessageAttach { get; set; }
+
+    }
+
+    public class FileAttach
+    {
+        public string FileData { get; set; }
+        public string FileType { get; set; }
+        public string FileName { get; set; }
 
     }
 }

@@ -104,12 +104,11 @@ namespace WebApiHiringItm.API.Controllers.Component
 
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetByIdComponent(Guid id, Guid activityId, Guid elementId)
         {
             try
             {
-                var res = await _componente.GetById(id);
+                var res = await _componente.GetByIdComponent(id, activityId,elementId);
                 return res != null ? Ok(res) : BadRequest();
             }
             catch (Exception e)

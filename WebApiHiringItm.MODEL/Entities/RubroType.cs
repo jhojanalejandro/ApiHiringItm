@@ -16,7 +16,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Rubro { get; set; }
         public string RubroNumber { get; set; }
         public string RubroOrigin { get; set; }
-        public bool? IsWinner { get; set; }
 
         public virtual ICollection<ContractFolder> ContractFolder { get; set; }
     }

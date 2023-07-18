@@ -13,7 +13,7 @@ namespace WebApiHiringItm.MODEL.Entities
         }
 
         public Guid Id { get; set; }
-        public string StatusContract1 { get; set; }
+        public string StatusContractDescription { get; set; }
         public string Code { get; set; }
 
         public virtual ICollection<ContractFolder> ContractFolder { get; set; }

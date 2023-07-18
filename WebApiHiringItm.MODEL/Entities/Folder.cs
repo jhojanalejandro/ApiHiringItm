@@ -20,10 +20,12 @@ namespace WebApiHiringItm.MODEL.Entities
         public string DescriptionProject { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
-        public string TypeFolder { get; set; }
+        public Guid? FolderType { get; set; }
+        public int? Consutive { get; set; }
 
         public virtual ContractFolder Contract { get; set; }
         public virtual Contractor Contractor { get; set; }
+        public virtual FolderType FolderTypeNavigation { get; set; }
         public virtual ICollection<Files> Files { get; set; }
     }
 }

@@ -45,7 +45,7 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
         #region PUBLIC METHODS
         public async Task<string> ImportarExcel(FileRequest model)
         {
-            List<DetailProjectContractor> listDetail = new List<DetailProjectContractor>();
+            List<DetailContractor> listDetail = new List<DetailContractor>();
             string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", model.Excel.FileName);
             if (!Directory.Exists(path))
             {
@@ -111,17 +111,17 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
                         dataTable.Rows[j]["Id"] = Guid.NewGuid();
                         if (valor != null)
                         {
-                            DetailProjectContractor detailProjectContractor = new DetailProjectContractor();
-                            detailProjectContractor.ContractId = model.ContractId;
-                            detailProjectContractor.ContractorId = (Guid)dataTable.Rows[j]["Id"];
+                            DetailContractor DetailContractor = new DetailContractor();
+                            DetailContractor.ContractId = model.ContractId;
+                            DetailContractor.ContractorId = (Guid)dataTable.Rows[j]["Id"];
                             var resultado = _context.Contractor.FirstOrDefault(x => x.Identificacion.Equals(valor));
                             if (resultado != null)
                             {
-                                detailProjectContractor.ContractorId = resultado.Id;
+                                DetailContractor.ContractorId = resultado.Id;
                                 dataTable.Rows.Remove(dataTable.Rows[j]);
                                 j--;
                             }
-                            listDetail.Add(detailProjectContractor);
+                            listDetail.Add(DetailContractor);
                         }
 
                     }
@@ -170,7 +170,7 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
 
         public async Task<string> ImportCdp(FileRequest model)
         {
-            var getHiring = _context.DetailProjectContractor
+            var getHiring = _context.DetailContractor
                     .Include(i => i.HiringData)    
                     .Where(w => w.ContractId.Equals(model.ContractId)).ToList();
 
@@ -332,7 +332,7 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
         #endregion
 
         #region PRIVATE METHODS
-        private async Task<bool> UpdateDetailContract(List<DetailProjectContractor> listDetail)
+        private async Task<bool> UpdateDetailContract(List<DetailContractor> listDetail)
         {
             try
             {
@@ -340,7 +340,7 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
                 for (int i = 0; i < listDetail.Count; i++)
                 {
 
-                    var resultDetail = _context.DetailProjectContractor.FirstOrDefault(dt => dt.ContractorId == listDetail[i].ContractorId && dt.ContractId == listDetail[i].ContractId);
+                    var resultDetail = _context.DetailContractor.FirstOrDefault(dt => dt.ContractorId == listDetail[i].ContractorId && dt.ContractId == listDetail[i].ContractId);
                     if (resultDetail != null)
                     {
                         listDetail.Remove(listDetail[i]);
@@ -349,10 +349,11 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
                     {
                         Guid idD = Guid.NewGuid();
                         listDetail[i].Id = idD;
+                        listDetail[i].Consecutive = 1;
                         listDetail[i].StatusContractor = GetstatusContractor.Id;
                     }
                 }
-                _context.DetailProjectContractor.AddRange(listDetail);
+                _context.DetailContractor.AddRange(listDetail);
                 var result = await _context.SaveChangesAsync();
                 if (result != 0)
                 {

@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 
 namespace WebApiHiringItm.CORE.Helpers.Enums.FolderType
 {
-    public enum FolderTypeEnum
+    public enum FolderTypeCodeEnum
     {
-        [Display(Description = "Contratista")]
-        CONTRATISTA = 0,
-
-        [Display(Description = "Contrato")]
-        CONTRATO = 1,
+        [Display(Description = "CTT")]
+        CONTRATO = 0,
+        [Display(Description = "PG")]
+        PAGOSCODE = 1,
 
     }
 }

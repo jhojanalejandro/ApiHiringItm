@@ -70,7 +70,7 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
                 FilesName = ct.File.FilesName,
                 Filedata = ct.File.Filedata,
                 FileType = ct.File.FileType,
-                DocumentTypes = ct.File.DocumentTypeNavigation.DocumentType1,
+                DocumentTypes = ct.File.DocumentTypeNavigation.DocumentTypeDescription,
                 DescriptionFile = ct.File.DescriptionFile,
                 UserId = ct.UserId,
             })
@@ -83,8 +83,7 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
         private async Task<List<FolderContractorDto>> GetFolderContract(Guid id)
         {
 
-            var contractor = _context.DetailProjectContractor
-                .Include(dt => dt.Contractor)
+            var contractor = _context.DetailContractor
                 .Include(dt => dt.Contract)
                     .ThenInclude(i => i.Files)
                 .Where(x => x.ContractId.Equals(id));
@@ -104,12 +103,12 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
         {
 
             var getFiles = _context.Folder
-                .Where(w => w.ContractId.Equals(id) && !w.ContractorId.HasValue && w.TypeFolder.Equals(FolderTypeEnum.CONTRATO.Description()));
+                .Where(w => w.ContractId.Equals(id) && !w.ContractorId.HasValue && w.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description()));
 
             return await getFiles.Select(fc => new FolderContractDto
             {
                 Id = fc.Id,
-                TypeFolder = FILETYPE,
+                FolderType = FILETYPE,
                 FolderName = fc.FolderName,
             })
              .AsNoTracking()

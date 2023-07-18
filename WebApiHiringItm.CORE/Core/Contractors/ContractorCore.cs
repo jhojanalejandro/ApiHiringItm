@@ -28,6 +28,7 @@ using WebApiHiringItm.CORE.Helpers.Enums.Hiring;
 using WebApiHiringItm.CORE.Helpers.Enums.File;
 using System.Xml.Linq;
 using System.Diagnostics.Contracts;
+using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
 
 namespace WebApiHiringItm.CORE.Core.Contractors
 {
@@ -53,27 +54,27 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         public async Task<List<ContractorPaymentsDto>> GetPaymentsContractorList(Guid contractId, Guid contractorId)
         {
             var result = _context.ContractorPayments
-                        .Where(p => p.ContractorId == contractorId && p.ContractId == contractId).ToList();
+                        .Where(p => p.DetailContractorNavigation.ContractorId == contractorId && p.DetailContractorNavigation.ContractId == contractId).ToList();
             var map = _mapper.Map<List<ContractorPaymentsDto>>(result);
             return await Task.FromResult(map);
         }
 
         public async Task<List<ContractsContractorDto>> GetSeveralContractsByContractor(string contractorId)
         {
-            var result = _context.DetailProjectContractor.Where(x => x.ContractorId.Equals(contractorId)).ToList();
+            var result = _context.DetailContractor.Where(x => x.ContractorId.Equals(contractorId)).ToList();
             var map = _mapper.Map<List<ContractsContractorDto>>(result);
             return await Task.FromResult(map);
         }
 
         public async Task<List<ContractorByContractDto>> GetByIdFolder(Guid id)
         {
-            var getStatusFileProcess = _context.StatusFile.Where(w => w.Code.Equals(StatusFileEnum.ENPROCESO.Description())).FirstOrDefault()?.StatusFile1;
+            var getStatusFileProcess = _context.StatusFile.Where(w => w.Code.Equals(StatusFileEnum.ENPROCESO.Description())).FirstOrDefault()?.StatusFileDescription;
 
             var getStatusFiles = _context.DetailFile
                 .Include(i => i.File)
                     .ThenInclude(i => i.DocumentTypeNavigation)
                 .Include(i => i.StatusFile);
-            var contractor = _context.DetailProjectContractor.Where(x => x.ContractId.Equals(id))
+            var contractor = _context.DetailContractor.Where(x => x.ContractId.Equals(id))
                 .Include(dt => dt.Contractor)
                     .ThenInclude(i => i.Files)
                 .Include(dt => dt.HiringData)
@@ -90,18 +91,20 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                 Celular = ct.Contractor.Celular,
                 Correo = ct.Contractor.Correo,
                 Direccion = ct.Contractor.Direccion,
-                StatusContractor = ct.StatusContractorNavigation.StatusContractor1,
-                ElementId = ct.ElementId.ToString(),
-                ComponentId = ct.ComponentId.ToString(),
-                ActivityId = ct.ActivityId.ToString(),
+                StatusContractor = ct.StatusContractorNavigation.StatusContractorDescription,
+                ElementId = ct.ElementId.ToString().ToLower(),
+                ComponentId = ct.ComponentId.ToString().ToLower(),
+                ActivityId = ct.ActivityId.ToString().ToLower(),
                 LegalProccess = getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).ToList().Count >= 3
                 ? "APROBADO"
-                : getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && !w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).OrderByDescending(o => o.RegisterDate).Select(s => s.StatusFile.StatusFile1).FirstOrDefault() == null 
+                : getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && !w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).OrderByDescending(o => o.RegisterDate).Select(s => s.StatusFile.StatusFileDescription).FirstOrDefault() == null 
                     ? getStatusFileProcess
                     : getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).ToList().Count < 3
                         ? "EN PROCESO"
-                        : getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && !w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).OrderByDescending(o => o.RegisterDate).Select(s => s.StatusFile.StatusFile1).FirstOrDefault(),
+                        : getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && !w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).OrderByDescending(o => o.RegisterDate).Select(s => s.StatusFile.StatusFileDescription).FirstOrDefault(),
                 HiringStatus = ct.HiringData != null ? HiringStatusEnum.CONTRATANDO.Description() : HiringStatusEnum.ENESPERA.Description(),
+                AssignmentUser = ct.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.RESPONSABLECONTRATO.Description())).Select(s => s.User.Id).ToList()
+
             })
              .AsNoTracking()
              .ToListAsync();
@@ -112,9 +115,9 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         //{
         //    var result = _context.ContractorPayments
         //        .Include(co => co.Contractor)
-        //            .ThenInclude(x => x.DetailProjectContractor)
+        //            .ThenInclude(x => x.DetailContractor)
         //                .ThenInclude(x => x.Contract)
-        //            .ThenInclude(x => x.DetailProjectContractor)
+        //            .ThenInclude(x => x.DetailContractor)
         //                .ThenInclude(x => x.Element)
         //         .Where(x => x.Contractor.Id.Equals(contractorId) && x.Contract.Id.Equals(ContractId)).OrderByDescending(x => x.FromDate);
 
@@ -145,7 +148,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         //            Paymentcant = cb.Paymentcant,
         //            ContractNumber = cb.Contract.NumberProject,
         //            LugarExpedicion = cb.Contractor.LugarExpedicion,
-        //            NombreElemento = cb.Contract.DetailProjectContractor.Select(ne => ne.Element.NombreElemento).FirstOrDefault()
+        //            NombreElemento = cb.Contract.DetailContractor.Select(ne => ne.Element.NombreElemento).FirstOrDefault()
         //        })
         //        .AsNoTracking()
         //        .FirstOrDefaultAsync();
@@ -174,13 +177,13 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
         public async Task<bool> Delete(Guid id)
         {
-            var resultData = _context.DetailProjectContractor.Where(x => x.ContractorId.Equals(id)).FirstOrDefault();
+            var resultData = _context.DetailContractor.Where(x => x.ContractorId.Equals(id)).FirstOrDefault();
             Guid? getIdStatus = _context.StatusContractor.Where(x => x.Code.Equals(StatusContractorEnum.INHABILITADO.Description())).FirstOrDefault()?.Id;
 
             if (resultData != null)
             {
                 resultData.StatusContractor = getIdStatus;
-                var result = _context.DetailProjectContractor.Update(resultData);
+                var result = _context.DetailContractor.Update(resultData);
                 await _context.SaveChangesAsync();
 
             }
@@ -191,7 +194,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         {
             var getStatusContractor = _context.StatusContractor.Where(x => x.Code.Equals(StatusContractorEnum.CONTRATANDO.Description())).FirstOrDefault()?.Id;
 
-            var getDetail = _context.DetailProjectContractor.Where(x => x.ContractorId.Equals(model.ContractorPersonalInformation.Id)).FirstOrDefault();
+            var getDetail = _context.DetailContractor.Where(x => x.ContractorId.Equals(model.ContractorPersonalInformation.Id)).FirstOrDefault();
             var getData = _context.Contractor.Where(x => x.Id.Equals(model.ContractorPersonalInformation.Id)).FirstOrDefault();
             var getAcademicInformation = _context.AcademicInformation.Where(x => x.Contractor.Equals(model.ContractorPersonalInformation.Id)).FirstOrDefault();
             var getDataEmptityHealth = _context.EmptityHealth.Where(x => x.Contractor.Equals(model.ContractorPersonalInformation.Id)).FirstOrDefault();
@@ -232,7 +235,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                 }
 
                 _context.Contractor.Update(map);
-                _context.DetailProjectContractor.Update(getDetail);
+                _context.DetailContractor.Update(getDetail);
 
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
@@ -251,11 +254,11 @@ namespace WebApiHiringItm.CORE.Core.Contractors
         {
             var getData = _context.NewnessContractor.Where(x => x.Id.Equals(model.Id)).FirstOrDefault();
             Guid? getStatusContractor = _context.StatusContractor.Where(x => x.Code.Equals(StatusContractorEnum.INHABILITADO.Description())).FirstOrDefault()?.Id;
-            var getContractor = _context.DetailProjectContractor.Where(x => x.Id.Equals(Guid.Parse(model.ContractorId)) && x.ContractId.Equals(Guid.Parse(model.ContractId))).FirstOrDefault();
+            var getContractor = _context.DetailContractor.Where(x => x.Id.Equals(Guid.Parse(model.ContractorId)) && x.ContractId.Equals(Guid.Parse(model.ContractId))).FirstOrDefault();
             if (getContractor != null)
             {
                 getContractor.StatusContractor = getStatusContractor;
-                var result = _context.DetailProjectContractor.Update(getContractor);
+                var result = _context.DetailContractor.Update(getContractor);
             }
             if (getData == null)
             {
@@ -290,7 +293,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
         public async Task<List<ContractsContarctorDto>> getContractsByContractor(string contractorId)
         {
-            return await _context.DetailProjectContractor
+            return await _context.DetailContractor
             .Include(i => i.Contractor)
             .Include(i => i.Contract)
             .Where(w => w.ContractorId.Equals(Guid.Parse(contractorId)))
@@ -322,12 +325,12 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             {
                 try
                 {
-                    List<DetailProjectContractor> asignDataListUpdate = new List<DetailProjectContractor>();
+                    List<DetailContractor> asignDataListUpdate = new List<DetailContractor>();
                     for (int i = 0; i < model.ContractorId.Length; i++)
                     {
                         if (model.Type == TIPOASIGNACIONELEMENTO)
                         {
-                            var contractorUpdate = _context.DetailProjectContractor.FirstOrDefault(d => d.ContractId == model.ContractId && d.ContractorId.Equals(model.ContractorId[i]));
+                            var contractorUpdate = _context.DetailContractor.FirstOrDefault(d => d.ContractId == model.ContractId && d.ContractorId.Equals(model.ContractorId[i]));
                             if (contractorUpdate != null)
                             {
                                 contractorUpdate.ElementId = model.Id;
@@ -340,7 +343,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                         }
                         else
                         {
-                            var contractorUpdate = _context.DetailProjectContractor.FirstOrDefault(d => d.ContractId == model.ContractId && d.ContractorId.Equals(model.ContractorId[i]));
+                            var contractorUpdate = _context.DetailContractor.FirstOrDefault(d => d.ContractId == model.ContractId && d.ContractorId.Equals(model.ContractorId[i]));
                             if (contractorUpdate != null)
                             {
                                 contractorUpdate.ComponentId = model.Id;
@@ -348,7 +351,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                             }
                         }
                     }
-                    _context.DetailProjectContractor.UpdateRange(asignDataListUpdate);
+                    _context.DetailContractor.UpdateRange(asignDataListUpdate);
                     var res = await _context.SaveChangesAsync();
                     return res != 0 ? true : false;
                 }
@@ -406,20 +409,16 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
         private void UpdateResource(Guid contractorId, Guid contractId)
         {
-            var getData = _context.DetailProjectContractor.Where(x => x.ContractId.Equals(contractId) && x.ContractorId.Equals(contractorId))
+            var getData = _context.DetailContractor.Where(x => x.ContractId.Equals(contractId) && x.ContractorId.Equals(contractorId))
                 .Include(i => i.Element)
                 .Include(i => i.Contract)
                 .FirstOrDefault();
-            var getEconomicDataContractor = _context.EconomicdataContractor.Where(x => x.ContractId.Equals(contractId) && x.ContractorId.Equals(contractorId)).FirstOrDefault();
-            if (getEconomicDataContractor != null)
+            if (getData.Id != null)
             {
-                if (getData.Id != null)
-                {
-                    ElementComponent elemento = new();
-                    elemento = getData.Element;
-                    elemento.Recursos += getEconomicDataContractor.Debt;
-                    _context.ElementComponent.Update(elemento);
-                }
+                ElementComponent elemento = new();
+                elemento = getData.Element;
+                elemento.Recursos += getData.EconomicdataNavigation.Debt;
+                _context.ElementComponent.Update(elemento);
             }
         }
 

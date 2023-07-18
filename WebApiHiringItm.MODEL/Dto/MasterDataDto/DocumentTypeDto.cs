@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Dto.MasterDataDto
     public class DocumentTypeDto
     {
         public Guid Id { get; set; }
-        public string DocumentType1 { get; set; }
+        public string DocumentTypeDescription { get; set; }
         public string Code { get; set; }
     }
 }

@@ -14,6 +14,8 @@ using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Dto;
 using Microsoft.EntityFrameworkCore;
 using Color = System.Drawing.Color;
+using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
+using WebApiHiringItm.CORE.Helpers.Enums;
 
 namespace WebApiHiringItm.CORE.Core.ExportToExcel
 {
@@ -67,7 +69,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["A1:P1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
 
                 row = 2;
-                var data = _context.DetailProjectContractor
+                var data = _context.DetailContractor
                             .Include(x => x.Contractor)
                             .Include(x => x.Element)
                             .Include(x => x.HiringData)
@@ -81,7 +83,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
                     Identificacion = w.Contractor.Identificacion,
                     ObjetoConvenio = w.Element.ObjetoElemento,
-                    ValorTotal = w.Contractor.EconomicdataContractor.Where(w => w.ContractId.Equals(ContractId)).Select(s => s.TotalValue).FirstOrDefault(),
+                    ValorTotal = w.EconomicdataNavigation.TotalValue,
                     NombreElemento = w.Element.NombreElemento,
                     GeneralObligation = w.Element.ObligacionesGenerales,
                     SpecificObligation = w.Element.ObligacionesEspecificas,
@@ -131,7 +133,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
 
         public async Task<MemoryStream> ExportContratacionDap(ControllerBase controller, Guid ContractId)
         {
-            var data = _context.DetailProjectContractor
+            var data = _context.DetailContractor
                 .Include(x => x.Contractor)
                 .Include(x => x.Element)
                     .ThenInclude(t => t.Cpc)
@@ -210,7 +212,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
         public async Task<MemoryStream> ExportCdp(ControllerBase controller, Guid ContractId)
         {
             // Get the user list 
-            var data = _context.DetailProjectContractor.Where(x => x.ContractId == ContractId)
+            var data = _context.DetailContractor.Where(x => x.ContractId == ContractId)
                 .Include(x => x.Contractor)
                 .Include(x => x.Element)
                     .ThenInclude(t => t.Cpc)
@@ -272,8 +274,8 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     NombreElemento = w.Element.NombreElemento,
                     NombreComponente = w.Component.NombreComponente,
                     NumeroConvenio = w.Contract.NumberProject,
-                    CedulaSupervisor = w.HiringData.IdentificacionSupervisor,
-                    NombreSupervisor = w.HiringData.SupervisorItm,
+                    CedulaSupervisor = w.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Identification).FirstOrDefault(),
+                    NombreSupervisor = w.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.UserName).FirstOrDefault(),
                     Rubro = w.Contract.RubroNavigation.RubroNumber,
                     Cpc = w.Element.Cpc.CpcName,
                     Projecto = w.Contract.Project,
@@ -398,15 +400,8 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["A4:AA4"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                 worksheet.Cells["A4:AA4"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
                 worksheet.Cells["A4:AA4"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                var data = _context.DetailProjectContractor.Where(x => x.ContractId == ContractId)
-                                    .Include(x => x.Contractor)
-                                        .ThenInclude(i => i.EconomicdataContractor)
-                                    .Include(x => x.Element)
-                                    .Include(x => x.HiringData)
-                                    .Include(x => x.Component)
-                                    .Include(x => x.Contract);
-
-                var dataList = data.Select(w => new DetailProjectContractorDto()
+                var data = _context.DetailContractor.Where(x => x.ContractId == ContractId)
+                .Select(w => new DetailProjectContractorDto()
                 {
                     Convenio = w.Contract.ProjectName,
                     CompanyName = w.Contract.CompanyName,
@@ -414,12 +409,12 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
                     Identificacion = w.Contractor.Identificacion,
                     ObjetoConvenio = w.Element.ObjetoElemento,
-                    ValorTotal = w.Contractor.EconomicdataContractor.Where(w => w.ContractId.Equals(ContractId)).Select(s => s.TotalValue).FirstOrDefault(),
+                    ValorTotal = w.EconomicdataNavigation.TotalValue,
                     InitialDate = w.HiringData.FechaRealDeInicio,
                     FinalDate = w.HiringData.FechaFinalizacionConvenio,
                     User = w.Contractor.User.UserName,
                     Email = w.Contractor.User.UserEmail,
-                    UnitValue = w.Contractor.EconomicdataContractor.Where(w => w.ContractId.Equals(ContractId)).Select(s => s.UnitValue).FirstOrDefault()
+                    UnitValue = w.EconomicdataNavigation.UnitValue
 
                 })
                 .AsNoTracking()
@@ -430,7 +425,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 var date = DateTime.Now.ToString("dd/MM/yyyy");
                 row = 5;
                 int nro = 0;
-                foreach (var user in dataList)
+                foreach (var user in data)
                 {
                     if ( user.ObjetoConvenio != null && user.ValorTotal != null && user.InitialDate.HasValue && user.FinalDate.HasValue)
                     {

@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public ElementComponent()
         {
-            DetailProjectContractor = new HashSet<DetailProjectContractor>();
+            DetailContractor = new HashSet<DetailContractor>();
         }
 
         public Guid Id { get; set; }
@@ -38,6 +38,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual Component Component { get; set; }
         public virtual CpcType Cpc { get; set; }
         public virtual ElementType TipoElementoNavigation { get; set; }
-        public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
+        public virtual ICollection<DetailContractor> DetailContractor { get; set; }
     }
 }

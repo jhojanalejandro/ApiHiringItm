@@ -13,7 +13,7 @@ namespace WebApiHiringItm.MODEL.Entities
         }
 
         public Guid Id { get; set; }
-        public string DocumentType1 { get; set; }
+        public string DocumentTypeDescription { get; set; }
         public string Code { get; set; }
 
         public virtual ICollection<Files> Files { get; set; }
