@@ -11,7 +11,7 @@ using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.FileCore.Interface;
 using WebApiHiringItm.CORE.Helpers.Enums;
 using WebApiHiringItm.CORE.Helpers.Enums.File;
-using WebApiHiringItm.CORE.Helpers.Enums.Folder;
+using WebApiHiringItm.CORE.Helpers.Enums.FolderType;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusFile;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.FileDto;
@@ -24,7 +24,8 @@ namespace WebApiHiringItm.CORE.Core.FileCore
     {
         private readonly HiringContext _context;
         private readonly IMapper _mapper;
-
+        private readonly string CONTRATO = "CONTRATO";
+        private readonly string PAGO = "PAGOS";
         public FilesCore(HiringContext context, IMapper mapper)
         {
             _context = context;
@@ -38,7 +39,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 .Include(i => i.File)
                 .Include(i => i.StatusFile)
                 .Where(x => x.File.ContractorId.Equals(contractorId) && x.File.ContractId.Equals(contractId) && x.File.FolderId.Equals(Guid.Parse(folderId))).OrderByDescending(o => o.RegisterDate);
-            return await result
+            return result
                 .GroupBy(f => f.FileId)
                 .Select(f => new FileContractDto
             {
@@ -48,13 +49,13 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 FileType = f.First().File.FileType,
                 DescriptionFile = f.First().File.DescriptionFile,
                 RegisterDate = f.First().RegisterDate,
-                DocumentTypes = f.First().File.DocumentTypeNavigation.DocumentType1,
+                DocumentTypes = f.First().File.DocumentTypeNavigation.DocumentTypeDescription,
                 Passed = f.First().Passed,
                 StatusFile = f.First().StatusFileId
 
             })
             .AsNoTracking()
-            .ToListAsync();
+            .ToList();
         }
 
         public async Task<List<FileContractDto>> GetFileContractByFolder(string folderId, Guid contractId)
@@ -80,7 +81,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 .Include(i => i.File)
                     .ThenInclude(i => i.DocumentTypeNavigation)
                 .Where(x => x.File.ContractorId.Equals(contractorId) && x.File.ContractId.Equals(contractId));
-            return await result.Select(f => new FileDetailDto
+            return result.Select(f => new FileDetailDto
             {
                 Id = f.File.Id,
                 Filedata = f.File.Filedata,
@@ -88,26 +89,26 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 FileType = f.File.FileType,
                 DescriptionFile = f.File.DescriptionFile,
                 RegisterDate = f.RegisterDate,
-                DocumentTypes = f.File.DocumentTypeNavigation.DocumentType1.ToUpper(),
+                DocumentTypes = f.File.DocumentTypeNavigation.DocumentTypeDescription.ToUpper(),
+                DocumentTypesCode = f.File.DocumentTypeNavigation.Code.ToUpper(),
                 Passed = f.Passed
 
             })
                 .AsNoTracking()
-                .ToListAsync()
-              ;
+                .ToList();
 
         }
 
         public async Task<List<FilesDto>> GetAllFileByIdContract(Guid id)
         {
-            var result = _context.Files.Where(x => x.ContractId.Equals(id) && x.TypeFilePayment.Equals(FileEnum.CONTRATO.Description())).ToList();
+            var result = _context.Files.Where(x => x.ContractId.Equals(id) && x.DocumentTypeNavigation.Code.Equals(FolderTypeCodeEnum.PAGOSCODE.Description())).ToList();
             var map = _mapper.Map<List<FilesDto>>(result);
             return await Task.FromResult(map);
         }
 
         public async Task<List<GetFilesPaymentDto>> GetAllByDate(Guid contractId, string type, string date)
         {
-            var result = _context.Files.Where(x => x.ContractId.Equals(contractId) && x.MonthPayment.Equals(date) && x.TypeFilePayment.Equals(type)).ToList();
+            var result = _context.Files.Where(x => x.ContractId.Equals(contractId) && x.MonthPayment.Equals(date) && x.DocumentTypeNavigation.Code.Equals(type)).ToList();
             var map = _mapper.Map<List<GetFilesPaymentDto>>(result);
             return await Task.FromResult(map);
         }
@@ -130,11 +131,10 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 DescriptionFile = f.File.DescriptionFile,
                 AsistencialUser = f.User.UserName,
                 RegisterDate = f.RegisterDate,
-                TypeFilePayment = f.File.TypeFilePayment,
                 MonthPayment = f.File.MonthPayment,
                 Passed = f.Passed,
-                DocumentTypes = f.File.DocumentTypeNavigation.DocumentType1,
-                StatusPayment = f.StatusFile.StatusFile1
+                DocumentTypes = f.File.DocumentTypeNavigation.DocumentTypeDescription,
+                StatusPayment = f.StatusFile.StatusFileDescription
             })
             .AsNoTracking()
             .FirstOrDefaultAsync();
@@ -169,50 +169,27 @@ namespace WebApiHiringItm.CORE.Core.FileCore
         {
             Guid? folderId;
             var getData = _context.Files.FirstOrDefault(x => x.Id.Equals(model.Id));
+            var getFolderId = _context.FolderType.FirstOrDefault(x => x.Code.Equals(FolderTypeCodeEnum.PAGOSCODE.Description()));
+
             if (getData == null)
             {
-                if (model.TypeFilePayment.Equals(FileEnum.INFORME.Description()) || model.TypeFilePayment.Equals(FileEnum.CUENTADECOBRO.Description()) || model.TypeFilePayment.Equals(FileEnum.PLANILLA.Description()))
+                var getFolder = _context.Folder.FirstOrDefault(x => x.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.PAGOSCODE.Description()) && x.ContractorId == model.ContractorId);
+                if (getFolder == null)
                 {
-                    var getFolder = _context.Folder.FirstOrDefault(x => x.TypeFolder.Equals(FolderEnums.CARPETAPAGOS.Description()) && x.ContractorId == model.ContractorId);
-                    if (getFolder == null)
-                    {
-                        Folder folderPago = new Folder();
-                        folderPago.Id = Guid.NewGuid();
-                        folderPago.TypeFolder = FolderEnums.CARPETAPAGOS.Description();
-                        folderPago.FolderName = FolderEnums.CARPETAPAGOS.Description();
-                        folderPago.DescriptionProject = model.DescriptionFile;
-                        folderPago.ContractorId = model.ContractorId;
-                        folderPago.RegisterDate = DateTime.Now;
-                        folderPago.ModifyDate = DateTime.Now;
-                        _context.Folder.Add(folderPago);
-                        folderId = folderPago.Id;
-                    }
-                    else
-                    {
-                        folderId = getFolder.Id;
-                    }
+                    Folder folderPago = new Folder();
+                    folderPago.Id = Guid.NewGuid();
+                    folderPago.FolderType = getFolderId.Id;
+                    folderPago.FolderName = CONTRATO;
+                    folderPago.DescriptionProject = model.DescriptionFile;
+                    folderPago.ContractorId = model.ContractorId;
+                    folderPago.RegisterDate = DateTime.Now;
+                    folderPago.ModifyDate = DateTime.Now;
+                    _context.Folder.Add(folderPago);
+                    folderId = folderPago.Id;
                 }
                 else
                 {
-                    var getFolder = _context.Folder.FirstOrDefault(x => x.TypeFolder.Equals(FolderEnums.CONTRATOS.Description()) && x.ContractorId == model.ContractorId);
-                    if (getFolder == null)
-                    {
-                        Folder folderPago = new Folder();
-                        folderPago.Id = Guid.NewGuid();
-                        folderPago.TypeFolder = FolderEnums.CONTRATOS.Description();
-                        folderPago.FolderName = FolderEnums.CONTRATOS.Description();
-                        folderPago.DescriptionProject = model.DescriptionFile;
-                        folderPago.ContractorId = model.ContractorId;
-                        folderPago.ContractId = model.ContractId;
-                        folderPago.RegisterDate = DateTime.Now;
-                        folderPago.ModifyDate = DateTime.Now;
-                        _context.Folder.Add(folderPago);
-                        folderId = folderPago.Id;
-                    }
-                    else
-                    {
-                        folderId = getFolder.Id;
-                    }
+                    folderId = getFolder.Id;
                 }
                 var map = _mapper.Map<Files>(model);
                 map.Id = Guid.NewGuid();
@@ -249,7 +226,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
         {
             var getData = _context.Files.FirstOrDefault(x => x.Id.Equals(model.Id));
 
-            if (getData == null)
+            if (getData == null)    
             {
                 var map = _mapper.Map<Files>(model);
                 map.Id = Guid.NewGuid();
@@ -283,8 +260,8 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<bool> Addbill(FilesDto model)
         {
-            var getData = _context.Files.Where(x => x.ContractorId.Equals(model.ContractorId) && x.TypeFilePayment.Equals(FileEnum.MINUTA.Description())).FirstOrDefault();
-            var getFolder = _context.Folder.Where(x => x.FolderName.Equals(FolderEnums.CONTRATOS.Description()) && x.ContractId.Equals(model.ContractId)).FirstOrDefault();
+            var getData = _context.Files.Where(x => x.ContractorId.Equals(model.ContractorId) && x.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.MINUTACODE.Description())).FirstOrDefault();
+            var getFolder = _context.Folder.Where(x => x.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.PAGOSCODE.Description()) && x.ContractId.Equals(model.ContractId)).FirstOrDefault();
 
             if (getData == null)
             {
@@ -292,7 +269,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 {
                     Folder carpetaMinuta = new Folder();
                     carpetaMinuta.Id = Guid.NewGuid();
-                    carpetaMinuta.FolderName = FolderEnums.CONTRATOS.Description();
+                    //carpetaMinuta.FolderName = FolderEnums.CONTRATOS.Description();
                     carpetaMinuta.DescriptionProject = "archivos del contrato";
                     carpetaMinuta.ContractorId = model.ContractorId;
                     carpetaMinuta.RegisterDate = DateTime.Now;
@@ -319,7 +296,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 {
                     Folder carpetaMinuta = new Folder();
                     carpetaMinuta.Id = Guid.NewGuid();
-                    carpetaMinuta.FolderName = FolderEnums.CONTRATOS.Description();
+                    //carpetaMinuta.FolderName = FolderEnums.CONTRATOS.Description();
                     carpetaMinuta.DescriptionProject = "archivos del contrato";
                     carpetaMinuta.ContractorId = getData.ContractorId;
                     carpetaMinuta.RegisterDate = DateTime.Now;

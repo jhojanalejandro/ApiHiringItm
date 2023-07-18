@@ -6,9 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.MasterDataCore.Interface;
-using WebApiHiringItm.CORE.Helpers.Enums;
-using WebApiHiringItm.CORE.Helpers.Enums.File;
-using WebApiHiringItm.CORE.Helpers.Enums.Folder;
 using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Dto.MasterDataDto;
 using WebApiHiringItm.MODEL.Entities;
@@ -94,7 +91,7 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore
 
         public async Task<List<StatusFileDto>> GetStatusFile()
         {
-            var result = _context.StatusFile.ToList();
+            var result = _context.StatusFile.OrderBy(o => o.ConsecutiveStatus).ToList();
             var map = _mapper.Map<List<StatusFileDto>>(result);
             return await Task.FromResult(map);
         }
@@ -117,6 +114,21 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore
         {
             var result = _context.RubroType.ToList();
             var map = _mapper.Map<List<RubroTypeDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<TermTypeDto>> GetAllTermType()
+        {
+            var result = _context.TermType.ToList();
+            var map = _mapper.Map<List<TermTypeDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+
+        public async Task<List<AssignmentTypeDto>> GetAllAssignmentType()
+        {
+            var result = _context.AssignmentType.ToList();
+            var map = _mapper.Map<List<AssignmentTypeDto>>(result);
             return await Task.FromResult(map);
         }
     }

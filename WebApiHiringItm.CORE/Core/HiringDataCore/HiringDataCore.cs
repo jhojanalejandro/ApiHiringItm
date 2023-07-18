@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
+using WebApiHiringItm.CORE.Helpers.Enums;
+using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Dto.Contratista;
@@ -14,7 +16,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
         #region FIELDS
         private readonly HiringContext _context;
         private readonly IMapper _mapper;
-        IQueryable<DetailProjectContractor> hiringResult;
+        IQueryable<DetailContractor> hiringResult;
         #endregion
 
         public HiringDataCore(HiringContext context, IMapper mapper)
@@ -31,12 +33,14 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             return await Task.FromResult(map);
         }
 
-        public async Task<HiringDataDto?> GetById(Guid contractorId, Guid contractId)
+        public async Task<HiringDataDto?> GetByIdHinringData(Guid contractorId, Guid contractId)
         {
-            var hiringResult = _context.DetailProjectContractor
+            var hiringResult = _context.DetailContractor
                  .Include(x => x.HiringData)
                  .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId.Equals(x.ContractId));
-            
+            var getType = _context.DetailContractor
+                    .Include(x => x.HiringData)
+                    .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId.Equals(x.ContractId));
             return await hiringResult.Select(hd => new HiringDataDto
             {
                 Id = hd.HiringData.Id,
@@ -45,8 +49,8 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 Contrato = hd.HiringData.Contrato,
                 Compromiso = hd.HiringData.Compromiso,
                 FechaExaPreocupacional = hd.HiringData.FechaExaPreocupacional,
-                SupervisorItm = hd.HiringData.SupervisorItm,
-                CargoSupervisorItm = hd.HiringData.CargoSupervisorItm,
+                SupervisorItm = hd.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.UserName).FirstOrDefault(),
+                CargoSupervisorItm = hd.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Professionalposition).FirstOrDefault(),
                 FechaDeComite = hd.HiringData.FechaDeComite,
                 RequierePoliza = hd.HiringData.RequierePoliza,
                 NoPoliza = hd.HiringData.NoPoliza,
@@ -59,7 +63,8 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 NombreRubro = hd.Contract.RubroNavigation.Rubro,
                 FuenteRubro = hd.Contract.RubroNavigation.RubroOrigin,
                 Cdp = hd.HiringData.Cdp,
-                NumeroActa = hd.HiringData.NumeroActa
+                NumeroActa = hd.HiringData.NumeroActa,
+                SupervisorId = hd.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Id.ToString()).FirstOrDefault(),
             })
              .AsNoTracking()
              .FirstOrDefaultAsync();
@@ -102,8 +107,8 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
 
             List<HiringData> hiringDataListUpdate = new List<HiringData>();
             List<HiringData> hiringDataListAdd = new List<HiringData>();
-            List<DetailProjectContractor> detailDataListAdd = new List<DetailProjectContractor>();
-            var getData = _context.DetailProjectContractor
+            List<DetailContractor> detailDataListAdd = new List<DetailContractor>();
+            var getData = _context.DetailContractor
                 .Where(x => x.ContractId == model[0].ContractId)
                 .Include(dt => dt.HiringData)
                 .ToList();
@@ -127,17 +132,17 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 {
                     if (getData != null)
                     {
-                        var stattusId = getStatusId.Find(f => f.StatusContractor1.Equals(model[i].StatusContractor))?.Id;
-                        DetailProjectContractor detailProjectContractor = new DetailProjectContractor();
+                        var stattusId = getStatusId.Find(f => f.StatusContractorDescription.Equals(model[i].StatusContractor))?.Id;
+                        DetailContractor DetailContractor = new DetailContractor();
                         map[i].Id = Guid.NewGuid();
-                        detailProjectContractor.HiringDataId = map[i].Id;
-                        detailProjectContractor.ContractorId = map[i].ContractorId;
-                        detailProjectContractor.ContractId = model[i].ContractId;
-                        detailProjectContractor.ElementId = hiring.ElementId;
-                        detailProjectContractor.ComponentId = hiring.ComponentId;
-                        detailProjectContractor.StatusContractor = stattusId;
-                        detailProjectContractor.Id = hiring.Id;
-                        detailDataListAdd.Add(detailProjectContractor);
+                        DetailContractor.HiringDataId = map[i].Id;
+                        DetailContractor.ContractorId = map[i].ContractorId;
+                        DetailContractor.ContractId = model[i].ContractId;
+                        DetailContractor.ElementId = hiring.ElementId;
+                        DetailContractor.ComponentId = hiring.ComponentId;
+                        DetailContractor.StatusContractor = stattusId;
+                        DetailContractor.Id = hiring.Id;
+                        detailDataListAdd.Add(DetailContractor);
                         hiringDataListAdd.Add(map[i]);
                     }
                     else
@@ -162,9 +167,9 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
         #endregion
         
         #region PRIVATE METHODS
-        private async Task<bool> updateDetails(List<DetailProjectContractor> detailProjectContractors)
+        private async Task<bool> updateDetails(List<DetailContractor> detailProjectContractors)
         {
-            _context.DetailProjectContractor.UpdateRange(detailProjectContractors);
+            _context.DetailContractor.UpdateRange(detailProjectContractors);
             var result = await _context.SaveChangesAsync();
             if (result > 0)
             {

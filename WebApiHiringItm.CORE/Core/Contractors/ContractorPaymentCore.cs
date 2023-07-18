@@ -61,7 +61,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
             for (var i = 0; i < map.Count; i++)
             {
-                var getData = _context.ContractorPayments.Where(x => x.FromDate == map[i].FromDate && x.ToDate == map[i].ToDate && x.ContractorId == map[i].ContractorId).FirstOrDefault();
+                var getData = _context.ContractorPayments.Where(x => x.FromDate == map[i].FromDate && x.ToDate == map[i].ToDate && x.DetailContractorNavigation.ContractorId.Equals(model[i].ContractorId)).FirstOrDefault();
                 if (getData != null)
                 {
                     var mapData = _mapper.Map(model[i], getData);

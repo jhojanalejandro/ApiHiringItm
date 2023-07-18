@@ -40,10 +40,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _contractorPayment.GetById(id);
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Helpers;
@@ -112,10 +113,44 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             var mapctivity = _mapper.Map<ActivityDto>(result);
             return await Task.FromResult(mapctivity);
         }
-        public async Task<ComponenteDto> GetById(Guid id)
+        public async Task<ComponenteDto> GetByIdComponent(Guid id, Guid activityId, Guid elementId)
         {
+
             var result = _context.Component.FirstOrDefault(x => x.Id.Equals(id));
+
             var map = _mapper.Map<ComponenteDto>(result);
+            var activity = _context.Activity;
+            if (elementId != Guid.Empty)
+            {
+                List<ElementComponentDto> elementsList = new();
+                var getElement = _context.ElementComponent.Where(w => w.Id.Equals(elementId)).FirstOrDefault();
+                var mapElement = _mapper.Map<ElementComponentDto>(getElement);
+
+                elementsList.Add(mapElement);
+                map.Elementos = elementsList;
+            }
+            if (activityId != Guid.Empty)
+            {
+                activity.Where(w => w.Id.Equals(activityId)).ToList();
+            }
+            else
+            {
+                activity.Where(w => w.ComponentId.Equals(id)).ToList();
+            }
+
+
+            if (activity.ToList().Count > 0 )
+            {
+                map.Activities = _mapper.Map<List<ActivityDto>>(activity);
+                map.Activities.ForEach(eA =>
+                {
+                    var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(map.Id) && w.ActivityId.Equals(eA.Id)).ToList();
+                    eA.Elementos = _mapper.Map<List<ElementComponentDto>>(element);
+
+                });
+            }
+
+
             return await Task.FromResult(map);
         }
 
@@ -150,7 +185,6 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             {
                 throw new Exception("Error", ex);
             }
-            return false;
         }
 
         #endregion

@@ -11,7 +11,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore.Interface
     public interface IHiringDataCore
     {
         Task<List<HiringDataDto>> GetAll();
-        Task<HiringDataDto> GetById(Guid id, Guid contractId);
+        Task<HiringDataDto> GetByIdHinringData(Guid id, Guid contractId);
         Task<bool> Delete(Guid id);
         Task<bool> Create(List<HiringDataDto> model);
 

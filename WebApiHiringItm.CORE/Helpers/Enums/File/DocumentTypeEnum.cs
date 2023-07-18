@@ -9,26 +9,26 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.File
 {
     public enum DocumentTypeEnum
     {
-        [Display(Description = "MCNT")]
-        MINUTACONTRATISTACODE = 0,
-
+        [Display(Description = "MNT")]
+        MINUTACODE = 0,
         [Display(Description = "RSC")]
         REGISTROSECOPCODE = 1,
-
         [Display(Description = "MMCR")]
         MINUTAMACRO = 2,
-
         [Display(Description = "EXPNL")]
         EXAMENESPREOCUPACIONALESCODE = 3,
-
         [Display(Description = "HV")]
         HOJADEVIDACODE = 4,
-
-        [Display(Description = "Otros")]
-        OTROS = 5,
-
-        [Display(Description = "MNTA")]
-        MINUTA = 6,
+        [Display(Description = "PNLL")]
+        PLANILLA = 5,
+        [Display(Description = "CNTCB")]
+        CUENTACOBRO = 5,
+        [Display(Description = "INFEJ")]
+        INFORMEEJECUCIÓN = 6,
+        [Display(Description = "ETPR")]
+        ESTUDIOSPREVIOS = 7,
+        [Display(Description = "SLCMT")]
+        SOLICITUDCOMITE = 8,
     }
 
 }
