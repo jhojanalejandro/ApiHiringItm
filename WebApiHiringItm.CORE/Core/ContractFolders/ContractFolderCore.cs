@@ -11,7 +11,12 @@ using WebApiHiringItm.CORE.Helpers.Enums;
 using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusContract;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericValidation;
+using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.Contrato;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Entities;
@@ -89,7 +94,8 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 RubroId = contract.RubroNavigation.Id.ToString().ToLower(),
                 NombreRubro = contract.RubroNavigation.Rubro,
                 FuenteRubro = contract.FuenteRubro,
-                ObjectContract = contract.ObjectContract
+                ObjectContract = contract.ObjectContract,
+                DetailContractId = contract.DetailContract.Select(s => s.Id.ToString()).FirstOrDefault()
 
             }).AsNoTracking()
               .ToListAsync();
@@ -97,7 +103,8 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
 
         public async Task<List<ContractListDto>> GetAllInProgess(string typeModule)
         {
-            var getStatusContract = _context.StatusContract.Where(x =>  x.Code.Equals(StatusContractEnum.TERMINADO.Description())).Select(s => s.Id).FirstOrDefault();
+
+                var getStatusContract = _context.StatusContract.Where(x =>  x.Code.Equals(StatusContractEnum.TERMINADO.Description())).Select(s => s.Id).FirstOrDefault();
             var getStatusContractInprogess = _context.StatusContract.Where(x => x.Code.Equals(StatusContractEnum.ENPROCESO.Description())).Select(s => s.Id).FirstOrDefault();
 
             IQueryable<ContractFolder> result; 
@@ -179,39 +186,64 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             return await Task.FromResult(map);
         }
 
-        public async Task<bool> SaveContract(RProjectForlderDto model)
+        public async Task<IGenericResponse<string>> SaveContract(RProjectForlderDto model)
         {
-            var getData = _context.ContractFolder.FirstOrDefault(x => x.Id.Equals(model.Id));
+            if (string.IsNullOrEmpty(model.UserId) || !model.UserId.IsGuid())
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.GUIDNOTVALID);
 
+            if (string.IsNullOrEmpty(model.StatusContractId) || !model.StatusContractId.IsGuid())
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.GUIDNOTVALID);
+
+
+            var getData = _context.ContractFolder.FirstOrDefault(x => x.Id.Equals(model.Id));
+            int resp = 0;
             if (getData == null)
             {
                 model.Id = Guid.NewGuid();
                 var map = _mapper.Map<ContractFolder>(model);
                 _context.ContractFolder.Add(map);
-                var res = await _context.SaveChangesAsync();
-                if (res != null)
+                DetalleContratoDto detalle = model.DetalleContratoDto;
+                detalle.ContractId = map.Id;
+                resp = await CreateDetail(detalle);
+                resp = await _context.SaveChangesAsync();
+
+                if (resp != 0)
                 {
-                    DetalleContratoDto detalle = model.DetalleContratoDto;
-                    detalle.ContractId = map.Id;
-                    if (!await CreateDetail(detalle))
-                        return false;
+                    return ApiResponseHelper.CreateResponse(Resource.REGISTERSUCCESSFULL);
                 }
-                return res != 0 ? true : false;
+                else
+                {
+                    return ApiResponseHelper.CreateErrorResponse<string>(Resource.INFORMATIONEMPTY);
+                }
             }
             else
             {
+                var getDataDetail = _context.DetailContract.FirstOrDefault(x => x.ContractId.Equals(model.Id));
+
                 model.Id = getData.Id;
                 var map = _mapper.Map(model, getData);
                 if (model.DetalleContratoDto.ContractId != null && model.DetalleContratoDto.Update)
                 {
                     DetalleContratoDto detalle = model.DetalleContratoDto;
-                    if (!await CreateDetail(detalle))
-                        return false;
+                    resp = await CreateDetail(detalle);
+                }
+                else
+                {
+                    var mapDetail = _mapper.Map(model.DetalleContratoDto, getDataDetail);
+                    _context.DetailContract.Update(mapDetail);
                 }
                 _context.ContractFolder.Update(map);
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
-            } 
+                resp = await _context.SaveChangesAsync();
+                if (resp != 0)
+                {
+                    return ApiResponseHelper.CreateResponse(Resource.REGISTERSUCCESSFULL);
+                }
+                else
+                {
+                    return ApiResponseHelper.CreateErrorResponse<string>(Resource.INFORMATIONEMPTY);
+                }
+            }
+
         }
 
         public async Task<bool> UpdateStateContract(Guid id)
@@ -355,7 +387,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
         #endregion
 
         #region METODOS PRIVADOS
-        private async Task<bool> CreateDetail(DetalleContratoDto model)
+        private async Task<int> CreateDetail(DetalleContratoDto model)
         {
             var getData = _context.DetailContract.FirstOrDefault(x => x.FechaFinalizacion == model.FechaFinalizacion && x.ContractId.Equals(model.ContractId));
 
@@ -365,7 +397,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 map.Id = Guid.NewGuid();
                 _context.DetailContract.Add(map);
                 var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
+                return res = 1;
 
             }
             else{
@@ -373,7 +405,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 var map = _mapper.Map(model, getData);
                 _context.DetailContract.Update(map);
                 var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
+                return res = 0;
             }
         }
 

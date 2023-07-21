@@ -29,6 +29,10 @@ using WebApiHiringItm.CORE.Helpers.Enums.File;
 using System.Xml.Linq;
 using System.Diagnostics.Contracts;
 using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Properties;
+using WebApiHiringItm.CORE.Helpers.GenericValidation;
 
 namespace WebApiHiringItm.CORE.Core.Contractors
 {
@@ -51,37 +55,43 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             return await Task.FromResult(map);
         }
 
-        public async Task<List<ContractorPaymentsDto>> GetPaymentsContractorList(Guid contractId, Guid contractorId)
-        {
-            var result = _context.ContractorPayments
-                        .Where(p => p.DetailContractorNavigation.ContractorId == contractorId && p.DetailContractorNavigation.ContractId == contractId).ToList();
-            var map = _mapper.Map<List<ContractorPaymentsDto>>(result);
-            return await Task.FromResult(map);
-        }
 
-        public async Task<List<ContractsContractorDto>> GetSeveralContractsByContractor(string contractorId)
+        public async Task<IGenericResponse<List<ContractsContractorDto>>> GetSeveralContractsByContractor(string contractorId)
         {
+            if (string.IsNullOrEmpty(contractorId) || !contractorId.IsGuid())
+                return ApiResponseHelper.CreateErrorResponse<List<ContractsContractorDto>>(Resource.GUIDNOTVALID);
+
             var result = _context.DetailContractor.Where(x => x.ContractorId.Equals(contractorId)).ToList();
             var map = _mapper.Map<List<ContractsContractorDto>>(result);
-            return await Task.FromResult(map);
+            if (map != null && map.Count > 0)
+            {
+                return ApiResponseHelper.CreateResponse(map);
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<List<ContractsContractorDto>>(Resource.INFORMATIONEMPTY);
+            }
         }
 
-        public async Task<List<ContractorByContractDto>> GetByIdFolder(Guid id)
+        public async Task<IGenericResponse<List<ContractorByContractDto>>> GetContractorByContract(string contractId)
         {
+            if (string.IsNullOrEmpty(contractId) || !contractId.IsGuid())
+                return ApiResponseHelper.CreateErrorResponse<List<ContractorByContractDto>>(Resource.GUIDNOTVALID);
+
             var getStatusFileProcess = _context.StatusFile.Where(w => w.Code.Equals(StatusFileEnum.ENPROCESO.Description())).FirstOrDefault()?.StatusFileDescription;
 
             var getStatusFiles = _context.DetailFile
                 .Include(i => i.File)
                     .ThenInclude(i => i.DocumentTypeNavigation)
                 .Include(i => i.StatusFile);
-            var contractor = _context.DetailContractor.Where(x => x.ContractId.Equals(id))
+            var contractor = _context.DetailContractor.Where(x => x.ContractId.Equals(contractId))
                 .Include(dt => dt.Contractor)
                     .ThenInclude(i => i.Files)
                 .Include(dt => dt.HiringData)
                 .Include(i => i.Contract)
                     .ThenInclude(i => i.StatusContract);
            
-            return await contractor.Select(ct => new ContractorByContractDto
+            var resultByContract = await contractor.Select(ct => new ContractorByContractDto
             {
                 Id = ct.Contractor.Id,
                 Nombre = ct.Contractor.Nombre + " " + ct.Contractor.Apellido,
@@ -109,6 +119,14 @@ namespace WebApiHiringItm.CORE.Core.Contractors
              .AsNoTracking()
              .ToListAsync();
 
+            if (resultByContract != null)
+            {
+                return ApiResponseHelper.CreateResponse(resultByContract);
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<List<ContractorByContractDto>>(Resource.INFORMATIONEMPTY);
+            }
         }
 
         //public async Task<ChargeAccountDto?> ChargeAccountGetById(Guid contractorId, Guid ContractId)
