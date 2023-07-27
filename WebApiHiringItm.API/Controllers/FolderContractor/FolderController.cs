@@ -19,11 +19,11 @@ namespace WebApiHiringItm.API.Controllers.Folder
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(Guid contractorId, Guid contractId)
+        public async Task<IActionResult> GetAllFolderById(Guid contractorId, Guid contractId)
         {
             try
             {
-                var Data = await _folder.GetAllById(contractorId, contractId);
+                var Data = await _folder.GetAllFolderById(contractorId, contractId);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -53,11 +53,11 @@ namespace WebApiHiringItm.API.Controllers.Folder
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(FolderDto model)
+        public async Task<IActionResult> SaveFolderContract(FolderDto model)
         {
             try
             {
-                var Data = await _folder.Create(model);
+                var Data = await _folder.SaveFolderContract(model);
 
                 return Data == true ? Ok(Data) : NoContent();
             }
@@ -74,7 +74,7 @@ namespace WebApiHiringItm.API.Controllers.Folder
         {
             try
             {
-                var Data = await _folder.Create(model);
+                var Data = await _folder.SaveFolderContract(model);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

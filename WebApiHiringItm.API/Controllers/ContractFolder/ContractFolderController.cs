@@ -89,7 +89,6 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
                     var Data = await _project.GetDetailByIdLastDate(id);
                     return Data != null ? Ok(Data) : NoContent();
                 }
-                return NoContent();
 
             }
             catch (Exception ex)

@@ -175,6 +175,21 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpGet]
+        public  IActionResult ValidateDocumentUpload(string contractId, string contractorId)
+        {
+            try
+            {
+                var Data =  _contactor.ValidateDocumentUpload(Guid.Parse(contractId), Guid.Parse(contractorId));
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
         #endregion
 
     }
