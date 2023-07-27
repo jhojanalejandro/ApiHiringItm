@@ -37,10 +37,10 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
         {
             var hiringResult = _context.DetailContractor
                  .Include(x => x.HiringData)
-                 .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId.Equals(x.ContractId));
+                 .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId.Equals(contractId));
             var getType = _context.DetailContractor
                     .Include(x => x.HiringData)
-                    .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId.Equals(x.ContractId));
+                    .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId.Equals(contractId));
             return await hiringResult.Select(hd => new HiringDataDto
             {
                 Id = hd.HiringData.Id,
@@ -101,7 +101,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             }
         }
 
-        public async Task<bool> Create(List<HiringDataDto> model)
+        public async Task<bool> SaveHiringData(List<HiringDataDto> model)
         {
             var getStatusId = _context.StatusContractor.ToList();
 
@@ -114,10 +114,10 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 .ToList();
 
             var hd = _context.HiringData.ToList();
-            var map = _mapper.Map<List<HiringData>>(model);
-            for (var i = 0; i < map.Count; i++)
+            var mapHiring = _mapper.Map<List<HiringData>>(model);
+            for (var i = 0; i < mapHiring.Count; i++)
             {
-                var hiring = getData.FirstOrDefault(h => h.ContractorId.Equals(map[i].ContractorId));
+                var hiring = getData.FirstOrDefault(h => h.ContractorId.Equals(mapHiring[i].ContractorId));
                 var hdata = hd.FirstOrDefault(x => x.Id == hiring.HiringDataId);
 
                 if (hdata != null)
@@ -125,7 +125,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                     model[i].Id = hdata.Id;
                     var mapData = _mapper.Map(model[i], hdata);
                     hiringDataListUpdate.Add(mapData);
-                    map.Remove(map[i]);
+                    mapHiring.Remove(mapHiring[i]);
                     i--;
                 }
                 else
@@ -134,16 +134,17 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                     {
                         var stattusId = getStatusId.Find(f => f.StatusContractorDescription.Equals(model[i].StatusContractor))?.Id;
                         DetailContractor DetailContractor = new DetailContractor();
-                        map[i].Id = Guid.NewGuid();
-                        DetailContractor.HiringDataId = map[i].Id;
-                        DetailContractor.ContractorId = map[i].ContractorId;
+                        mapHiring[i].Id = Guid.NewGuid();
+                        DetailContractor.HiringDataId = mapHiring[i].Id;
+                        DetailContractor.ContractorId = mapHiring[i].ContractorId;
                         DetailContractor.ContractId = model[i].ContractId;
                         DetailContractor.ElementId = hiring.ElementId;
                         DetailContractor.ComponentId = hiring.ComponentId;
+                        DetailContractor.ActivityId = hiring.ActivityId;
                         DetailContractor.StatusContractor = stattusId;
                         DetailContractor.Id = hiring.Id;
                         detailDataListAdd.Add(DetailContractor);
-                        hiringDataListAdd.Add(map[i]);
+                        hiringDataListAdd.Add(mapHiring[i]);
                     }
                     else
                     {

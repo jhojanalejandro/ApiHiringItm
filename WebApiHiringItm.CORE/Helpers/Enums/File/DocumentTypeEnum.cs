@@ -13,8 +13,6 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.File
         MINUTACODE = 0,
         [Display(Description = "RSC")]
         REGISTROSECOPCODE = 1,
-        [Display(Description = "MMCR")]
-        MINUTAMACRO = 2,
         [Display(Description = "EXPNL")]
         EXAMENESPREOCUPACIONALESCODE = 3,
         [Display(Description = "HV")]

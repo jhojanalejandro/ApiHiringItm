@@ -22,6 +22,6 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore.Interface
         Task<List<MinuteTypeDto>> GetAllMinuteType();
         Task<List<AssignmentTypeDto>> GetAllAssignmentType();
         Task<List<TermTypeDto>> GetAllTermType();
-
+        Task<List<DetailTypeDto>> GetAllDetailType();
     }
 }

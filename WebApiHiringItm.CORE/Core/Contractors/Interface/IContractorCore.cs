@@ -18,5 +18,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
         Task<bool> AddNewness(NewnessContractorDto model);
         Task<List<HistoryContractorDto>> GetHistoryContractor();
         Task<IGenericResponse<List<ContractorByContractDto>>> GetContractorByContract(string contractId);
+        ValidateFileDto ValidateDocumentUpload(Guid contractId, Guid contractorId);
     }
 }

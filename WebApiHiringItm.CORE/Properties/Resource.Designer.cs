@@ -61,6 +61,15 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a No se encuentran archivos para adjuntar al correo .
+        /// </summary>
+        internal static string ATTACHMENTEMPTY {
+            get {
+                return ResourceManager.GetString("ATTACHMENTEMPTY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a El identificador no contiene la  estructura valida.
         /// </summary>
         internal static string GUIDNOTVALID {
@@ -75,6 +84,15 @@ namespace WebApiHiringItm.CORE.Properties {
         internal static string INFORMATIONEMPTY {
             get {
                 return ResourceManager.GetString("INFORMATIONEMPTY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Invitación envida exitosamente.
+        /// </summary>
+        internal static string MAILSENDSUCCESS {
+            get {
+                return ResourceManager.GetString("MAILSENDSUCCESS", resourceCulture);
             }
         }
         

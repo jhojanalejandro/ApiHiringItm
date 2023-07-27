@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ATTACHMENTEMPTY" xml:space="preserve">
+    <value>No se encuentran archivos para adjuntar al correo </value>
+  </data>
   <data name="GUIDNOTVALID" xml:space="preserve">
     <value>El identificador no contiene la  estructura valida</value>
   </data>
   <data name="INFORMATIONEMPTY" xml:space="preserve">
     <value>No se encontro información</value>
+  </data>
+  <data name="MAILSENDSUCCESS" xml:space="preserve">
+    <value>Invitación envida exitosamente</value>
   </data>
   <data name="REGISTERSUCCESSFULL" xml:space="preserve">
     <value>Información registra exitosamnete</value>

@@ -131,5 +131,13 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore
             var map = _mapper.Map<List<AssignmentTypeDto>>(result);
             return await Task.FromResult(map);
         }
+
+
+        public async Task<List<DetailTypeDto>> GetAllDetailType()
+        {
+            var result = _context.DetailType.ToList();
+            var map = _mapper.Map<List<DetailTypeDto>>(result);
+            return await Task.FromResult(map);
+        }
     }
 }

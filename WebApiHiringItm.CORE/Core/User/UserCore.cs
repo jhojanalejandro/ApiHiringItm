@@ -94,7 +94,8 @@ namespace WebApiHiringItm.Core.User
                 PhoneNumber  = ct.PhoneNumber,
                 RollCode = ct.Roll.Code,
                 Professionalposition = ct.Professionalposition,
-                RollId = ct.Roll.Id.ToString()
+                RollId = ct.Roll.Id.ToString(),
+                RollDescription = ct.Roll.RollName
             })
             .AsNoTracking()
             .ToListAsync();

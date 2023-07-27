@@ -84,7 +84,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                 .Include(i => i.File)
                     .ThenInclude(i => i.DocumentTypeNavigation)
                 .Include(i => i.StatusFile);
-            var contractor = _context.DetailContractor.Where(x => x.ContractId.Equals(contractId))
+            var contractor = _context.DetailContractor.Where(x => x.ContractId.Equals(Guid.Parse(contractId)))
                 .Include(dt => dt.Contractor)
                     .ThenInclude(i => i.Files)
                 .Include(dt => dt.HiringData)
@@ -113,7 +113,9 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                         ? "EN PROCESO"
                         : getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && !w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).OrderByDescending(o => o.RegisterDate).Select(s => s.StatusFile.StatusFileDescription).FirstOrDefault(),
                 HiringStatus = ct.HiringData != null ? HiringStatusEnum.CONTRATANDO.Description() : HiringStatusEnum.ENESPERA.Description(),
-                AssignmentUser = ct.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.RESPONSABLECONTRATO.Description())).Select(s => s.User.Id).ToList()
+                AssignmentUser = ct.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.RESPONSABLECONTRATO.Description())).Select(s => s.User.Id).ToList(),
+                MinuteGnenerated = getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.MINUTACODE.Description())).FirstOrDefault() != null ? "GENERADA" : "PENDIENTE",
+                ComiteGenerated = getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.MINUTACODE.Description())).FirstOrDefault() != null ? "GENERADA" : "PENDIENTE",
 
             })
              .AsNoTracking()
@@ -404,6 +406,28 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
                 throw new Exception("Error", ex);
             }
+
+        }
+
+        public ValidateFileDto ValidateDocumentUpload(Guid contractId, Guid contractorId)
+        {
+            var getDataFile = _context.DetailFile
+                .Include(i => i.File)
+                    .ThenInclude(i => i.DocumentTypeNavigation)
+                .Include(i => i.StatusFile)
+                 .Where(x => x.File.ContractId.Equals(contractId) && x.File.ContractorId.Equals(contractorId)).ToList();
+
+            ValidateFileDto validate = new();
+            var hv =  getDataFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(w => w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) && !w.StatusFile.Code.Equals(StatusFileEnum.REMITIDO.Description()));
+            var secop = getDataFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(w => w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()) && !w.StatusFile.Code.Equals(StatusFileEnum.REMITIDO.Description()));
+            var exam = getDataFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(w => w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) && !w.StatusFile.Code.Equals(StatusFileEnum.REMITIDO.Description()));
+
+            validate.Hv = hv == null ? true : false;
+            validate.Secop = secop == null ? true : false;
+            validate.Exam = exam == null ? true : false;
+
+            return validate;
+
 
         }
         #endregion

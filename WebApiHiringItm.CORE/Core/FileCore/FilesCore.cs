@@ -39,23 +39,25 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 .Include(i => i.File)
                 .Include(i => i.StatusFile)
                 .Where(x => x.File.ContractorId.Equals(contractorId) && x.File.ContractId.Equals(contractId) && x.File.FolderId.Equals(Guid.Parse(folderId))).OrderByDescending(o => o.RegisterDate);
-            return result
-                .GroupBy(f => f.FileId)
+            return await result
+                .GroupBy(f => new { f.FileId, f.File.Filedata,f.File.FilesName,
+                    f.File.FileType, f.File.DescriptionFile,f.RegisterDate, 
+                    f.File.DocumentTypeNavigation.DocumentTypeDescription,
+                    f.Passed, f.StatusFileId })
                 .Select(f => new FileContractDto
             {
-                Id = f.Key,
-                Filedata = f.First().File.Filedata,
-                FilesName = f.First().File.FilesName,
-                FileType = f.First().File.FileType,
-                DescriptionFile = f.First().File.DescriptionFile,
-                RegisterDate = f.First().RegisterDate,
-                DocumentTypes = f.First().File.DocumentTypeNavigation.DocumentTypeDescription,
-                Passed = f.First().Passed,
-                StatusFile = f.First().StatusFileId
-
+                Id = f.Key.FileId,
+                Filedata = f.Key.Filedata,
+                FilesName = f.Key.FilesName,
+                FileType = f.Key.FileType,
+                DescriptionFile = f.Key.DescriptionFile,
+                RegisterDate = f.Key.RegisterDate,
+                DocumentTypes = f.Key.DocumentTypeDescription,
+                Passed = f.Key.Passed,
+                StatusFile = f.Key.StatusFileId
             })
             .AsNoTracking()
-            .ToList();
+            .ToListAsync();
         }
 
         public async Task<List<FileContractDto>> GetFileContractByFolder(string folderId, Guid contractId)
@@ -182,6 +184,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                     folderPago.FolderName = CONTRATO;
                     folderPago.DescriptionProject = model.DescriptionFile;
                     folderPago.ContractorId = model.ContractorId;
+                    folderPago.ContractId = model.ContractId;
                     folderPago.RegisterDate = DateTime.Now;
                     folderPago.ModifyDate = DateTime.Now;
                     _context.Folder.Add(folderPago);
