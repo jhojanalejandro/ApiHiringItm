@@ -22,7 +22,7 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public string? MonthPayment { get; set; }
         public Guid? FolderId { get; set; }
         public string? Type { get; set; }
-        public string  DocumentTypes { get; set; }
+        public string?  DocumentTypes { get; set; }
 
         public DetailFileDto? DetailFile { get; set; } = null;
     }

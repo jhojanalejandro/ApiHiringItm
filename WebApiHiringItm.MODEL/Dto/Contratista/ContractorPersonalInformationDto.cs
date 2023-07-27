@@ -36,14 +36,14 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
 
     public class AcademicInformationDto
     {
-        public string TypeAcademicInformation { get; set; }
+        public string AcademicInformationType { get; set; }
         public string CollegeDegree { get; set; }
         public string Institution { get; set; }
         public Guid? Contractor { get; set; }
     }
     public class EmptityHealthDto
     {
-        public string TypeEmptity { get; set; }
+        public string EmptityType { get; set; }
         public string Emptity { get; set; }
         public Guid? Contractor { get; set; }
     }

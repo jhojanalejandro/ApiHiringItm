@@ -30,6 +30,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contrato
         public string? RubroId { get; set; }
         public string? IsAssigmentUser { get; set; }
         public string? DetailContractId { get; set; }
+        public string? DetailType { get; set; }
 
         public DateTime? FechaContrato { get; set; }
         public DateTime? FechaFinalizacion { get; set; }

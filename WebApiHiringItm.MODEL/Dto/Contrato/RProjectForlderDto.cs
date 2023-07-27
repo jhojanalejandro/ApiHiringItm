@@ -9,7 +9,6 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
     public class RProjectForlderDto
     {
         public Guid? Id { get; set; }
-        public string UserId { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
         public bool? Activate { get; set; }
