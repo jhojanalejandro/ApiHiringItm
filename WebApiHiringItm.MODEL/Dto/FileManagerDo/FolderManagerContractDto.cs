@@ -11,9 +11,9 @@ namespace WebApiHiringItm.MODEL.Dto.FileManagerDo
     public class FolderContractContractorDto
     {
         public string Id { get; set; }
-        public string NombreEmpresa { get; set; }
-        public string NombreProyecto { get; set; }
-        public string NumeroContrato { get; set; }
+        public string CompanyName { get; set; }
+        public string ProjectName { get; set; }
+        public string ProjectNumber { get; set; }
         public string Type { get; set; }
 
     }

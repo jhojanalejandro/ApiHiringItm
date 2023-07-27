@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public HiringData()
         {
-            DetailProjectContractor = new HashSet<DetailProjectContractor>();
+            DetailContractor = new HashSet<DetailContractor>();
         }
 
         public Guid Id { get; set; }
@@ -19,9 +19,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Contrato { get; set; }
         public string Compromiso { get; set; }
         public DateTime? FechaExaPreocupacional { get; set; }
-        public string SupervisorItm { get; set; }
-        public string CargoSupervisorItm { get; set; }
-        public string IdentificacionSupervisor { get; set; }
         public DateTime? FechaRealDeInicio { get; set; }
         public DateTime? FechaDeComite { get; set; }
         public bool? RequierePoliza { get; set; }
@@ -33,11 +30,10 @@ namespace WebApiHiringItm.MODEL.Entities
         public int? Nivel { get; set; }
         public string Cdp { get; set; }
         public string NumeroActa { get; set; }
-        public string ClaveUsuario { get; set; }
         public string Caso { get; set; }
 
         public virtual Contractor Contractor { get; set; }
         public virtual UserT User { get; set; }
-        public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
+        public virtual ICollection<DetailContractor> DetailContractor { get; set; }
     }
 }

@@ -13,8 +13,8 @@ namespace WebApiHiringItm.MODEL.Dto
         public Guid? ContractorId { get; set; }
         public Guid? UserId { get; set; }
         public DateTime? FechaFinalizacionConvenio { get; set; }
-        public string Contrato { get; set; }
-        public string Compromiso { get; set; }
+        public string? Contrato { get; set; }
+        public string? Compromiso { get; set; }
         public DateTime? FechaExaPreocupacional { get; set; }
         public string? SupervisorItm { get; set; }
         public string? CargoSupervisorItm { get; set; }
@@ -33,6 +33,9 @@ namespace WebApiHiringItm.MODEL.Dto
         public string? Cdp { get; set; }
         public string? NumeroActa { get; set; }
         public string? Caso { get; set; }
+        public string? StatusContractor { get; set; }
+        public string? SupervisorId { get; set; }
+
 
     }
 }

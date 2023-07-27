@@ -7,9 +7,12 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class EconomicdataContractor
     {
+        public EconomicdataContractor()
+        {
+            DetailContractor = new HashSet<DetailContractor>();
+        }
+
         public Guid Id { get; set; }
-        public Guid? ContractorId { get; set; }
-        public Guid? ContractId { get; set; }
         public decimal? TotalValue { get; set; }
         public decimal? UnitValue { get; set; }
         public decimal? TotalPaIdMonth { get; set; }
@@ -20,7 +23,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
 
-        public virtual ContractFolder Contract { get; set; }
-        public virtual Contractor Contractor { get; set; }
+        public virtual ICollection<DetailContractor> DetailContractor { get; set; }
     }
 }

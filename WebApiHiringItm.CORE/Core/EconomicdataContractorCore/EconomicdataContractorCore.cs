@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,19 +32,33 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
             return await Task.FromResult(map);
         }
 
-        public async Task<List<EconomicdataContractorDto>> GetById(Guid[] id)
+        public async Task<List<EconomicdataContractorDto>> GetById(Guid?[] id)
         {
             List<EconomicdataContractorDto> economicDataContractorList = new List<EconomicdataContractorDto>();
-            foreach (var item in id)
-            {
-                var result = _context.EconomicdataContractor.Where(x => x.ContractorId == item).FirstOrDefault();
-                if (result != null)
+            var result = _context.DetailContractor
+                .Where(x => id.Contains(x.ContractorId))
+                .Select(s => new EconomicdataContractorDto
                 {
-                    var map = _mapper.Map<EconomicdataContractorDto>(result);
-                    map.Id = Guid.NewGuid();
-                    economicDataContractorList.Add(map);
-                }
-
+                    Id = s.EconomicdataNavigation.Id,
+                    ContractorId = s.ContractorId,
+                    ContractId = s.ContractorId,
+                    TotalPaidMonth = s.EconomicdataNavigation.TotalPaIdMonth,
+                    TotalValue = s.EconomicdataNavigation.TotalValue,
+                    CashPayment = s.EconomicdataNavigation.CashPayment,
+                    Debt = s.EconomicdataNavigation.Debt,
+                    ModifyDate = s.EconomicdataNavigation.ModifyDate,
+                    RegisterDate = s.EconomicdataNavigation.RegisterDate,
+                    UnitValue = s.EconomicdataNavigation.UnitValue,
+                    Freed = s.EconomicdataNavigation.Freed,
+                    Missing = s.EconomicdataNavigation.Missing,
+                })
+                .AsNoTracking()
+                .FirstOrDefault();
+            if (result != null)
+            {
+                var map = _mapper.Map<EconomicdataContractorDto>(result);
+                map.Id = Guid.NewGuid();
+                economicDataContractorList.Add(map);
             }
             return await Task.FromResult(economicDataContractorList);
         }
@@ -63,23 +78,26 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
             }
         }
 
-        public async Task<bool> Create(List<EconomicdataContractorDto> model)
+        public async Task<bool> AddEconomicData(List<EconomicdataContractorDto> model)
         {
             List<EconomicdataContractor> economicDataListAdd = new List<EconomicdataContractor>();
             List<EconomicdataContractor> economicDataListUpdate = new List<EconomicdataContractor>();
-    
             var map = _mapper.Map<List<EconomicdataContractor>>(model);
 
             try
             {
                 for (var i = 0; i < map.Count; i++)
                 {
-                    var getData = _context.EconomicdataContractor.FirstOrDefault(x => x.ContractorId.Equals(map[i].ContractorId));
-                    if (getData != null)
+                    var getData = _context
+                        .DetailContractor
+                        .Include(i => i.EconomicdataNavigation)
+                        .OrderByDescending(o => o.Consecutive)
+                        .FirstOrDefault(x => x.ContractorId.Equals(model[i].ContractorId) && x.ContractId.Equals(model[i].ContractId));
+                    if (getData.Economicdata != null)
                     {
                         model[i].Id = getData.Id;
                         var mapData = _mapper.Map(model[i], getData);
-                        economicDataListUpdate.Add(mapData);
+                        economicDataListUpdate.Add(mapData.EconomicdataNavigation);
                         map.Remove(map[i]);
                         i--;
                     }
@@ -87,6 +105,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                     {
                         map[i].Id = Guid.NewGuid();
                         economicDataListAdd.Add(map[i]);
+                        getData.Economicdata = map[i].Id;
                     }
                 }
                 if (economicDataListUpdate.Count > 0)
@@ -102,7 +121,6 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                 throw new Exception("Error", ex);
 
             }
-            return false;
         }
 
     }

@@ -12,8 +12,8 @@ namespace WebApiHiringItm.MODEL.Dto
         public string Consecutivo { get; set; }
         public string? NombreComponente { get; set; }
         public string? NumeroConvenio { get; set; }
-        public string NombreSupervisor { get; set; }
-        public string CedulaSupervisor { get; set; }
+        public string? NombreSupervisor { get; set; }
+        public string? CedulaSupervisor { get; set; }
         public string Rubro { get; set; }
         public string Cpc { get; set; }
         public string Projecto { get; set; }

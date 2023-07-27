@@ -23,10 +23,7 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _userFirm.GetAllFirms();
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -36,15 +33,26 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllRolls()
+        {
+            try
+            {
+                var Data = await _userFirm.GetAllRolls();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _userFirm.GetByIdFirm(id);
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -55,12 +63,12 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveFirm(UserFirmDto model)
+        public async Task<IActionResult> SaveUserDocument(UserFileDto model)
         {
             try
             {
-                var Data = await _userFirm.SaveUserFirm(model);
-                return Data != true ? Ok(Data) : NoContent();
+                var Data = await _userFirm.SaveUserDocument(model);
+                return Data == true ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
@@ -83,6 +91,21 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
             }
             catch (Exception ex)
             {
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllTypeUserFile()
+        {
+            try
+            {
+                var Data = await _userFirm.GetAllTypeUserFile();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
                 throw new Exception("Error", ex);
             }
         }

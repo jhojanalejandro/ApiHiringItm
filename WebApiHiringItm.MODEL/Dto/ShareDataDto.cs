@@ -11,7 +11,7 @@ namespace WebApiHiringItm.MODEL.Dto
         public Guid Id { get; set; }
         public string TypeDataShare { get; set; }
         public string DescriptionData { get; set; }
-        public string TypedataRegistered { get; set; }
+        public string dataRegisteredType { get; set; }
         public string AdditionalData { get; set; }
     }
 }

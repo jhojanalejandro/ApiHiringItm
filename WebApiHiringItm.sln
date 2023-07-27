@@ -11,7 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiHiringItm.API", "WebA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiHiringItm.CONTEXT", "WebApiHiringItm.CONTEXT\WebApiHiringItm.CONTEXT.csproj", "{ED5DFD12-79F4-4471-9716-FABD00E31346}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiHiringItm.IOC", "WebApiHiringItm.IOC\WebApiHiringItm.IOC.csproj", "{32CA91C5-C2D5-4042-802F-8A6F73138048}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiHiringItm.IOC", "WebApiHiringItm.IOC\WebApiHiringItm.IOC.csproj", "{32CA91C5-C2D5-4042-802F-8A6F73138048}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D3B1A9BB-4CB3-4F0A-B6CF-4974EDAD3119}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

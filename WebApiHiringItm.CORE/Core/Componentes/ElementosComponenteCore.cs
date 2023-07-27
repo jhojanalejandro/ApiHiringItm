@@ -26,7 +26,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         #endregion
 
         #region PUBLIC METHODS
-        public async Task<bool> Add(ElementComponentDto model)
+        public async Task<bool> SaveElement(ElementComponentDto model)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
 
         }
 
-        public async Task<List<ElementComponentDto>?> Get(Guid? id)
+        public async Task<List<ElementComponentDto>?> GetElementsByComponent(Guid? id)
         {
             var result = _context.ElementComponent.Where(x => x.ComponentId == id).ToList();
             if (result.Count != 0)

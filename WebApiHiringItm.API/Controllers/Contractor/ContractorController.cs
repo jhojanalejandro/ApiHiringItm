@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
-using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Contratista;
-using WebApiHiringItm.MODEL.Dto.ContratoDto;
-using WebApiHiringItm.MODEL.Models;
+
 
 namespace WebApiHiringItm.API.Controllers.Contractor
 {
@@ -39,27 +37,13 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
+
         [HttpGet]
-        public async Task<IActionResult> GetPaymentsContractorList(Guid contractId, Guid contractorId)
+        public async Task<IActionResult> GetContractorByContract(string contractId)
         {
             try
             {
-                var Data = await _contactor.GetPaymentsContractorList(contractId, contractorId);
-                return Data != null ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAllByFolder(Guid id)
-        {
-            try
-            {
-                var Data = await _contactor.GetByIdFolder(id);
+                var Data = await _contactor.GetContractorByContract(contractId);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -70,26 +54,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetDataBill(ContractContractorsDto contractors)
+        public async Task<IActionResult> SaveDataContractor(PersonalInformation model)
         {
             try
             {
-                var Data = await _contactor.GetDataBill(contractors);
-                return Data != null ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Add(ContractorDto model)
-        {
-            try
-            {
-                var Data = await _contactor.Create(model);
+                var Data = await _contactor.SavePersonalInformation(model);
 
                 return Data != null ? Ok(Data) : NoContent();
             }
@@ -102,11 +71,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(ContractorDto model)
+        public async Task<IActionResult> Update(PersonalInformation model)
         {
             try
             {
-                var Data = await _contactor.Create(model);
+                var Data = await _contactor.SavePersonalInformation(model);
 
                 return Data != null ? Ok(Data) : NoContent();
             }
@@ -203,6 +172,21 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
             catch (Exception ex)
             {
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public  IActionResult ValidateDocumentUpload(string contractId, string contractorId)
+        {
+            try
+            {
+                var Data =  _contactor.ValidateDocumentUpload(Guid.Parse(contractId), Guid.Parse(contractorId));
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
                 throw new Exception("Error", ex);
             }
         }

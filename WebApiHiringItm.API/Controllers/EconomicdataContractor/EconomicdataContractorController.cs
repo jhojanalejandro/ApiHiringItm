@@ -36,7 +36,7 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetById(Guid[] id)
+        public async Task<IActionResult> GetById(Guid?[] id)
         {
             try
             {
@@ -54,11 +54,11 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(List<EconomicdataContractorDto> model)
+        public async Task<IActionResult> AddEconomicData(List<EconomicdataContractorDto> model)
         {
             try
             {
-                var Data = await _economicData.Create(model);
+                var Data = await _economicData.AddEconomicData(model);
 
                 //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();
@@ -76,7 +76,7 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         {
             try
             {
-                var Data = await _economicData.Create(model);
+                var Data = await _economicData.AddEconomicData(model);
 
                 return Data != false ? Ok(Data) : NoContent();
             }

@@ -17,6 +17,7 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.StatusContractor
         INHABILITADO = 2,
         [Display(Description = "CTTD")]
         CONTRATADO = 3,
-
+        [Display(Description = "CTTND")]
+        CONTRATANDO = 4,
     }
 }

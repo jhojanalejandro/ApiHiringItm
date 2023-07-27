@@ -55,27 +55,7 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false
     };
 });
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
-//        options => { options.TokenValidationParameters = new TokenValidationParameters
-//        {
-//            ValidateIssuer = true,
-//            ValidateAudience = true,
-//            ValidateLifetime = true,
-//            ValidateIssuerSigningKey = true,
-//            ValidIssuer = "HiringITM", // reemplaza con tu emisor real
-//            ValidAudience = "mi_audience", // reemplaza con tu audiencia real
-//            IssuerSigningKey = new SymmetricSecurityKey(key)
-//        };
-//            options.Events = new JwtBearerEvents
-//            {
-//                OnAuthenticationFailed = context =>
-//                {
-//                    Console.WriteLine(context.Exception);
-//                    return Task.CompletedTask;
-//                }
-//            };
-//        });
+
 builder.Services.AddAuthorization();
 var mapperConfig = new MapperConfiguration(mc =>
 {
@@ -98,19 +78,20 @@ builder.Services.AddScoped<IHiringContext>(provider => provider.GetService<Hirin
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseCors(x => x
-  .AllowAnyOrigin()
-  .AllowAnyMethod()
-  .AllowAnyHeader());
-}
+//if (app.Environment.IsDevelopment())
+//{
+
+//}
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseCors(x => x
+.AllowAnyOrigin()
+.AllowAnyMethod()
+.AllowAnyHeader());
 app.UseMiddleware<JwtMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors(MyAllowSpecificOrigins);
 app.MapControllers();
+app.UseCors(MyAllowSpecificOrigins);
 app.Run();

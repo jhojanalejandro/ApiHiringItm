@@ -24,11 +24,11 @@ namespace WebApiHiringItm.API.Controllers.Component
 
         #region Methods
         [HttpPost]
-        public async Task<IActionResult> Add(ElementComponentDto model)
+        public async Task<IActionResult> SaveElement(ElementComponentDto model)
         {
             try
             {
-                var res = await _element.Add(model);
+                var res = await _element.SaveElement(model);
                 return res != false ? Ok(res) : BadRequest();
             }
             catch (Exception e)
@@ -39,11 +39,11 @@ namespace WebApiHiringItm.API.Controllers.Component
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> GetElementsByComponent(Guid id)
         {
             try
             {
-                var res = await _element.Get(id);
+                var res = await _element.GetElementsByComponent(id);
                 return res.Count == 0 ? BadRequest() : Ok(res);
             }
             catch (Exception e)

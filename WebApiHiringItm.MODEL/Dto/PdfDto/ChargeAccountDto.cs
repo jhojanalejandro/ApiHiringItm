@@ -17,7 +17,7 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string? PeriodExecutedFinalDate { get; set; }
         public string elementName { get; set; }
         public string PhoneNumber { get; set; }
-        public string TypeAccount { get; set; }
+        public string AccountType { get; set; }
         public string AccountNumber { get; set; }
         public string BankingEntity { get; set; }
         public string? TotalValue { get; set; }

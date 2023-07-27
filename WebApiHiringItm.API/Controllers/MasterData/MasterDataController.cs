@@ -94,5 +94,111 @@ namespace WebApiHiringItm.API.Controllers.MasterData
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetStatusFile()
+        {
+            try
+            {
+                var Data = await _masterDataCore.GetStatusFile();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetMinutes()
+        {
+            try
+            {
+                var Data = await _masterDataCore.GetAllMinuteType();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBanks()
+        {
+            try
+            {
+                var Data = await _masterDataCore.GetBanks();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllRubros()
+        {
+            try
+            {
+                var Data = await _masterDataCore.GetAllRubroType();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAssignmentType()
+        {
+            try
+            {
+                var Data = await _masterDataCore.GetAllAssignmentType();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllTermType()
+        {
+            try
+            {
+                var Data = await _masterDataCore.GetAllTermType();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllDetailType()
+        {
+            try
+            {
+                var Data = await _masterDataCore.GetAllDetailType();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
     }
 }

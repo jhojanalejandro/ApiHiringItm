@@ -7,34 +7,52 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.FoldersContractorCore.Interface;
+using WebApiHiringItm.CORE.Helpers.Enums;
+using WebApiHiringItm.CORE.Helpers.Enums.FolderType;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
 {
-    public class FolderContractorCore : IFolderContractorCore
+    public class FolderCore : IFolderContractorCore
     {
         private readonly HiringContext _context;
         private readonly IMapper _mapper;
 
-        public FolderContractorCore(HiringContext context, IMapper mapper)
+        public FolderCore(HiringContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
 
-        public async Task<List<FolderContractorDto>> GetAllById(Guid contractorId, Guid contractId)
+        public async Task<List<FolderDto>> GetAllFolderById(Guid contractorId, Guid contractId)
         {
-            var result = _context.Folder.Where(x => x.ContractorId.Equals(contractorId) && x.ContractId == contractId).ToList();
-            var map = _mapper.Map<List<FolderContractorDto>>(result);
-            return await Task.FromResult(map);
+            var getContractor = _context.Contractor.FirstOrDefault(f => f.Id.Equals(contractorId));
+            return _context.Folder
+                .Include(i => i.FolderTypeNavigation)
+                .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId == contractId)
+                .Select(f => new FolderDto
+                {
+                    Id = f.Id,
+                    //UserId = f.UserId.HasValue ? f.UserId.Value : null,
+                    FolderName = f.FolderName + " " + f.Consutive,
+                    RegisterDate = f.RegisterDate,
+                    ModifyDate = f.ModifyDate,
+                    FolderDescription = f.FolderTypeNavigation.FolderDescription,
+                    Consutive = f.Consutive,
+                    DescriptionProject = f.DescriptionProject,
+                    ContractorName = getContractor.Nombre +" "+ getContractor.Apellido
+                })
+                .AsNoTracking()
+                .ToList();
+            
         }
 
-        public async Task<FolderContractorDto> GetById(string id)
+        public async Task<FolderDto> GetById(string id)
         {
             var result = _context.Folder.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
-            var map = _mapper.Map<FolderContractorDto>(result);
+            var map = _mapper.Map<FolderDto>(result);
             return await Task.FromResult(map);
         }
 
@@ -56,17 +74,16 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
             {
                 throw new Exception("Error", ex);
             }
-            return false;
         }
 
-        public async Task<bool> Create(FolderContractorDto model)
+        public async Task<bool> SaveFolderContract(FolderDto model)
         {
             var getData = _context.Folder.Where(x => x.Id == model.Id).FirstOrDefault();
-
+            model.FolderType = _context.FolderType.Where(w => w.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description())).Select(s => s.Id).FirstOrDefault();
             if (getData == null)
             {
+                model.Id = Guid.NewGuid();
                 var map = _mapper.Map<Folder>(model);
-                map.Id = Guid.NewGuid();
                 _context.Folder.Add(map);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
@@ -80,8 +97,6 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;
             }
-            return false;
-
         }
 
     }

@@ -9,7 +9,7 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public ElementComponent()
         {
-            DetailProjectContractor = new HashSet<DetailProjectContractor>();
+            DetailContractor = new HashSet<DetailContractor>();
         }
 
         public Guid Id { get; set; }
@@ -27,16 +27,17 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? ValorPorDiaContratista { get; set; }
         public decimal? Recursos { get; set; }
         public decimal ValorPorDia { get; set; }
+        public Guid? CpcId { get; set; }
         public Guid? DetailId { get; set; }
         public bool? Modificacion { get; set; }
         public string Consecutivo { get; set; }
         public string ObjetoElemento { get; set; }
-        public Guid? CpcId { get; set; }
+        public string PerfilRequerido { get; set; }
 
         public virtual Activity Activity { get; set; }
         public virtual Component Component { get; set; }
         public virtual CpcType Cpc { get; set; }
         public virtual ElementType TipoElementoNavigation { get; set; }
-        public virtual ICollection<DetailProjectContractor> DetailProjectContractor { get; set; }
+        public virtual ICollection<DetailContractor> DetailContractor { get; set; }
     }
 }

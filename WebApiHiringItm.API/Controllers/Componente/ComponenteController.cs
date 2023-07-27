@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 
 namespace WebApiHiringItm.API.Controllers.Component
@@ -24,16 +25,26 @@ namespace WebApiHiringItm.API.Controllers.Component
 
         #region Methods
         [HttpPost]
-        public async Task<IActionResult> Add(ComponenteDto model)
+        public async Task<IActionResult> SaveComponentContract(ComponenteDto model)
         {
             try
             {
-                var res = await _componente.Add(model);
-                return res != false ? Ok(res) : BadRequest();
+                var isSuccess = await _componente.SaveComponentContract(model);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(e.Message);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -52,11 +63,12 @@ namespace WebApiHiringItm.API.Controllers.Component
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetComponent(Guid id)
+        public async Task<IActionResult> GetComponentsByContract(Guid id)
         {
-            var res = await _componente.Get(id);
+            var res = await _componente.GetComponentsByContract(id);
             return Ok(res);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetActivityById(Guid id)
         {
@@ -104,12 +116,11 @@ namespace WebApiHiringItm.API.Controllers.Component
 
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetByIdComponent(Guid id, Guid activityId, Guid elementId)
         {
             try
             {
-                var res = await _componente.GetById(id);
+                var res = await _componente.GetByIdComponent(id, activityId,elementId);
                 return res != null ? Ok(res) : BadRequest();
             }
             catch (Exception e)

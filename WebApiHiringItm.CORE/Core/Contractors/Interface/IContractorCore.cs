@@ -1,4 +1,5 @@
-﻿using WebApiHiringItm.MODEL.Dto;
+﻿using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Dto.FileDto;
@@ -9,14 +10,14 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
     public interface IContractorCore
     {
         Task<List<ContractorDto>> GetAll();
-        Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors);
-        Task<bool> Create(ContractorDto model);
-        Task<List<ContractorByContractDto>> GetByIdFolder(Guid id);
+        
+        Task<bool> SavePersonalInformation(PersonalInformation model);
         Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model);
-        Task<List<ContractorPaymentsDto>> GetPaymentsContractorList(Guid contractId, Guid contractorId);
         Task<List<ContractsContarctorDto>> getContractsByContractor(string contractorId);
         Task<FilesDto?> GetDocumentPdf(Guid contractId, Guid contractorId);
         Task<bool> AddNewness(NewnessContractorDto model);
         Task<List<HistoryContractorDto>> GetHistoryContractor();
+        Task<IGenericResponse<List<ContractorByContractDto>>> GetContractorByContract(string contractId);
+        ValidateFileDto ValidateDocumentUpload(Guid contractId, Guid contractorId);
     }
 }

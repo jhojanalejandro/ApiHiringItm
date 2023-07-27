@@ -13,13 +13,12 @@ namespace WebApiHiringItm.CORE.Core.User.Interface
     public interface IUserCore
     {
         AuthenticateResponse Authenticate(AuthenticateRequest model);
-        Task<List<UserTDto>> GetAll();
-        Task<List<UserTDto>> GetAllAdmins();
+        Task<List<TeamDto>> GetTeam();
         Task<UserTDto> GetById(Guid id);
         UserT GetByIdd(Guid id);
         Task<string> SignUp(UserTDto model);
         Task<bool> Delete(Guid id);
-        Task<bool> Update(UserTDto model);
+        Task<bool> UpdateTeamRoll(UserTDto model);
         Task<bool> ValidateT(string authToken);
         Task<bool> UpdatePassword(UserUpdatePasswordDto model);
         Task<bool> GetUserForgetPassword(RetrievePassword model);

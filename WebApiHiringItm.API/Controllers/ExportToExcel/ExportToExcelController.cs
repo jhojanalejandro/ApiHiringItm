@@ -101,6 +101,24 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
             }
         }
 
+        [HttpGet("{ContractId}")]
+        public async Task<IActionResult> ExportElement(Guid ContractId)
+        {
+            try
+            {
+                var result = await _export.ExportElement(this,ContractId);
+                Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
+                if (result == null)
+                {
+                    return NoContent();
+                }
+                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Exportar elementos.xlsx");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
         #endregion
     }
 }

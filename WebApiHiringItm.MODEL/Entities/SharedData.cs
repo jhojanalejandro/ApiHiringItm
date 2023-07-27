@@ -8,9 +8,9 @@ namespace WebApiHiringItm.MODEL.Entities
     public partial class SharedData
     {
         public Guid Id { get; set; }
-        public string TypeDataShare { get; set; }
+        public string DataShareType { get; set; }
         public string DescriptionData { get; set; }
-        public string TypedataRegistered { get; set; }
+        public string DataRegisteredType { get; set; }
         public string AdditionalData { get; set; }
     }
 }

@@ -15,7 +15,27 @@
    "SelectedToBeGenerated": 2,
    "Tables": [
       {
+         "Name": "[dbo].[AcademicInformation]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Activity]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssigmentContract]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssignmentType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Banks]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ChangeContractContractor]",
          "ObjectType": 0
       },
       {
@@ -43,11 +63,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[DetailContractor]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[DetailFile]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[DetailProjectContractor]",
+         "Name": "[dbo].[DetailType]",
          "ObjectType": 0
       },
       {
@@ -64,6 +88,10 @@
       },
       {
          "Name": "[dbo].[ElementType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EmptityHealth]",
          "ObjectType": 0
       },
       {
@@ -99,6 +127,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[RubroType]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[sharedData]",
          "ObjectType": 0
       },
@@ -115,7 +147,19 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[UserFirm]",
+         "Name": "[dbo].[TermContract]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TermType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserFile]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserFileType]",
          "ObjectType": 0
       },
       {

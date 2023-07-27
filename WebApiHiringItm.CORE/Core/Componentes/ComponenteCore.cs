@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Helpers;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 using WebApiHiringItm.CORE.Helpers.InterfacesHelpers;
+using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Entities;
 
@@ -26,7 +30,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         #endregion
 
         #region Methods
-        public async Task<bool> Add(ComponenteDto model)
+        public async Task<IGenericResponse<string>> SaveComponentContract(ComponenteDto model)
         {
             var exist = _context.Component.FirstOrDefault(x => x.Id == model.Id);
 
@@ -35,17 +39,29 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 model.Id = Guid.NewGuid();
                 var map = _mapper.Map<Component>(model);
                 _context.Component.Add(map);
-                _save.SaveChangesDB();
-                return await Task.FromResult(true);
+                var resp = await _save.SaveChangesDB();
+                if (resp)
+                {
+                    return ApiResponseHelper.CreateResponse(Resource.REGISTERSUCCESSFULL);
+                }
+                else
+                {
+                    return ApiResponseHelper.CreateErrorResponse<string>(Resource.INFORMATIONEMPTY);
+                }
             }
             else
             {
                 var mapUpdate = _mapper.Map(model,exist);
                 _context.Component.Update(mapUpdate);
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
-
-                return await Task.FromResult(true);
+                var resp = await _save.SaveChangesDB();
+                if (resp)
+                {
+                    return ApiResponseHelper.CreateResponse(Resource.REGISTERSUCCESSFULL);
+                }
+                else
+                {
+                    return ApiResponseHelper.CreateErrorResponse<string>(Resource.INFORMATIONEMPTY);
+                }
             }
         }
 
@@ -58,36 +74,33 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 var map = _mapper.Map<Activity>(model);
                 map.Id = Guid.NewGuid();
                 _context.Activity.Add(map);
-                _save.SaveChangesDB();
-                return await Task.FromResult(true);
+                var resp  = await _save.SaveChangesDB();
+                return resp;
             }
             else
             {
                 var mapUpdate = _mapper.Map(model, exist);
                 _context.Activity.Update(mapUpdate);
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
-
-                return await Task.FromResult(true);
-            }
+                var res = await _save.SaveChangesDB();
+                return res;            }
         }
-        public async Task<List<ComponenteDto>?> Get(Guid id)
+        public async Task<List<ComponenteDto>?> GetComponentsByContract(Guid contractId)
         {
             try
             {
-                var result = _context.Component.Where(x => x.ContractId == id).ToList();
+                var result = _context.Component.Where(x => x.ContractId == contractId).ToList();
                 if (result.Count != 0)
                 {
                     var map = _mapper.Map<List<ComponenteDto>>(result);
                     map.ForEach(e =>
                     {
-                        var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(w.Id) && w.ActivityId == null).ToList();
+                        var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(e.Id) && w.ActivityId == null).ToList();
                         e.Elementos = _mapper.Map<List<ElementComponentDto>>(element);
                         var activity = _context.Activity.Where(d => d.ComponentId == e.Id).ToList();
                         e.Activities = _mapper.Map<List<ActivityDto>>(activity);
                         e.Activities.ForEach(eA =>
                         {
-                            var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(e.Id) && w.ActivityId.Equals(eA.Id)).ToList();
+                            var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(e.Id) && w.ActivityId.Equals(eA.Id)).OrderBy(o => o.Consecutivo).ToList();
                             eA.Elementos = _mapper.Map<List<ElementComponentDto>>(element);
 
                         });
@@ -117,10 +130,44 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             var mapctivity = _mapper.Map<ActivityDto>(result);
             return await Task.FromResult(mapctivity);
         }
-        public async Task<ComponenteDto> GetById(Guid id)
+        public async Task<ComponenteDto> GetByIdComponent(Guid id, Guid activityId, Guid elementId)
         {
+
             var result = _context.Component.FirstOrDefault(x => x.Id.Equals(id));
+
             var map = _mapper.Map<ComponenteDto>(result);
+            var activity = _context.Activity;
+            if (elementId != Guid.Empty)
+            {
+                List<ElementComponentDto> elementsList = new();
+                var getElement = _context.ElementComponent.Where(w => w.Id.Equals(elementId)).FirstOrDefault();
+                var mapElement = _mapper.Map<ElementComponentDto>(getElement);
+
+                elementsList.Add(mapElement);
+                map.Elementos = elementsList;
+            }
+            if (activityId != Guid.Empty)
+            {
+                activity.Where(w => w.Id.Equals(activityId)).ToList();
+            }
+            else
+            {
+                activity.Where(w => w.ComponentId.Equals(id)).ToList();
+            }
+
+
+            if (activity.ToList().Count > 0 )
+            {
+                map.Activities = _mapper.Map<List<ActivityDto>>(activity);
+                map.Activities.ForEach(eA =>
+                {
+                    var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(map.Id) && w.ActivityId.Equals(eA.Id)).ToList();
+                    eA.Elementos = _mapper.Map<List<ElementComponentDto>>(element);
+
+                });
+            }
+
+
             return await Task.FromResult(map);
         }
 
@@ -155,7 +202,6 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             {
                 throw new Exception("Error", ex);
             }
-            return false;
         }
 
         #endregion

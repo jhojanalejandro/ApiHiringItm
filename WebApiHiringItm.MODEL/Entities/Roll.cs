@@ -9,6 +9,8 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public Roll()
         {
+            AssigmentContract = new HashSet<AssigmentContract>();
+            UserFile = new HashSet<UserFile>();
             UserT = new HashSet<UserT>();
         }
 
@@ -16,6 +18,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public string RollName { get; set; }
         public string Code { get; set; }
 
+        public virtual ICollection<AssigmentContract> AssigmentContract { get; set; }
+        public virtual ICollection<UserFile> UserFile { get; set; }
         public virtual ICollection<UserT> UserT { get; set; }
     }
 }

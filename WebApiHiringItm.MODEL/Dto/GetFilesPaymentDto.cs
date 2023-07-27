@@ -18,7 +18,6 @@ namespace WebApiHiringItm.MODEL.Dto
         public string DescriptionFile { get; set; }
         public Guid? UserId { get; set; }
         public DateTime? RegisterDate { get; set; }
-        public string TypeFilePayment { get; set; }
         public string MonthPayment { get; set; }
         public string? FolderId { get; set; }
         public bool? Passed { get; set; }

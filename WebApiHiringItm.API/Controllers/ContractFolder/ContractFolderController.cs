@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.X509;
 using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Contrato;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 
@@ -22,7 +24,7 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(bool inProgress, string tipoModulo)
+        public async Task<IActionResult> GetAllContracts(bool inProgress, string tipoModulo)
         {
             try
             {
@@ -87,7 +89,6 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
                     var Data = await _project.GetDetailByIdLastDate(id);
                     return Data != null ? Ok(Data) : NoContent();
                 }
-                return NoContent();
 
             }
             catch (Exception ex)
@@ -98,13 +99,13 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByIdDetail(Guid id, bool tipoConsulta)
+        public async Task<IActionResult> GetDetailByIdContract(Guid id, bool tipoConsulta)
         {
             try
             {
                 if (tipoConsulta)
                 {
-                    var Data = await _project.GetDetailById(id);
+                    var Data = await _project.GetDetailByIdContract(id);
                     return Data != null ? Ok(Data) : NoContent();
                 }
                 else
@@ -112,7 +113,6 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
                     var Data = await _project.GetDetailByIdLastDate(id);
                     return Data != null ? Ok(Data) : NoContent();
                 }
-                return NoContent();
 
             }
             catch (Exception ex)
@@ -123,28 +123,35 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(RProjectForlderDto model)
+        public async Task<IActionResult> SaveContract(RProjectForlderDto model)
         {
             try
             {
-                var Data = await _project.Create(model);
-                return Data == true ? Ok(Data) : NoContent();
+                var isSuccess = await _project.SaveContract(model);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
-
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
 
-
         [HttpGet]
-        public async Task<IActionResult> UpdateState(Guid id)
+        public async Task<IActionResult> UpdateStateContract(Guid id)
         {
             try
             {
-                var Data = await _project.UpdateState(id);
+                var Data = await _project.UpdateStateContract(id);
 
                 return Data == true ? Ok(Data) : NoContent();
             }
@@ -177,10 +184,7 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _project.Delete(id);
-
-                //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -204,5 +208,37 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignmentUserContract(List<AssignmentUserDto> assignmentUser)
+        {
+            try
+            {
+                var Data = await _project.AssignmentUser(assignmentUser);
+                return Data == true ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveTermFileContract(TermContractDto modelTermContract)
+        {
+            try
+            {
+                var Data = await _project.SaveTermFileContract(modelTermContract);
+                return Data == true ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
     }
 }

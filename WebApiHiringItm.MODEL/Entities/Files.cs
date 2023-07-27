@@ -20,17 +20,13 @@ namespace WebApiHiringItm.MODEL.Entities
         public string FileType { get; set; }
         public Guid? DocumentType { get; set; }
         public string DescriptionFile { get; set; }
-        public Guid? UserId { get; set; }
-        public DateTime? RegisterDate { get; set; }
-        public string TypeFilePayment { get; set; }
         public string MonthPayment { get; set; }
         public Guid? FolderId { get; set; }
-        public bool? Passed { get; set; }
 
         public virtual ContractFolder Contract { get; set; }
         public virtual Contractor Contractor { get; set; }
         public virtual DocumentType DocumentTypeNavigation { get; set; }
-        public virtual UserT User { get; set; }
+        public virtual Folder Folder { get; set; }
         public virtual ICollection<DetailFile> DetailFile { get; set; }
     }
 }

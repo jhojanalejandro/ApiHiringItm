@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore;
+using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.PdfDto;
+using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.API.Controllers.PdfData
 {
@@ -57,6 +59,52 @@ namespace WebApiHiringItm.API.Controllers.PdfData
                     return Data != null ? Ok(Data) : NoContent();
                 }
 
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> GetDataBill(ContractContractorsDto contractors)
+        {
+            try
+            {
+                var Data = await _pdfData.GetDataBill(contractors);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetPreviusStudies(ContractContractorsDto contractors)
+        {
+            try
+            {
+                var Data = await _pdfData.GetPreviusStudy(contractors);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetCommitteeRequest(ContractContractorsDto contractors)
+        {
+            try
+            {
+                var Data = await _pdfData.GetCommitteeRequest(contractors);
+                return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
