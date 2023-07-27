@@ -34,11 +34,12 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<EconomicdataContractor, EconomicdataContractorDto>().ReverseMap(); 
             CreateMap<ComponenteDto, Component>().ReverseMap();
             CreateMap<ElementComponentDto, ElementComponent>().ReverseMap();
-            CreateMap<DetalleContratoDto, DetailContract>().ReverseMap();
+            CreateMap<DetalleContratoDto, DetailContract>()
+                .ForMember(c => c.Id, cd => cd.MapFrom(src => src.Id))
+                .ForMember(c => c.UserId, cd => cd.MapFrom(src => Guid.Parse(src.UserId))).ReverseMap();
             CreateMap<UserFileDto, UserFile>().ReverseMap();
             CreateMap<RProjectForlderDto, ContractFolder>()
                 .ForMember(c => c.Id, cd => cd.MapFrom(src => src.Id))
-                .ForMember(c => c.UserId, cd => cd.MapFrom(src => Guid.Parse(src.UserId)))
                 .ForMember(c => c.Rubro, cd => cd.MapFrom(src => Guid.Parse(src.Rubro)))
                 .ForMember(c => c.StatusContractId, cd => cd.MapFrom(src => Guid.Parse(src.StatusContractId)))
                 .ForMember(c => c.ObjectContract, cd => cd.MapFrom(src => src.ObjectContract))
@@ -50,7 +51,6 @@ namespace WebApiHiringItm.MODEL.Mapper
                 .ForMember(c => c.Project, cd => cd.MapFrom(src => src.Project))
                 .ForMember(c => c.FuenteRubro, cd => cd.MapFrom(src => src.FuenteRubro))
                 .ForMember(c => c.NumberProject, cd => cd.MapFrom(src => src.NumberProject))
-
                 .ReverseMap();
             CreateMap<ProjectFolderCostsDto, ContractFolder>().ReverseMap();
             CreateMap<DetailFileDto, DetailFile>().ReverseMap();
@@ -77,6 +77,7 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<AssignmentTypeDto, AssignmentType>().ReverseMap();
             CreateMap<TermTypeDto, TermType>().ReverseMap();
             CreateMap<TermContractDto, TermContract>().ReverseMap();
+            CreateMap<DetailTypeDto, DetailType>().ReverseMap();
 
         }
     }
