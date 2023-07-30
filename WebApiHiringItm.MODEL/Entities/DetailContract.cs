@@ -7,11 +7,6 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class DetailContract
     {
-        public DetailContract()
-        {
-            TermContract = new HashSet<TermContract>();
-        }
-
         public Guid Id { get; set; }
         public int? Consecutive { get; set; }
         public Guid? ContractId { get; set; }
@@ -26,6 +21,5 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual ContractFolder Contract { get; set; }
         public virtual DetailType DetailTypeNavigation { get; set; }
         public virtual UserT User { get; set; }
-        public virtual ICollection<TermContract> TermContract { get; set; }
     }
 }

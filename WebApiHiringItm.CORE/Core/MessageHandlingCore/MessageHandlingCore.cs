@@ -16,7 +16,6 @@ using WebApiHiringItm.CORE.Core.MessageHandlingCore.Interface;
 using WebApiHiringItm.CORE.Helpers;
 using WebApiHiringItm.CORE.Helpers.Enums;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
-using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Entities;
 using WebApiHiringItm.MODEL.Models;
 using Outlook = Microsoft.Office.Interop.Outlook;
@@ -35,6 +34,7 @@ using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.CORE.Helpers.GenericValidation;
 using Microsoft.Office.Interop.Outlook;
+using WebApiHiringItm.MODEL.Dto.MessageDto;
 
 namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 {
@@ -128,6 +128,10 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             }
         }
 
+        public Task<IGenericResponse<string>> SendContractorObservation(SendMessageObservationDto messageObservation)
+        {
+            throw new NotImplementedException();
+        }
 
         private async Task<string> createPassword(MailRequestContractor message)
         {

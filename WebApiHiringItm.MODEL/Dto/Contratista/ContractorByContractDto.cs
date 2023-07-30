@@ -26,7 +26,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public List<Guid> AssignmentUser { get; set; }
         public string? MinuteGnenerated { get; set; }
         public string? ComiteGenerated { get; set; }
-
+        public string? PreviusStudy { get; set; } 
 
     }
 }

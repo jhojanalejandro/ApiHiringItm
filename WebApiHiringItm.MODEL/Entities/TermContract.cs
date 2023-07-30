@@ -8,12 +8,12 @@ namespace WebApiHiringItm.MODEL.Entities
     public partial class TermContract
     {
         public Guid Id { get; set; }
-        public Guid DetailContract { get; set; }
-        public DateTime FechaTermino { get; set; }
-        public DateTime? FechaInicio { get; set; }
+        public Guid DetailContractor { get; set; }
+        public DateTime TermDate { get; set; }
+        public DateTime? StartDate { get; set; }
         public Guid TermType { get; set; }
 
-        public virtual DetailContract DetailContractNavigation { get; set; }
+        public virtual DetailContractor DetailContractorNavigation { get; set; }
         public virtual TermType TermTypeNavigation { get; set; }
     }
 }

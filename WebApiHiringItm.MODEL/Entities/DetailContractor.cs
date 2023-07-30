@@ -11,6 +11,7 @@ namespace WebApiHiringItm.MODEL.Entities
         {
             ChangeContractContractor = new HashSet<ChangeContractContractor>();
             ContractorPayments = new HashSet<ContractorPayments>();
+            TermContract = new HashSet<TermContract>();
         }
 
         public Guid Id { get; set; }
@@ -34,5 +35,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual StatusContractor StatusContractorNavigation { get; set; }
         public virtual ICollection<ChangeContractContractor> ChangeContractContractor { get; set; }
         public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
+        public virtual ICollection<TermContract> TermContract { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                     ContractorId = s.ContractorId,
                     ContractId = s.ContractorId,
                     TotalPaidMonth = s.EconomicdataNavigation.TotalPaIdMonth,
-                    TotalValue = s.EconomicdataNavigation.TotalValue,
+                    TotalValue = Math.Ceiling(s.EconomicdataNavigation.TotalValue.Value),
                     CashPayment = s.EconomicdataNavigation.CashPayment,
                     Debt = s.EconomicdataNavigation.Debt,
                     ModifyDate = s.EconomicdataNavigation.ModifyDate,
@@ -93,11 +93,15 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                         .Include(i => i.EconomicdataNavigation)
                         .OrderByDescending(o => o.Consecutive)
                         .FirstOrDefault(x => x.ContractorId.Equals(model[i].ContractorId) && x.ContractId.Equals(model[i].ContractId));
+
                     if (getData.Economicdata != null)
                     {
-                        model[i].Id = getData.Id;
-                        var mapData = _mapper.Map(model[i], getData);
-                        economicDataListUpdate.Add(mapData.EconomicdataNavigation);
+                        var getEconomicData = _context
+                        .EconomicdataContractor
+                        .FirstOrDefault(x => x.Id.Equals(getData.Economicdata));
+                        model[i].Id = getData.Economicdata.Value;
+                        var mapData = _mapper.Map(model[i], getEconomicData);
+                        economicDataListUpdate.Add(mapData);
                         map.Remove(map[i]);
                         i--;
                     }

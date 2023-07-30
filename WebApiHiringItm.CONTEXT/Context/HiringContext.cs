@@ -818,21 +818,21 @@ namespace WebApiHiringItm.CONTEXT.Context
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.FechaInicio).HasColumnType("date");
+                entity.Property(e => e.StartDate).HasColumnType("date");
 
-                entity.Property(e => e.FechaTermino).HasColumnType("date");
+                entity.Property(e => e.TermDate).HasColumnType("date");
 
-                entity.HasOne(d => d.DetailContractNavigation)
+                entity.HasOne(d => d.DetailContractorNavigation)
                     .WithMany(p => p.TermContract)
-                    .HasForeignKey(d => d.DetailContract)
+                    .HasForeignKey(d => d.DetailContractor)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__TermContr__Detai__1AD3FDA4");
+                    .HasConstraintName("FK__TermContr__Detai__2A164134");
 
                 entity.HasOne(d => d.TermTypeNavigation)
                     .WithMany(p => p.TermContract)
                     .HasForeignKey(d => d.TermType)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__TermContr__TermT__19DFD96B");
+                    .HasConstraintName("FK__TermContr__TermT__29221CFB");
             });
 
             modelBuilder.Entity<TermType>(entity =>

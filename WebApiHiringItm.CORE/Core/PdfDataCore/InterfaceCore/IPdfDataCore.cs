@@ -17,5 +17,6 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore
         Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors);
         Task<List<PreviusStudyDto>> GetPreviusStudy(ContractContractorsDto contractors);
         Task<List<CommitteeRequestDto>> GetCommitteeRequest(ContractContractorsDto contractors);
+        Task<List<MinuteExtensionDto>> GetminuteExtension(ContractContractorsDto contractors);
     }
 }

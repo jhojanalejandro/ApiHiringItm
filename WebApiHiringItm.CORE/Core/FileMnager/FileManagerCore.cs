@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.FileMnager.Interface;
 using WebApiHiringItm.CORE.Helpers.Enums;
+using WebApiHiringItm.CORE.Helpers.Enums.File;
 using WebApiHiringItm.CORE.Helpers.Enums.FolderType;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusContract;
+using WebApiHiringItm.CORE.Helpers.Enums.StatusFile;
 using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Dto.FileManagerDo;
 
@@ -28,6 +30,7 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
         public async Task<FileManagerDto> GetFolderFilesContract(Guid id)
         {
             FileManagerDto fileManagerDto = new FileManagerDto();
+            fileManagerDto.ContractName = _context.ContractFolder.Where(w => w.Id.Equals(id)).Select(s => s.ProjectName).FirstOrDefault();
             fileManagerDto.Folders = await GetFolderContract(id);
             fileManagerDto.FolderContract = await GetFoldersContract(id);
             return fileManagerDto;
@@ -82,17 +85,23 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
         #region PRIVATE METHODS
         private async Task<List<FolderContractorDto>> GetFolderContract(Guid id)
         {
-
+            var getStatusFiles = _context.DetailFile
+                .Include(i => i.File)
+                    .ThenInclude(i => i.DocumentTypeNavigation)
+                .Include(i => i.StatusFile);
             var contractor = _context.DetailContractor
                 .Include(dt => dt.Contract)
                     .ThenInclude(i => i.Files)
+                    .OrderBy(o => o.Contractor.Nombre)
                 .Where(x => x.ContractId.Equals(id));
             return await contractor.Select(ct => new FolderContractorDto
             {
                 Type = FOLDERTYPE,
                 Id = ct.Contractor.Id.ToString(),
-                Nombre = ct.Contractor.Nombre + " " + ct.Contractor.Apellido,
-                Identificacion = ct.Contractor.Identificacion,
+                ContractorName = ct.Contractor.Nombre + " " + ct.Contractor.Apellido,
+                ContractorIdentification = ct.Contractor.Identificacion,
+                cantFile = getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && (w.File.ContractorId.Equals(ct.ContractorId) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description())
+                || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))))).ToList().Count
             })
              .AsNoTracking()
              .ToListAsync();

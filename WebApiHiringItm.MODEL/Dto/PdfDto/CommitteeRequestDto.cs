@@ -20,7 +20,7 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string? UserFirm { get; set; }
         public string ElementObject { get; set; }
         public string ElementName { get; set; }
-        public string? TotalValue { get; set; }
+        public decimal? TotalValue { get; set; }
         public string ProfileRequire { get; set; }
 
     }

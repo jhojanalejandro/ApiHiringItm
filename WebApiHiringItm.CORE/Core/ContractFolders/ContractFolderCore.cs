@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Office.Interop.Outlook;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -358,22 +359,53 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
 
         public async Task<bool> SaveTermFileContract(TermContractDto modelTermContract)
         {
-            var getDetailConttract = _context.DetailContract.FirstOrDefault(x => x.ContractId.Equals(modelTermContract.DetailContract));
-            var getTermContract = _context.TermContract.FirstOrDefault(x => x.DetailContract.Equals(getDetailConttract.Id));
 
-            if (getTermContract == null)
+            var getTermContractList = _context.TermContract.Where(w => w.DetailContractorNavigation.ContractId.Equals(Guid.Parse(modelTermContract.ContractId))).ToList();
+            List<TermContract> termContractsList = new();
+            List<TermContract> UpdatetermContractsList = new();
+            if (modelTermContract.ContractorId.IsGuid() && !string.IsNullOrEmpty(modelTermContract.ContractorId))
             {
-                modelTermContract.Id = Guid.NewGuid();
-                modelTermContract.DetailContract = getDetailConttract.Id;
-                var mapTermContract = _mapper.Map<TermContract>(modelTermContract);
-                _context.TermContract.Add(mapTermContract);
+                var getTermContract = getTermContractList.FirstOrDefault(x => x.DetailContractorNavigation.ContractId.Equals(Guid.Parse(modelTermContract.ContractId)) && x.DetailContractorNavigation.Contractor.Equals(Guid.Parse(modelTermContract.ContractorId)) && x.TermTypeNavigation.Id.Equals(modelTermContract.TermType));
+                getTermContract.TermDate = modelTermContract.TermDate;
+
+                UpdatetermContractsList.Add(getTermContract);
             }
+            
             else
             {
-                modelTermContract.Id = getTermContract.Id;
-                modelTermContract.DetailContract = getTermContract.DetailContract;
-                var mapTermContractUpdate = _mapper.Map(modelTermContract, getTermContract);
-                _context.TermContract.Update(mapTermContractUpdate);
+                var getDetailConttract = _context.DetailContractor.Where(x => x.ContractId.Equals(Guid.Parse(modelTermContract.ContractId))).ToList();
+
+                foreach (var item in getDetailConttract)
+                {
+                    var getTermContract = getTermContractList.Find(x => x.DetailContractor.Equals(item.Id));
+                    if (getTermContract == null)
+                    {
+                        var mapTermContract = _mapper.Map<TermContract>(modelTermContract);
+                        mapTermContract.Id = Guid.NewGuid();
+                        mapTermContract.DetailContractor = item.Id;
+                        termContractsList.Add(mapTermContract);
+
+                    }
+                    else
+                    {
+                        getTermContract.TermDate = modelTermContract.TermDate;
+                        UpdatetermContractsList.Add(getTermContract);
+                    }
+
+                }
+                if (termContractsList.Count > 0)
+                {
+                    var mapTermContract = _mapper.Map<List<TermContract>>(termContractsList);
+                    _context.TermContract.AddRange(mapTermContract);
+
+                }
+                if (UpdatetermContractsList.Count > 0)
+                {
+                    var maptermcontractupdate = _mapper.Map(modelTermContract, UpdatetermContractsList);
+                    _context.TermContract.UpdateRange(maptermcontractupdate);
+
+                }
+
             }
             var res = await _context.SaveChangesAsync();
             return res != 0 ? true : false;
