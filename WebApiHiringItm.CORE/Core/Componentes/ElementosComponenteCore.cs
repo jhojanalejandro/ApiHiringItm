@@ -54,16 +54,19 @@ namespace WebApiHiringItm.CORE.Core.Componentes
 
         public async Task<List<ElementComponentDto>?> GetElementsByComponent(Guid? id)
         {
-            var result = _context.ElementComponent.Where(x => x.ComponentId == id).ToList();
-            if (result.Count != 0)
+
+            var result = _context.ElementComponent.Where(x => x.ComponentId == id);
+
+            return result.Select(s => new ElementComponentDto
             {
-                var map = _mapper.Map<List<ElementComponentDto>>(result);
-                return await Task.FromResult(map);
-            }
-            else
-            {
-                return new List<ElementComponentDto>();
-            }
+                NombreElemento = s.NombreElemento,
+                Id = s.Id,
+                CantidadContratistas = s.CantidadContratistas,
+                CantidadEnable = s.CantidadContratistas - s.DetailContractor.Select(s => s.ElementId.Equals(s.Id)).ToList().Count ,
+
+            }).AsNoTracking()
+            .ToList();
+
         }
 
         public async Task<ElementComponentDto> GetById(Guid id)

@@ -29,6 +29,10 @@ using WebApiHiringItm.CORE.Helpers.Enums.File;
 using System.Xml.Linq;
 using System.Diagnostics.Contracts;
 using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Properties;
+using WebApiHiringItm.CORE.Helpers.GenericValidation;
 
 namespace WebApiHiringItm.CORE.Core.Contractors
 {
@@ -51,37 +55,43 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             return await Task.FromResult(map);
         }
 
-        public async Task<List<ContractorPaymentsDto>> GetPaymentsContractorList(Guid contractId, Guid contractorId)
-        {
-            var result = _context.ContractorPayments
-                        .Where(p => p.DetailContractorNavigation.ContractorId == contractorId && p.DetailContractorNavigation.ContractId == contractId).ToList();
-            var map = _mapper.Map<List<ContractorPaymentsDto>>(result);
-            return await Task.FromResult(map);
-        }
 
-        public async Task<List<ContractsContractorDto>> GetSeveralContractsByContractor(string contractorId)
+        public async Task<IGenericResponse<List<ContractsContractorDto>>> GetSeveralContractsByContractor(string contractorId)
         {
+            if (string.IsNullOrEmpty(contractorId) || !contractorId.IsGuid())
+                return ApiResponseHelper.CreateErrorResponse<List<ContractsContractorDto>>(Resource.GUIDNOTVALID);
+
             var result = _context.DetailContractor.Where(x => x.ContractorId.Equals(contractorId)).ToList();
             var map = _mapper.Map<List<ContractsContractorDto>>(result);
-            return await Task.FromResult(map);
+            if (map != null && map.Count > 0)
+            {
+                return ApiResponseHelper.CreateResponse(map);
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<List<ContractsContractorDto>>(Resource.INFORMATIONEMPTY);
+            }
         }
 
-        public async Task<List<ContractorByContractDto>> GetByIdFolder(Guid id)
+        public async Task<IGenericResponse<List<ContractorByContractDto>>> GetContractorByContract(string contractId)
         {
+            if (string.IsNullOrEmpty(contractId) || !contractId.IsGuid())
+                return ApiResponseHelper.CreateErrorResponse<List<ContractorByContractDto>>(Resource.GUIDNOTVALID);
+
             var getStatusFileProcess = _context.StatusFile.Where(w => w.Code.Equals(StatusFileEnum.ENPROCESO.Description())).FirstOrDefault()?.StatusFileDescription;
 
             var getStatusFiles = _context.DetailFile
                 .Include(i => i.File)
                     .ThenInclude(i => i.DocumentTypeNavigation)
                 .Include(i => i.StatusFile);
-            var contractor = _context.DetailContractor.Where(x => x.ContractId.Equals(id))
+            var contractor = _context.DetailContractor.Where(x => x.ContractId.Equals(Guid.Parse(contractId)))
                 .Include(dt => dt.Contractor)
                     .ThenInclude(i => i.Files)
                 .Include(dt => dt.HiringData)
                 .Include(i => i.Contract)
                     .ThenInclude(i => i.StatusContract);
            
-            return await contractor.Select(ct => new ContractorByContractDto
+            var resultByContract =  await contractor.Select(ct => new ContractorByContractDto
             {
                 Id = ct.Contractor.Id,
                 Nombre = ct.Contractor.Nombre + " " + ct.Contractor.Apellido,
@@ -95,67 +105,34 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                 ElementId = ct.ElementId.ToString().ToLower(),
                 ComponentId = ct.ComponentId.ToString().ToLower(),
                 ActivityId = ct.ActivityId.ToString().ToLower(),
-                LegalProccess = getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).ToList().Count >= 3
+                LegalProccess = getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) 
+                && w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) 
+                || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description())))).ToList().Count >= 3
                 ? "APROBADO"
-                : getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && !w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).OrderByDescending(o => o.RegisterDate).Select(s => s.StatusFile.StatusFileDescription).FirstOrDefault() == null 
+                : getStatusFiles.OrderByDescending(o => o.RegisterDate).Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && !w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description())))).OrderByDescending(o => o.RegisterDate).Select(s => s.StatusFile.StatusFileDescription).FirstOrDefault() == null 
                     ? getStatusFileProcess
-                    : getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).ToList().Count < 3
+                    : getStatusFiles.OrderByDescending(o => o.RegisterDate).Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).ToList().Count < 3
                         ? "EN PROCESO"
-                        : getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && !w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && (w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))).OrderByDescending(o => o.RegisterDate).Select(s => s.StatusFile.StatusFileDescription).FirstOrDefault(),
+                        : getStatusFiles.OrderByDescending(o => o.RegisterDate).Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && !w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description())))).OrderByDescending(o => o.RegisterDate).Select(s => s.StatusFile.StatusFileDescription).FirstOrDefault(),
                 HiringStatus = ct.HiringData != null ? HiringStatusEnum.CONTRATANDO.Description() : HiringStatusEnum.ENESPERA.Description(),
-                AssignmentUser = ct.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.RESPONSABLECONTRATO.Description())).Select(s => s.User.Id).ToList()
+                AssignmentUser = ct.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.RESPONSABLECONTRATO.Description())).Select(s => s.User.Id).ToList(),
+                MinuteGnenerated = getStatusFiles.OrderByDescending(o => o.RegisterDate).Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.MINUTACODE.Description())).FirstOrDefault() != null ? "GENERADA" : "PENDIENTE",
+                ComiteGenerated = getStatusFiles.OrderByDescending(o => o.RegisterDate).Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description())).FirstOrDefault() != null ? "GENERADA" : "PENDIENTE",
+                PreviusStudy = getStatusFiles.OrderByDescending(o => o.RegisterDate).Where(w => w.File.ContractId.Equals(ct.ContractId) && w.File.ContractorId.Equals(ct.ContractorId) && w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.ESTUDIOSPREVIOS.Description())).FirstOrDefault() != null ? "GENERADA" : "PENDIENTE",
 
             })
              .AsNoTracking()
              .ToListAsync();
 
+            if (resultByContract != null)
+            {
+                return ApiResponseHelper.CreateResponse(resultByContract);
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<List<ContractorByContractDto>>(Resource.INFORMATIONEMPTY);
+            }
         }
-
-        //public async Task<ChargeAccountDto?> ChargeAccountGetById(Guid contractorId, Guid ContractId)
-        //{
-        //    var result = _context.ContractorPayments
-        //        .Include(co => co.Contractor)
-        //            .ThenInclude(x => x.DetailContractor)
-        //                .ThenInclude(x => x.Contract)
-        //            .ThenInclude(x => x.DetailContractor)
-        //                .ThenInclude(x => x.Element)
-        //         .Where(x => x.Contractor.Id.Equals(contractorId) && x.Contract.Id.Equals(ContractId)).OrderByDescending(x => x.FromDate);
-
-        //    if (result != null)
-        //    {
-        //        return await result.Select(cb => new ChargeAccountDto
-        //        {
-        //            Codigo = cb.Contractor.Codigo,
-        //            Convenio = cb.Contractor.Convenio,
-        //            Nombre = cb.Contractor.Nombre + "  " + cb.Contractor.Apellido,
-        //            Identificacion = cb.Contractor.Identificacion,
-        //            Direccion = cb.Contractor.Direccion,
-        //            Departamento = cb.Contractor.Departamento,
-        //            Municipio = cb.Contractor.Municipio,
-        //            Barrio = cb.Contractor.Barrio,
-        //            Telefono = cb.Contractor.Telefono,
-        //            Celular = cb.Contractor.Celular,
-        //            Correo = cb.Contractor.Correo,
-        //            TipoAdministradora = cb.Contractor.TipoAdministradora,
-        //            Administradora = cb.Contractor.Administradora,
-        //            CuentaBancaria = cb.Contractor.CuentaBancaria,
-        //            TipoCuenta = cb.Contractor.TipoCuenta,
-        //            EntidadCuentaBancaria = cb.Contractor.EntidadCuentaBancaria,
-        //            ContractId = cb.Contract.Id,
-        //            From = cb.FromDate,
-        //            To = cb.ToDate,
-        //            Company = cb.Contract.CompanyName,
-        //            Paymentcant = cb.Paymentcant,
-        //            ContractNumber = cb.Contract.NumberProject,
-        //            LugarExpedicion = cb.Contractor.LugarExpedicion,
-        //            NombreElemento = cb.Contract.DetailContractor.Select(ne => ne.Element.NombreElemento).FirstOrDefault()
-        //        })
-        //        .AsNoTracking()
-        //        .FirstOrDefaultAsync();
-        //    }
-        //    return null;
-
-        //}
 
         public async Task<FilesDto?> GetDocumentPdf(Guid contractId, Guid contractorId)
         {
@@ -386,6 +363,32 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
                 throw new Exception("Error", ex);
             }
+
+        }
+
+        public ValidateFileDto ValidateDocumentUpload(Guid contractId, Guid contractorId)
+        {
+            ValidateFileDto validate = new();
+
+            var getDataFile = _context.DetailFile
+                .Include(i => i.File)
+                    .ThenInclude(i => i.DocumentTypeNavigation)
+                .Include(i => i.StatusFile)
+                 .Where(x => x.File.ContractId.Equals(contractId) && x.File.ContractorId.Equals(contractorId)).ToList();
+            var getDetailContractor = _context.DetailContractor.OrderByDescending(o => o.Consecutive).Where(w => w.ContractId.Equals(contractId) && w.ContractorId.Equals(contractorId)).Select(s => s.Id).FirstOrDefault();
+            var termContractList = _context.TermContract
+                .Include(i => i.TermTypeNavigation)
+                .Where(x => x.DetailContractor.Equals(getDetailContractor)).ToList();
+            validate.ActivateTermPayments = termContractList.Any(f => f.TermTypeNavigation.Code.Equals("DCNM") && f.TermDate > DateTime.Now);
+            validate.ActivateTermContract = termContractList.Any(f => f.TermTypeNavigation.Code.Equals("DCCT") && f.TermDate > DateTime.Now);
+
+            validate.Hv =  getDataFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(w => w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) && !w.StatusFile.Code.Equals(StatusFileEnum.REMITIDO.Description())) != null ? true : false;
+            validate.Secop = getDataFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(w => w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()) && !w.StatusFile.Code.Equals(StatusFileEnum.REMITIDO.Description())) != null ? true : false;
+            validate.Exam = getDataFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(w => w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description()) && !w.StatusFile.Code.Equals(StatusFileEnum.REMITIDO.Description())) != null ? true : false ;
+
+
+            return validate;
+
 
         }
         #endregion

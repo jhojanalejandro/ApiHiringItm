@@ -13,15 +13,17 @@ namespace WebApiHiringItm.MODEL.Dto.FileManagerDo
         public string[] Path { get; set; }
         public List<FolderContractDto>? FolderContract { get; set; }
         public List<FolderContractorDto>? Folders { get; set; }
+        public string ContractName { get; set; }
 
     }
 
     public class FolderContractorDto
     {
         public string Id { get; set; }
-        public string Nombre { get; set; }
-        public string Identificacion { get; set; }
+        public string ContractorName { get; set; }
+        public string ContractorIdentification { get; set; }
         public string Type { get; set; }
+        public int cantFile { get; set; }
     }
 
     public class FolderContractDto

@@ -19,7 +19,6 @@ namespace WebApiHiringItm.MODEL.Entities
         }
 
         public Guid Id { get; set; }
-        public Guid UserId { get; set; }
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
         public string ObjectContract { get; set; }
@@ -37,7 +36,6 @@ namespace WebApiHiringItm.MODEL.Entities
 
         public virtual RubroType RubroNavigation { get; set; }
         public virtual StatusContract StatusContract { get; set; }
-        public virtual UserT User { get; set; }
         public virtual ICollection<AssigmentContract> AssigmentContract { get; set; }
         public virtual ICollection<Component> Component { get; set; }
         public virtual ICollection<DetailContract> DetailContract { get; set; }

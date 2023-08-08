@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebApiHiringItm.MODEL.Dto.ContratoDto;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.MODEL.Dto.MessageDto;
 
 namespace WebApiHiringItm.CORE.Core.MessageHandlingCore.Interface
 {
     public interface IMessageHandlingCore
     {
-        Task<bool> SendContractorCount(SendMessageAccountDto ids);
+        Task<IGenericResponse<string>> SendContractorCount(SendMessageAccountDto ids);
+        Task<IGenericResponse<string>> SendContractorObservation(SendMessageObservationDto ids);
 
     }
 }

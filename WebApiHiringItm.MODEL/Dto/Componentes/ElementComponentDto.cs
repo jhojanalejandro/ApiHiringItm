@@ -22,5 +22,7 @@
         public decimal? ValorPorDiaContratista { get; set; }
         public string? ObjetoElemento { get; set; }
         public Guid? ActivityId { get; set; }
+        public int? CantidadEnable { get; set; }
+
     }
 }

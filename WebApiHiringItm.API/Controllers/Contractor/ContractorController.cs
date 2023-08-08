@@ -37,27 +37,13 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
+
         [HttpGet]
-        public async Task<IActionResult> GetPaymentsContractorList(Guid contractId, Guid contractorId)
+        public async Task<IActionResult> GetContractorByContract(string contractId)
         {
             try
             {
-                var Data = await _contactor.GetPaymentsContractorList(contractId, contractorId);
-                return Data != null ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetAllByFolder(Guid id)
-        {
-            try
-            {
-                var Data = await _contactor.GetByIdFolder(id);
+                var Data = await _contactor.GetContractorByContract(contractId);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -186,6 +172,21 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
             catch (Exception ex)
             {
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public  IActionResult ValidateDocumentUpload(string contractId, string contractorId)
+        {
+            try
+            {
+                var Data =  _contactor.ValidateDocumentUpload(Guid.Parse(contractId), Guid.Parse(contractorId));
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
                 throw new Exception("Error", ex);
             }
         }

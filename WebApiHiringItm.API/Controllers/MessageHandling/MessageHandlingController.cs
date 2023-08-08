@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.CORE.Core.MessageHandlingCore.Interface;
-using WebApiHiringItm.MODEL.Dto.ContratoDto;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.MODEL.Dto.MessageDto;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.API.Controllers.MessageHandling
@@ -26,13 +27,23 @@ namespace WebApiHiringItm.API.Controllers.MessageHandling
         {
             try
             {
-                var Data = await _messageHandling.SendContractorCount(ids);
-                return Data != false ? Ok(Data) : NoContent();
+                var isSuccess = await _messageHandling.SendContractorCount(ids);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
     }

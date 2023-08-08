@@ -60,13 +60,23 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["J1"].Value = "Obligaciones";
                 worksheet.Cells["K1"].Value = "CDP";
                 worksheet.Cells["L1"].Value = "Número Contrato";
-                worksheet.Cells["A1:P1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["A1:P1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
-                worksheet.Cells["A1:P1"].Style.Font.Bold = true;
-                worksheet.Cells["A1:P1"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:P1"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:P1"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:P1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                var celdasBloqueadas = worksheet.Cells["A2:J2"];
+                celdasBloqueadas.Style.Locked = true;
+                worksheet.Protection.IsProtected = true;
+                worksheet.Protection.SetPassword("ContractacionITM");
+
+                var celdasEditables = worksheet.Cells["K2:L2"];
+                celdasEditables.Style.Locked = false;
+                worksheet.Cells["A1:L1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A1:L1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
+                worksheet.Cells["A1:L1"].Style.Font.Bold = true;
+                worksheet.Cells["A1:L1"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:L1"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:L1"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:L1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                //worksheet.Protection.IsProtected = true;
+                //worksheet.Protection.SetPassword("ContratacionITM");
+
 
                 row = 2;
                 var data = _context.DetailContractor
@@ -83,7 +93,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
                     Identificacion = w.Contractor.Identificacion,
                     ObjetoConvenio = w.Element.ObjetoElemento,
-                    ValorTotal = w.EconomicdataNavigation.TotalValue,
+                    ValorTotal = Math.Ceiling(w.EconomicdataNavigation.TotalValue.Value),
                     NombreElemento = w.Element.NombreElemento,
                     GeneralObligation = w.Element.ObligacionesGenerales,
                     SpecificObligation = w.Element.ObligacionesEspecificas,
@@ -409,7 +419,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
                     Identificacion = w.Contractor.Identificacion,
                     ObjetoConvenio = w.Element.ObjetoElemento,
-                    ValorTotal = w.EconomicdataNavigation.TotalValue,
+                    ValorTotal = Math.Ceiling(w.EconomicdataNavigation.TotalValue.Value),
                     InitialDate = w.HiringData.FechaRealDeInicio,
                     FinalDate = w.HiringData.FechaFinalizacionConvenio,
                     User = w.Contractor.User.UserName,
@@ -503,7 +513,13 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["E1"].Value = "Consecutivo Elemento";
                 worksheet.Cells["F1"].Value = "Nombre Elemento";
                 worksheet.Cells["G1"].Value = "Perfil Requerido";
+                var celdasBloqueadas = worksheet.Cells["A2:F2"];
+                celdasBloqueadas.Style.Locked = true;
+                worksheet.Protection.IsProtected = true;
+                worksheet.Protection.SetPassword("ContractacionITM");
 
+                var celdasEditables = worksheet.Cells["G2"];
+                celdasEditables.Style.Locked = false;
                 worksheet.Cells["A1:G1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
                 worksheet.Cells["A1:G1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
                 worksheet.Cells["A1:G1"].Style.Font.Bold = true;

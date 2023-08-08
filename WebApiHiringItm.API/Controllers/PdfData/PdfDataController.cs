@@ -112,5 +112,21 @@ namespace WebApiHiringItm.API.Controllers.PdfData
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDataminuteExtension(ContractContractorsDto minuteExtensions)
+        {
+            try
+            {
+                var Data = await _pdfData.GetminuteExtension(minuteExtensions);
+                return Data != null ? Ok(Data) : NoContent();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
     }
 }

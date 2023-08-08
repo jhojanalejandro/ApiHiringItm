@@ -7,11 +7,6 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class DetailContract
     {
-        public DetailContract()
-        {
-            TermContract = new HashSet<TermContract>();
-        }
-
         public Guid Id { get; set; }
         public int? Consecutive { get; set; }
         public Guid? ContractId { get; set; }
@@ -19,9 +14,12 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? FechaFinalizacion { get; set; }
         public string TipoContrato { get; set; }
         public Guid? DetailType { get; set; }
+        public DateTime? RegisterDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public Guid UserId { get; set; }
 
         public virtual ContractFolder Contract { get; set; }
         public virtual DetailType DetailTypeNavigation { get; set; }
-        public virtual ICollection<TermContract> TermContract { get; set; }
+        public virtual UserT User { get; set; }
     }
 }

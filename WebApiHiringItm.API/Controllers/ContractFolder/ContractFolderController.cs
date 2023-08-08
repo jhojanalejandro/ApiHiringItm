@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.X509;
 using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Contrato;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
@@ -88,7 +89,6 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
                     var Data = await _project.GetDetailByIdLastDate(id);
                     return Data != null ? Ok(Data) : NoContent();
                 }
-                return NoContent();
 
             }
             catch (Exception ex)
@@ -127,13 +127,21 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         {
             try
             {
-                var Data = await _project.SaveContract(model);
-                return Data == true ? Ok(Data) : NoContent();
+                var isSuccess = await _project.SaveContract(model);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
-
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 

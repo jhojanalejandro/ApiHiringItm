@@ -20,7 +20,7 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string AccountType { get; set; }
         public string AccountNumber { get; set; }
         public string BankingEntity { get; set; }
-        public string? TotalValue { get; set; }
+        public decimal? TotalValue { get; set; }
         public string? ContractName { get; set; }
         public string? ChargeAccountNumber { get; set; }
     }

@@ -13,7 +13,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore.Interface
         Task<List<HiringDataDto>> GetAll();
         Task<HiringDataDto> GetByIdHinringData(Guid id, Guid contractId);
         Task<bool> Delete(Guid id);
-        Task<bool> Create(List<HiringDataDto> model);
+        Task<bool> SaveHiringData(List<HiringDataDto> model);
 
     }
 }

@@ -17,6 +17,7 @@ namespace WebApiHiringItm.MODEL.Dto.Usuario
         public string? RollCode { get; set; }
         public string? RollId { get; set; }
         public string? Professionalposition { get; set; }
+        public string? RollDescription { get; set; }
 
     }
 }

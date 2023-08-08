@@ -3,7 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Helpers;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 using WebApiHiringItm.CORE.Helpers.InterfacesHelpers;
+using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Entities;
 
@@ -27,7 +30,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         #endregion
 
         #region Methods
-        public async Task<bool> Add(ComponenteDto model)
+        public async Task<IGenericResponse<string>> SaveComponentContract(ComponenteDto model)
         {
             var exist = _context.Component.FirstOrDefault(x => x.Id == model.Id);
 
@@ -36,15 +39,29 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 model.Id = Guid.NewGuid();
                 var map = _mapper.Map<Component>(model);
                 _context.Component.Add(map);
-                _save.SaveChangesDB();
-                return await Task.FromResult(true);
+                var resp = await _save.SaveChangesDB();
+                if (resp)
+                {
+                    return ApiResponseHelper.CreateResponse(Resource.REGISTERSUCCESSFULL);
+                }
+                else
+                {
+                    return ApiResponseHelper.CreateErrorResponse<string>(Resource.INFORMATIONEMPTY);
+                }
             }
             else
             {
                 var mapUpdate = _mapper.Map(model,exist);
                 _context.Component.Update(mapUpdate);
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
+                var resp = await _save.SaveChangesDB();
+                if (resp)
+                {
+                    return ApiResponseHelper.CreateResponse(Resource.REGISTERSUCCESSFULL);
+                }
+                else
+                {
+                    return ApiResponseHelper.CreateErrorResponse<string>(Resource.INFORMATIONEMPTY);
+                }
             }
         }
 
@@ -57,15 +74,15 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 var map = _mapper.Map<Activity>(model);
                 map.Id = Guid.NewGuid();
                 _context.Activity.Add(map);
-                await _save.SaveChangesDB();
-                return await Task.FromResult(true);
+                var resp  = await _save.SaveChangesDB();
+                return resp;
             }
             else
             {
                 var mapUpdate = _mapper.Map(model, exist);
                 _context.Activity.Update(mapUpdate);
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;            }
+                var res = await _save.SaveChangesDB();
+                return res;            }
         }
         public async Task<List<ComponenteDto>?> GetComponentsByContract(Guid contractId)
         {
@@ -83,7 +100,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                         e.Activities = _mapper.Map<List<ActivityDto>>(activity);
                         e.Activities.ForEach(eA =>
                         {
-                            var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(e.Id) && w.ActivityId.Equals(eA.Id)).ToList();
+                            var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(e.Id) && w.ActivityId.Equals(eA.Id)).OrderBy(o => o.Consecutivo).ToList();
                             eA.Elementos = _mapper.Map<List<ElementComponentDto>>(element);
 
                         });

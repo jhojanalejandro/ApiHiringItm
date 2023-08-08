@@ -24,8 +24,15 @@ namespace WebApiHiringItm.CORE.Helpers
         #region Methods
         public async Task<bool> SaveChangesDB()
         {
-            await _context.SaveChangesAsync();
-            return await Task.FromResult(true);
+            var resp = await _context.SaveChangesAsync();
+            if (resp > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         #endregion
     }

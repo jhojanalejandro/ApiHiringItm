@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.FoldersContractorCore.Interface;
+using WebApiHiringItm.CORE.Helpers.Enums;
+using WebApiHiringItm.CORE.Helpers.Enums.FolderType;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Entities;
 
@@ -24,11 +26,27 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
         }
 
 
-        public async Task<List<FolderDto>> GetAllById(Guid contractorId, Guid contractId)
+        public async Task<List<FolderDto>> GetAllFolderById(Guid contractorId, Guid contractId)
         {
-            var result = _context.Folder.Where(x => x.ContractorId.Equals(contractorId) && x.ContractId == contractId).ToList();
-            var map = _mapper.Map<List<FolderDto>>(result);
-            return await Task.FromResult(map);
+            var getContractor = _context.Contractor.FirstOrDefault(f => f.Id.Equals(contractorId));
+            return _context.Folder
+                .Include(i => i.FolderTypeNavigation)
+                .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId == contractId)
+                .Select(f => new FolderDto
+                {
+                    Id = f.Id,
+                    //UserId = f.UserId.HasValue ? f.UserId.Value : null,
+                    FolderName = f.FolderName + " " + f.Consutive,
+                    RegisterDate = f.RegisterDate,
+                    ModifyDate = f.ModifyDate,
+                    FolderDescription = f.FolderTypeNavigation.FolderDescription,
+                    Consutive = f.Consutive,
+                    DescriptionProject = f.DescriptionProject,
+                    ContractorName = getContractor.Nombre +" "+ getContractor.Apellido
+                })
+                .AsNoTracking()
+                .ToList();
+            
         }
 
         public async Task<FolderDto> GetById(string id)
@@ -58,14 +76,14 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
             }
         }
 
-        public async Task<bool> Create(FolderDto model)
+        public async Task<bool> SaveFolderContract(FolderDto model)
         {
             var getData = _context.Folder.Where(x => x.Id == model.Id).FirstOrDefault();
-
+            model.FolderType = _context.FolderType.Where(w => w.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description())).Select(s => s.Id).FirstOrDefault();
             if (getData == null)
             {
+                model.Id = Guid.NewGuid();
                 var map = _mapper.Map<Folder>(model);
-                map.Id = Guid.NewGuid();
                 _context.Folder.Add(map);
                 var res = await _context.SaveChangesAsync();
                 return res != 0 ? true : false;

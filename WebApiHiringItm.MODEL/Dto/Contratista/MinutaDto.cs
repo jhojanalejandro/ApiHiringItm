@@ -36,7 +36,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string? NombreCpc { get; set; }
         public bool? Modificacion { get; set; }
         public string? ObjetoElemento { get; set; }
-        public string Nombre { get; set; }
+        public string ContractorName { get; set; }
         public string Identificacion { get; set; }
         public string LugarExpedicion { get; set; }
         public DateTime? FechaNacimiento { get; set; }

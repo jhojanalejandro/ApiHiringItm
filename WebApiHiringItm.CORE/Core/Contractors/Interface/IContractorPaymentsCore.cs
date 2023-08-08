@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 
 namespace WebApiHiringItm.CORE.Core.Contractors.Interface
@@ -13,5 +14,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
         Task<ContractorPaymentsDto> GetById(string id);
         Task<bool> Create(List<ContractorPaymentsDto> model);
         Task<bool> Delete(string id);
+        Task<IGenericResponse<List<ContractorPaymentsDto>>> GetPaymentsContractorList(string contractId, string contractorId);
     }
 }

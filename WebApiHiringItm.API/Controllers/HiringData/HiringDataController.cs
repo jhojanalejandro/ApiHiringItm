@@ -57,10 +57,7 @@ namespace WebApiHiringItm.API.Controllers.HiringData
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _hiringData.Create(model);
-
-                //Retornamos datos.
+                var Data = await _hiringData.SaveHiringData(model);
                 return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

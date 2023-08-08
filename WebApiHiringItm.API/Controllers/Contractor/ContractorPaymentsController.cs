@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.MODEL.Dto.Contratista;
+using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.API.Controllers.Contractor
 {
@@ -22,10 +23,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _contractorPayment.GetAll();
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -79,5 +77,21 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPaymentsContractorList(string contractId, string contractorId)
+        {
+            try
+            {
+                var Data = await _contractorPayment.GetPaymentsContractorList(contractId, contractorId);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
     }
 }

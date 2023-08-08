@@ -54,11 +54,26 @@ namespace WebApiHiringItm.API.Controllers.Files
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBillsContractor(FilesDto model)
+        public async Task<IActionResult> AddBillsContractor(List<FilesDto> model)
         {
             try
             {
-                var Data = await _file.Addbill(model);
+                var Data = await _file.AddbillContractor(model);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddBillsContract(FilesDto model)
+        {
+            try
+            {
+                var Data = await _file.AddMinuteGenerateContract(model);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -73,7 +88,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         {
             try
             {
-                var Data = await _file.CreateDetail(model);
+                var Data = await _file.CreateDetail(model,false,false);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -82,6 +97,7 @@ namespace WebApiHiringItm.API.Controllers.Files
                 throw new Exception("Error", ex);
             }
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -113,7 +129,7 @@ namespace WebApiHiringItm.API.Controllers.Files
 
 
         [HttpGet]
-        public async Task<IActionResult> GetFileContractByFolder(string folderId, Guid contractId)
+        public async Task<IActionResult> GetFileContractByFolder(string folderId, string contractId)
         {
             try
             {
@@ -190,6 +206,22 @@ namespace WebApiHiringItm.API.Controllers.Files
             try
             {
                 var Data = await _file.AddFileContract(model);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CreateDetailObservation(DetailFileDto model)
+        {
+            try
+            {
+                var Data = await _file.CreateDetailObservation(model);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
