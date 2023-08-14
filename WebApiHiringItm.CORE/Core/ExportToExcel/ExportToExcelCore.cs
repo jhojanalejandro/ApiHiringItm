@@ -16,6 +16,8 @@ using Microsoft.EntityFrameworkCore;
 using Color = System.Drawing.Color;
 using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
 using WebApiHiringItm.CORE.Helpers.Enums;
+using WebApiHiringItm.MODEL.Models;
+using WebApiHiringItm.MODEL.Dto.ExportDataDto;
 
 namespace WebApiHiringItm.CORE.Core.ExportToExcel
 {
@@ -65,7 +67,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Protection.IsProtected = true;
                 worksheet.Protection.SetPassword("ContractacionITM");
 
-                var celdasEditables = worksheet.Cells["K2:L2"];
+                var celdasEditables = worksheet.Cells["K2:L30"];
                 celdasEditables.Style.Locked = false;
                 worksheet.Cells["A1:L1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
                 worksheet.Cells["A1:L1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
@@ -90,10 +92,10 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 {
                     ContractorId = w.ContractorId.ToString(),
                     NombreComponente = w.Component.NombreComponente,
-                    Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
+                    Nombre = w.Contractor.Nombres + " " + w.Contractor.Apellidos,
                     Identificacion = w.Contractor.Identificacion,
                     ObjetoConvenio = w.Element.ObjetoElemento,
-                    ValorTotal = Math.Ceiling(w.EconomicdataNavigation.TotalValue.Value),
+                    ValorTotal = Math.Ceiling(w.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(w.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue.Value).FirstOrDefault()),
                     NombreElemento = w.Element.NombreElemento,
                     GeneralObligation = w.Element.ObligacionesGenerales,
                     SpecificObligation = w.Element.ObligacionesEspecificas,
@@ -183,7 +185,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     CompanyName = w.Contract.CompanyName,
                     NombreComponente = w.Component.NombreComponente,
                     Cpc = w.Element.Cpc.CpcName,
-                    Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
+                    Nombre = w.Contractor.Nombres + " " + w.Contractor.Apellidos,
                     Identificacion = w.Contractor.Identificacion,
                     ObjetoConvenio = w.Contract.ObjectContract,
                     ValorTotal = w.Element.ValorTotal,
@@ -289,7 +291,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     Rubro = w.Contract.RubroNavigation.RubroNumber,
                     Cpc = w.Element.Cpc.CpcName,
                     Projecto = w.Contract.Project,
-                    Nombre = w.Contractor.Nombre,
+                    Nombre = w.Contractor.Nombres,
                     Cedula = w.Contractor.Identificacion
                 })
                 .AsNoTracking()
@@ -416,16 +418,15 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     Convenio = w.Contract.ProjectName,
                     CompanyName = w.Contract.CompanyName,
                     NombreComponente = w.Component.NombreComponente,
-                    Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
+                    Nombre = w.Contractor.Nombres + " " + w.Contractor.Apellidos,
                     Identificacion = w.Contractor.Identificacion,
                     ObjetoConvenio = w.Element.ObjetoElemento,
-                    ValorTotal = Math.Ceiling(w.EconomicdataNavigation.TotalValue.Value),
+                    ValorTotal = Math.Ceiling(w.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(w.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue.Value).FirstOrDefault()),
                     InitialDate = w.HiringData.FechaRealDeInicio,
                     FinalDate = w.HiringData.FechaFinalizacionConvenio,
                     User = w.Contractor.User.UserName,
                     Email = w.Contractor.User.UserEmail,
-                    UnitValue = w.EconomicdataNavigation.UnitValue
-
+                    UnitValue = Math.Ceiling(w.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(w.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.UnitValue.Value).FirstOrDefault()),
                 })
                 .AsNoTracking()
                 .ToList();
@@ -518,8 +519,10 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Protection.IsProtected = true;
                 worksheet.Protection.SetPassword("ContractacionITM");
 
-                var celdasEditables = worksheet.Cells["G2"];
-                celdasEditables.Style.Locked = false;
+                var celdasEditablesG1 = worksheet.Cells["G2:G30"];
+                celdasEditablesG1.Style.Locked = false;
+                //var celdasEditablesG2 = worksheet.Cells["G30"];
+                //celdasEditablesG2.Style.Locked = false;
                 worksheet.Cells["A1:G1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
                 worksheet.Cells["A1:G1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
                 worksheet.Cells["A1:G1"].Style.Font.Bold = true;
@@ -581,6 +584,145 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             stream.Position = 0;
             return await Task.FromResult(stream);
         }
+
+        public async Task<MemoryStream> GenerateReport(ControllerBase controller, RequestReportContract reportContract)
+        {
+            var getReportContract = _context.DetailContractor.Where(x => x.ContractId.Equals(reportContract.ContractId))
+                    .Select(w => new ReportExportDto()
+                    {
+                        ProjecName = w.Contract.ProjectName,
+                        contractorNames = w.Contractor.Nombres,
+                        ContractorLastNames =  w.Contractor.Apellidos,
+                        ContractorIdentification = w.Contractor.Identificacion,
+                        ContractorMail = w.Contractor.Correo,
+                        phoneNumber = w.Contractor.Telefono,
+                        //JuridicProcess = w.Contractor.User.UserEmail,
+                        //UnitValue = Math.Ceiling(w.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(w.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.UnitValue.Value).FirstOrDefault()),
+                    })
+                    .AsNoTracking()
+                    .ToList();
+            var stream = new MemoryStream();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                var worksheet = xlPackage.Workbook.Worksheets.Add("Adquisiciones");
+                var namedStyle = xlPackage.Workbook.Styles.CreateNamedStyle("HyperLink");
+                namedStyle.Style.Font.UnderLine = true;
+                namedStyle.Style.Font.Color.SetColor(Color.Blue);
+                const int startRow = 5;
+                var row = startRow;
+                //Create Headers and format them
+                worksheet.Cells["A1"].Value = "REPORTE DEL ESTADO DE CONVENIO INTER ADMINISTRATIVO";
+                using (var r = worksheet.Cells["A1:Q3"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+                worksheet.Cells["A4"].Value = "Nombres";
+                worksheet.Cells["B4"].Value = "Apelllidos";
+                worksheet.Cells["C4"].Value = "Correo";
+                worksheet.Cells["D4"].Value = "Telefono";
+                worksheet.Cells["E4"].Value = "Estado Proceso juridico";
+                worksheet.Cells["F4"].Value = "Estado Proceso Contractual";
+                worksheet.Cells["G4"].Value = "Estado de la contratación";
+                worksheet.Cells["H4"].Value = "Solicitud de comite ";
+                worksheet.Cells["I4"].Value = "Minuta contrato";
+                worksheet.Cells["J4"].Value = "Estaudios previos";
+                worksheet.Cells["K4"].Value = "¿Se requieren vigencias futuras?";
+                worksheet.Cells["L4"].Value = "Estado de solicitud de vigencias futuras";
+                worksheet.Cells["M4"].Value = "Unidad de contratación";
+                worksheet.Cells["N4"].Value = "Ubicación";
+                worksheet.Cells["O4"].Value = "Nombre del responsable";
+                worksheet.Cells["P4"].Value = "Teléfono del responsable ";
+                worksheet.Cells["R4"].Value = "Correo electrónico del responsable";
+                worksheet.Cells["R4"].Value = "Proyecto de inversión";
+                worksheet.Cells["S4"].Value = "DOCUMENTO";
+                worksheet.Cells["T4"].Value = "NOMBRE";
+                worksheet.Cells["U4"].Value = "HONORARIOS";
+                worksheet.Cells["V4"].Value = "FECHA REQUERIDA DE INICIO PIMER SEMESTRE";
+                worksheet.Cells["W4"].Value = "FECHA TERMINACIÓN PRIMER CONTRATO";
+                worksheet.Cells["X4"].Value = "DURACION";
+                worksheet.Cells["Y4"].Value = "TOTAL CONTRATO";
+                worksheet.Cells["Z4"].Value = "¿Debe cumplir con invertir mínimo el 30% de los recursos del presupuesto destinados a comprar alimentos, cumpliendo con lo establecido en la Ley 2046 de 2020, reglamentada por el Decreto 248 de 2021?";
+                worksheet.Cells["AA4"].Value = "¿El contrato incluye el suministro de bienes y servicios distintos a alimentos?";
+
+
+                worksheet.Cells["A4:AA4"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A4:AA4"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(70, 130, 180));
+                worksheet.Cells["A4:AA4"].Style.Font.Bold = true;
+                worksheet.Cells["A4:AA4"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A4:AA4"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A4:AA4"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A4:AA4"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+
+                var year = DateTime.Now.Year;
+                var month = DateTime.Now.Month;
+                var day = DateTime.Now.Day;
+                var date = DateTime.Now.ToString("dd/MM/yyyy");
+                row = 5;
+                int nro = 0;
+                foreach (var user in getReportContract)
+                {
+                    //var durationContract = CalculateDateContract(user.InitialDate.Value, user.FinalDate.Value);
+                    nro++;
+                    worksheet.Cells[row, 1].Value = 80111600;
+                    //worksheet.Cells[row, 2].Value = user.ObjetoConvenio;
+                    worksheet.Cells[row, 3].Value = month;
+                    worksheet.Cells[row, 4].Value = month;
+                    worksheet.Cells[row, 5].Value = 0;
+                    //worksheet.Cells[row, 6].Value = durationContract;
+                    worksheet.Cells[row, 7].Value = "CCE-16";
+                    //worksheet.Cells[row, 8].Value = 0;
+                    //worksheet.Cells[row, 9].Value = user.ValorTotal;
+                    //worksheet.Cells[row, 10].Value = user.ValorTotal;
+                    worksheet.Cells[row, 11].Value = 0;
+                    worksheet.Cells[row, 12].Value = 0;
+                    worksheet.Cells[row, 13].Value = "Unidad estratégica de negociosos";
+                    worksheet.Cells[row, 14].Value = "CO-ANT-05001";
+                    //worksheet.Cells[row, 15].Value = user.User;
+                    //worksheet.Cells[row, 16].Value = 4405100;
+                    //worksheet.Cells[row, 17].Value = user.Email;
+                    worksheet.Cells[row, 18].Value = "Convenios-funcionamiento";
+                    //worksheet.Cells[row, 19].Value = user.Identificacion;
+                    //worksheet.Cells[row, 20].Value = user.Nombre;
+                    //worksheet.Cells[row, 21].Value = user.UnitValue;
+                    //worksheet.Cells[row, 22].Value = user.InitialDate;
+                    //worksheet.Cells[row, 23].Value = user.FinalDate;
+                    //worksheet.Cells[row, 24].Value = durationContract;
+                    //worksheet.Cells[row, 25].Value = user.ValorTotal;
+                    worksheet.Cells[row, 26].Value = 0;
+                    worksheet.Cells[row, 27].Value = 0;
+                    row++;
+
+                }
+                if (nro > 0)
+                {
+                    worksheet.Columns.AutoFit();
+                    xlPackage.Workbook.Properties.Title = "Solicitud PAA";
+                    xlPackage.Workbook.Properties.Author = "ITM";
+                    xlPackage.Workbook.Properties.Created = DateTime.Now;
+                    xlPackage.Workbook.Properties.Subject = "Solicitud PAA";
+                    xlPackage.Save();
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            stream.Position = 0;
+            return await Task.FromResult(stream);
+        }
+
         #endregion
 
         #region PRIVATE METHODS

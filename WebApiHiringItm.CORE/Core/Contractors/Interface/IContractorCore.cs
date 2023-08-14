@@ -11,7 +11,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
     {
         Task<List<ContractorDto>> GetAll();
         
-        Task<bool> SavePersonalInformation(PersonalInformation model);
         Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model);
         Task<List<ContractsContarctorDto>> getContractsByContractor(string contractorId);
         Task<FilesDto?> GetDocumentPdf(Guid contractId, Guid contractorId);
@@ -19,5 +18,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
         Task<List<HistoryContractorDto>> GetHistoryContractor();
         Task<IGenericResponse<List<ContractorByContractDto>>> GetContractorByContract(string contractId);
         ValidateFileDto ValidateDocumentUpload(Guid contractId, Guid contractorId);
+        Task<IGenericResponse<string>> SavePersonalInformation(PersonalInformation model);
     }
 }

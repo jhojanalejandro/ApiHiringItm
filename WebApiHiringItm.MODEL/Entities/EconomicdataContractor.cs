@@ -9,10 +9,11 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public EconomicdataContractor()
         {
-            DetailContractor = new HashSet<DetailContractor>();
+            ChangeContractContractor = new HashSet<ChangeContractContractor>();
         }
 
         public Guid Id { get; set; }
+        public Guid DetailContractorId { get; set; }
         public decimal? TotalValue { get; set; }
         public decimal? UnitValue { get; set; }
         public decimal? TotalPaIdMonth { get; set; }
@@ -22,7 +23,9 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? Freed { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
+        public int? Consecutive { get; set; }
 
-        public virtual ICollection<DetailContractor> DetailContractor { get; set; }
+        public virtual DetailContractor DetailContractor { get; set; }
+        public virtual ICollection<ChangeContractContractor> ChangeContractContractor { get; set; }
     }
 }

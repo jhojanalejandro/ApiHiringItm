@@ -16,15 +16,15 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders.Interface
         Task<ContractFolderDto> GetById(Guid id);
         Task<bool> Delete(Guid id);
         Task<bool> UpdateCost(ProjectFolderCostsDto model);
-        Task<List<DetalleContratoDto>> GetDetailByIdList(Guid ContractId);
-        Task<DetalleContratoDto> GetDetailByIdContract(Guid ContractId);
-        Task<DetalleContratoDto?> GetDetailByIdLastDate(Guid ContractId);
+        Task<List<DetailContractDto>> GetDetailByIdList(Guid ContractId);
+        Task<DetailContractDto> GetDetailByIdContract(Guid ContractId);
+        Task<DetailContractDto?> GetDetailByIdLastDate(Guid ContractId);
         Task<List<ContractListDto>> GetAllInProgess(string typeModule);
         Task<List<ContractListDto>> GetAllActivate();
-        Task<bool> UpdateStateContract(Guid id);
         Task<List<ContractFolderDto>> GetAllProjectsRegistered();
         Task<bool> AssignmentUser(List<AssignmentUserDto> modelAssignment);
         Task<bool> SaveTermFileContract(TermContractDto modelTermContract);
         Task<IGenericResponse<string>> SaveContract(RProjectForlderDto model);
+        Task<IGenericResponse<string>> UpdateStateContract(string contractId);
     }
 }

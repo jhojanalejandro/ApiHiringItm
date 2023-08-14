@@ -42,7 +42,7 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
                     FolderDescription = f.FolderTypeNavigation.FolderDescription,
                     Consutive = f.Consutive,
                     DescriptionProject = f.DescriptionProject,
-                    ContractorName = getContractor.Nombre +" "+ getContractor.Apellido
+                    ContractorName = getContractor.Nombres +" "+ getContractor.Apellidos
                 })
                 .AsNoTracking()
                 .ToList();

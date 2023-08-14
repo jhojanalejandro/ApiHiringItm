@@ -13,12 +13,12 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public string? Reason { get; set; }
         public string? Observation { get; set; }
         public DateTime? RegisterDate { get; set; }
-        public Guid? StatusFileId { get; set; }
+        public Guid StatusFileId { get; set; }
         public bool Passed { get; set; }
         public Guid? UserId { get; set; }
         public string? ContractId { get; set; }
         public string? ContractorId { get; set; }
-        public DateTime? StarDate { get; set; }
+        public DateTime TermDate { get; set; }
 
         public List<FilesDto>? Files { get; set; } = null;
     }

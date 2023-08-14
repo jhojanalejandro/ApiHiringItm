@@ -132,7 +132,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 {
                     if (getData != null)
                     {
-                        var stattusId = getStatusId.Find(f => f.StatusContractorDescription.Equals(model[i].StatusContractor))?.Id;
+                        var stattusId = getStatusId.Find(f => f.StatusContractorDescription.Equals(model[i].StatusContractor)).Id;
                         DetailContractor DetailContractor = new DetailContractor();
                         mapHiring[i].Id = Guid.NewGuid();
                         DetailContractor.HiringDataId = mapHiring[i].Id;

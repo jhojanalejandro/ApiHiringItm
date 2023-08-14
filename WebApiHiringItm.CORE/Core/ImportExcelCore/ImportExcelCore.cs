@@ -21,6 +21,9 @@ using WebApiHiringItm.CORE.Helpers.Enums.Rolls;
 using WebApiHiringItm.MODEL.Dto;
 using NPOI.SS.Formula.Functions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Properties;
 
 namespace WebApiHiringItm.CORE.Core.ImportExcelCore
 {
@@ -197,56 +200,54 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             dataTable.TableName = "HiringData";
             List<HiringData> hiringDataList = new();
 
-            for (int i = 0; i < dataTable.Columns.Count; i++)
+            dataTable.Columns[0].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[0].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
+            var columna = dataTable.Columns[0].ColumnName;
+            var listaHring = _context.Contractor.ToList();
+
+            if (columna.Equals("Identificadorbasededatos"))
             {
-                dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
-                var columna = dataTable.Columns[i].ColumnName;
-                var listaHring = _context.Contractor.ToList();
-
-                if (columna.Equals("Cedula"))
+                for (int j = 0; j < dataTable.Rows.Count; j++)
                 {
-                    for (int j = 0; j < dataTable.Rows.Count; j++)
+                    int posicion = j;
+                    if (dataTable.Rows.Count == 1)
                     {
-                        int posicion = j;
-                        if (dataTable.Rows.Count == 1)
-                        {
-                            posicion = 0;
-
-                        }
-                        else if (dataTable.Rows.Count == 0)
-                        {
-                            return "No se agrego la Información por que es repetida";
-                        }
-
-                        string idValor = (string)dataTable.Rows[j]["IdentificadorBaseDedatos"];
-                        if (idValor != null)
-                        {
-                            var resultado = _context.HiringData.FirstOrDefault(x => x.ContractorId.Equals(Guid.Parse(idValor)));
-                            if (resultado != null)
-                            {
-                                if ((double)dataTable.Rows[j]["CDP"] != null && (double)dataTable.Rows[j]["Número Contrato"] != null)
-                                {
-                                    var cdp = dataTable.Rows[j]["CDP"];
-                                    var contrato = dataTable.Rows[j]["Número Contrato"];
-                                    resultado.Cdp = Convert.ToString(cdp);
-                                    resultado.Contrato = Convert.ToString(contrato);
-                                    hiringDataList.Add(resultado);
-                                }
-
-                            }
-                        }
+                        posicion = 0;
 
                     }
+                    string idValor = null;
+                    var valor = dataTable.Rows[j]["Identificadorbasededatos"];
+                    if (valor != DBNull.Value)
+                    {
+                        
+                        idValor = (string)valor;
+                        var resultado = _context.HiringData.FirstOrDefault(x => x.ContractorId.Equals(Guid.Parse(idValor)));
+                        if (resultado != null)
+                        {
+                            if ((double)dataTable.Rows[j]["CDP"] != null && (double)dataTable.Rows[j]["Número Contrato"] != null)
+                            {
+                                var cdp = dataTable.Rows[j]["CDP"];
+                                var contrato = dataTable.Rows[j]["Número Contrato"];
+                                resultado.Cdp = Convert.ToString(cdp);
+                                resultado.Contrato = Convert.ToString(contrato);
+                                hiringDataList.Add(resultado);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+
                 }
             }
-
             test.Close();
             _context.HiringData.UpdateRange(hiringDataList);
             _context.SaveChanges();
             return "Registro exitoso";
         }
 
-        public async Task<string> ImportElement(FileRequest model)
+        public async Task<IGenericResponse<string>> ImportElement(FileRequest model)
         {
 
             string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcelElemento\", model.Excel.FileName);
@@ -271,52 +272,51 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             DataTable dataTable = worksheet.Cells.ExportDataTable(0, 0, worksheet.Cells.MaxRow + 1, worksheet.Cells.LastCell.Column + 1, true);
             dataTable.TableName = "ElementComponent";
             List<ElementComponent> elementDataList = new();
+            dataTable.Columns[0].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[0].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
+            var columna = dataTable.Columns[0].ColumnName;
+            var listaHring = _context.Contractor.ToList();
 
-            for (int i = 0; i < dataTable.Columns.Count; i++)
+            if (columna.Equals("IdentificadorInterno"))
             {
-                dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
-                var columna = dataTable.Columns[i].ColumnName;
-                var listaHring = _context.Contractor.ToList();
-
-                if (columna.Equals("IdentificadorInterno"))
+                for (int j = 0; j < dataTable.Rows.Count; j++)
                 {
-                    for (int j = 0; j < dataTable.Rows.Count; j++)
+                    int posicion = j;
+                    if (dataTable.Rows.Count == 1)
                     {
-                        int posicion = j;
-                        if (dataTable.Rows.Count == 1)
-                        {
-                            posicion = 0;
-
-                        }
-                        else if (dataTable.Rows.Count == 0)
-                        {
-                            return "No se agrego la Información por que es repetida";
-                        }
-
-                        string idValor = (string)dataTable.Rows[j]["IdentificadorInterno"];
-                        if (idValor != null)
-                        {
-                            var resultado = _context.ElementComponent.FirstOrDefault(x => x.Id.Equals(Guid.Parse(idValor)));
-                            if (resultado != null)
-                            {
-                                if (dataTable.Rows[j]["Perfil Requerido"] != null)
-                                {
-                                    var perfil = dataTable.Rows[j]["Perfil Requerido"];
-                                    resultado.PerfilRequerido = Convert.ToString(perfil);
-                                    elementDataList.Add(resultado);
-                                }
-
-                            }
-                        }
+                        posicion = 0;
 
                     }
+
+                    string idValor = null;
+                    var valor = dataTable.Rows[j]["IdentificadorInterno"];
+                    if (valor != DBNull.Value)
+                    {
+                        idValor = (string)valor;
+                        var resultado = _context.ElementComponent.FirstOrDefault(x => x.Id.Equals(Guid.Parse(idValor)));
+                        if (resultado != null)
+                        {
+                            if (dataTable.Rows[j]["Perfil Requerido"] != null)
+                            {
+                                var perfil = dataTable.Rows[j]["Perfil Requerido"];
+                                resultado.PerfilRequerido = Convert.ToString(perfil);
+                                elementDataList.Add(resultado);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+
                 }
             }
 
             test.Close();
             _context.ElementComponent.UpdateRange(elementDataList);
             _context.SaveChanges();
-            return "Registro exitoso";
+            return ApiResponseHelper.CreateResponse<string>(Resource.EXCELIMPORTSUCCESS);
+
         }
 
         public static string ToCamelCase(string str)

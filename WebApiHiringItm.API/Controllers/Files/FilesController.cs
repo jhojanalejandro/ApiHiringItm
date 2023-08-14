@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using WebApiHiringItm.CORE.Core.FileCore.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Models;
@@ -58,13 +59,23 @@ namespace WebApiHiringItm.API.Controllers.Files
         {
             try
             {
-                var Data = await _file.AddbillContractor(model);
-                return Data != null ? Ok(Data) : NoContent();
+                var isSuccess = await _file.AddbillContractor(model);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -99,7 +110,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(string id)
+        public async Task<IActionResult> GetFileById(string id)
         {
             try
             {
@@ -160,9 +171,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _file.GetAllFileByIdContract(id);
-
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -201,17 +210,27 @@ namespace WebApiHiringItm.API.Controllers.Files
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddFileContract(FileContractDto model)
+        public async Task<IActionResult> AddFileContract(FileContractDto modelFileContract)
         {
             try
             {
-                var Data = await _file.AddFileContract(model);
-                return Data != null ? Ok(Data) : NoContent();
+                var isSuccess = await _file.AddFileContract(modelFileContract);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 

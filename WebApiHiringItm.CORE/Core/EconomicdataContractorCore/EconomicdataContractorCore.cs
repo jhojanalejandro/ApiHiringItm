@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.EconomicdataContractorCore.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Entities;
+using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
 {
@@ -32,35 +36,33 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
             return await Task.FromResult(map);
         }
 
-        public async Task<List<EconomicdataContractorDto>> GetById(Guid?[] id)
+        public async Task<List<EconomicdataContractorDto>> GetEconiomicDataById(EconomicDataRequest economicData)
         {
-            List<EconomicdataContractorDto> economicDataContractorList = new List<EconomicdataContractorDto>();
-            var result = _context.DetailContractor
-                .Where(x => id.Contains(x.ContractorId))
-                .Select(s => new EconomicdataContractorDto
+
+                var getEconomicData = _context.EconomicdataContractor
+                .Include(i => i.DetailContractor)
+                    .ThenInclude(i => i.HiringData)
+                .Where(x => economicData.Contractors.Contains(x.DetailContractor.ContractorId) && x.DetailContractor.ContractId.Equals(Guid.Parse(economicData.ContractId)));
+
+                return await getEconomicData.Select(s => new EconomicdataContractorDto()
                 {
-                    Id = s.EconomicdataNavigation.Id,
-                    ContractorId = s.ContractorId,
-                    ContractId = s.ContractorId,
-                    TotalPaidMonth = s.EconomicdataNavigation.TotalPaIdMonth,
-                    TotalValue = Math.Ceiling(s.EconomicdataNavigation.TotalValue.Value),
-                    CashPayment = s.EconomicdataNavigation.CashPayment,
-                    Debt = s.EconomicdataNavigation.Debt,
-                    ModifyDate = s.EconomicdataNavigation.ModifyDate,
-                    RegisterDate = s.EconomicdataNavigation.RegisterDate,
-                    UnitValue = s.EconomicdataNavigation.UnitValue,
-                    Freed = s.EconomicdataNavigation.Freed,
-                    Missing = s.EconomicdataNavigation.Missing,
+                    Id = s.Id,
+                    ContractorId = s.DetailContractor.ContractorId,
+                    ContractId = s.DetailContractor.ContractorId,
+                    TotalPaidMonth = s.TotalPaIdMonth,
+                    TotalValue = Math.Ceiling(s.TotalValue.Value),
+                    CashPayment = s.CashPayment,
+                    Debt = s.Debt,
+                    ModifyDate = s.ModifyDate,
+                    RegisterDate = s.RegisterDate,
+                    UnitValue = s.UnitValue,
+                    Freed = s.Freed,
+                    Missing = s.Missing,
+                    PeriodFrom = s.DetailContractor.ContractorPayments.OrderByDescending(o => o.ToDate).Select(s => s.ToDate).FirstOrDefault(),
                 })
                 .AsNoTracking()
-                .FirstOrDefault();
-            if (result != null)
-            {
-                var map = _mapper.Map<EconomicdataContractorDto>(result);
-                map.Id = Guid.NewGuid();
-                economicDataContractorList.Add(map);
-            }
-            return await Task.FromResult(economicDataContractorList);
+                .ToListAsync();
+
         }
 
         public async Task<bool> Delete(string id)
@@ -78,52 +80,50 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
             }
         }
 
-        public async Task<bool> AddEconomicData(List<EconomicdataContractorDto> model)
+        public async Task<IGenericResponse<string>> AddEconomicData(List<EconomicdataContractorDto> model)
         {
             List<EconomicdataContractor> economicDataListAdd = new List<EconomicdataContractor>();
             List<EconomicdataContractor> economicDataListUpdate = new List<EconomicdataContractor>();
-            var map = _mapper.Map<List<EconomicdataContractor>>(model);
 
-            try
+            for (var i = 0; i < model.Count; i++)
             {
-                for (var i = 0; i < map.Count; i++)
+                var getDetailContractor = _context.DetailContractor.Where(w => w.ContractId.Equals(model[i].ContractId) && w.ContractorId.Equals(model[i].ContractorId)).OrderByDescending(o => o.Consecutive).FirstOrDefault();
+                var mapEconomicData = _mapper.Map<EconomicdataContractor>(model[i]);
+
+                var getData = _context
+                    .EconomicdataContractor
+                    .Include(i => i.DetailContractor)
+                    .OrderByDescending(o => o.Consecutive)
+                    .FirstOrDefault(x => x.DetailContractor.ContractorId.Equals(model[i].ContractorId) && x.DetailContractor.ContractId.Equals(model[i].ContractId));
+
+                if (getData != null && model[i].TotalValue != null && model[i].TotalValue > 0)
                 {
-                    var getData = _context
-                        .DetailContractor
-                        .Include(i => i.EconomicdataNavigation)
-                        .OrderByDescending(o => o.Consecutive)
-                        .FirstOrDefault(x => x.ContractorId.Equals(model[i].ContractorId) && x.ContractId.Equals(model[i].ContractId));
-
-                    if (getData.Economicdata != null)
-                    {
-                        var getEconomicData = _context
-                        .EconomicdataContractor
-                        .FirstOrDefault(x => x.Id.Equals(getData.Economicdata));
-                        model[i].Id = getData.Economicdata.Value;
-                        var mapData = _mapper.Map(model[i], getEconomicData);
-                        economicDataListUpdate.Add(mapData);
-                        map.Remove(map[i]);
-                        i--;
-                    }
-                    else
-                    {
-                        map[i].Id = Guid.NewGuid();
-                        economicDataListAdd.Add(map[i]);
-                        getData.Economicdata = map[i].Id;
-                    }
+     
+                    model[i].Id = getData.Id;
+                    model[i].DetailContractorId = getData.DetailContractorId;
+                    var mapData = _mapper.Map(model[i], getData);
+                    economicDataListUpdate.Add(mapData);
                 }
-                if (economicDataListUpdate.Count > 0)
-                    _context.EconomicdataContractor.UpdateRange(economicDataListUpdate);
-                if (economicDataListAdd.Count > 0)
-                    _context.EconomicdataContractor.AddRange(economicDataListAdd);
-                await _context.SaveChangesAsync();
-                return true;
-
+                else
+                {
+                    mapEconomicData.Id = Guid.NewGuid();
+                    mapEconomicData.DetailContractorId = getDetailContractor.Id;
+                    mapEconomicData.Consecutive = 1;
+                    economicDataListAdd.Add(mapEconomicData);
+                }
             }
-            catch (Exception ex)
+            if (economicDataListUpdate.Count > 0)
+                _context.EconomicdataContractor.UpdateRange(economicDataListUpdate);
+            if (economicDataListAdd.Count > 0)
+                _context.EconomicdataContractor.AddRange(economicDataListAdd);
+            await _context.SaveChangesAsync();
+            if (economicDataListUpdate.Count > 0)
             {
-                throw new Exception("Error", ex);
-
+                return ApiResponseHelper.CreateResponse<string>(null,true,Resource.UPDATESUCCESSFULL);
+            }
+            else
+            {
+                return ApiResponseHelper.CreateResponse<string>(Resource.REGISTERSUCCESSFULL);
             }
         }
 

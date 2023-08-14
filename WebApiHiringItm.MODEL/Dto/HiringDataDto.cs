@@ -10,7 +10,7 @@ namespace WebApiHiringItm.MODEL.Dto
     {
         public Guid? Id { get; set; }
         public Guid ContractId { get; set; }
-        public Guid? ContractorId { get; set; }
+        public Guid ContractorId { get; set; }
         public Guid? UserId { get; set; }
         public DateTime? FechaFinalizacionConvenio { get; set; }
         public string? Contrato { get; set; }

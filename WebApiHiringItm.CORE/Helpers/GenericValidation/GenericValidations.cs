@@ -8,9 +8,6 @@ namespace WebApiHiringItm.CORE.Helpers.GenericValidation
 {
     public static class GenericValidations
     {
-
         public static bool IsGuid(this string value) => Guid.TryParse(value, out _);
-
-
     }
 }

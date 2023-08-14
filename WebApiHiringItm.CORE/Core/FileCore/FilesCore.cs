@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using NPOI.SS.Formula.Atp;
+using System.Diagnostics;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.FileCore.Interface;
 using WebApiHiringItm.CORE.Core.MessageHandlingCore.Interface;
 using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
 using WebApiHiringItm.CORE.Helpers.Enums;
+using WebApiHiringItm.CORE.Helpers.Enums.File;
 using WebApiHiringItm.CORE.Helpers.Enums.FolderType;
+using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusFile;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
@@ -61,9 +65,8 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                     f.File.Folder.FolderName
                      })
                 .Select(f => new FileContractDto
-                {
+            {
                     Id = f.Key.FileId,
-                    Filedata = f.Key.Filedata,
                     FilesName = f.Key.FilesName,
                     FileType = f.Key.FileType,
                     DescriptionFile = f.Key.DescriptionFile,
@@ -74,14 +77,14 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                     FolderName = f.Key.FolderName,
                     DocumentTypeCode = f.Key.Code
                 })
-            .AsNoTracking()
-            .ToListAsync();
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<List<FileContractDto>> GetFileContractByFolder(string folderId, string contractId)
         {
             var result = _context.Files
-                .Where(x => !x.ContractorId.HasValue && x.ContractId.Equals(Guid.Parse(contractId)) && x.FolderId.Equals(Guid.Parse(folderId))).ToList();
+                .Where(x => x.ContractorId == null && x.ContractId.Equals(Guid.Parse(contractId)) && x.FolderId.Equals(Guid.Parse(folderId))).ToList();
             if (result != null)
             {
                 var map = _mapper.Map<List<FileContractDto>>(result);
@@ -133,7 +136,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             return await Task.FromResult(map);
         }
 
-        public async Task<FileDetailDto?> GetByIdFile(Guid id)
+        public async Task<FileDetailDto?> GetByIdFile(Guid FileId)
         {
             var result = _context.DetailFile
                 .Include(i => i.File)
@@ -141,8 +144,8 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 .Include(i => i.File)
                     .ThenInclude(i => i.DocumentTypeNavigation)
                 .Include(i => i.StatusFile)
-                .Where(x => x.FileId.Equals(id)).OrderByDescending(o => o.RegisterDate);
-            return await result.Select(f => new FileDetailDto
+                .Where(x => x.FileId.Equals(FileId)).OrderByDescending(o => o.RegisterDate);
+            return result.Select(f => new FileDetailDto
             {
                 Id = f.File.Id,
                 FilesName = f.File.FilesName,
@@ -154,10 +157,14 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 MonthPayment = f.File.MonthPayment,
                 Passed = f.Passed,
                 DocumentTypes = f.File.DocumentTypeNavigation.DocumentTypeDescription,
-                StatusPayment = f.StatusFile.StatusFileDescription
+                StatusPayment = f.StatusFile.StatusFileDescription,
+                Observation = f.Observation,
+                UserContractual = f.User.UserName,
+                Reason = f.ReasonRejection,
+
             })
             .AsNoTracking()
-            .FirstOrDefaultAsync();
+            .FirstOrDefault();
         }
 
         public async Task<bool> Delete(string id)
@@ -185,23 +192,29 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
         }
 
-        public async Task<bool> AddFileContractor(FilesDto model)
+        public async Task<IGenericResponse<string>> AddFileContractor(FilesDto modelFileDto)
         {
             Guid? folderId;
             bool documentExist = false;
-            var getDataFile = _context.Files.FirstOrDefault(x => x.DocumentTypeNavigation.Id.Equals(model.DocumentType));
+            var getDataFile = _context.DetailFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(x => x.File.DocumentTypeNavigation.Id.Equals(modelFileDto.DocumentType) && x.File.ContractorId.Equals(modelFileDto.ContractorId) && x.File.ContractId.Equals(modelFileDto.ContractId));
             var getFolderId = _context.FolderType.FirstOrDefault(x => x.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description()));
-
-            var getFolder = _context.Folder.FirstOrDefault(x => x.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description()) && x.ContractorId.Equals(model.ContractorId));
+            var getStatusContractor = _context.StatusContractor.FirstOrDefault(x => x.Code.Equals(StatusContractorEnum.ENREVISIÓN.Description())).Id;
+            var getDetailContractor = _context.DetailContractor.FirstOrDefault(w => w.ContractorId.Equals(modelFileDto.ContractorId) && w.ContractId.Equals(modelFileDto.ContractId) && !w.StatusContractor.Equals(getStatusContractor));
+            if (getDetailContractor != null)
+            {
+                getDetailContractor.StatusContractor = getStatusContractor;
+                _context.DetailContractor.Update(getDetailContractor);
+            }
+            var getFolder = _context.Folder.FirstOrDefault(x => x.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description()) && x.ContractorId.Equals(modelFileDto.ContractorId));
             if (getFolder == null)
             {
                 Folder folderPago = new Folder();
                 folderPago.Id = Guid.NewGuid();
                 folderPago.FolderType = getFolderId.Id;
                 folderPago.FolderName = CONTRATO;
-                folderPago.DescriptionProject = model.DescriptionFile;
-                folderPago.ContractorId = model.ContractorId;
-                folderPago.ContractId = model.ContractId;
+                folderPago.DescriptionProject = modelFileDto.DescriptionFile;
+                folderPago.ContractorId = modelFileDto.ContractorId;
+                folderPago.ContractId = modelFileDto.ContractId;
                 folderPago.RegisterDate = DateTime.Now;
                 folderPago.ModifyDate = DateTime.Now;
                 _context.Folder.Add(folderPago);
@@ -211,17 +224,17 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             {
                 folderId = getFolder.Id;
             }
-            var map = _mapper.Map<Files>(model);
+            var map = _mapper.Map<Files>(modelFileDto);
             map.Id = Guid.NewGuid();
             map.FolderId = folderId;
             _context.Files.Add(map);
             DetailFileDto detailFileDto = new();
             detailFileDto.Passed = false;
-            detailFileDto.RegisterDate = model.RegisterDate;
+            detailFileDto.RegisterDate = modelFileDto.RegisterDate;
             detailFileDto.FileId = map.Id;
-            if (model.UserId != Guid.Empty)
+            if (modelFileDto.UserId != Guid.Empty)
             {
-                detailFileDto.UserId = model.UserId;
+                detailFileDto.UserId = modelFileDto.UserId;
             }
             if (getDataFile != null)
             {
@@ -238,12 +251,20 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             //    //_context.Files.Update(map);
 
             //}
-            var res = await _context.SaveChangesAsync();
-            var resultDetail = await CreateDetail(detailFileDto, true,false);
-            return resultDetail ? true : false;
+            var resultDetail = await CreateDetail(detailFileDto, true, documentExist);
+            if (resultDetail)
+            {
+                return ApiResponseHelper.CreateResponse<string>(null, true,Resource.REGISTERSUCCESSFULL);
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.ERRORDETAILFILE);
+
+            }
+
         }
 
-        public async Task<bool> AddFileContract(FileContractDto model)
+        public async Task<IGenericResponse<string>> AddFileContract(FileContractDto model)
         {
             var getData = _context.Files.FirstOrDefault(x => x.Id.Equals(model.Id));
 
@@ -260,23 +281,19 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 {
                     detailFileDto.UserId = model.UserId;
                 }
-                var res = await _context.SaveChangesAsync();
-                if (res != 0)
-                {
-                    var resultDetail = await CreateDetail(detailFileDto,false,false);
-                    return resultDetail ? true : false;
-                }
+                await CreateDetail(detailFileDto, false, false);
+                return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+
             }
             else
             {
                 model.Id = getData.Id;
                 var map = _mapper.Map(model, getData);
                 _context.Files.Update(map);
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
-            }
-            return false;
+                await _context.SaveChangesAsync();
+                return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
 
+            }
         }
 
         public async Task<IGenericResponse<string>> AddbillContractor(List<FilesDto> model)
@@ -306,7 +323,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             var mapDetailFiles = _mapper.Map<List<DetailFile>>(detailFilelList);
             _context.DetailFile.AddRange(mapDetailFiles);
             await _context.SaveChangesAsync(); 
-            return ApiResponseHelper.CreateResponse<string>(Resource.MAILSENDSUCCESS);
+            return ApiResponseHelper.CreateResponse<string>(null,true,Resource.DOCUMENTGENERATE);
 
 
         }
@@ -335,18 +352,25 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
             var mapDetailFiles = _mapper.Map<List<DetailFile>>(detailFilelList);
             _context.DetailFile.AddRange(mapDetailFiles);
-            return ApiResponseHelper.CreateResponse<string>(Resource.MAILSENDSUCCESS);
+            return ApiResponseHelper.CreateResponse<string>(null,true,Resource.MAILSENDSUCCESS);
 
         }
         public async Task<bool> CreateDetail(DetailFileDto model, bool contractor,bool documentExist)
         {
 
             if (!contractor) {
-                var getStatusFile = _context.DetailFile.OrderByDescending(o => o.RegisterDate).Where(w => w.StatusFileId.Equals(model.StatusFileId) && w.FileId.Equals(model.FileId)).FirstOrDefault();
-                if (getStatusFile == null)
+                var getStatusFile = _context.DetailFile.OrderByDescending(o => o.RegisterDate).Where(w => w.FileId.Equals(model.FileId)).FirstOrDefault();
+                if (getStatusFile != null)
                 {
+                    getStatusFile.StatusFileId = model.StatusFileId;
+                    _context.DetailFile.Update(getStatusFile);
+                }
+                else
+                {
+                    var getStatusFileList = _context.StatusFile.Where(w => w.Code.Equals(StatusFileEnum.APROBADO.Description())).Select(s => s.Id).FirstOrDefault();
                     var map = _mapper.Map<DetailFile>(model);
                     map.Id = Guid.NewGuid();
+                    map.StatusFileId = getStatusFileList;
                     _context.DetailFile.Add(map);
                 }
 
@@ -368,6 +392,12 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                         model.StatusFileId = getStatusFileList;
 
                     }
+                    else
+                    {
+                        var getStatusFileList = _context.StatusFile.Where(w => w.Code.Equals(StatusFileEnum.ENPROCESO.Description())).Select(s => s.Id).FirstOrDefault();
+                        model.StatusFileId = getStatusFileList;
+
+                    }
                     var map = _mapper.Map<DetailFile>(model);
                     map.Id = Guid.NewGuid();
                     map.StatusFileId = model.StatusFileId;
@@ -381,48 +411,44 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
 
             var res = await _context.SaveChangesAsync();
-            return res != 0 ? true : false;
+            return res > 0 ? true : false;
 
         }
 
         public async Task<bool> CreateDetailObservation(DetailFileDto model)
         {
-            foreach (var item in model.Files)
+            var detailFile = _context.DetailFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(x => x.FileId.Equals(model.FileId));
+
+            if (detailFile != null)
             {
-                var detailFile = _context.DetailFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(x => x.FileId.Equals(model.FileId));
+                var termTypeId = _context.TermType.Where(x => x.Code.Equals("DCCT")).Select(s => s.Id).FirstOrDefault();
 
-                if (detailFile != null)
+                TermContractDto termContractDto = new TermContractDto();
+                termContractDto.ContractId = model.ContractId;
+                termContractDto.ContractId = model.ContractorId;
+                termContractDto.TermDate = model.TermDate;
+                termContractDto.TermType = termTypeId;
+
+                var responseTerm = await _projectFolder.SaveTermFileContract(termContractDto);
+
+                if (responseTerm)
                 {
-                    var termTypeId = _context.TermType.Where(x => x.Code.Equals("DCCT")).Select(s => s.Id).FirstOrDefault();
-
-                    TermContractDto termContractDto = new TermContractDto();
-                    termContractDto.ContractId = model.ContractId;
-                    termContractDto.ContractId = model.ContractorId;
-                    termContractDto.StartDate = model.StarDate;
-                    termContractDto.TermType = termTypeId;
-
-                    var responseTerm = await _projectFolder.SaveTermFileContract(termContractDto);
-
-                    if (responseTerm)
+                    SendMessageObservationDto sendMessageObservationtDto = new();
+                    sendMessageObservationtDto.ContractId = model.ContractorId;
+                    sendMessageObservationtDto.ContractorId = Guid.Parse(model.ContractorId);
+                    sendMessageObservationtDto.UserId = model.UserId.ToString();
+                    sendMessageObservationtDto.Documentos =  ",lista documentos";
+                    sendMessageObservationtDto.Observation += model.Observation;
+                    sendMessageObservationtDto.TermDate = model.TermDate;
+                    var resulMessage = await _messageHandlingCore.SendContractorObservation(sendMessageObservationtDto);
+                    if (resulMessage.Success)
                     {
-                        SendMessageObservationDto sendMessageObservationtDto = new();
-                        sendMessageObservationtDto.ContractId = model.ContractorId;
-                        sendMessageObservationtDto.ContractorsId[0] = Guid.Parse(model.ContractorId);
-                        sendMessageObservationtDto.UserId = model.UserId.ToString();
-                        sendMessageObservationtDto.Documentos += item.DocumentTypes + "," ;
-                        sendMessageObservationtDto.Observation += model.Observation;
-
-                        var resulMessage = await _messageHandlingCore.SendContractorObservation(sendMessageObservationtDto);
-                        if (resulMessage.Success)
-                        {
-                            model.Id = detailFile.Id;
-                            model.FileId = item.Id;
-                            var map = _mapper.Map(model, detailFile);
-                            _context.DetailFile.Update(map);
-                        }
-
-
+                        model.Id = detailFile.Id;
+                        model.FileId = detailFile.FileId;
+                        var map = _mapper.Map(model, detailFile);
+                        _context.DetailFile.Update(map);
                     }
+
 
                 }
 
@@ -534,12 +560,13 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             List<Files> SaveFiles = new();
             List<SaveFileResponse> saveFileResponses = new();
             List<Files> updateFiles = new();
+            List<DetailContractor> updateDetail = new();
 
             foreach (var item in modelFiles)
             {
                 var getFolder = getFolderList.OrderByDescending(O => O.RegisterDate).Where(x => x.ContractId.Equals(item.ContractId) && x.ContractorId.Equals(item.ContractorId)).FirstOrDefault();
 
-                var getFile = getFileList.Find(x => x.ContractorId.Equals(modelFiles[0].ContractorId) && x.DocumentTypeNavigation.Id.Equals(modelFiles[0].DocumentType));
+                var getFile = getFileList.Find(x => x.ContractorId.Equals(item.ContractorId) && x.DocumentTypeNavigation.Id.Equals(item.DocumentType));
                 SaveFileResponse saveFileResponse = new SaveFileResponse();
                 bool FileExist = false;
                 item.FolderId = getFolder.Id;
@@ -556,6 +583,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 }
                 else
                 {
+                    var getDetailContractor = _context.DetailContractor.Where(w => w.ContractId.Equals(item.ContractId) && w.ContractorId.Equals(item.ContractorId)).OrderByDescending(o => o.Consecutive).FirstOrDefault();
                     FileExist = false;
                     var mapModel = _mapper.Map<Files>(item);
                     mapModel.Id = Guid.NewGuid();
@@ -564,6 +592,21 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                     saveFileResponse.FileId = mapModel.Id;
                     saveFileResponse.FileExist = FileExist;
                     SaveFiles.Add(mapModel);
+                    switch (item.Origin)
+                    {
+                        case "MNT":
+                            getDetailContractor.MinuteGenerate = true;
+
+                            break;
+                        case "SLCMT":
+                            getDetailContractor.ComiteGnerate = true;
+                            break;
+                        case "ETPR":
+                            getDetailContractor.PreviusStudyGenerate = true;
+                            break;
+                    }
+                   
+                    updateDetail.Add(getDetailContractor);
 
                 }
                 saveFileResponses.Add(saveFileResponse);
@@ -576,6 +619,10 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             if (updateFiles.Count > 0)
             {
                 _context.Files.UpdateRange(updateFiles);
+            }
+            if (updateDetail.Count() > 0)
+            {
+                _context.DetailContractor.UpdateRange(updateDetail);
             }
             await _context.SaveChangesAsync();
             return saveFileResponses;

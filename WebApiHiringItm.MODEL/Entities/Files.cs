@@ -14,11 +14,11 @@ namespace WebApiHiringItm.MODEL.Entities
 
         public Guid Id { get; set; }
         public Guid? ContractorId { get; set; }
-        public Guid? ContractId { get; set; }
+        public Guid ContractId { get; set; }
         public string FilesName { get; set; }
         public string Filedata { get; set; }
         public string FileType { get; set; }
-        public Guid? DocumentType { get; set; }
+        public Guid DocumentType { get; set; }
         public string DescriptionFile { get; set; }
         public string MonthPayment { get; set; }
         public Guid? FolderId { get; set; }

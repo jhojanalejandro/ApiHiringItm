@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces;
+using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.API.Controllers.ExportToExcel
 {
@@ -113,6 +114,26 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
                     return NoContent();
                 }
                 return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Exportar elementos.xlsx");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GenrateReportContract(RequestReportContract requestReportContract)
+        {
+            try
+            {
+                var result = await _export.GenerateReport(this, requestReportContract);
+                Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
+                if (result == null)
+                {
+                    return NoContent();
+                }
+                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "REPORTE CONTRATO.xlsx");
             }
             catch (Exception ex)
             {

@@ -15,7 +15,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
     }
     public class ContractorPersonalInformationDto
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public string Identificacion { get; set; }
         public string LugarExpedicion { get; set; }
         public string Genero { get; set; }

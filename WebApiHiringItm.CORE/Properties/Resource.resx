@@ -120,8 +120,23 @@
   <data name="ATTACHMENTEMPTY" xml:space="preserve">
     <value>No se encuentran archivos para adjuntar al correo </value>
   </data>
+  <data name="DELETESUCCESS" xml:space="preserve">
+    <value>Registro Eliminado exitosamente</value>
+  </data>
+  <data name="DOCUMENTGENERATE" xml:space="preserve">
+    <value>Docuemnto generado exitosamente</value>
+  </data>
+  <data name="ERRORDETAILFILE" xml:space="preserve">
+    <value>La información del detalle del archivo fallo al registrarse</value>
+  </data>
+  <data name="EXCELIMPORTSUCCESS" xml:space="preserve">
+    <value>Excel importado exitosamente</value>
+  </data>
   <data name="GUIDNOTVALID" xml:space="preserve">
     <value>El identificador no contiene la  estructura valida</value>
+  </data>
+  <data name="IMAGEUSERMESSAGE" xml:space="preserve">
+    <value>No se encontro la firma del usuario para el mensaje</value>
   </data>
   <data name="INFORMATIONEMPTY" xml:space="preserve">
     <value>No se encontro información</value>
@@ -131,6 +146,9 @@
   </data>
   <data name="REGISTERSUCCESSFULL" xml:space="preserve">
     <value>Información registra exitosamnete</value>
+  </data>
+  <data name="TERMDATENOTFOUND" xml:space="preserve">
+    <value>No se encontraron fechas limite para la entrega de los documentos|</value>
   </data>
   <data name="TRYAGAINT" xml:space="preserve">
     <value>Algo salió mal. por favor, vuelva a intentarlo</value>

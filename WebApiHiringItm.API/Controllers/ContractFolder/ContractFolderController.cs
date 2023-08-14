@@ -147,18 +147,27 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
 
 
         [HttpGet]
-        public async Task<IActionResult> UpdateStateContract(Guid id)
+        public async Task<IActionResult> UpdateStateContract(string contractId)
         {
             try
             {
-                var Data = await _project.UpdateStateContract(id);
-
-                return Data == true ? Ok(Data) : NoContent();
+                var isSuccess = await _project.UpdateStateContract(contractId);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 

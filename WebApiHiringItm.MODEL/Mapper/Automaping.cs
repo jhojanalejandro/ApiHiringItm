@@ -34,7 +34,7 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<EconomicdataContractor, EconomicdataContractorDto>().ReverseMap(); 
             CreateMap<ComponenteDto, Component>().ReverseMap();
             CreateMap<ElementComponentDto, ElementComponent>().ReverseMap();
-            CreateMap<DetalleContratoDto, DetailContract>()
+            CreateMap<DetailContractDto, DetailContract>()
                 .ForMember(c => c.Id, cd => cd.MapFrom(src => src.Id))
                 .ForMember(c => c.UserId, cd => cd.MapFrom(src => Guid.Parse(src.UserId))).ReverseMap();
             CreateMap<UserFileDto, UserFile>().ReverseMap();
@@ -78,6 +78,7 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<TermTypeDto, TermType>().ReverseMap();
             CreateMap<TermContractDto, TermContract>().ReverseMap();
             CreateMap<DetailTypeDto, DetailType>().ReverseMap();
+            CreateMap<ChangeContractContractorDto, ChangeContractContractor>().ReverseMap();
 
         }
     }

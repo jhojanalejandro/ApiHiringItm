@@ -15,5 +15,7 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.StatusContract
         ENPROCESO = 1,
         [Display(Description = "TMD")]
         TERMINADO = 2,
+        [Display(Description = "EJC")]
+        ENEJECUCIÓN = 3,
     }
 }

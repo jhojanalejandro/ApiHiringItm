@@ -70,11 +70,56 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Registro Eliminado exitosamente.
+        /// </summary>
+        internal static string DELETESUCCESS {
+            get {
+                return ResourceManager.GetString("DELETESUCCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Docuemnto generado exitosamente.
+        /// </summary>
+        internal static string DOCUMENTGENERATE {
+            get {
+                return ResourceManager.GetString("DOCUMENTGENERATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La información del detalle del archivo fallo al registrarse.
+        /// </summary>
+        internal static string ERRORDETAILFILE {
+            get {
+                return ResourceManager.GetString("ERRORDETAILFILE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Excel importado exitosamente.
+        /// </summary>
+        internal static string EXCELIMPORTSUCCESS {
+            get {
+                return ResourceManager.GetString("EXCELIMPORTSUCCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a El identificador no contiene la  estructura valida.
         /// </summary>
         internal static string GUIDNOTVALID {
             get {
                 return ResourceManager.GetString("GUIDNOTVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a No se encontro la firma del usuario para el mensaje.
+        /// </summary>
+        internal static string IMAGEUSERMESSAGE {
+            get {
+                return ResourceManager.GetString("IMAGEUSERMESSAGE", resourceCulture);
             }
         }
         
@@ -102,6 +147,15 @@ namespace WebApiHiringItm.CORE.Properties {
         internal static string REGISTERSUCCESSFULL {
             get {
                 return ResourceManager.GetString("REGISTERSUCCESSFULL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a No se encontraron fechas limite para la entrega de los documentos|.
+        /// </summary>
+        internal static string TERMDATENOTFOUND {
+            get {
+                return ResourceManager.GetString("TERMDATENOTFOUND", resourceCulture);
             }
         }
         

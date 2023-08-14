@@ -5,9 +5,11 @@ using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Helpers;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericValidation;
 using WebApiHiringItm.CORE.Helpers.InterfacesHelpers;
 using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto.Componentes;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.Componentes
@@ -65,25 +67,32 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             }
         }
 
-        public async Task<bool> AddActivity(ActivityDto model)
+        public async Task<IGenericResponse<string>> AddActivity(ActivityDto modelActivity)
         {
-            var exist = _context.Activity.FirstOrDefault(x => x.Id == model.Id);
+            if (modelActivity.ComponentId == Guid.Empty)
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.GUIDNOTVALID);
+
+            var exist = _context.Activity.FirstOrDefault(x => x.Id == modelActivity.Id);
 
             if (exist == null)
             {
-                var map = _mapper.Map<Activity>(model);
+                var map = _mapper.Map<Activity>(modelActivity);
                 map.Id = Guid.NewGuid();
                 _context.Activity.Add(map);
                 var resp  = await _save.SaveChangesDB();
-                return resp;
             }
             else
             {
-                var mapUpdate = _mapper.Map(model, exist);
+                var mapUpdate = _mapper.Map(modelActivity, exist);
                 _context.Activity.Update(mapUpdate);
                 var res = await _save.SaveChangesDB();
-                return res;            }
+                     
+            }
+
+            return ApiResponseHelper.CreateResponse<string>(Resource.REGISTERSUCCESSFULL);
+
         }
+
         public async Task<List<ComponenteDto>?> GetComponentsByContract(Guid contractId)
         {
             try
@@ -92,19 +101,19 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 if (result.Count != 0)
                 {
                     var map = _mapper.Map<List<ComponenteDto>>(result);
-                    map.ForEach(e =>
+                    foreach (var items in map)
                     {
-                        var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(e.Id) && w.ActivityId == null).ToList();
-                        e.Elementos = _mapper.Map<List<ElementComponentDto>>(element);
-                        var activity = _context.Activity.Where(d => d.ComponentId == e.Id).ToList();
-                        e.Activities = _mapper.Map<List<ActivityDto>>(activity);
-                        e.Activities.ForEach(eA =>
+                        var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(items.Id) && w.ActivityId == null).ToList();
+                        items.Elementos = _mapper.Map<List<ElementComponentDto>>(element);
+                        var activity = _context.Activity.Where(d => d.ComponentId.Equals(items.Id)).ToList();
+                        items.Activities = _mapper.Map<List<ActivityDto>>(activity);
+                        foreach (var item in items.Activities)
                         {
-                            var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(e.Id) && w.ActivityId.Equals(eA.Id)).OrderBy(o => o.Consecutivo).ToList();
-                            eA.Elementos = _mapper.Map<List<ElementComponentDto>>(element);
+                            item.Elementos = getElementsByActivity(item.Id.Value);
 
-                        });
-                    });
+                        }
+                    }
+
                     return await Task.FromResult(map);
                 }
                 else
@@ -130,81 +139,111 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             var mapctivity = _mapper.Map<ActivityDto>(result);
             return await Task.FromResult(mapctivity);
         }
-        public async Task<ComponenteDto> GetByIdComponent(Guid id, Guid activityId, Guid elementId)
+        public async Task<IGenericResponse<ComponenteDto>> GetByIdComponent(string id, string? activityId, string? elementId)
         {
+            if (string.IsNullOrEmpty(id) || !id.IsGuid())
+                return ApiResponseHelper.CreateErrorResponse<ComponenteDto>(Resource.GUIDNOTVALID);
 
-            var result = _context.Component.FirstOrDefault(x => x.Id.Equals(id));
+            var result = _context.Component.FirstOrDefault(x => x.Id.Equals(Guid.Parse(id)));
 
             var map = _mapper.Map<ComponenteDto>(result);
             var activity = _context.Activity;
-            if (elementId != Guid.Empty)
+            if (!string.IsNullOrEmpty(elementId) && elementId != "null")
             {
                 List<ElementComponentDto> elementsList = new();
-                var getElement = _context.ElementComponent.Where(w => w.Id.Equals(elementId)).FirstOrDefault();
+                var getElement = _context.ElementComponent.Where(w => w.Id.Equals(Guid.Parse(elementId))).FirstOrDefault();
                 var mapElement = _mapper.Map<ElementComponentDto>(getElement);
 
                 elementsList.Add(mapElement);
                 map.Elementos = elementsList;
             }
-            if (activityId != Guid.Empty)
+            if (!string.IsNullOrEmpty(activityId) && activityId != "null")
             {
-                activity.Where(w => w.Id.Equals(activityId)).ToList();
+                activity.Where(w => w.Id.Equals(Guid.Parse(activityId))).ToList();
             }
             else
             {
-                activity.Where(w => w.ComponentId.Equals(id)).ToList();
+                activity.Where(w => w.ComponentId.Equals(Guid.Parse(id))).ToList();
             }
 
 
-            if (activity.ToList().Count > 0 )
+            if (activity.ToList().Count() > 0 )
             {
                 map.Activities = _mapper.Map<List<ActivityDto>>(activity);
-                map.Activities.ForEach(eA =>
+                foreach (var item in map.Activities)
                 {
-                    var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(map.Id) && w.ActivityId.Equals(eA.Id)).ToList();
-                    eA.Elementos = _mapper.Map<List<ElementComponentDto>>(element);
-
-                });
+                    item.Elementos = getElementsByActivity(item.Id.Value);
+                }
+            }
+            if (map != null)
+            {
+                return ApiResponseHelper.CreateResponse(map);
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<ComponenteDto>(Resource.INFORMATIONEMPTY);
             }
 
-
-            return await Task.FromResult(map);
         }
 
-        public async Task<bool> Delete(Guid id)
+        public async Task<IGenericResponse<string>> DeleteComponentContract(Guid id)
         {
-            try
+            var resultData = _context.ElementComponent.Where(x => x.ComponentId == id).ToList();
+            List<ElementComponent?> elementComponent = new List<ElementComponent?>();
+            if (resultData != null)
             {
-                var resultData = _context.ElementComponent.Where(x => x.ComponentId == id).ToList();
-                List<ElementComponent?> elementComponent = new List<ElementComponent?>();
-                if (resultData != null)
+                foreach (var item in resultData)
                 {
-                    foreach (var item in resultData)
-                    {
-                        var element = _context.ElementComponent.FirstOrDefault(x => x.Id == item.Id);
-                        elementComponent.Add(element);
-                    }
+                    var element = _context.ElementComponent.FirstOrDefault(x => x.Id == item.Id);
+                    elementComponent.Add(element);
                 }
+            }
 
-                var componentData = _context.Component.FirstOrDefault(x => x.Id == id);
-                if (resultData != null)
-                {
-                    var result = _context.Component.Remove(componentData);
-                }
-                if (elementComponent.Count > 0)
-                {
-                    _context.ElementComponent.RemoveRange(elementComponent);
-                }
-                await _save.SaveChangesDB();
-                return await Task.FromResult(true);
-            }
-            catch (Exception ex)
+            var componentData = _context.Component.FirstOrDefault(x => x.Id == id);
+            if (resultData != null)
             {
-                throw new Exception("Error", ex);
+                var result = _context.Component.Remove(componentData);
             }
+            if (elementComponent.Count > 0)
+            {
+                _context.ElementComponent.RemoveRange(elementComponent);
+            }
+            await _save.SaveChangesDB();
+            return ApiResponseHelper.CreateResponse<string>(null, true,Resource.DELETESUCCESS);
         }
 
         #endregion
-
+        #region PRIVATE METHODS
+        private  List<ElementComponentDto> getElementsByActivity(Guid activityId)
+        {
+            var element = _context.ElementComponent.Where(w =>  w.ActivityId.Equals(activityId)).OrderBy(o => o.Consecutivo);
+            return element.Select(s => new ElementComponentDto()
+            {
+                Id = s.Id,  
+                NombreElemento = s.NombreElemento,
+                CantidadContratistas = s.CantidadContratistas,
+                CantidadDias = s.CantidadDias,
+                CpcId = s.CpcId,
+                NombreCpc = s.Cpc.CpcName,
+                Recursos = s.Recursos,
+                ValorPorDia = s.ValorPorDia,
+                ValorPorDiaContratista = s.ValorPorDiaContratista,
+                ValorTotal = s.ValorTotal,
+                ObjetoElemento = s.ObjetoElemento,
+                ObligacionesEspecificas = s.ObligacionesEspecificas,
+                ObligacionesGenerales = s.ObligacionesGenerales,
+                Consecutivo = s.Consecutivo,
+                TipoElemento = s.TipoElemento,
+                CpcNumber = s.Cpc.CpcNumber,
+                ValorUnidad = s.ValorUnidad,
+                ValorTotalContratista = s.ValorTotalContratista,
+                ComponentId = s.ComponentId.Value,
+                ActivityId = s.ActivityId.Value,
+                CantidadEnable = s.CantidadContratistas - _context.DetailContractor.Where(w => w.ElementId.Equals(s.Id)).Count(),
+            })
+            .AsNoTracking()
+            .ToList();
+        }
+        #endregion
     }
 }

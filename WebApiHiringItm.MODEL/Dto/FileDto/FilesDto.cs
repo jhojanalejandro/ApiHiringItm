@@ -11,7 +11,7 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
     {
         public Guid Id { get; set; }
         public Guid ContractorId { get; set; }
-        public Guid? ContractId { get; set; }
+        public Guid ContractId { get; set; }
         public string FilesName { get; set; }
         public string Filedata { get; set; }
         public string FileType { get; set; }

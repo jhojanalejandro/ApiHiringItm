@@ -38,7 +38,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
 
             return await result.Select(report => new ExecutionReportDto
             {
-                ContractorName = report.Contractor.Nombre + " " + report.Contractor.Apellido,
+                ContractorName = report.Contractor.Nombres + " " + report.Contractor.Apellidos,
                 ContractInitialDate = report.HiringData.FechaRealDeInicio.ToString(),
                 ContractFinalDate = report.HiringData.FechaFinalizacionConvenio.ToString(),
                 ContractorIdentification = report.Contractor.Identificacion,
@@ -49,7 +49,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 PeriodExecutedFinalDate = report.ContractorPayments.OrderByDescending(d => d.ToDate).Select(s => s.ToDate.ToString()).FirstOrDefault(),
                 SpecificObligations = report.Element.ObligacionesEspecificas,
                 ElementObject = report.Element.ObjetoElemento,
-                TotalValue = Math.Ceiling(report.EconomicdataNavigation.TotalValue.Value),
+                TotalValue = Math.Ceiling(report.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(w.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue.Value).FirstOrDefault()),
                 TotalValuePeriod = report.ContractorPayments.OrderByDescending(d => d.FromDate.ToString()).Select(s => s.Paymentcant.ToString()).FirstOrDefault()
             })
             .AsNoTracking()
@@ -64,7 +64,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
             return await result.Select(report => new ChargeAccountDto
             {
                 ChargeAccountNumber = report.ContractorPayments.Count().ToString(),
-                ContractorName = report.Contractor.Nombre + " " + report.Contractor.Apellido,
+                ContractorName = report.Contractor.Nombres + " " + report.Contractor.Apellidos,
                 ContractNumber = report.Contract.NumberProject,
                 ContractorIdentification = report.Contractor.Identificacion,
                 ExpeditionIdentification = report.Contractor.LugarExpedicion,
@@ -91,7 +91,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
 
             return await result.Select(report => new MinuteExtensionDto
             {
-                ContractorName = report.Contractor.Nombre + " " + report.Contractor.Apellido,
+                ContractorName = report.Contractor.Nombres + " " + report.Contractor.Apellidos,
                 ContractNumber = report.Contract.NumberProject,
                 ContractorId =  report.Contractor.Id.ToString(),
                 ContractorIdentification = report.Contractor.Identificacion,
@@ -101,7 +101,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 ExtensionInitialDate = report.ChangeContractContractor.Where(w => w.MinuteTypeNavigation.Code.Equals(MinuteTypeEnum.APC.Description())).OrderByDescending(o => o.RegisterDate).Select(s => s.FechaInicioAdicion.Value).FirstOrDefault(),
                 ExtensionFinalDate = report.ChangeContractContractor.Where(w => w.MinuteTypeNavigation.Code.Equals(MinuteTypeEnum.APC.Description())).OrderByDescending(o => o.RegisterDate).Select(s => s.FechaFinAdicion.Value).FirstOrDefault(),
                 Object = report.Element.ObjetoElemento,
-                TotalValueContract = Math.Ceiling(report.EconomicdataNavigation.TotalValue.Value),
+                TotalValueContract = Math.Ceiling(report.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(w.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue.Value).FirstOrDefault()),
                 Supervisor = report.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.UserName).FirstOrDefault(),
                 SupervisorCharge = report.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Professionalposition).FirstOrDefault(),
                 SupervisorIdentification = report.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Identification).FirstOrDefault()
@@ -137,12 +137,13 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
         {
             try
             {
-                var contractor = _context.DetailContractor.Where(x => x.ContractId == contractors.contractId)
+                var contractor = _context.DetailContractor.Where(x => x.ContractId.Equals(contractors.contractId))
                 .Include(dt => dt.Contractor)
                 .Include(hd => hd.HiringData)
                 .Include(el => el.Element)
                 .Include(el => el.Contract)
                     .ThenInclude(i => i.RubroNavigation)
+                .Include(i => i.EconomicdataContractor)
                 .Where(w => contractors.contractors.Contains(w.Contractor.Id.ToString()) && !w.StatusContractor.Equals(StatusContractorEnum.INHABILITADO.Description()));
 
                 return await contractor.Select(ct => new MinutaDto
@@ -163,12 +164,12 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                     NombreElemento = ct.Element.NombreElemento,
                     ObligacionesGenerales = ct.Element.ObligacionesGenerales,
                     ObligacionesEspecificas = ct.Element.ObligacionesEspecificas,
-                    ValorUnidad = ct.EconomicdataNavigation.UnitValue,
-                    ValorTotal = Math.Ceiling(ct.EconomicdataNavigation.TotalValue.Value),
+                    ValorUnidad = Math.Ceiling(ct.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(ct.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.UnitValue.Value).FirstOrDefault()),
+                    ValorTotal = Math.Ceiling(ct.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(ct.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue.Value).FirstOrDefault()),
                     Cpc = ct.Element.Cpc.CpcNumber,
                     NombreCpc = ct.Element.Cpc.CpcName,
                     ObjetoElemento = ct.Element.ObjetoElemento,
-                    ContractorName = ct.Contractor.Nombre + " " + ct.Contractor.Apellido,
+                    ContractorName = ct.Contractor.Nombres + " " + ct.Contractor.Apellidos,
                     Identificacion = ct.Contractor.Identificacion,
                     LugarExpedicion = ct.Contractor.LugarExpedicion,
                     FechaNacimiento = ct.Contractor.FechaNacimiento,
@@ -199,7 +200,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
             {
                 ElementObject = study.Element.ObjetoElemento,
                 ContractorId = study.ContractorId.ToString(),
-                ContractorName = study.Contractor.Nombre + " " + study.Contractor.Apellido,
+                ContractorName = study.Contractor.Nombres + " " + study.Contractor.Apellidos,
                 ContractorIdentification = study.Contractor.Identificacion,
                 ContractNumber = study.Contract.NumberProject,
                 SpecificObligations = study.Element.ObligacionesEspecificas,
@@ -217,7 +218,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                  .Select(s => s.User.UserFile.Select(s => s.FileData).FirstOrDefault()).FirstOrDefault(),
                 ContractInitialDate = study.Contractor.HiringData.Select(s => s.FechaRealDeInicio).FirstOrDefault(),
                 ContractFinalDate = study.Contractor.HiringData.Select(s => s.FechaFinalizacionConvenio).FirstOrDefault(),
-                TotalValue = Math.Ceiling(study.EconomicdataNavigation.TotalValue.Value),
+                TotalValue = Math.Ceiling(study.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(study.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue.Value).FirstOrDefault()),
                 UnifiedProfile = study.Element.PerfilRequerido
             })
             .AsNoTracking()
@@ -237,7 +238,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
             return await result.Select(study => new CommitteeRequestDto
             {
                 ContractorId = study.ContractorId.ToString(),
-                ContractorName = study.Contractor.Nombre + " " + study.Contractor.Apellido,
+                ContractorName = study.Contractor.Nombres + " " + study.Contractor.Apellidos,
                 ContractorIdentification = study.Contractor.Identificacion,
                 ContractNumber = study.Contract.NumberProject,
                 ElementName = study.Element.NombreElemento,

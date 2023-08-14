@@ -10,6 +10,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
     {
         public string? Id { get; set; }
         public string? CompanyName { get; set; }
+        public string? ProjectName { get; set; }
 
     }
 }
