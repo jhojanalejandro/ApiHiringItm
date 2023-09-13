@@ -122,12 +122,12 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
         }
 
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> GenrateReportContract(RequestReportContract requestReportContract)
         {
             try
             {
-                var result = await _export.GenerateReport(this, requestReportContract);
+                var result = await _export.GenerateReport(requestReportContract);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
                 if (result == null)
                 {
@@ -140,6 +140,28 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GenerateSatisfactionReport(string contractId)
+        {
+            try
+            {
+                var result = await _export.GenerateSatisfactionReport(Guid.Parse(contractId));
+                Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
+                if (result == null)
+                {
+                    return NoContent();
+                }
+                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "REPORTE CONTRATO.xlsx");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+
         #endregion
     }
 }

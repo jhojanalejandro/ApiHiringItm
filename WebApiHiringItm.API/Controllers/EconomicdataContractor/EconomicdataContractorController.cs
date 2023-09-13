@@ -5,6 +5,7 @@ using Org.BouncyCastle.Crypto;
 using WebApiHiringItm.CORE.Core.EconomicdataContractorCore.Interface;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
@@ -20,6 +21,7 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         {
             _economicData = economicData;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -88,6 +90,21 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
             }
             catch (Exception ex)
             {
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPaymentByIdContractAndContractor(string contractId, string contractorId)
+        {
+            try
+            {
+                var Data = await _economicData.GetPaymentByIdContractAndContractor(contractId, contractorId);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
                 throw new Exception("Error", ex);
             }
         }

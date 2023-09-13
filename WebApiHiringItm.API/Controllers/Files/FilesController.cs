@@ -44,13 +44,23 @@ namespace WebApiHiringItm.API.Controllers.Files
         {
             try
             {
-                var Data = await _file.AddFileContractor(model);
-                return Data != null ? Ok(Data) : NoContent();
+                var isSuccess = await _file.AddFileContractor(model);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -99,7 +109,7 @@ namespace WebApiHiringItm.API.Controllers.Files
         {
             try
             {
-                var Data = await _file.CreateDetail(model,false,false);
+                var Data = await _file.CreateDetail(model,false,false, false);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -196,11 +206,11 @@ namespace WebApiHiringItm.API.Controllers.Files
         }
 
         [HttpDelete("{fileId}")]
-        public async Task<IActionResult> Delete(string fileId)
+        public async Task<IActionResult> DeleteFile(string fileId)
         {
             try
             {
-                var Data = await _file.Delete(fileId);
+                var Data = await _file.DeleteFile(fileId);
                 return Data != false ? StatusCode(200, Data) : NoContent();
             }
             catch (Exception ex)
@@ -236,17 +246,93 @@ namespace WebApiHiringItm.API.Controllers.Files
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateDetailObservation(DetailFileDto model)
+        public async Task<IActionResult> CreateDetailObservation(ObservationFileRequest modelDetailFile)
         {
             try
             {
-                var Data = await _file.CreateDetailObservation(model);
-                return Data != null ? Ok(Data) : NoContent();
+                var isSuccess = await _file.CreateDetailObservation(modelDetailFile);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> GetFileDonwloadContractual(ContractContractorsDto contractContractors)
+        {
+            try
+            {
+                var Data = await _file.GetFileDonwloadContractual(contractContractors);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
                 throw new Exception("Error", ex);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveCommitteeContractor(FilesDto model)
+        {
+            try
+            {
+                var isSuccess = await _file.SaveCommitteeContractor(model);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateDetailCommittee(DetailFileDto modelDetailFile)
+        {
+            try
+            {
+                var isSuccess = await _file.CreateDetailCommittee(modelDetailFile);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
         #endregion

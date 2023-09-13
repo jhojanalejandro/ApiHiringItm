@@ -41,11 +41,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
 
 
         [HttpGet]
-        public async Task<IActionResult> GetContractorByContract(string contractId)
+        public async Task<IActionResult> GetContractorByContract(string contractId, bool originNomina)
         {
             try
             {
-                var Data = await _contactor.GetContractorByContract(contractId);
+                var Data = await _contactor.GetContractorByContract(contractId, originNomina);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -159,16 +159,27 @@ namespace WebApiHiringItm.API.Controllers.Contractor
 
 
         [HttpPost]
-        public async Task<IActionResult> AddNewness(NewnessContractorDto model)
+        public async Task<IActionResult> AddNewness(NewnessContractorDto newnessModel)
         {
+
             try
             {
-                var Data = await _contactor.AddNewness(model);
-                return Data != false ? Ok(Data) : NoContent();
+                var isSuccess = await _contactor.AddNewness(newnessModel);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -198,6 +209,30 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             {
 
                 throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveModifyMinute(ChangeContractContractorDto changeContractModel)
+        {
+            try
+            {
+                var isSuccess = await _contactor.SaveModifyMinute(changeContractModel);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
         #endregion

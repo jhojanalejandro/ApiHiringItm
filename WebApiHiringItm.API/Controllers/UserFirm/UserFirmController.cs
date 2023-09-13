@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
 using WebApiHiringItm.CORE.Core.User.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Usuario;
 
@@ -67,13 +68,23 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
         {
             try
             {
-                var Data = await _userFirm.SaveUserDocument(model);
-                return Data == true ? Ok(Data) : NoContent();
+                var isSuccess = await _userFirm.SaveUserDocument(model);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 

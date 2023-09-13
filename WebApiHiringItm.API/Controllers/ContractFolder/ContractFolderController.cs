@@ -172,18 +172,27 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateCost(ProjectFolderCostsDto model)
+        public async Task<IActionResult> UpdateCost(ProjectFolderCostsDto modelCost)
         {
             try
             {
-                var Data = await _project.UpdateCost(model);
-
-                return Data != null ? Ok(Data) : NoContent();
+                var isSuccess = await _project.UpdateCost(modelCost);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -223,13 +232,23 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         {
             try
             {
-                var Data = await _project.AssignmentUser(assignmentUser);
-                return Data == true ? Ok(Data) : NoContent();
+                var isSuccess = await _project.AssignmentUser(assignmentUser);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
