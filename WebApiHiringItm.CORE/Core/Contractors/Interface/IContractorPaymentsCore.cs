@@ -15,5 +15,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
         Task<IGenericResponse<List<ContractorPaymentsDto>>> GetPaymentsContractorList(string contractId, string contractorId);
         Task<IGenericResponse<string>> SaveContractorPayment(List<ContractorPaymentsDto> modelContractorPayments);
         Task<IGenericResponse<string>> DeleteContractorPayment(string idPayment);
+        Task<IGenericResponse<List<EmptityHealthDto>>> GetEmptityHealthContractor(string contractorId);
+        
     }
 }

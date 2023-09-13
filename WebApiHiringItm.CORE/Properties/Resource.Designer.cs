@@ -70,6 +70,24 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Alguno de los valores ingresados no es correcto.
+        /// </summary>
+        internal static string AUTENTICATEFIELDERROR {
+            get {
+                return ResourceManager.GetString("AUTENTICATEFIELDERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Autenticación exitosa.
+        /// </summary>
+        internal static string AUTENTICATERESPONSE {
+            get {
+                return ResourceManager.GetString("AUTENTICATERESPONSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Registro Eliminado exitosamente.
         /// </summary>
         internal static string DELETESUCCESS {
@@ -88,11 +106,29 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Error en el correo o contraseña.
+        /// </summary>
+        internal static string ERRORAUTENTICATE {
+            get {
+                return ResourceManager.GetString("ERRORAUTENTICATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a La información del detalle del archivo fallo al registrarse.
         /// </summary>
         internal static string ERRORDETAILFILE {
             get {
                 return ResourceManager.GetString("ERRORDETAILFILE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error al cargar el excel porque esta imcompleto.
+        /// </summary>
+        internal static string ERRORUPLOADEXCEL {
+            get {
+                return ResourceManager.GetString("ERRORUPLOADEXCEL", resourceCulture);
             }
         }
         
@@ -142,6 +178,15 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Error al registrar la información de pago.
+        /// </summary>
+        internal static string PAYMENTERROR {
+            get {
+                return ResourceManager.GetString("PAYMENTERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Información registra exitosamnete.
         /// </summary>
         internal static string REGISTERSUCCESSFULL {
@@ -174,6 +219,15 @@ namespace WebApiHiringItm.CORE.Properties {
         internal static string UPDATESUCCESSFULL {
             get {
                 return ResourceManager.GetString("UPDATESUCCESSFULL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Ya existe un usuario registrado con ese correo.
+        /// </summary>
+        internal static string USEREXIST {
+            get {
+                return ResourceManager.GetString("USEREXIST", resourceCulture);
             }
         }
     }

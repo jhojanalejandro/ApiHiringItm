@@ -11,6 +11,7 @@ using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Entities;
 using WebApiHiringItm.MODEL.Models;
 
@@ -42,15 +43,15 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                 var getEconomicData = _context.EconomicdataContractor
                 .Include(i => i.DetailContractor)
                     .ThenInclude(i => i.HiringData)
-                .Where(x => economicData.Contractors.Contains(x.DetailContractor.ContractorId) && x.DetailContractor.ContractId.Equals(Guid.Parse(economicData.ContractId)));
+                .Where(x => economicData.Contractors.Contains(x.DetailContractor.ContractorId) && x.DetailContractor.ContractId.Equals(Guid.Parse(economicData.ContractId))).OrderByDescending(o => o.Consecutive);
 
                 return await getEconomicData.Select(s => new EconomicdataContractorDto()
                 {
                     Id = s.Id,
                     ContractorId = s.DetailContractor.ContractorId,
                     ContractId = s.DetailContractor.ContractorId,
-                    TotalPaidMonth = s.TotalPaIdMonth,
-                    TotalValue = Math.Ceiling(s.TotalValue.Value),
+                    TotalPayMonth = s.TotalPayMonth,
+                    TotalValue = Math.Ceiling(s.TotalValue),
                     CashPayment = s.CashPayment,
                     Debt = s.Debt,
                     ModifyDate = s.ModifyDate,
@@ -59,6 +60,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                     Freed = s.Freed,
                     Missing = s.Missing,
                     PeriodFrom = s.DetailContractor.ContractorPayments.OrderByDescending(o => o.ToDate).Select(s => s.ToDate).FirstOrDefault(),
+                    Consecutive = s.DetailContractor.ContractorPayments.OrderByDescending(o => o.Consecutive).Select(s => s.Consecutive).FirstOrDefault() + 1
                 })
                 .AsNoTracking()
                 .ToListAsync();
@@ -127,5 +129,26 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
             }
         }
 
+
+        public async Task<ContractorPaymentsDto?> GetPaymentByIdContractAndContractor(string contractId, string contractorId)
+        {
+
+            var getEconomicData = _context.ContractorPayments
+            .Where(x => x.DetailContractorNavigation.ContractorId.Equals(Guid.Parse(contractorId)) && x.DetailContractorNavigation.ContractId.Equals(Guid.Parse(contractId))).OrderByDescending(o => o.Consecutive);
+
+            return await getEconomicData.Select(s => new ContractorPaymentsDto()
+            {
+                Id = s.Id,
+                Paymentcant = Math.Ceiling(s.Paymentcant),
+                CashPayment = s.CashPayment,
+                RegisterDate = s.RegisterDate,
+                FromDate = s.FromDate,
+                ToDate = s.ToDate,
+                Consecutive = s.Consecutive
+            })
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+        }
     }
 }

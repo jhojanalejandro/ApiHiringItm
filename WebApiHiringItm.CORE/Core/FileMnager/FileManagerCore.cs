@@ -84,7 +84,7 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
                 FileType = ct.File.FileType,
                 DocumentTypes = ct.File.DocumentTypeNavigation.DocumentTypeDescription,
                 DescriptionFile = ct.File.DescriptionFile,
-                UserId = ct.UserId,
+                UserId = ct.UserId
             })
              .AsNoTracking()
              .ToListAsync();
@@ -109,8 +109,8 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
                 Id = ct.Contractor.Id.ToString(),
                 ContractorName = ct.Contractor.Nombres + " " + ct.Contractor.Apellidos,
                 ContractorIdentification = ct.Contractor.Identificacion,
-                cantFile = getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && (w.File.ContractorId.Equals(ct.ContractorId) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description())
-                || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))))).ToList().Count
+                cantFile = getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && (w.ContractorId.Equals(ct.ContractorId) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description())
+                || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.DOCUMENTOSCONTRATACION.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))))).ToList().Count
             })
              .AsNoTracking()
              .ToListAsync();

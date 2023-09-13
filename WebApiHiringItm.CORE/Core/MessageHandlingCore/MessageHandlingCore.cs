@@ -1,16 +1,7 @@
 ﻿using AutoMapper;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
-using MimeKit;
-using MimeKit.Utils;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.MessageHandlingCore.Interface;
 using WebApiHiringItm.CORE.Helpers;
@@ -91,12 +82,16 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             {
                 if (getTermDateList.Count() < contractors.ContractorsId.Count())
                     return ApiResponseHelper.CreateErrorResponse<string>(Resource.TERMDATENOTFOUND);
+
+                var resultDetailList = _context.DetailContractor
+                    .Include(i => i.StatusContractorNavigation)
+                    .Where(x =>  x.ContractId.Equals(contractors.ContractId)).ToList();
                 foreach (Guid idContractor in contractors.ContractorsId)
                 {
                     var getContractor = _context.Contractor.Where(x => x.Id.Equals(idContractor)).FirstOrDefault();
                     var getTermDate = getTermDateList.Find(x => x.DetailContractorNavigation.ContractorId.Equals(idContractor));
 
-                    var resultDetail = _context.DetailContractor.Where(x => x.ContractorId.Equals(idContractor) && x.ContractId.Equals(contractors.ContractId)).FirstOrDefault();
+                    var resultDetail = resultDetailList.Find(x => x.ContractorId.Equals(idContractor));
                     if (getContractor != null)
                     {
                         getCredencialUser.ToEmail = getContractor.Correo;
@@ -172,6 +167,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             getCredencialUser.ToEmail = getContractor.Correo;
             getCredencialUser.TermDate = messageObservation.TermDate;
             getCredencialUser.Documents = messageObservation.Documentos;
+
             await sendMessageObservation(getCredencialUser);
             throw new NotImplementedException();
         }
@@ -225,43 +221,49 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                                 "<p>Nos permitimos informar que se está realizando el proceso de contratación para la prestación del servicio en el marco del contrato interadministrativo " + mailRequest.ContractNumber + " suscrito con el ITM, por tanto y para poder realizar el proceso contractual es necesario que por favor nos hagan llegar los documentos relacionados y así poder verificar el cumplimiento de los requisitos.</p>" +
                                 "<p>Con plazo para enviar documentos hasta el "+ diaDeLaSemana.ToUpper() +" "+ diaMes + " DE " + mes.ToUpper()+ " DE " + anio + "</p>" +
                                 "<p>Tener en cuenta las siguientes consideraciones:</p>" +
-                                "<p>Deberán entregar 3 archivos de PDF de la siguiente forma:</p>" +
+                                "<p>Deberán entregar 4 archivos de PDF de la siguiente forma:</p>" +
                                 "<ol>" +
-                                    "<li>En un archivo de PDF nombrado con su nombre completo, en mayúscula sostenida y deberá incluir el escaneo de los siguientes documentos y en estricto orden como se relacionan:</li>" +
+                                    "<li>1.       En un archivo de PDF nombrado con su nombre completo, en mayúscula sostenida y deberá incluir el escaneo de los siguientes documentos y en estricto orden como se relacionan:</li>" +
                                     "<ol type=" + "a" + ">" +
                                         "<li>Formato de hoja de vida debidamente firmada</li>" +
                                         "<li>Formato de bienes y rentas debidamente firmada y fechada (Por favor indicar en la primera hoja en los cuadros marcar para tomar posesión)</li>" +
-                                        "<li>Formato de consignación de pagos firmada y fechada</li>" +
-                                        "<li>Carta de ARL debidamente firmada y fechada</li>" +
                                         "<li>Copia de la cedula</li>" +
-                                        "<li>Copia de libreta militar: En caso de no tener Libreta Militar, se acepta la certificación emitida por la página del ejército. Esto con base en el Concepto C ‒ 089 de 2021 de Colombia compra eficiente:</li>" +
                                         "<li>Copia del RUT</li>" +
-                                        "<li>Certificación bancaria de cuenta de ahorros personal o cuenta de nómina personal, expedida por la entidad bancaria (Fecha de expedición del mes en que se está llevando a cabo el proceso contractual)</li>" +
-                                        "<li>Fotocopia de los certificados de acreditación académica</li>" +
-                                        "<li>Fotocopia de la tarjeta profesional, de requerirla la profesión. En las profesiones del área de la salud, adjuntar la resolución por medio de la cual se autoriza ejercerla</li>" +
-                                        "<li>Copia de certificados laborales</li>" +
-                                        "<li>Certificado de procuraduría</li>" +
-                                        "<li>Certificado de contraloría</li>" +
-                                        "<li>Certificado medidas correctivas</li>" +
-                                        "<li>Certificado de antecedente judicial</li>" +
-                                        "<li>Certificado de afiliación a salud</li>" +
-                                        "<li>Certificado de afiliación a pensión</li>" +
-                                        "<li>Certificado de delitos sexuales</li>" +
-                                    "</ol>" +
-                                    "<li>Un segundo archivo de PDF nombrado “EXAMEN PREOCUPACIONAL¨, deberá incluir el escaneo únicamente de: (VIGENTES, FECHA DE EXPEDICION MENOR A 3 AÑOS)</li>" +
-                                 "<ol type=" + "a" + ">" +
-                                     "<li> Exámenes pre - ocupacionales:</li>" +
-                                     "<ul>" +
-                                         "<li> Ficha médica ocupacional con énfasis osteomuscular y optometría.</li>" +
-                                         "<li> Perfil lipídico(Colesterol total, colesterol Hdl, colesterol ldl y triglicéridos) y Glicemia en Ayunas. SOLO PARA PERSONAS MAYORES DE 40 AÑOS y que su objeto contractual tenga relación con trabajos en alturas. El concepto ocupacional debe estar indicado de manera clara la lectura de todos los exámenes solicitado</li>" +
-                                         "<li> Los exámenes deberán estar avalados por un médico ocupacional, firmado y con el número de la licencia médica</li>" +
-                                     "</ul>" +
-                                 "</ol>" +
 
-                                 "<li> Un tercer archivo de PDF nombrado REGISTRO SECOP deberá incluir el escaneo únicamente de:</li>" +
-                                 "<ol type=" + "a" + ">" +
-                                     "<li> El pantallazo del registro exitoso como proveedor en Secop II </li>" +
-                                 "</ol>" +
+                                    "</ol>" +
+                                    "<li>2.  Un segundo archivo de PDF nombrado con su nombre completo, en mayúscula sostenida seguido de la frase “Documentos de Contratación”  y deberá incluir el escaneo de los siguientes documentos y en estricto orden como se relacionan:</li>" +
+                                        "<ol type=" + "a" + ">" +
+                                            "<ul>" +
+                                                "<li>Carta de ARL debidamente firmada y fechada</li>" +
+                                                "<li>Formato de consignación de pagos firmada y fechada</li>" +
+                                                "<li>Copia de libreta militar: En caso de no tener Libreta Militar, se acepta la certificación emitida por la página del ejército. Esto con base en el Concepto C ‒ 089 de 2021 de Colombia compra eficiente:</li>" +
+                                                "<li>Certificación bancaria de cuenta de ahorros personal o cuenta de nómina personal, expedida por la entidad bancaria (Fecha de expedición del mes en que se está llevando a cabo el proceso contractual)</li>" +
+                                                "<li>Fotocopia de los certificados de acreditación académica</li>" +
+                                                "<li>Fotocopia de la tarjeta profesional, de requerirla la profesión. En las profesiones del área de la salud, adjuntar la resolución por medio de la cual se autoriza ejercerla</li>" +
+                                                "<li>Copia de certificados laborales</li>" +
+                                                "<li>Certificado de procuraduría</li>" +
+                                                "<li>Certificado de contraloría</li>" +
+                                                "<li>Certificado medidas correctivas</li>" +
+                                                "<li>Certificado de antecedente judicial</li>" +
+                                                "<li>Certificado de afiliación a salud</li>" +
+                                                "<li>Certificado de afiliación a pensión</li>" +
+                                                "<li>Certificado de delitos sexuales</li>" +
+                                            "</ul>" +
+                                        "</ol>" +
+                                    "<li>Un tercer archivo de PDF nombrado “EXAMEN PREOCUPACIONAL¨, deberá incluir el escaneo únicamente de: (VIGENTES, FECHA DE EXPEDICION MENOR A 3 AÑOS)</li>" +
+                                        "<ol type=" + "a" + ">" +
+                                            "<li> Exámenes pre - ocupacionales:</li>" +
+                                            "<ul>" +
+                                                "<li>Ficha médica ocupacional con énfasis osteomuscular y optometría.</li>" +
+                                                "<li>Perfil lipídico(Colesterol total, colesterol Hdl, colesterol ldl y triglicéridos) y Glicemia en Ayunas. SOLO PARA PERSONAS MAYORES DE 40 AÑOS y que su objeto contractual tenga relación con trabajos en alturas. El concepto ocupacional debe estar indicado de manera clara la lectura de todos los exámenes solicitado</li>" +
+                                                "<li>Los exámenes deberán estar avalados por un médico ocupacional, firmado y con el número de la licencia médica</li>" +
+                                            "</ul>" +
+                                        "</ol>" +
+
+                                    "<li> Un cuarto archivo de PDF nombrado REGISTRO SECOP deberá incluir el escaneo únicamente de:</li>" +
+                                        "<ol type=" + "a" + ">" +
+                                            "<li> El pantallazo del registro exitoso como proveedor en Secop II </li>" +
+                                        "</ol>" +
                              "</ol>" +
                              "<p> " + mailRequest.Body + "</p>" +
                              "<p> NOTA: La solicitud y recepción de los documentos antes relacionados no obligan al ITM a su contratación final.</p>" +
@@ -311,7 +313,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                 contraseña.AppendChar(c);
             }
             string destinatario = mailRequest.ToEmail;
-            string asunto = mailRequest.Subject;
+            string asunto = "SUBSANACIÓN DOCUMENTOS";
 
             // Crea una instancia de SmtpClient
             SmtpClient clienteSmtp = new SmtpClient(_mailSettings.Host, _mailSettings.Port);

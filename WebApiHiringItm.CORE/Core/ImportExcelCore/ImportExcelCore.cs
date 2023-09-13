@@ -24,6 +24,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.CORE.Properties;
+using Microsoft.AspNetCore.Hosting;
 
 namespace WebApiHiringItm.CORE.Core.ImportExcelCore
 {
@@ -36,12 +37,15 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
         private readonly MailSettings _mailSettings;
-        public ImportExcelCore(HiringContext context, IMapper mapper, IOptions<AppSettings> appSettings, IOptions<MailSettings> mailSettings)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+
+        public ImportExcelCore(HiringContext context, IMapper mapper, IOptions<AppSettings> appSettings, IOptions<MailSettings> mailSettings, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _mapper = mapper;
             _appSettings = appSettings.Value;
             _mailSettings = mailSettings.Value;
+            _hostingEnvironment = hostingEnvironment;
         }
         #endregion
 
@@ -171,21 +175,23 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             return await Task.FromResult(result);
         }
 
-        public async Task<string> ImportCdp(FileRequest model)
+        public async Task<IGenericResponse<string>> ImportCdp(FileRequest model)
         {
             var getHiring = _context.DetailContractor
                     .Include(i => i.HiringData)    
                     .Where(w => w.ContractId.Equals(model.ContractId)).ToList();
 
-            string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", model.Excel.FileName);
-            if (!Directory.Exists(path))
+            //string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", model.Excel.FileName);
+            string rutaSubida = Path.Combine(_hostingEnvironment.ContentRootPath, "Subidas");
+            string rutaArchivo = Path.Combine(rutaSubida, model.Excel.FileName);
+            if (!Directory.Exists(rutaSubida))
             {
-                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(rutaSubida);
             }
 
             //Save the uploaded Excel file.
             string fileName = Path.GetFileName(model.Excel.FileName);
-            string filePath = Path.Combine(path, fileName);
+            string filePath = Path.Combine(rutaSubida, fileName);
             using (FileStream stream = new FileStream(filePath, FileMode.Create))
             {
                 model.Excel.CopyTo(stream);
@@ -223,14 +229,24 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
                         var resultado = _context.HiringData.FirstOrDefault(x => x.ContractorId.Equals(Guid.Parse(idValor)));
                         if (resultado != null)
                         {
-                            if ((double)dataTable.Rows[j]["CDP"] != null && (double)dataTable.Rows[j]["Número Contrato"] != null)
+                            TypeCode tipoDatoCdp = Type.GetTypeCode(dataTable.Rows[j]["Número Contrato"].GetType());
+                            TypeCode tipoDatoContract = Type.GetTypeCode(dataTable.Rows[j]["Número Contrato"].GetType());
+                            if (tipoDatoCdp == TypeCode.String)
                             {
-                                var cdp = dataTable.Rows[j]["CDP"];
-                                var contrato = dataTable.Rows[j]["Número Contrato"];
-                                resultado.Cdp = Convert.ToString(cdp);
-                                resultado.Contrato = Convert.ToString(contrato);
-                                hiringDataList.Add(resultado);
+                                if ((string)dataTable.Rows[j]["CDP"] == null)
+                                    return ApiResponseHelper.CreateErrorResponse<string>(Resource.ERRORUPLOADEXCEL);
                             }
+
+                            if (tipoDatoContract == TypeCode.String)
+                            {
+                                if ((string)dataTable.Rows[j]["Número Contrato"] == null)
+                                    return ApiResponseHelper.CreateErrorResponse<string>(Resource.ERRORUPLOADEXCEL);
+                            }
+                            var cdp = dataTable.Rows[j]["CDP"];
+                            var contrato = dataTable.Rows[j]["Número Contrato"];
+                            resultado.Cdp = Convert.ToString(cdp);
+                            resultado.Contrato = Convert.ToString(contrato);
+                            hiringDataList.Add(resultado);
 
                         }
                     }
@@ -243,8 +259,14 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             }
             test.Close();
             _context.HiringData.UpdateRange(hiringDataList);
-            _context.SaveChanges();
-            return "Registro exitoso";
+            await _context.SaveChangesAsync();
+            // Borra todos los archivos dentro de la carpeta
+            foreach (string archivo in Directory.GetFiles(rutaSubida))
+            {
+                File.Delete(archivo);
+            }
+            Directory.Delete(rutaSubida);
+            return ApiResponseHelper.CreateResponse<string>(Resource.EXCELIMPORTSUCCESS);
         }
 
         public async Task<IGenericResponse<string>> ImportElement(FileRequest model)
@@ -295,10 +317,14 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
                         var resultado = _context.ElementComponent.FirstOrDefault(x => x.Id.Equals(Guid.Parse(idValor)));
                         if (resultado != null)
                         {
-                            if (dataTable.Rows[j]["Perfil Requerido"] != null)
+                            if (dataTable.Rows[j]["Perfil Academico Requerido"] != null && dataTable.Rows[j]["Perfil Experiencia Requerido"] != null)
                             {
-                                var perfil = dataTable.Rows[j]["Perfil Requerido"];
-                                resultado.PerfilRequerido = Convert.ToString(perfil);
+                                var perfilAcademico = dataTable.Rows[j]["Perfil Academico Requerido"];
+                                var perfilExperiencia = dataTable.Rows[j]["Perfil Experiencia Requerido"];
+
+                                resultado.PerfilRequeridoAcademico = Convert.ToString(perfilAcademico);
+                                resultado.PerfilRequeridoExperiencia = Convert.ToString(perfilExperiencia);
+
                                 elementDataList.Add(resultado);
                             }
 

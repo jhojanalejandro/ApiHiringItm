@@ -10,8 +10,10 @@ using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Core.ProjectFolders.Interface;
 using WebApiHiringItm.CORE.Helpers.Enums;
 using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
+using WebApiHiringItm.CORE.Helpers.Enums.File;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusContract;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
+using WebApiHiringItm.CORE.Helpers.Enums.StatusFile;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 using WebApiHiringItm.CORE.Helpers.GenericValidation;
@@ -61,7 +63,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 Project = contract.Project,
                 Rubro = contract.RubroNavigation.RubroNumber,
                 NombreRubro = contract.RubroNavigation.Rubro,
-                FuenteRubro = contract.RubroNavigation.RubroOrigin,
+                FuenteRubro = contract.FuenteRubro,
                 StatusContract = contract.StatusContract.StatusContractDescription,
                 FechaContrato = contract.DetailContract.Select(s => s.FechaContrato).FirstOrDefault(),
                 FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault()
@@ -138,7 +140,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 NombreRubro = contract.RubroNavigation.Rubro,
                 FuenteRubro = contract.FuenteRubro,
                 DetailContractId = contract.DetailContract.OrderByDescending(o => o.Consecutive).Select(s => s.Id.ToString()).FirstOrDefault(),
-                IsAssigmentUser = contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.RESPONSABLECONTRATO.Description())).Select(s => s.User).ToList().Count > 0 ? "ASIGNADO" : "NO ASIGNADO",
+                IsAssigmentUser = contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.CONTRACTUALCONTRATO.Description())).Select(s => s.User).ToList().Count > 0 ? "ASIGNADO" : "NO ASIGNADO",
                 DetailType = contract.DetailContract.OrderByDescending(o => o.Consecutive).Select(s => s.DetailType.ToString()).FirstOrDefault(),
             }).AsNoTracking()
               .ToListAsync();
@@ -211,7 +213,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
 
                 if (resp != 0)
                 {
-                    return ApiResponseHelper.CreateResponse(Resource.REGISTERSUCCESSFULL);
+                    return ApiResponseHelper.CreateResponse<string>(null,true,Resource.REGISTERSUCCESSFULL);
                 }
                 else
                 {
@@ -222,13 +224,14 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             {
 
                 model.Id = getData.Id;
+                model.ContractorsCant = getData.ContractorsCant;
                 var map = _mapper.Map(model, getData);
                 CreateDetail(model.DetalleContratoDto);
                 _context.ContractFolder.Update(map);
                 resp = await _context.SaveChangesAsync();
                 if (resp != 0)
                 {
-                    return ApiResponseHelper.CreateResponse(Resource.REGISTERSUCCESSFULL);
+                    return ApiResponseHelper.CreateResponse<string>(null, true,Resource.REGISTERSUCCESSFULL);
                 }
                 else
                 {
@@ -247,7 +250,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             var getData = _context.ContractFolder.FirstOrDefault(x => x.Id.Equals(Guid.Parse(contractId)));
             var getStatusContractorId = _context.StatusContractor.Where(x => x.Code.Equals(StatusContractorEnum.CONTRATADO.Description())).Select(s => s.Id).FirstOrDefault();
             var getDetailContractors = _context.DetailContractor
-                .Where(w => w.ContractId.Equals(Guid.Parse(contractId)) && w.MinuteGenerate == true && w.PreviusStudyGenerate == true && w.ComiteGnerate == true).ToList();
+                .Where(w => w.ContractId.Equals(Guid.Parse(contractId)) && w.Contractor.DetailFile.Where(wd => wd.StatusFile.Category.Equals(CategoryEnum.CREADO.Description()) && wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.MINUTACODE.Description())).OrderByDescending(o => o.RegisterDate).Select(S => S.StatusFile.Code).FirstOrDefault() == StatusFileEnum.APROBADO.Description() && w.Contractor.DetailFile.Where(wd => wd.StatusFile.Category.Equals(CategoryEnum.CREADO.Description()) && wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.ESTUDIOSPREVIOS.Description())).OrderByDescending(o => o.RegisterDate).Select(S => S.StatusFile.Code).FirstOrDefault() == StatusFileEnum.APROBADO.Description() && w.Contractor.DetailFile.Where(wd => wd.StatusFile.Category.Equals(CategoryEnum.CREADO.Description()) && wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description())).OrderByDescending(o => o.RegisterDate).Select(S => S.StatusFile.Code).FirstOrDefault() == StatusFileEnum.APROBADO.Description()).ToList();
             foreach(var item in getDetailContractors)
             {
                 if (item.StatusContractor != getStatusContractorId)
@@ -267,19 +270,18 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             return ApiResponseHelper.CreateResponse<string>(null, true, Resource.UPDATESUCCESSFULL);
 
         }
-        public async Task<bool> UpdateCost(ProjectFolderCostsDto model)
+        public async Task<IGenericResponse<string>> UpdateCost(ProjectFolderCostsDto model)
         {
+
             var getData = _context.ContractFolder.FirstOrDefault(x => x.Id == model.Id);
 
             if (getData != null)
             {
                 var map = _mapper.Map(model, getData);
                 _context.ContractFolder.Update(map);
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
             }
-
-            return false;
+            await _context.SaveChangesAsync();
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.UPDATESUCCESSFULL);
 
         }
 
@@ -319,7 +321,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                     NumberProject = s.NumberProject,
                     Rubro = s.RubroNavigation.RubroNumber,
                     NombreRubro = s.RubroNavigation.Rubro,
-                    FuenteRubro = s.RubroNavigation.RubroOrigin,
+                    FuenteRubro = s.FuenteRubro,
                     FechaContrato = s.DetailContract.Select(s => s.FechaContrato).FirstOrDefault(),
                     FechaFinalizacion = s.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault()
                 })
@@ -327,7 +329,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 .ToListAsync();
         }
 
-        public async Task<bool> AssignmentUser(List<AssignmentUserDto> modelAssignment)
+        public async Task<IGenericResponse<string>> AssignmentUser(List<AssignmentUserDto> modelAssignment)
         {
             var getContractAssignment = _context.AssigmentContract.Where(x => x.ContractId == modelAssignment[0].ContractId).ToList();
             List<AssigmentContract> updateAssignment = new();
@@ -370,20 +372,24 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             {
                 _context.AssigmentContract.AddRange(getContractAssignment);
             }
-            var res = await _context.SaveChangesAsync();
-            return res != 0 ? true : false;
+            await _context.SaveChangesAsync();
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
 
         }
 
         public async Task<bool> SaveTermFileContract(TermContractDto modelTermContract)
         {
 
-            var getTermContractList = _context.TermContract.Where(w => w.DetailContractorNavigation.ContractId.Equals(Guid.Parse(modelTermContract.ContractId))).ToList();
+            var getTermContractList = _context.TermContract
+                .Include(i => i.DetailContractorNavigation)
+                    .ThenInclude(t => t.Contractor)
+                .Include(i => i.TermTypeNavigation)
+                .Where(w => w.DetailContractorNavigation.ContractId.Equals(Guid.Parse(modelTermContract.ContractId))).ToList();
             List<TermContract> termContractsList = new();
             List<TermContract> UpdatetermContractsList = new();
             if (modelTermContract.ContractorId.IsGuid() && !string.IsNullOrEmpty(modelTermContract.ContractorId))
             {
-                var getTermContract = getTermContractList.FirstOrDefault(x => x.DetailContractorNavigation.ContractId.Equals(Guid.Parse(modelTermContract.ContractId)) && x.DetailContractorNavigation.Contractor.Equals(Guid.Parse(modelTermContract.ContractorId)) && x.TermTypeNavigation.Id.Equals(modelTermContract.TermType));
+                var getTermContract = getTermContractList.FirstOrDefault(x => x.DetailContractorNavigation.ContractId.Equals(Guid.Parse(modelTermContract.ContractId)) && x.DetailContractorNavigation.ContractorId.Equals(Guid.Parse(modelTermContract.ContractorId)) && x.TermTypeNavigation.Id.Equals(modelTermContract.TermType));
                 getTermContract.TermDate = modelTermContract.TermDate;
 
                 UpdatetermContractsList.Add(getTermContract);
@@ -411,18 +417,16 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                     }
 
                 }
-                if (termContractsList.Count > 0)
-                {
-                    var mapTermContract = _mapper.Map<List<TermContract>>(termContractsList);
-                    _context.TermContract.AddRange(mapTermContract);
 
-                }
-                if (UpdatetermContractsList.Count > 0)
-                {
-                    var maptermcontractupdate = _mapper.Map(modelTermContract, UpdatetermContractsList);
-                    _context.TermContract.UpdateRange(maptermcontractupdate);
+            }
+            if (termContractsList.Count > 0)
+            {
+                _context.TermContract.AddRange(termContractsList);
 
-                }
+            }
+            if (UpdatetermContractsList.Count > 0)
+            {
+                _context.TermContract.UpdateRange(UpdatetermContractsList);
 
             }
             var res = await _context.SaveChangesAsync();

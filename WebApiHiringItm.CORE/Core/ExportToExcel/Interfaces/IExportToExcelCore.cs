@@ -10,6 +10,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces
         Task<MemoryStream> ExportSolicitudPaa(ControllerBase controller, Guid ContractId);
         Task<MemoryStream> ExportToExcelCdp(Guid ContractId);
         Task<MemoryStream> ExportElement(ControllerBase controller, Guid ContractId);
-        Task<MemoryStream> GenerateReport(ControllerBase controller, RequestReportContract reportContract);
+        Task<MemoryStream> GenerateSatisfactionReport(Guid contractId);
+        Task<MemoryStream> GenerateReport(RequestReportContract reportContract);
     }
 }

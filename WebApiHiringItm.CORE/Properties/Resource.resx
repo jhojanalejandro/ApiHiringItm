@@ -120,14 +120,26 @@
   <data name="ATTACHMENTEMPTY" xml:space="preserve">
     <value>No se encuentran archivos para adjuntar al correo </value>
   </data>
+  <data name="AUTENTICATEFIELDERROR" xml:space="preserve">
+    <value>Alguno de los valores ingresados no es correcto</value>
+  </data>
+  <data name="AUTENTICATERESPONSE" xml:space="preserve">
+    <value>Autenticación exitosa</value>
+  </data>
   <data name="DELETESUCCESS" xml:space="preserve">
     <value>Registro Eliminado exitosamente</value>
   </data>
   <data name="DOCUMENTGENERATE" xml:space="preserve">
     <value>Docuemnto generado exitosamente</value>
   </data>
+  <data name="ERRORAUTENTICATE" xml:space="preserve">
+    <value>Error en el correo o contraseña</value>
+  </data>
   <data name="ERRORDETAILFILE" xml:space="preserve">
     <value>La información del detalle del archivo fallo al registrarse</value>
+  </data>
+  <data name="ERRORUPLOADEXCEL" xml:space="preserve">
+    <value>Error al cargar el excel porque esta imcompleto</value>
   </data>
   <data name="EXCELIMPORTSUCCESS" xml:space="preserve">
     <value>Excel importado exitosamente</value>
@@ -144,6 +156,9 @@
   <data name="MAILSENDSUCCESS" xml:space="preserve">
     <value>Invitación envida exitosamente</value>
   </data>
+  <data name="PAYMENTERROR" xml:space="preserve">
+    <value>Error al registrar la información de pago</value>
+  </data>
   <data name="REGISTERSUCCESSFULL" xml:space="preserve">
     <value>Información registra exitosamnete</value>
   </data>
@@ -155,5 +170,8 @@
   </data>
   <data name="UPDATESUCCESSFULL" xml:space="preserve">
     <value>Información actualizada exitosamente</value>
+  </data>
+  <data name="USEREXIST" xml:space="preserve">
+    <value>Ya existe un usuario registrado con ese correo</value>
   </data>
 </root>

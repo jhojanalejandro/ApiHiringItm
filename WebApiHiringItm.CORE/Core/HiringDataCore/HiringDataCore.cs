@@ -61,7 +61,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 Nivel = hd.HiringData.Nivel,
                 Caso = hd.HiringData.Caso,
                 NombreRubro = hd.Contract.RubroNavigation.Rubro,
-                FuenteRubro = hd.Contract.RubroNavigation.RubroOrigin,
+                FuenteRubro = hd.Contract.FuenteRubro,
                 Cdp = hd.HiringData.Cdp,
                 NumeroActa = hd.HiringData.NumeroActa,
                 SupervisorId = hd.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Id.ToString()).FirstOrDefault(),
