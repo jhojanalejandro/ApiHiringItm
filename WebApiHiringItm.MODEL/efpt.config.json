@@ -28,6 +28,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[AssigmentContractDetail]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[AssignmentType]",
          "ObjectType": 0
       },
@@ -53,6 +57,10 @@
       },
       {
          "Name": "[dbo].[ContractorPayments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractorPaymentSecurity]",
          "ObjectType": 0
       },
       {
@@ -124,15 +132,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[PorcenterSecurity]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Roll]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[RubroType]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[sharedData]",
          "ObjectType": 0
       },
       {

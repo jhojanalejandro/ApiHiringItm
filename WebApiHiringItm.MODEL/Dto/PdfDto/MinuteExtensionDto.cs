@@ -15,7 +15,7 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public DateTime PeriodInitialDate { get; set; }
         public DateTime PeriodFinalDate { get; set; }
         public string Supervisor { get; set; }
-        public string SupervisorIdentification { get; set; }
+        public string? SupervisorIdentification { get; set; }
         public string SupervisorCharge { get; set; }
         public DateTime ExtensionInitialDate { get; set; }
         public DateTime ExtensionFinalDate { get; set; }
@@ -24,6 +24,12 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string Consecutive { get; set; }
         public string NoAdicion { get; set; }
         public string ContractorId { get; set; }
+        public int? NumberModify { get; set; }
+        public string? SpecificObligations { get; set; }
+        public string? GeneralObligations { get; set; }
+        public string? RubroContract { get; set; }
+        public decimal? AdditionValue { get; set; }
+        public string? TypeModify { get; set; }
 
     }
 }

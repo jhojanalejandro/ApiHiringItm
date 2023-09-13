@@ -17,9 +17,9 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public int? CantidadDias { get; set; }
         public decimal? Recursos { get; set; }
         public decimal? ValorPorDia { get; set; }
-        public decimal? TotalValue { get; set; }
-        public decimal? UnitValue { get; set; }
-        public decimal? Debt { get; set; }
+        public decimal TotalValue { get; set; }
+        public decimal UnitValue { get; set; }
+        public decimal Debt { get; set; }
         public Guid? CpcId { get; set; }
         public bool? Modificacion { get; set; }
         public string Consecutivo { get; set; }
@@ -27,7 +27,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string PerfilRequerido { get; set; }
         public DateTime? FechaInicioAdicion { get; set; }
         public DateTime? FechaFinAdicion { get; set; }
-        public DateTime? RegisterDate { get; set; }
+        public DateTime RegisterDate { get; set; }
         public Guid? MinuteType { get; set; }
         public string NoAdicion { get; set; }
         public int? Consecutive { get; set; }

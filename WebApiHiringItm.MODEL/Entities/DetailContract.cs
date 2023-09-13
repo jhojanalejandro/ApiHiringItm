@@ -8,13 +8,13 @@ namespace WebApiHiringItm.MODEL.Entities
     public partial class DetailContract
     {
         public Guid Id { get; set; }
-        public int? Consecutive { get; set; }
-        public Guid? ContractId { get; set; }
+        public int Consecutive { get; set; }
+        public Guid ContractId { get; set; }
         public DateTime? FechaContrato { get; set; }
         public DateTime? FechaFinalizacion { get; set; }
         public string TipoContrato { get; set; }
         public Guid? DetailType { get; set; }
-        public DateTime? RegisterDate { get; set; }
+        public DateTime RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public Guid UserId { get; set; }
 

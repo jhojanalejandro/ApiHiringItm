@@ -24,6 +24,8 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public string? Type { get; set; }
         public string?  DocumentTypes { get; set; }
         public string? Origin { get; set; }
+        public bool? Anexo { get; set; }
+        public List<Guid>? Contractors { get; set; }
 
 
         public DetailFileDto? DetailFile { get; set; } = null;

@@ -13,7 +13,6 @@ namespace WebApiHiringItm.MODEL.Entities
         }
 
         public Guid Id { get; set; }
-        public Guid? ContractorId { get; set; }
         public Guid ContractId { get; set; }
         public string FilesName { get; set; }
         public string Filedata { get; set; }
@@ -24,7 +23,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? FolderId { get; set; }
 
         public virtual ContractFolder Contract { get; set; }
-        public virtual Contractor Contractor { get; set; }
         public virtual DocumentType DocumentTypeNavigation { get; set; }
         public virtual Folder Folder { get; set; }
         public virtual ICollection<DetailFile> DetailFile { get; set; }

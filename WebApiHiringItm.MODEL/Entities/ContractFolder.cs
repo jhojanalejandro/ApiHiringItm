@@ -11,6 +11,7 @@ namespace WebApiHiringItm.MODEL.Entities
         {
             AssigmentContract = new HashSet<AssigmentContract>();
             Component = new HashSet<Component>();
+            ContractorPayments = new HashSet<ContractorPayments>();
             DetailContract = new HashSet<DetailContract>();
             DetailContractor = new HashSet<DetailContractor>();
             Files = new HashSet<Files>();
@@ -33,11 +34,13 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? Rubro { get; set; }
         public Guid? StatusContractId { get; set; }
         public string FuenteRubro { get; set; }
+        public string DescriptionContract { get; set; }
 
         public virtual RubroType RubroNavigation { get; set; }
         public virtual StatusContract StatusContract { get; set; }
         public virtual ICollection<AssigmentContract> AssigmentContract { get; set; }
         public virtual ICollection<Component> Component { get; set; }
+        public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
         public virtual ICollection<DetailContract> DetailContract { get; set; }
         public virtual ICollection<DetailContractor> DetailContractor { get; set; }
         public virtual ICollection<Files> Files { get; set; }

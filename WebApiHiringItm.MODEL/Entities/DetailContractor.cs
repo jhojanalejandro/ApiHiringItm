@@ -24,9 +24,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? ActivityId { get; set; }
         public Guid StatusContractor { get; set; }
         public int Consecutive { get; set; }
-        public bool? MinuteGenerate { get; set; }
-        public bool? ComiteGnerate { get; set; }
-        public bool? PreviusStudyGenerate { get; set; }
 
         public virtual Activity Activity { get; set; }
         public virtual Component Component { get; set; }

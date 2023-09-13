@@ -12,5 +12,6 @@ namespace WebApiHiringItm.MODEL.Dto.MasterDataDto
         public string StatusFileDescription { get; set; }
         public int? ConsecutiveStatus { get; set; }
         public string Code { get; set; }
+        public string Category { get; set; }
     }
 }

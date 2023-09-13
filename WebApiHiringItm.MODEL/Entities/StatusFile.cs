@@ -14,8 +14,9 @@ namespace WebApiHiringItm.MODEL.Entities
 
         public Guid Id { get; set; }
         public string StatusFileDescription { get; set; }
-        public int? ConsecutiveStatus { get; set; }
+        public int ConsecutiveStatus { get; set; }
         public string Code { get; set; }
+        public string Category { get; set; }
 
         public virtual ICollection<DetailFile> DetailFile { get; set; }
     }

@@ -11,7 +11,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public string EmptityType { get; set; }
         public string Emptity { get; set; }
         public Guid Contractor { get; set; }
-        public decimal? TotalPayment { get; set; }
 
         public virtual Contractor ContractorNavigation { get; set; }
     }

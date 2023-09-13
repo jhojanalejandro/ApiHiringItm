@@ -32,7 +32,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public bool? Modificacion { get; set; }
         public string Consecutivo { get; set; }
         public string ObjetoElemento { get; set; }
-        public string PerfilRequerido { get; set; }
+        public string PerfilRequeridoAcademico { get; set; }
+        public string PerfilRequeridoExperiencia { get; set; }
 
         public virtual Activity Activity { get; set; }
         public virtual Component Component { get; set; }

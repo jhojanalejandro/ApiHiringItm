@@ -10,9 +10,10 @@ namespace WebApiHiringItm.MODEL.Entities
         public Contractor()
         {
             AcademicInformation = new HashSet<AcademicInformation>();
+            ContractorPayments = new HashSet<ContractorPayments>();
             DetailContractor = new HashSet<DetailContractor>();
+            DetailFile = new HashSet<DetailFile>();
             EmptityHealth = new HashSet<EmptityHealth>();
-            Files = new HashSet<Files>();
             Folder = new HashSet<Folder>();
             HiringData = new HashSet<HiringData>();
             NewnessContractor = new HashSet<NewnessContractor>();
@@ -40,14 +41,15 @@ namespace WebApiHiringItm.MODEL.Entities
         public string ClaveUsuario { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaActualizacion { get; set; }
-        public Guid? RollId { get; set; }
+        public Guid RollId { get; set; }
 
         public virtual Banks EntidadCuentaBancariaNavigation { get; set; }
         public virtual UserT User { get; set; }
         public virtual ICollection<AcademicInformation> AcademicInformation { get; set; }
+        public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
         public virtual ICollection<DetailContractor> DetailContractor { get; set; }
+        public virtual ICollection<DetailFile> DetailFile { get; set; }
         public virtual ICollection<EmptityHealth> EmptityHealth { get; set; }
-        public virtual ICollection<Files> Files { get; set; }
         public virtual ICollection<Folder> Folder { get; set; }
         public virtual ICollection<HiringData> HiringData { get; set; }
         public virtual ICollection<NewnessContractor> NewnessContractor { get; set; }

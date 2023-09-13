@@ -8,29 +8,28 @@ namespace WebApiHiringItm.MODEL.Entities
     public partial class ChangeContractContractor
     {
         public Guid Id { get; set; }
-        public Guid? DetailContractorId { get; set; }
-        public Guid? EconomicdataContractorId { get; set; }
-        public string NombreElemento { get; set; }
-        public string ObligacionesGenerales { get; set; }
-        public string ObligacionesEspecificas { get; set; }
-        public int? CantidadDias { get; set; }
-        public decimal? Recursos { get; set; }
-        public decimal? ValorPorDia { get; set; }
+        public Guid DetailContractorId { get; set; }
+        public Guid EconomicdataContractor { get; set; }
+        public string ElementName { get; set; }
+        public string SpecificObligations { get; set; }
+        public string GeneralObligations { get; set; }
+        public int? CantDays { get; set; }
+        public decimal? Resources { get; set; }
+        public decimal? ValueDay { get; set; }
         public Guid? CpcId { get; set; }
-        public bool? Modificacion { get; set; }
-        public string Consecutivo { get; set; }
-        public string ObjetoElemento { get; set; }
-        public string PerfilRequerido { get; set; }
-        public DateTime? FechaInicioAdicion { get; set; }
-        public DateTime? FechaFinAdicion { get; set; }
-        public DateTime? RegisterDate { get; set; }
-        public Guid? MinuteType { get; set; }
-        public string NoAdicion { get; set; }
-        public int? Consecutive { get; set; }
+        public bool? IsModify { get; set; }
+        public string ElementObject { get; set; }
+        public string RequiereProfile { get; set; }
+        public DateTime? InitialAdditionDate { get; set; }
+        public DateTime? FinalAdditionDate { get; set; }
+        public DateTime RegisterDate { get; set; }
+        public Guid MinuteType { get; set; }
+        public string NoAddition { get; set; }
+        public int Consecutive { get; set; }
         public bool? IsAddition { get; set; }
 
         public virtual DetailContractor DetailContractor { get; set; }
-        public virtual EconomicdataContractor EconomicdataContractor { get; set; }
+        public virtual EconomicdataContractor EconomicdataContractorNavigation { get; set; }
         public virtual MinuteType MinuteTypeNavigation { get; set; }
     }
 }
