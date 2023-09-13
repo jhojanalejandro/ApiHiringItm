@@ -17,6 +17,9 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.StatusFile
         SUBSANADO = 2,
         [Display(Description = "PRCS")]
         ENPROCESO = 3,
-
+        [Display(Description = "GNRD")]
+        GENERADO = 4,
+        [Display(Description = "RCZD")]
+        RECHAZADO = 5,
     }
 }

@@ -14,6 +14,6 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.Assignment
         [Display(Description = "JRDCC")]
         JIRIDICOCONTRATO = 1,
         [Display(Description = "RPSC")]
-        RESPONSABLECONTRATO = 2,
+        CONTRACTUALCONTRATO = 2,
     }
 }

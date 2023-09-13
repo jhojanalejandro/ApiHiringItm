@@ -29,6 +29,8 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.File
         SOLICITUDCOMITE = 8,
         [Display(Description = "ANX")]
         ANEXO = 9,
+        [Display(Description = "DCTCT")]
+        DOCUMENTOSCONTRATACION = 10,
     }
 
 }
