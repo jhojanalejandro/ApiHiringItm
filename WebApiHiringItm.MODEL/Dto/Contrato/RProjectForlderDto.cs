@@ -21,7 +21,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public string? StatusContractId { get; set; }
         public string? ObjectContract { get; set; }
 
-        public DetalleContratoDto DetalleContratoDto { get; set; }
+        public DetailContractDto DetalleContratoDto { get; set; }
 
     }
 }

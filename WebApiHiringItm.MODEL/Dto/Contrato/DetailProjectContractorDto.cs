@@ -9,16 +9,16 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
 {
     public class DetailProjectContractorDto
     {
-        public string? ContractorId { get; set; }
-        public string? Convenio { get; set; }
-        public string? CompanyName { get; set; }
-        public string? NombreComponente { get; set; }
-        public string? Cpc { get; set; }
+        public string ContractorId { get; set; }
+        public string Convenio { get; set; }
+        public string CompanyName { get; set; }
+        public string NombreComponente { get; set; }
+        public string Cpc { get; set; }
         public string? Nombre { get; set; }
         public string? Identificacion { get; set; }
         public string? ObjetoConvenio { get; set; }
-        public decimal? ValorTotal { get; set; }
-        public decimal? UnitValue { get; set; }
+        public decimal ValorTotal { get; set; }
+        public decimal UnitValue { get; set; }
         public string? NombreElemento { get; set; }
         public string? Cdp { get; set; }
         public DateTime? InitialDate { get; set; }

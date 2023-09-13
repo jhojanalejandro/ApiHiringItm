@@ -3,7 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 using WebApiHiringItm.CORE.Helpers.InterfacesHelpers;
+using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Entities;
 namespace WebApiHiringItm.CORE.Core.Componentes
@@ -26,30 +29,25 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         #endregion
 
         #region PUBLIC METHODS
-        public async Task<bool> SaveElement(ElementComponentDto model)
+        public async Task<IGenericResponse<string>> SaveElement(ElementComponentDto modelElement)
         {
-            try
-            {
-                var exist = _context.ElementComponent.Where(w => w.Id.Equals(model.Id)).FirstOrDefault();
-                if (exist == null)
-                {
-                    model.Id = Guid.NewGuid();
-                    var map = _mapper.Map<ElementComponent>(model);
-                    _context.ElementComponent.Add(map);
-                }
-                else
-                {
-                    var mapUpdate = _mapper.Map(model, exist);
-                    _context.ElementComponent.Update(mapUpdate);
-                }
-                await _save.SaveChangesDB();
-                return true;
-            }
-            catch(Exception ex)
-            {
-               return false;
-            }
+            if (modelElement.ComponentId == Guid.Empty)
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.GUIDNOTVALID);
 
+            var exist = _context.ElementComponent.Where(w => w.Id.Equals(modelElement.Id)).FirstOrDefault();
+            if (exist == null)
+            {
+                modelElement.Id = Guid.NewGuid();
+                var map = _mapper.Map<ElementComponent>(modelElement);
+                _context.ElementComponent.Add(map);
+            }
+            else
+            {
+                var mapUpdate = _mapper.Map(modelElement, exist);
+                _context.ElementComponent.Update(mapUpdate);
+            }
+            await _save.SaveChangesDB();
+            return ApiResponseHelper.CreateResponse<string>(Resource.REGISTERSUCCESSFULL);
         }
 
         public async Task<List<ElementComponentDto>?> GetElementsByComponent(Guid? id)

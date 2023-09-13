@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto;
 using WebApiHiringItm.CORE.Core.EconomicdataContractorCore.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Contratista;
+using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
 {
@@ -17,6 +21,7 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         {
             _economicData = economicData;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -36,14 +41,11 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetById(Guid?[] id)
+        public async Task<IActionResult> GetEconiomicDataById(EconomicDataRequest economicData)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _economicData.GetById(id);
-
-                //Retornamos datos.
+                var Data = await _economicData.GetEconiomicDataById(economicData);
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -54,36 +56,27 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddEconomicData(List<EconomicdataContractorDto> model)
+        public async Task<IActionResult> AddEconomicData(List<EconomicdataContractorDto> modelEconomicData)
         {
             try
             {
-                var Data = await _economicData.AddEconomicData(model);
-
-                //Retornamos datos.
-                return Data != false ? Ok(Data) : NoContent();
+                var isSuccess = await _economicData.AddEconomicData(modelEconomicData);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
-            }
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> Update(List<EconomicdataContractorDto> model)
-        {
-            try
-            {
-                var Data = await _economicData.AddEconomicData(model);
-
-                return Data != false ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -92,13 +85,26 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _economicData.Delete(id);
-
                 return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPaymentByIdContractAndContractor(string contractId, string contractorId)
+        {
+            try
+            {
+                var Data = await _economicData.GetPaymentByIdContractAndContractor(contractId, contractorId);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
                 throw new Exception("Error", ex);
             }
         }

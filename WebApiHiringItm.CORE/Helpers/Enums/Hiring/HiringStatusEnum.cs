@@ -18,5 +18,14 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.Hiring
         [Display(Description = "EN PROCESO")]
         ENPROCESO = 2,
 
+        [Display(Description = "CONTRATADO")]
+        CONTRATADO = 3,
+
+        [Display(Description = "APROBADO")]
+        APROBADO = 4,
+
+        [Display(Description = "PENDIENTE")]
+        PENDIENTE = 5,
+
     }
 }

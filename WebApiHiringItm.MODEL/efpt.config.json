@@ -13,6 +13,7 @@
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
    "SelectedToBeGenerated": 2,
+   "T4TemplatePath": null,
    "Tables": [
       {
          "Name": "[dbo].[AcademicInformation]",
@@ -24,6 +25,10 @@
       },
       {
          "Name": "[dbo].[AssigmentContract]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssigmentContractDetail]",
          "ObjectType": 0
       },
       {
@@ -52,6 +57,10 @@
       },
       {
          "Name": "[dbo].[ContractorPayments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ContractorPaymentSecurity]",
          "ObjectType": 0
       },
       {
@@ -123,15 +132,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[PorcenterSecurity]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Roll]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[RubroType]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[sharedData]",
          "ObjectType": 0
       },
       {
@@ -184,6 +193,7 @@
    "UseNodaTime": false,
    "UseNullableReferences": false,
    "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
    "UseSpatial": false,
    "UseT4": false
 }

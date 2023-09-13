@@ -11,6 +11,7 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public bool? Secop { get; set; }
         public bool Exam { get; set; }
         public bool Hv { get; set; }
+        public bool Dct { get; set; }
         public bool ActivateTermContract { get; set; }
         public bool ActivateTermPayments { get; set; }
 

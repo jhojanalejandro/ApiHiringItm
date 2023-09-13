@@ -39,10 +39,10 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
                     FolderName = f.FolderName + " " + f.Consutive,
                     RegisterDate = f.RegisterDate,
                     ModifyDate = f.ModifyDate,
-                    FolderDescription = f.FolderTypeNavigation.FolderDescription,
+                    FolderDescription = f.FolderTypeNavigation.FolderTypeDescription,
                     Consutive = f.Consutive,
                     DescriptionProject = f.DescriptionProject,
-                    ContractorName = getContractor.Nombre +" "+ getContractor.Apellido
+                    ContractorName = getContractor.Nombres +" "+ getContractor.Apellidos
                 })
                 .AsNoTracking()
                 .ToList();

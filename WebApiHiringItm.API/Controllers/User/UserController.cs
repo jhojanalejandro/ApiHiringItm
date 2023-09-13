@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.User.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Usuario;
+using WebApiHiringItm.MODEL.Entities;
 using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.API.Controllers.User
@@ -22,14 +24,25 @@ namespace WebApiHiringItm.API.Controllers.User
         [HttpPost]
         public IActionResult Authenticate(AuthenticateRequest model)
         {
-            var response = _user.Authenticate(model);
-
-            if (response == null)
+            try
             {
-                return BadRequest(new { message = "Username or password is incorrect" });
+                var isSuccess = _user.Authenticate(model);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
-
-            return StatusCode(200, response);
+            catch (Exception ex)
+            {
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
         }
 
         [HttpGet]
@@ -53,10 +66,7 @@ namespace WebApiHiringItm.API.Controllers.User
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _user.GetById(Guid.Parse(id));
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -72,33 +82,47 @@ namespace WebApiHiringItm.API.Controllers.User
         {
             try
             {
-                var Data = await _user.SignUp(model);
-
-                return Data != null ? StatusCode(200, Data) : NoContent();
+                var isSuccess = await _user.SignUp(model);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
-
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> UpdateTeamRoll(UserTDto model)
+        public async Task<IActionResult> UpdateTeamRoll(UserTDto userModel)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _user.UpdateTeamRoll(model);
-
-                //Retornamos datos.
-                return Data != false ? Ok(Data) : NoContent();
+                var isSuccess = await _user.UpdateTeamRoll(userModel);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
-
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 

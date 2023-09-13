@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.MasterDataCore.Interface;
+using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Dto.MasterDataDto;
 using WebApiHiringItm.MODEL.Entities;
@@ -137,6 +140,20 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore
         {
             var result = _context.DetailType.ToList();
             var map = _mapper.Map<List<DetailTypeDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<PorcentageDto>> GetPorcentageSecurity()
+        {
+            var result = _context.PorcenterSecurity.ToList();
+            var map = _mapper.Map<List<PorcentageDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<NewnessTypeDto>> GetNewnessType()
+        {
+            var result = await _context.NewnessType.ToListAsync();
+            var map = _mapper.Map<List<NewnessTypeDto>>(result);
             return await Task.FromResult(map);
         }
     }

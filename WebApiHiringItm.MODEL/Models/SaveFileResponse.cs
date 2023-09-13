@@ -12,6 +12,7 @@ namespace WebApiHiringItm.MODEL.Models
         public bool FileExist { get; set; }
         public DateTime RegisterDate { get; set; }
         public Guid UserId { get; set; }
+        public Guid ContractorId { get; set; }
 
     }
 }

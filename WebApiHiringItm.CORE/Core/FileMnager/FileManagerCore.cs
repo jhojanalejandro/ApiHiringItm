@@ -42,14 +42,23 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
             var getStatusContractInprogess = _context.StatusContract.Where(x => x.Code.Equals(StatusContractEnum.ENPROCESO.Description())).Select(s => s.Id).FirstOrDefault();
             var contractor = _context.DetailContract
                 .Include(dt => dt.Contract)
+                .OrderBy(o => o.RegisterDate)
                 .Where(w => !w.Contract.StatusContractId.Equals(getStatusContract) && w.Contract.Activate);
-            var contracts =  await contractor.Select(ct => new FolderContractContractorDto
+            var contracts =  await contractor
+                .GroupBy(g => new
+                {
+                    g.Contract.Id,
+                    g.Contract.CompanyName,
+                    g.Contract.NumberProject,
+                    g.Contract.ProjectName
+                })
+                .Select(ct => new FolderContractContractorDto
             {
                 Type = FOLDERTYPE,
-                Id = ct.Contract.Id.ToString(),
-                CompanyName = ct.Contract.CompanyName,
-                ProjectName = ct.Contract.ProjectName,
-                ProjectNumber = ct.Contract.NumberProject
+                Id = ct.Key.Id.ToString(),
+                CompanyName = ct.Key.CompanyName,
+                ProjectName = ct.Key.ProjectName,
+                ProjectNumber = ct.Key.NumberProject
             })
              .AsNoTracking()
              .ToListAsync();
@@ -75,7 +84,7 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
                 FileType = ct.File.FileType,
                 DocumentTypes = ct.File.DocumentTypeNavigation.DocumentTypeDescription,
                 DescriptionFile = ct.File.DescriptionFile,
-                UserId = ct.UserId,
+                UserId = ct.UserId
             })
              .AsNoTracking()
              .ToListAsync();
@@ -92,16 +101,16 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
             var contractor = _context.DetailContractor
                 .Include(dt => dt.Contract)
                     .ThenInclude(i => i.Files)
-                    .OrderBy(o => o.Contractor.Nombre)
+                    .OrderBy(o => o.Contractor.Nombres)
                 .Where(x => x.ContractId.Equals(id));
             return await contractor.Select(ct => new FolderContractorDto
             {
                 Type = FOLDERTYPE,
                 Id = ct.Contractor.Id.ToString(),
-                ContractorName = ct.Contractor.Nombre + " " + ct.Contractor.Apellido,
+                ContractorName = ct.Contractor.Nombres + " " + ct.Contractor.Apellidos,
                 ContractorIdentification = ct.Contractor.Identificacion,
-                cantFile = getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && (w.File.ContractorId.Equals(ct.ContractorId) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description())
-                || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))))).ToList().Count
+                cantFile = getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && (w.ContractorId.Equals(ct.ContractorId) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description())
+                || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.DOCUMENTOSCONTRATACION.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()))))).ToList().Count
             })
              .AsNoTracking()
              .ToListAsync();
@@ -112,7 +121,7 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
         {
 
             var getFiles = _context.Folder
-                .Where(w => w.ContractId.Equals(id) && !w.ContractorId.HasValue && w.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description()));
+                .Where(w => w.ContractId.Equals(id) && w.ContractorId == null && w.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description()));
 
             return await getFiles.Select(fc => new FolderContractDto
             {

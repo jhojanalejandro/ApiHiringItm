@@ -200,5 +200,36 @@ namespace WebApiHiringItm.API.Controllers.MasterData
                 throw new Exception("Error", ex);
             }
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetPorcentageSecurity()
+        {
+            try
+            {
+                var Data = await _masterDataCore.GetPorcentageSecurity();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetNewnessType()
+        {
+            try
+            {
+                var Data = await _masterDataCore.GetNewnessType();
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
     }
 }

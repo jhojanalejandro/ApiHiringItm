@@ -7,16 +7,27 @@ namespace WebApiHiringItm.MODEL.Entities
 {
     public partial class ContractorPayments
     {
+        public ContractorPayments()
+        {
+            ContractorPaymentSecurity = new HashSet<ContractorPaymentSecurity>();
+        }
+
         public Guid Id { get; set; }
         public Guid DetailContractor { get; set; }
-        public Guid? UserId { get; set; }
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
+        public Guid ContractorId { get; set; }
+        public Guid ContractId { get; set; }
+        public Guid UserId { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
         public string DescriptionPayment { get; set; }
-        public decimal? Paymentcant { get; set; }
+        public decimal Paymentcant { get; set; }
         public bool? CashPayment { get; set; }
-        public DateTime? RegisterDate { get; set; }
+        public DateTime RegisterDate { get; set; }
+        public int Consecutive { get; set; }
 
+        public virtual ContractFolder Contract { get; set; }
+        public virtual Contractor Contractor { get; set; }
         public virtual DetailContractor DetailContractorNavigation { get; set; }
+        public virtual ICollection<ContractorPaymentSecurity> ContractorPaymentSecurity { get; set; }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Contracts;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Entities;
 
@@ -49,32 +51,52 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(List<ContractorPaymentsDto> model)
+        public async Task<IActionResult> SaveContractorPayment(List<ContractorPaymentsDto> modelContractorPaymentsDto)
         {
             try
             {
-                var Data = await _contractorPayment.Create(model);
-                return Data != false ? Ok(Data) : NoContent();
+                var isSuccess = await _contractorPayment.SaveContractorPayment(modelContractorPaymentsDto);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error", ex);
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> DeleteContractorPayment(string id)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _contractorPayment.Delete(id);
-
-                return Data != false ? Ok(Data) : NoContent();
+                var isSuccess = await _contractorPayment.DeleteContractorPayment(id);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error", ex);
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -83,13 +105,49 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         {
             try
             {
-                var Data = await _contractorPayment.GetPaymentsContractorList(contractId, contractorId);
-                return Data != null ? Ok(Data) : NoContent();
+                var isSuccess = await _contractorPayment.GetPaymentsContractorList(contractId, contractorId);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetEmptityHealthContractor(string contractorId)
+        {
+            try
+            {
+                var isSuccess = await _contractorPayment.GetEmptityHealthContractor(contractorId);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 

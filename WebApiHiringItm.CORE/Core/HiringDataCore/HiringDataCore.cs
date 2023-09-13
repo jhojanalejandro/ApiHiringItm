@@ -61,7 +61,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 Nivel = hd.HiringData.Nivel,
                 Caso = hd.HiringData.Caso,
                 NombreRubro = hd.Contract.RubroNavigation.Rubro,
-                FuenteRubro = hd.Contract.RubroNavigation.RubroOrigin,
+                FuenteRubro = hd.Contract.FuenteRubro,
                 Cdp = hd.HiringData.Cdp,
                 NumeroActa = hd.HiringData.NumeroActa,
                 SupervisorId = hd.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Id.ToString()).FirstOrDefault(),
@@ -132,7 +132,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 {
                     if (getData != null)
                     {
-                        var stattusId = getStatusId.Find(f => f.StatusContractorDescription.Equals(model[i].StatusContractor))?.Id;
+                        var stattusId = getStatusId.Find(f => f.StatusContractorDescription.Equals(model[i].StatusContractor)).Id;
                         DetailContractor DetailContractor = new DetailContractor();
                         mapHiring[i].Id = Guid.NewGuid();
                         DetailContractor.HiringDataId = mapHiring[i].Id;

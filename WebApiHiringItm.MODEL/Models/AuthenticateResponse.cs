@@ -33,7 +33,7 @@ namespace WebApiHiringItm.MODEL.Models
         public AuthenticateResponse(Contractor user, string token, string _code)
         {
             Id = user.Id.ToString();
-            UserName = user.Nombre ;
+            UserName = user.Nombres ;
             UserEmail = user.Correo;
             accessToken = token;
             code = _code;
