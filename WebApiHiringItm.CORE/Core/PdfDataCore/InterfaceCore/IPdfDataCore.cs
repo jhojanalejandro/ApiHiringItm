@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.PdfDto;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 
 namespace WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore
 {
     public interface IPdfDataCore
     {
         Task<ExecutionReportDto> GetExecutionReport(Guid contractId, Guid ContractorId);
-        Task<ChargeAccountDto> GetChargeAccount(Guid contractId, Guid ContractorId);
         Task<MacroMinuteDto?> GetminuteMacroContract(Guid contractId);
         Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors);
         Task<List<MinuteExtensionDto>> GetminuteExtension(ContractContractorsDto contractors);

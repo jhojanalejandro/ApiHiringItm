@@ -485,44 +485,56 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<IGenericResponse<string>> CreateDetailObservation(ObservationFileRequest modelDetailFile)
         {
-            var termTypeId = _context.TermType.Where(x => x.Code.Equals("DCCT")).Select(s => s.Id).FirstOrDefault();
-            var detailContractor = _context.DetailContractor.Where(x => x.ContractorId.Equals(modelDetailFile.ContractorId)).Select(s => s.Id).FirstOrDefault();
-            List<DetailFile> detailFile = new();
-            TermContractDto termContractDto = new TermContractDto();
-            termContractDto.ContractId = modelDetailFile.ContractId;
-            termContractDto.ContractorId = modelDetailFile.ContractorId.ToString();
-            termContractDto.TermDate = modelDetailFile.TermDate;
-            termContractDto.DetailContractor = detailContractor;
-            termContractDto.TermType = termTypeId;
-
-            var responseTerm = await _projectFolder.SaveTermFileContract(termContractDto);
-
-            if (responseTerm)
+            try
             {
-                SendMessageObservationDto sendMessageObservationtDto = new();
-                sendMessageObservationtDto.ContractId = modelDetailFile.ContractId;
-                sendMessageObservationtDto.ContractorId = modelDetailFile.ContractorId.Value;
-                sendMessageObservationtDto.UserId = modelDetailFile.UserId.ToString();
-                sendMessageObservationtDto.Documentos = ",lista documentos";
-                sendMessageObservationtDto.Observation += modelDetailFile.Observation;
-                sendMessageObservationtDto.TermDate = modelDetailFile.TermDate;
-                var resulMessage = await _messageHandlingCore.SendContractorObservation(sendMessageObservationtDto);
-                if (resulMessage.Success)
+                var termTypeId = _context.TermType.Where(x => x.Code.Equals("DCCT")).Select(s => s.Id).FirstOrDefault();
+                var detailContractor = _context.DetailContractor.Where(x => x.ContractorId.Equals(modelDetailFile.ContractorId)).Select(s => s.Id).FirstOrDefault();
+                List<DetailFile> detailFile = new();
+                TermContractDto termContractDto = new TermContractDto();
+                termContractDto.ContractId = modelDetailFile.ContractId;
+                termContractDto.ContractorId = modelDetailFile.ContractorId.ToString();
+                termContractDto.TermDate = modelDetailFile.TermDate;
+                termContractDto.DetailContractor = detailContractor;
+                termContractDto.TermType = termTypeId;
+
+                var responseTerm = await _projectFolder.SaveTermFileContract(termContractDto);
+
+                if (responseTerm.Success)
                 {
-                    foreach (var itemFile in modelDetailFile.Files)
+                    SendMessageObservationDto sendMessageObservationtDto = new();
+                    sendMessageObservationtDto.ContractId = modelDetailFile.ContractId;
+                    sendMessageObservationtDto.ContractorId = modelDetailFile.ContractorId.Value;
+                    sendMessageObservationtDto.UserId = modelDetailFile.UserId.ToString();
+                    foreach (var item in modelDetailFile.Files)
                     {
-                        modelDetailFile.Id = Guid.NewGuid();
-                        modelDetailFile.FileId = Guid.NewGuid();
-                        var mapDetailFile = _mapper.Map<DetailFile>(modelDetailFile);
-                        detailFile.Add(mapDetailFile);
+                        sendMessageObservationtDto.Documentos = new();
+                        sendMessageObservationtDto.Documentos.Add(item.DocumentTypes);
                     }
-                    _context.DetailFile.AddRange(detailFile);
+                    sendMessageObservationtDto.Observation += modelDetailFile.Observation;
+                    sendMessageObservationtDto.TermDate = modelDetailFile.TermDate;
+                    var resulMessage = await _messageHandlingCore.SendContractorObservation(sendMessageObservationtDto);
+                    if (resulMessage.Success)
+                    {
+                        foreach (var itemFile in modelDetailFile.Files)
+                        {
+                            modelDetailFile.Id = Guid.NewGuid();
+                            modelDetailFile.FileId = itemFile.Id;
+                            var mapDetailFile = _mapper.Map<DetailFile>(modelDetailFile);
+                            detailFile.Add(mapDetailFile);
+                        }
+                        _context.DetailFile.AddRange(detailFile);
+
+                    }
 
                 }
-
+                await _context.SaveChangesAsync();
+                return ApiResponseHelper.CreateResponse<string>(null, true, Resource.UPDATESUCCESSFULL);
             }
-            await _context.SaveChangesAsync();
-            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.UPDATESUCCESSFULL);
+            catch(Exception ex)
+            {
+                throw new Exception("error",ex);
+            }
+
 
         }
 

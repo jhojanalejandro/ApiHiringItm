@@ -146,13 +146,11 @@ namespace WebApiHiringItm.API.Controllers.Component
                 var isSuccess = await _componente.GetByIdComponent(id, activityId, elementId); ;
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)

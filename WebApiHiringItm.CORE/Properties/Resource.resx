@@ -141,6 +141,9 @@
   <data name="ERRORUPLOADEXCEL" xml:space="preserve">
     <value>Error al cargar el excel porque esta imcompleto</value>
   </data>
+  <data name="EXCELEMPTY" xml:space="preserve">
+    <value>la información esta incompleta para generar el documento</value>
+  </data>
   <data name="EXCELIMPORTSUCCESS" xml:space="preserve">
     <value>Excel importado exitosamente</value>
   </data>

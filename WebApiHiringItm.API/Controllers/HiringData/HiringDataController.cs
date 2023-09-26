@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Contracts;
 using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.API.Controllers.HiringData
 {
@@ -38,32 +41,46 @@ namespace WebApiHiringItm.API.Controllers.HiringData
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByIdHinringData(Guid contractorId, Guid contractId)
+        public async Task<IActionResult> GetByIdHinringData(string contractorId, string contractId)
         {
             try
             {
-                var Data = await _hiringData.GetByIdHinringData(contractorId, contractId);
-                return Data != null ? Ok(Data) : NoContent();
+                var isSuccess = await _hiringData.GetByIdHinringData(contractorId, contractId);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
             }
             catch (Exception ex)
             {
-
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveHiring(List<HiringDataDto> model)
+        public async Task<IActionResult> SaveHiring(List<HiringDataDto> modelHinring)
         {
             try
             {
-                var Data = await _hiringData.SaveHiringData(model);
-                return Data != false ? Ok(Data) : NoContent();
+                var isSuccess = await _hiringData.SaveHiringData(modelHinring);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
             }
             catch (Exception ex)
             {
-
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 

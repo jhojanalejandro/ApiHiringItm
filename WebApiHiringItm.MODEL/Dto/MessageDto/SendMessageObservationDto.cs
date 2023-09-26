@@ -12,7 +12,7 @@ namespace WebApiHiringItm.MODEL.Dto.MessageDto
         public Guid ContractorId { get; set; }
         public string UserId { get; set; }
         public string Observation { get; set; }
-        public string Documentos { get; set; }
+        public List<string>? Documentos { get; set; } = null;
         public string novedad { get; set; }
         public DateTime TermDate { get; set; }
 

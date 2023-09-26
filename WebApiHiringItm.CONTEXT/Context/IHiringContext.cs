@@ -28,7 +28,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<EconomicdataContractor> EconomicdataContractor { get; set; }
         DbSet<ElementComponent> ElementComponent { get; set; }
         DbSet<ElementType> ElementType { get; set; }
-        DbSet<EmptityHealth> EmptityHealth { get; set; }
+        DbSet<EntityHealth> EntityHealth { get; set; }
         DbSet<Files> Files { get; set; }
         DbSet<Folder> Folder { get; set; }
         DbSet<FolderType> FolderType { get; set; }
@@ -48,6 +48,5 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<UserFileType> UserFileType { get; set; }
         DbSet<UserFile> UserFile { get; set; }
         DbSet<UserT> UserT { get; set; }
-        DbSet<PorcenterSecurity> PorcenterSecurity { get; set; }
     }
 }

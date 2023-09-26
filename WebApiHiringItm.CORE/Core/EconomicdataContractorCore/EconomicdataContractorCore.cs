@@ -59,8 +59,8 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                     UnitValue = s.UnitValue,
                     Freed = s.Freed,
                     Missing = s.Missing,
-                    PeriodFrom = s.DetailContractor.ContractorPayments.OrderByDescending(o => o.ToDate).Select(s => s.ToDate).FirstOrDefault(),
-                    Consecutive = s.DetailContractor.ContractorPayments.OrderByDescending(o => o.Consecutive).Select(s => s.Consecutive).FirstOrDefault() + 1
+                    PeriodFrom = s.DetailContractor.ContractorPayments.OrderByDescending(o => o.ToDate).FirstOrDefault() != null ? s.DetailContractor.ContractorPayments.OrderByDescending(o => o.ToDate).Select(s => s.ToDate).FirstOrDefault() : null,
+                    Consecutive = s.DetailContractor.ContractorPayments.OrderByDescending(o => o.Consecutive).Select(s => s.Consecutive).FirstOrDefault() +1
                 })
                 .AsNoTracking()
                 .ToListAsync();
@@ -144,7 +144,8 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                 RegisterDate = s.RegisterDate,
                 FromDate = s.FromDate,
                 ToDate = s.ToDate,
-                Consecutive = s.Consecutive
+                Consecutive = s.Consecutive,
+                LevelRisk = s.DetailContractorNavigation.HiringData.Nivel.ToString()
             })
             .AsNoTracking()
             .FirstOrDefaultAsync();

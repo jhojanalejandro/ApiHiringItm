@@ -377,7 +377,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
 
         }
 
-        public async Task<bool> SaveTermFileContract(TermContractDto modelTermContract)
+        public async Task<IGenericResponse<string>> SaveTermFileContract(TermContractDto modelTermContract)
         {
 
             var getTermContractList = _context.TermContract
@@ -401,7 +401,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
 
                 foreach (var item in getDetailConttract)
                 {
-                    var getTermContract = getTermContractList.Find(x => x.DetailContractor.Equals(item.Id));
+                    var getTermContract = getTermContractList.Find(x => x.DetailContractor.Equals(item.Id) && x.TermType.Equals(modelTermContract.TermType));
                     if (getTermContract == null)
                     {
                         var mapTermContract = _mapper.Map<TermContract>(modelTermContract);
@@ -430,7 +430,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
 
             }
             var res = await _context.SaveChangesAsync();
-            return res != 0 ? true : false;
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
         }
         #endregion
 

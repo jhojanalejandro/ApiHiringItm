@@ -133,6 +133,15 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a la información esta incompleta para generar el documento.
+        /// </summary>
+        internal static string EXCELEMPTY {
+            get {
+                return ResourceManager.GetString("EXCELEMPTY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Excel importado exitosamente.
         /// </summary>
         internal static string EXCELIMPORTSUCCESS {

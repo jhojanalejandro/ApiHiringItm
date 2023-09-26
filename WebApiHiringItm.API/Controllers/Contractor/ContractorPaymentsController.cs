@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Contracts;
@@ -58,13 +59,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 var isSuccess = await _contractorPayment.SaveContractorPayment(modelContractorPaymentsDto);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -83,13 +82,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 var isSuccess = await _contractorPayment.DeleteContractorPayment(id);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -108,13 +105,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 var isSuccess = await _contractorPayment.GetPaymentsContractorList(contractId, contractorId);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -134,13 +129,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 var isSuccess = await _contractorPayment.GetEmptityHealthContractor(contractorId);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -151,5 +144,28 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> ChargeAccountGetById(string contractId, string ContractorId)
+        {
+            try
+            {
+                var isSuccess = await _contractorPayment.GetChargeAccount(contractId, ContractorId);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
     }
 }

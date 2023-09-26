@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.PdfDto;
 using WebApiHiringItm.MODEL.Entities;
@@ -32,30 +33,6 @@ namespace WebApiHiringItm.API.Controllers.PdfData
                 else
                 {
                     var Data = await _pdfData.GetExecutionReport(Guid.Parse(contractId), Guid.Parse(ContractorId));
-                    return Data != null ? Ok(Data) : NoContent();
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
-
-
-        [HttpGet]
-        public async Task<IActionResult> ChargeAccountGetById(string contractId, string ContractorId)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(contractId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    var Data = await _pdfData.GetChargeAccount(Guid.Parse(contractId), Guid.Parse(ContractorId));
                     return Data != null ? Ok(Data) : NoContent();
                 }
 

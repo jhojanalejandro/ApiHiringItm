@@ -13,8 +13,8 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string ExpeditionIdentification { get; set; }
         public string Direction { get; set; }
         public string ContractNumber { get; set; }
-        public string? PeriodExecutedInitialDate { get; set; }
-        public string? PeriodExecutedFinalDate { get; set; }
+        public DateTime? PeriodExecutedInitialDate { get; set; }
+        public DateTime? PeriodExecutedFinalDate { get; set; }
         public string ElementName { get; set; }
         public string PhoneNumber { get; set; }
         public string AccountType { get; set; }

@@ -17,7 +17,7 @@ namespace WebApiHiringItm.MODEL.Models
         public string ContractNumber { get; set; }
         public DateTime TermDate { get; set; }
         public List<FileAttach> FileMessageAttach { get; set; } = new List<FileAttach>();
-        public string Documents { get; set; }
+        public List<string> Documents { get; set; }
 
     }
 

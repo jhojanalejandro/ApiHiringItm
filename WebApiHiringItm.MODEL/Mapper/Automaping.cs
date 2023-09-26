@@ -72,7 +72,7 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<BanksDto, Banks>().ReverseMap();
             CreateMap<RubroTypeDto, RubroType>().ReverseMap();
             CreateMap<AcademicInformationDto, AcademicInformation>().ReverseMap();
-            CreateMap<EmptityHealthDto, EmptityHealth>().ReverseMap();
+            CreateMap<EntityHealthDto, EntityHealth>().ReverseMap();
             CreateMap<RollDto, Roll>().ReverseMap();
             CreateMap<TypeUserFileDto, UserFileType>().ReverseMap();
             CreateMap<AssignmentUserDto, AssigmentContract>().ReverseMap();
@@ -81,7 +81,6 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<TermContractDto, TermContract>().ReverseMap();
             CreateMap<DetailTypeDto, DetailType>().ReverseMap();
             CreateMap<ChangeContractContractorDto, ChangeContractContractor>().ReverseMap();
-            CreateMap<PorcentageDto, PorcenterSecurity>().ReverseMap();
             CreateMap<ContractorPaymentSecurityDto, ContractorPaymentSecurity>().ReverseMap();
             CreateMap<NewnessTypeDto, NewnessType>().ReverseMap();
             CreateMap<ObservationFileRequest, DetailFile>().ReverseMap();

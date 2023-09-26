@@ -16,6 +16,10 @@ using WebApiHiringItm.CORE.Helpers.Enums.Rolls;
 using WebApiHiringItm.CORE.Helpers.Enums.File;
 using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
 using WebApiHiringItm.CORE.Helpers.Enums.FolderType;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Properties;
+using WebApiHiringItm.CORE.Helpers.GenericValidation;
 
 namespace WebApiHiringItm.CORE.Core.PdfDataCore
 {
@@ -56,32 +60,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
             .FirstOrDefaultAsync();
         }
 
-        public async Task<ChargeAccountDto?> GetChargeAccount(Guid contractId, Guid contractorId)
-        {
-            var result = _context.DetailContractor
-                .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId.Equals(contractId));
 
-            return await result.Select(report => new ChargeAccountDto
-            {
-                ChargeAccountNumber = report.ContractorPayments.Count(),
-                ContractorName = report.Contractor.Nombres + " " + report.Contractor.Apellidos,
-                ContractNumber = report.Contract.NumberProject,
-                ContractorIdentification = report.Contractor.Identificacion,
-                ExpeditionIdentification = report.Contractor.LugarExpedicion,
-                PhoneNumber = report.Contractor.Celular,
-                AccountType = report.Contractor.TipoCuenta,
-                AccountNumber = report.Contractor.CuentaBancaria,
-                BankingEntity = report.Contractor.EntidadCuentaBancariaNavigation.BankName,
-                ContractName = report.Contract.CompanyName,
-                Direction = report.Contractor.Direccion,
-                PeriodExecutedInitialDate = report.ContractorPayments.OrderByDescending(d => d.FromDate).Select(s => s.FromDate.ToString()).FirstOrDefault(),
-                PeriodExecutedFinalDate = report.ContractorPayments.OrderByDescending(d => d.ToDate).Select(s => s.ToDate.ToString()).FirstOrDefault(),
-                ElementName = report.Element.NombreElemento,
-                TotalValue = Math.Ceiling(report.ContractorPayments.OrderByDescending(d => d.FromDate.ToString()).Select(s => s.Paymentcant).FirstOrDefault())
-            })
-            .AsNoTracking()
-            .FirstOrDefaultAsync();
-        }
 
         public async Task<List<MinuteExtensionDto>> GetminuteExtension(ContractContractorsDto contractors)
         {

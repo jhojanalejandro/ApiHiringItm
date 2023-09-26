@@ -47,13 +47,11 @@ namespace WebApiHiringItm.API.Controllers.Files
                 var isSuccess = await _file.AddFileContractor(model);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -72,13 +70,11 @@ namespace WebApiHiringItm.API.Controllers.Files
                 var isSuccess = await _file.AddbillContractor(model);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -227,13 +223,11 @@ namespace WebApiHiringItm.API.Controllers.Files
                 var isSuccess = await _file.AddFileContract(modelFileContract);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -253,13 +247,11 @@ namespace WebApiHiringItm.API.Controllers.Files
                 var isSuccess = await _file.CreateDetailObservation(modelDetailFile);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -294,13 +286,11 @@ namespace WebApiHiringItm.API.Controllers.Files
                 var isSuccess = await _file.SaveCommitteeContractor(model);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -319,13 +309,11 @@ namespace WebApiHiringItm.API.Controllers.Files
                 var isSuccess = await _file.CreateDetailCommittee(modelDetailFile);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
