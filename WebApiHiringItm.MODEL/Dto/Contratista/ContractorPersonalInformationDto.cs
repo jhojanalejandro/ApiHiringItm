@@ -11,7 +11,6 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
     {
         public ContractorPersonalInformationDto ContractorPersonalInformation { get; set; }
         public List<AcademicInformationDto?> AcademicInformation { get; set; }
-        public List<EmptityHealthDto> EmptityHealth { get; set; }
     }
     public class ContractorPersonalInformationDto
     {
@@ -31,6 +30,10 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string? TipoCuenta { get; set; }
         public Guid? EntidadCuentaBancaria { get; set; }
         public DateTime? FechaActualizacion { get; set; }
+        public Guid Eps { get; set; }
+        public Guid Arl { get; set; }
+        public Guid Afp { get; set; }
+
 
     }
 
@@ -39,12 +42,6 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string AcademicInformationType { get; set; }
         public string CollegeDegree { get; set; }
         public string Institution { get; set; }
-        public Guid? Contractor { get; set; }
-    }
-    public class EmptityHealthDto
-    {
-        public string EmptityType { get; set; }
-        public string Emptity { get; set; }
         public Guid? Contractor { get; set; }
     }
 

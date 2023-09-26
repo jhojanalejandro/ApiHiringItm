@@ -35,7 +35,7 @@ namespace WebApiHiringItm.MODEL.Dto
         public string? Caso { get; set; }
         public string? StatusContractor { get; set; }
         public string? SupervisorId { get; set; }
-        public string ActividadContratista { get; set; }
+        public string? ActividadContratista { get; set; }
 
     }
 }

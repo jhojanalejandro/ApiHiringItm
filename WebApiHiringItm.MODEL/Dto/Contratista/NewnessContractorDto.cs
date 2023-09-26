@@ -14,6 +14,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public string NewnessType { get; set; }
         public string ContractId { get; set; }
         public string? NewnessCode { get; set; }
+        public int? Consecutive { get; set; }
 
     }
 }

@@ -14,8 +14,6 @@ namespace WebApiHiringItm.MODEL.Entities
 
         public Guid Id { get; set; }
         public Guid DetailContractor { get; set; }
-        public Guid ContractorId { get; set; }
-        public Guid ContractId { get; set; }
         public Guid UserId { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
@@ -24,10 +22,10 @@ namespace WebApiHiringItm.MODEL.Entities
         public bool? CashPayment { get; set; }
         public DateTime RegisterDate { get; set; }
         public int Consecutive { get; set; }
+        public Guid EconomicdataContractor { get; set; }
 
-        public virtual ContractFolder Contract { get; set; }
-        public virtual Contractor Contractor { get; set; }
         public virtual DetailContractor DetailContractorNavigation { get; set; }
+        public virtual EconomicdataContractor EconomicdataContractorNavigation { get; set; }
         public virtual ICollection<ContractorPaymentSecurity> ContractorPaymentSecurity { get; set; }
     }
 }

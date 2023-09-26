@@ -20,6 +20,8 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public Guid DetailContractor { get; set; }
         public DateTime RegisterDate { get; set; }
         public int Consecutive { get; set; }
+        public Guid? EconomicdataContractor { get; set; }
+        public string? LevelRisk {  get; set; } 
 
     }
 }

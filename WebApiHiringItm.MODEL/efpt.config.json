@@ -28,10 +28,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[AssigmentContractDetail]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[AssignmentType]",
          "ObjectType": 0
       },
@@ -100,7 +96,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[EmptityHealth]",
+         "Name": "[dbo].[EntityHealth]",
          "ObjectType": 0
       },
       {
