@@ -25,8 +25,7 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore.Interface
         Task<List<AssignmentTypeDto>> GetAllAssignmentType();
         Task<List<TermTypeDto>> GetAllTermType();
         Task<List<DetailTypeDto>> GetAllDetailType();
-        Task<List<PorcentageDto>> GetPorcentageSecurity();
         Task<List<NewnessTypeDto>> GetNewnessType();
-
+        Task<List<EntityHealthDto>> GetEmptityHealth();
     }
 }

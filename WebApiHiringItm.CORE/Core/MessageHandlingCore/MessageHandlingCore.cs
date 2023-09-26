@@ -150,7 +150,6 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 
         public async Task<IGenericResponse<string>> SendContractorObservation(SendMessageObservationDto messageObservation)
         {
-            var getStatusId = _context.StatusContractor.Where(x => x.Code.Equals(StatusContractorEnum.INVITADO.Description())).Select(s => s.Id).FirstOrDefault();
             var getContractor = _context.Contractor.Where(x => x.Id.Equals(messageObservation.ContractorId)).FirstOrDefault();
 
             var getCredencialUser = _context.UserFile
@@ -167,9 +166,10 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             getCredencialUser.ToEmail = getContractor.Correo;
             getCredencialUser.TermDate = messageObservation.TermDate;
             getCredencialUser.Documents = messageObservation.Documentos;
+            getCredencialUser.Body = messageObservation.Observation;
 
             await sendMessageObservation(getCredencialUser);
-            throw new NotImplementedException();
+            return ApiResponseHelper.CreateResponse<string>(null, true,Resource.MAILSENDSUCCESS);
         }
 
         private async Task<string> createPassword(MailRequestContractor message)
@@ -333,16 +333,19 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             int diaMes = mailRequest.TermDate.Day;
             string diaDeLaSemana = mailRequest.TermDate.ToString("dddd");
             string cuerpoHTML = "<html> <body>" +
-                                    "<p>para la prestación del servicio en el marco del contrato interadministrativo " + mailRequest.ContractNumber + " suscrito con el ITM, se han encontrado errores en los documentos adjuntados, es necesario que por favor los actualice .</p>" +
-                                    "<p>Con plazo para enviar documentos hasta el " + diaDeLaSemana + diaMes + " DE " + mes + " DE " + anio + "</p>" +
-                                    "<p>Documentos que se deben modificar :</p>" +
-                                    "<p>" + mailRequest.Documents + "</p>" +
-                                    "<p>Tener en cuenta las siguientes observaciones:</p>" +
-                                    "<p>"+ mailRequest.Body + "</p>" +
-
-                                    "<img src=\"cid:imagen1\" />" +
-                                "</body> </html>";
-
+                "<p>Remito novedades a subsanar.</p>" +
+                "<p>Con plazo para enviar documentos hasta el " + diaDeLaSemana +" "+ diaMes + " de " + mes + " de " + anio + "</p>" +
+                "<p>Documentos que se deben modificar:</p>" +
+                "<ul>";
+            foreach (var documento in mailRequest.Documents)
+            {
+                cuerpoHTML += "<li>" + documento + "</li>";
+            }
+            cuerpoHTML += "</ul>" +
+                    "<p>Tener en cuenta las siguientes observaciones:</p>" +
+                    mailRequest.Body +
+                    "<img src=\"cid:imagen1\" />" +
+                    "</body> </html>";
             // Crea un nuevo correo electrónico
             MailMessage correo = new MailMessage(remitente, destinatario, asunto, cuerpoHTML);
             correo.IsBodyHtml = true;

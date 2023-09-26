@@ -15,7 +15,8 @@ namespace WebApiHiringItm.CORE.Helpers.GenericResponse
             {
                 Success = success,
                 Message = message,
-                Data = data            };
+                Data = data           
+            };
         }
 
         public static IGenericResponse<T> CreateErrorResponse<T>(string message)

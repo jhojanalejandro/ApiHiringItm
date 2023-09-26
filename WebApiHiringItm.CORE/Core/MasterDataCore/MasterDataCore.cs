@@ -143,17 +143,18 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore
             return await Task.FromResult(map);
         }
 
-        public async Task<List<PorcentageDto>> GetPorcentageSecurity()
-        {
-            var result = _context.PorcenterSecurity.ToList();
-            var map = _mapper.Map<List<PorcentageDto>>(result);
-            return await Task.FromResult(map);
-        }
 
         public async Task<List<NewnessTypeDto>> GetNewnessType()
         {
             var result = await _context.NewnessType.ToListAsync();
             var map = _mapper.Map<List<NewnessTypeDto>>(result);
+            return await Task.FromResult(map);
+        }
+
+        public async Task<List<EntityHealthDto>> GetEmptityHealth()
+        {
+            var result = await _context.EntityHealth.ToListAsync();
+            var map = _mapper.Map<List<EntityHealthDto>>(result);
             return await Task.FromResult(map);
         }
     }

@@ -13,8 +13,16 @@ using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
 using WebApiHiringItm.CORE.Helpers.Enums;
 using WebApiHiringItm.MODEL.Models;
 using WebApiHiringItm.MODEL.Dto.ExportDataDto;
-using OfficeOpenXml;
-using OfficeOpenXml.Drawing;
+using ClosedXML.Excel;
+using System;
+using System.IO;
+using DocumentFormat.OpenXml.Vml;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Aspose.Cells;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Properties;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 
 namespace WebApiHiringItm.CORE.Core.ExportToExcel
 {
@@ -34,7 +42,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
         #endregion
 
         #region PUBLIC METHODS
-        public async Task<MemoryStream> ExportToExcelCdp(Guid ContractId)
+        public async Task<IGenericResponse<MemoryStream>> ExportToExcelCdp(Guid ContractId)
         {
 
             var stream = new MemoryStream();
@@ -126,6 +134,11 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                         row++;
                     }
                 }
+                if (nro == 0)
+                {
+                    return ApiResponseHelper.CreateErrorResponse<MemoryStream>(Resource.EXCELEMPTY);
+
+                }
                 worksheet.Columns.AutoFit();
 
                 xlPackage.Workbook.Properties.Title = "Lista de contratistas";
@@ -137,7 +150,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
 
             }
             stream.Position = 0;
-            return await Task.FromResult(stream);
+            return ApiResponseHelper.CreateResponse(stream);
         }
 
         public async Task<MemoryStream> ExportContratacionDap(ControllerBase controller, Guid ContractId)
@@ -724,7 +737,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
         }
 
 
-        public async Task<MemoryStream> GenerateSatisfactionReport(Guid contractId)
+        public async Task<MemoryStream> GenerateSatisfactionReport(Guid contractId,string base64)
         {
             var getReportContract = _context.DetailContractor.Where(x => x.ContractId.Equals(contractId))
                     .Select(w => new ReportExportDto()
@@ -743,6 +756,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             var stream = new MemoryStream();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
+  
             using (var xlPackage = new ExcelPackage(stream))
             {
 
@@ -752,134 +766,143 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 namedStyle.Style.Font.Color.SetColor(Color.Blue);
                 const int startRow = 5;
                 var row = startRow;
+                //Create an Image object from the memory stream
 
-
-                using (var package = new ExcelPackage())
+                using (var workbook = new XLWorkbook())
                 {
-                    // Carga la imagen desde un archivo (ajusta la ruta)
-                    var imageFilePath = "ruta_de_la_imagen.png";
+                    var worksheets = workbook.Worksheets.Add("MiHojaDeCalculo");
 
-                    // Agrega la imagen a la celda A1 y define su tamaño
-                    var picture = worksheet.Drawings.AddPicture("MiImagen", new FileInfo(imageFilePath));
-                    picture.SetPosition(0, 0, 0, 0);
-                    picture.SetSize(500); // Tamaño de la imagen en pixels
+                    if (base64.StartsWith("data:image/png;base64,"))
+                    {
+                        base64 = base64.Substring("data:image/png;base64,".Length);
+                    }
+                   byte[] imageBytes = Convert.FromBase64String(base64);
 
-                    // Ajusta el ancho de las columnas para mostrar la imagen completamente
-                    //worksheet.Column(1).Width = picture.Image.Width / 7; // Ajusta el divisor según tus necesidades
+                    // Agregar la imagen desde los bytes a la hoja de cálculo
+                    var image = worksheets.AddPicture(new MemoryStream(imageBytes))
+                        .MoveTo(worksheets.Cell("A1")) // Posición de la imagen en la celda A1
+                        .WithSize(200, 200); // Tamaño de la imagen en píxeles
 
-                    // Guarda el archivo Excel
-                    var excelFilePath = "ruta_del_archivo.xlsx";
-                    File.WriteAllBytes(excelFilePath, package.GetAsByteArray());
+
+
+                    MemoryStream objImage = new MemoryStream(imageBytes);
+                    Image image2 = Image.FromStream(objImage);
+                    worksheets.Pictures.Add(stream);
+
+                    workbook.SaveAs(stream);
+
+                    // Establecer la posición del MemoryStream al principio
+                    stream.Seek(0, SeekOrigin.Begin);
                 }
 
                 //Create Headers and format them
-                worksheet.Cells["A1"].Value = "RECIBIDO A SATISFACCIÓN PARA CONTRATISTAS                                                                                                                                                                          (CONTRATOS Y CONVENIOS INTERADMINISTRATIVOS)";
-                using (var r = worksheet.Cells["A1:Q3"])
-                {
-                    r.Style.WrapText = true;
-                    r.Merge = true;
-                    r.Style.Font.Color.SetColor(Color.Black);
-                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    r.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
-                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                }
-                worksheet.Cells["A14"].Value = "No.";
-                worksheet.Cells["B14"].Value = "No. Contrato";
-                worksheet.Cells["C14"].Value = "vr Contrato";
-                worksheet.Cells["D14"].Value = "No. Adición";
-                worksheet.Cells["E14"].Value = "Documento de Identidad";
-                worksheet.Cells["F14"].Value = "Apellidos";
-                worksheet.Cells["G14"].Value = "Nombres";
-                worksheet.Cells["H14"].Value = "Rev CC";
-                worksheet.Cells["I14"].Value = "Periodo inicial";
-                worksheet.Cells["J14"].Value = "Periodo final";
-                worksheet.Cells["K14"].Value = " vr a pagar del periodo";
-                worksheet.Cells["L14"].Value = "vr Salud - Pensión - ARL";
-                worksheet.Cells["M14"].Value = "ARL - Riesgos Lab.";
-                worksheet.Cells["N14"].Value = "Aportes a Salud";
-                worksheet.Cells["O14"].Value = "Aportes a Pensión";
-                worksheet.Cells["P14"].Value = "(*) Novedad";
-                worksheet.Cells["Q14"].Value = "Días";
-                worksheet.Cells["R14"].Value = "Código área de negocios ";
-                worksheet.Cells["S14"].Value = "Nombre área de negocios ";
-                worksheet.Cells["T14"].Value = "No.PLANILLA SS PONER MES";
-                worksheet.Cells["U14"].Value = "NOVEDAD";
-                worksheet.Cells["V14"].Value = " ";
-                worksheet.Cells["W14"].Value = "IBC";
-                worksheet.Cells["X14"].Value = "PENSION";
-                worksheet.Cells["Y14"].Value = "SALUD";
-                worksheet.Cells["Z14"].Value = "NIVEL RIESGO";
-                worksheet.Cells["AA14"].Value = "ARL";
-                worksheet.Cells["AB14"].Value = "SUMATORIA";
+                //worksheet.Cells["A1"].Value = "RECIBIDO A SATISFACCIÓN PARA CONTRATISTAS                                                                                                                                                                          (CONTRATOS Y CONVENIOS INTERADMINISTRATIVOS)";
+                //using (var r = worksheet.Cells["A1:Q3"])
+                //{
+                //    r.Style.WrapText = true;
+                //    r.Merge = true;
+                //    r.Style.Font.Color.SetColor(Color.Black);
+                //    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                //    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                //    r.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
+                //    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                //    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                //    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                //    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                //}
+                //worksheet.Cells["A14"].Value = "No.";
+                //worksheet.Cells["B14"].Value = "No. Contrato";
+                //worksheet.Cells["C14"].Value = "vr Contrato";
+                //worksheet.Cells["D14"].Value = "No. Adición";
+                //worksheet.Cells["E14"].Value = "Documento de Identidad";
+                //worksheet.Cells["F14"].Value = "Apellidos";
+                //worksheet.Cells["G14"].Value = "Nombres";
+                //worksheet.Cells["H14"].Value = "Rev CC";
+                //worksheet.Cells["I14"].Value = "Periodo inicial";
+                //worksheet.Cells["J14"].Value = "Periodo final";
+                //worksheet.Cells["K14"].Value = " vr a pagar del periodo";
+                //worksheet.Cells["L14"].Value = "vr Salud - Pensión - ARL";
+                //worksheet.Cells["M14"].Value = "ARL - Riesgos Lab.";
+                //worksheet.Cells["N14"].Value = "Aportes a Salud";
+                //worksheet.Cells["O14"].Value = "Aportes a Pensión";
+                //worksheet.Cells["P14"].Value = "(*) Novedad";
+                //worksheet.Cells["Q14"].Value = "Días";
+                //worksheet.Cells["R14"].Value = "Código área de negocios ";
+                //worksheet.Cells["S14"].Value = "Nombre área de negocios ";
+                //worksheet.Cells["T14"].Value = "No.PLANILLA SS PONER MES";
+                //worksheet.Cells["U14"].Value = "NOVEDAD";
+                //worksheet.Cells["V14"].Value = " ";
+                //worksheet.Cells["W14"].Value = "IBC";
+                //worksheet.Cells["X14"].Value = "PENSION";
+                //worksheet.Cells["Y14"].Value = "SALUD";
+                //worksheet.Cells["Z14"].Value = "NIVEL RIESGO";
+                //worksheet.Cells["AA14"].Value = "ARL";
+                //worksheet.Cells["AB14"].Value = "SUMATORIA";
 
-                worksheet.Cells["A4:AA4"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["A4:AA4"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(70, 130, 180));
-                worksheet.Cells["A4:AA4"].Style.Font.Bold = true;
-                worksheet.Cells["A4:AA4"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A4:AA4"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A4:AA4"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A4:AA4"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                //worksheet.Cells["A4:AA4"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                //worksheet.Cells["A4:AA4"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(70, 130, 180));
+                //worksheet.Cells["A4:AA4"].Style.Font.Bold = true;
+                //worksheet.Cells["A4:AA4"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                //worksheet.Cells["A4:AA4"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                //worksheet.Cells["A4:AA4"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                //worksheet.Cells["A4:AA4"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
 
-                var year = DateTime.Now.Year;
-                var month = DateTime.Now.Month;
-                var day = DateTime.Now.Day;
-                var date = DateTime.Now.ToString("dd/MM/yyyy");
-                row = 5;
-                int nro = 0;
-                foreach (var user in getReportContract)
-                {
-                    //var durationContract = CalculateDateContract(user.InitialDate.Value, user.FinalDate.Value);
-                    nro++;
-                    worksheet.Cells[row, 1].Value = 80111600;
-                    //worksheet.Cells[row, 2].Value = user.ObjetoConvenio;
-                    worksheet.Cells[row, 3].Value = month;
-                    worksheet.Cells[row, 4].Value = month;
-                    worksheet.Cells[row, 5].Value = 0;
-                    //worksheet.Cells[row, 6].Value = durationContract;
-                    worksheet.Cells[row, 7].Value = "CCE-16";
-                    //worksheet.Cells[row, 8].Value = 0;
-                    //worksheet.Cells[row, 9].Value = user.ValorTotal;
-                    //worksheet.Cells[row, 10].Value = user.ValorTotal;
-                    worksheet.Cells[row, 11].Value = 0;
-                    worksheet.Cells[row, 12].Value = 0;
-                    worksheet.Cells[row, 13].Value = "Unidad estratégica de negociosos";
-                    worksheet.Cells[row, 14].Value = "CO-ANT-05001";
-                    //worksheet.Cells[row, 15].Value = user.User;
-                    //worksheet.Cells[row, 16].Value = 4405100;
-                    //worksheet.Cells[row, 17].Value = user.Email;
-                    worksheet.Cells[row, 18].Value = "Convenios-funcionamiento";
-                    //worksheet.Cells[row, 19].Value = user.Identificacion;
-                    //worksheet.Cells[row, 20].Value = user.Nombre;
-                    //worksheet.Cells[row, 21].Value = user.UnitValue;
-                    //worksheet.Cells[row, 22].Value = user.InitialDate;
-                    //worksheet.Cells[row, 23].Value = user.FinalDate;
-                    //worksheet.Cells[row, 24].Value = durationContract;
-                    //worksheet.Cells[row, 25].Value = user.ValorTotal;
-                    worksheet.Cells[row, 26].Value = 0;
-                    worksheet.Cells[row, 27].Value = 0;
-                    row++;
+                //var year = DateTime.Now.Year;
+                //var month = DateTime.Now.Month;
+                //var day = DateTime.Now.Day;
+                //var date = DateTime.Now.ToString("dd/MM/yyyy");
+                //row = 5;
+                //int nro = 0;
+                //foreach (var user in getReportContract)
+                //{
+                //    //var durationContract = CalculateDateContract(user.InitialDate.Value, user.FinalDate.Value);
+                //    nro++;
+                //    worksheet.Cells[row, 1].Value = 80111600;
+                //    //worksheet.Cells[row, 2].Value = user.ObjetoConvenio;
+                //    worksheet.Cells[row, 3].Value = month;
+                //    worksheet.Cells[row, 4].Value = month;
+                //    worksheet.Cells[row, 5].Value = 0;
+                //    //worksheet.Cells[row, 6].Value = durationContract;
+                //    worksheet.Cells[row, 7].Value = "CCE-16";
+                //    //worksheet.Cells[row, 8].Value = 0;
+                //    //worksheet.Cells[row, 9].Value = user.ValorTotal;
+                //    //worksheet.Cells[row, 10].Value = user.ValorTotal;
+                //    worksheet.Cells[row, 11].Value = 0;
+                //    worksheet.Cells[row, 12].Value = 0;
+                //    worksheet.Cells[row, 13].Value = "Unidad estratégica de negociosos";
+                //    worksheet.Cells[row, 14].Value = "CO-ANT-05001";
+                //    //worksheet.Cells[row, 15].Value = user.User;
+                //    //worksheet.Cells[row, 16].Value = 4405100;
+                //    //worksheet.Cells[row, 17].Value = user.Email;
+                //    worksheet.Cells[row, 18].Value = "Convenios-funcionamiento";
+                //    //worksheet.Cells[row, 19].Value = user.Identificacion;
+                //    //worksheet.Cells[row, 20].Value = user.Nombre;
+                //    //worksheet.Cells[row, 21].Value = user.UnitValue;
+                //    //worksheet.Cells[row, 22].Value = user.InitialDate;
+                //    //worksheet.Cells[row, 23].Value = user.FinalDate;
+                //    //worksheet.Cells[row, 24].Value = durationContract;
+                //    //worksheet.Cells[row, 25].Value = user.ValorTotal;
+                //    worksheet.Cells[row, 26].Value = 0;
+                //    worksheet.Cells[row, 27].Value = 0;
+                //    row++;
 
-                }
-                if (nro > 0)
-                {
-                    worksheet.Columns.AutoFit();
-                    xlPackage.Workbook.Properties.Title = "Solicitud PAA";
-                    xlPackage.Workbook.Properties.Author = "ITM";
-                    xlPackage.Workbook.Properties.Created = DateTime.Now;
-                    xlPackage.Workbook.Properties.Subject = "Solicitud PAA";
-                    xlPackage.Save();
-                }
-                else
-                {
-                    return null;
-                }
+                //}
+                //if (nro > 0)
+                //{
+                //    worksheet.Columns.AutoFit();
+                //    xlPackage.Workbook.Properties.Title = "Solicitud PAA";
+                //    xlPackage.Workbook.Properties.Author = "ITM";
+                //    xlPackage.Workbook.Properties.Created = DateTime.Now;
+                //    xlPackage.Workbook.Properties.Subject = "Solicitud PAA";
+                //    xlPackage.Save();
+                //}
+                //else
+                //{
+                //    return null;
+                //}
 
             }
-            stream.Position = 0;
+            //stream.Position = 0;
             return await Task.FromResult(stream);
         }
         #endregion
@@ -928,6 +951,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             }
             return unifyObligation;
         }
+
         #endregion
     }
 }

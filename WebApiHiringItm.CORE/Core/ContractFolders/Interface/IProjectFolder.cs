@@ -21,10 +21,10 @@ namespace WebApiHiringItm.CORE.Core.ProjectFolders.Interface
         Task<List<ContractListDto>> GetAllInProgess(string typeModule);
         Task<List<ContractListDto>> GetAllActivate();
         Task<List<ContractFolderDto>> GetAllProjectsRegistered();
-        Task<bool> SaveTermFileContract(TermContractDto modelTermContract);
         Task<IGenericResponse<string>> SaveContract(RProjectForlderDto model);
         Task<IGenericResponse<string>> UpdateStateContract(string contractId);
         Task<IGenericResponse<string>> AssignmentUser(List<AssignmentUserDto> modelAssignment);
         Task<IGenericResponse<string>> UpdateCost(ProjectFolderCostsDto model);
+        Task<IGenericResponse<string>> SaveTermFileContract(TermContractDto modelTermContract);
     }
 }
