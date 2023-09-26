@@ -71,13 +71,11 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
                 var isSuccess = await _userFirm.SaveUserDocument(model);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)

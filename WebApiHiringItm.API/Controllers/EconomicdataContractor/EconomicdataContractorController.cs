@@ -63,13 +63,11 @@ namespace WebApiHiringItm.API.Controllers.EconomicdataContractor
                 var isSuccess = await _economicData.AddEconomicData(modelEconomicData);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)

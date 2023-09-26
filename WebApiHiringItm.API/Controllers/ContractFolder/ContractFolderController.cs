@@ -235,13 +235,11 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
                 var isSuccess = await _project.AssignmentUser(assignmentUser);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -258,13 +256,21 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         {
             try
             {
-                var Data = await _project.SaveTermFileContract(modelTermContract);
-                return Data == true ? Ok(Data) : NoContent();
+                var isSuccess = await _project.SaveTermFileContract(modelTermContract);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 

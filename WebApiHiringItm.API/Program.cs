@@ -1,17 +1,13 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Core;
 using WebApiHiringItm.CORE.Helpers;
 using WebApiHiringItm.IOC.Dependencies;
 using WebApiHiringItm.MODEL.Mapper;
 using WebApiHiringItm.MODEL.Models;
-using WebApiRifa.CORE.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,6 +65,7 @@ builder.Services.AddDbContext<HiringContext>(options =>
       .UseLazyLoadingProxies()
       .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
       .UseSqlServer(builder.Configuration.GetConnectionString("HiringDatabase"))
+      
       );
 
 

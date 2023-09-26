@@ -202,12 +202,13 @@ namespace WebApiHiringItm.API.Controllers.MasterData
         }
 
 
+
         [HttpGet]
-        public async Task<IActionResult> GetPorcentageSecurity()
+        public async Task<IActionResult> GetNewnessType()
         {
             try
             {
-                var Data = await _masterDataCore.GetPorcentageSecurity();
+                var Data = await _masterDataCore.GetNewnessType();
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -218,11 +219,11 @@ namespace WebApiHiringItm.API.Controllers.MasterData
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNewnessType()
+        public async Task<IActionResult> GetEmptityHealth()
         {
             try
             {
-                var Data = await _masterDataCore.GetNewnessType();
+                var Data = await _masterDataCore.GetEmptityHealth();
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)

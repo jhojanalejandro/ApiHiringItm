@@ -45,13 +45,20 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         {
             try
             {
-                var Data = await _contactor.GetContractorByContract(contractId, originNomina);
-                return Data != null ? Ok(Data) : NoContent();
+                var isSuccess = await _contactor.GetContractorByContract(contractId, originNomina);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
             }
             catch (Exception ex)
             {
-
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -80,13 +87,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 var isSuccess = await _contactor.SavePersonalInformation(personalInformation);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -167,13 +172,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 var isSuccess = await _contactor.AddNewness(newnessModel);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -220,13 +223,11 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 var isSuccess = await _contactor.SaveModifyMinute(changeContractModel);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
