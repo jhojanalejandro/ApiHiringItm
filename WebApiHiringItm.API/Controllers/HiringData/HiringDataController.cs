@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.Contracts;
 using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto;
-using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.API.Controllers.HiringData
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class HiringDataController : ControllerBase
     {
@@ -22,15 +19,13 @@ namespace WebApiHiringItm.API.Controllers.HiringData
             _hiringData = hiringData;
         }
 
+        #region PUBLI METHODS
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _hiringData.GetAll();
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -90,10 +85,7 @@ namespace WebApiHiringItm.API.Controllers.HiringData
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _hiringData.Delete(id);
-
-                //Retornamos datos.
                 return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -101,6 +93,22 @@ namespace WebApiHiringItm.API.Controllers.HiringData
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDateContractById(string contractorId, string contractId)
+        {
+            try
+            {
+                var Data = await _hiringData.GetDateContractById(contractorId, contractId);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+        #endregion
+
 
     }
 }

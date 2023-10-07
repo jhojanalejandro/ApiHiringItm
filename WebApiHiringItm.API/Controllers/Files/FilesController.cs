@@ -1,4 +1,5 @@
 ﻿using Aspose.Cells;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -7,21 +8,23 @@ using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Models;
-using WebApiRifa.CORE.Helpers;
 
 namespace WebApiHiringItm.API.Controllers.Files
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class FilesController : ControllerBase
     {
+        #region BUILD
         private readonly IFilesCore _file;
 
         public FilesController(IFilesCore file)
         {
             _file = file;
         }
+
+        #endregion
 
         #region PUBLIC METOHODS
         [HttpPost]

@@ -120,13 +120,11 @@ namespace WebApiHiringItm.API.Controllers.Component
                 var isSuccess = await _componente.DeleteComponentContract(Guid.Parse(id));
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
-                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
-                    return BadRequest(response);
+                    return BadRequest(isSuccess);
                 }
             }
             catch (Exception ex)
@@ -160,6 +158,30 @@ namespace WebApiHiringItm.API.Controllers.Component
                 return BadRequest(response);
             }
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteActivityContract(string activityId)
+        {
+            try
+            {
+                var isSuccess = await _componente.DeleteActivityContract(activityId);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
         #endregion
     }
 }

@@ -90,12 +90,12 @@ namespace WebApiHiringItm.API.Controllers.PdfData
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> GetDataminuteExtension(ContractContractorsDto minuteExtensions)
         {
             try
             {
-                var Data = await _pdfData.GetminuteExtension(minuteExtensions);
+                var Data = await _pdfData.GetminuteModifyData(minuteExtensions);
                 return Data != null ? Ok(Data) : NoContent();
 
             }

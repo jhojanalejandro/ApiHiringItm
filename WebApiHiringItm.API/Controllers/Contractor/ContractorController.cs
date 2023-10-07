@@ -6,7 +6,6 @@ using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 
-
 namespace WebApiHiringItm.API.Controllers.Contractor
 {
     [ApiController]
@@ -235,6 +234,23 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
                 return BadRequest(response);
             }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetById(string contractorId)
+        {
+            try
+            {
+                var Data = await _contactor.GetById(contractorId);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+
         }
         #endregion
 
