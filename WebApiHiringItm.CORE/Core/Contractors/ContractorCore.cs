@@ -34,6 +34,7 @@ using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.CORE.Helpers.GenericValidation;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using WebApiHiringItm.MODEL.Dto.Usuario;
 
 namespace WebApiHiringItm.CORE.Core.Contractors
 {
@@ -403,35 +404,55 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
         public async Task<IGenericResponse<string>> SaveModifyMinute(ChangeContractContractorDto economicDataModel)
         {
-            if (economicDataModel.IsAddition == true)
+            try
             {
-                var getData = _context
-                       .EconomicdataContractor
-                       .Include(i => i.DetailContractor)
-                       .OrderByDescending(o => o.Consecutive)
-                       .FirstOrDefault(x => x.DetailContractor.ContractorId.Equals(economicDataModel.ContractorId) && x.DetailContractor.ContractId.Equals(economicDataModel.ContractId));
-                EconomicdataContractor economicdataContractor = new();
-                economicdataContractor.Consecutive = getData.Consecutive + 1;
-                economicdataContractor.DetailContractorId = getData.DetailContractorId;
-                economicdataContractor.TotalValue = economicDataModel.TotalValue;
-                economicdataContractor.UnitValue = economicDataModel.UnitValue;
-                economicdataContractor.Debt = economicDataModel.Debt;
-                economicdataContractor.RegisterDate = economicDataModel.RegisterDate;
-                economicdataContractor.ModifyDate = economicDataModel.RegisterDate;
+                var getDetailId = _context.DetailContractor.Where(w => w.ContractId.Equals(Guid.Parse(economicDataModel.ContractId)) && w.ContractorId.Equals(Guid.Parse(economicDataModel.ContractorId))).OrderByDescending(o => o.Consecutive).FirstOrDefault();
+                var getEconomicData = _context.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(getDetailId.Id)).OrderByDescending(o => o.Consecutive).FirstOrDefault();
+                var getModify = _context.ChangeContractContractor.Where(w => w.DetailContractorId.Equals(getDetailId.Id)).OrderByDescending(o => o.Consecutive).FirstOrDefault();
 
-                var mapEconomicData = _mapper.Map<EconomicdataContractor>(economicdataContractor);
-                mapEconomicData.Id = Guid.NewGuid();
-                _context.EconomicdataContractor.Add(mapEconomicData);
+                if (economicDataModel.IsAddition == true)
+                {
+                    var getData = _context
+                           .EconomicdataContractor
+                           .Include(i => i.DetailContractor)
+                           .OrderByDescending(o => o.Consecutive)
+                           .FirstOrDefault(x => x.DetailContractor.ContractorId.Equals(Guid.Parse(economicDataModel.ContractorId)) && x.DetailContractor.ContractId.Equals(Guid.Parse(economicDataModel.ContractId)));
+                    if (getData != null)
+                    {
+                        EconomicdataContractor economicdataContractor = new();
+                        economicdataContractor.Consecutive = getData.Consecutive + 1;
+                        economicdataContractor.DetailContractorId = getData.DetailContractorId;
+                        economicdataContractor.TotalValue = economicDataModel.TotalValue;
+                        economicdataContractor.UnitValue = economicDataModel.UnitValue;
+                        economicdataContractor.Debt = economicDataModel.Debt;
+                        economicdataContractor.RegisterDate = economicDataModel.RegisterDate;
+                        economicdataContractor.ModifyDate = economicDataModel.RegisterDate;
 
+                        economicdataContractor.Id = Guid.NewGuid();
+                        _context.EconomicdataContractor.Add(economicdataContractor);
+                    }
+
+
+
+                    await _context.SaveChangesAsync();
+
+                }
+
+                var mapChangeContarctor = _mapper.Map<ChangeContractContractor>(economicDataModel);
+                mapChangeContarctor.Id = Guid.NewGuid();
+                mapChangeContarctor.DetailContractorId = getDetailId.Id;
+                mapChangeContarctor.Consecutive =  1;
+                mapChangeContarctor.NoAddition = "3242";
+                mapChangeContarctor.EconomicdataContractor = getEconomicData.Id;
+                _context.ChangeContractContractor.Add(mapChangeContarctor);
                 await _context.SaveChangesAsync();
-
+                return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
             }
 
-            var mapChangeContarctor = _mapper.Map<ChangeContractContractor>(economicDataModel);
-            mapChangeContarctor.Id = Guid.NewGuid();
-            _context.ChangeContractContractor.Add(mapChangeContarctor);
-            await _context.SaveChangesAsync();
-            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
 
         }
 
@@ -492,6 +513,18 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             {
                 return ApiResponseHelper.CreateErrorResponse<List<ContractorsPrePayrollDto>>(Resource.INFORMATIONEMPTY);
             }
+        }
+
+        public async Task<ContractorDto?> GetById(string contractorId)
+        {
+            var result = _context.Contractor.Where(x => x.Id.Equals(Guid.Parse(contractorId)));
+            return await result.Select(us => new ContractorDto
+            {
+                Id = us.Id,
+                Identificacion = us.Identificacion
+            })
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
         }
         #endregion
 

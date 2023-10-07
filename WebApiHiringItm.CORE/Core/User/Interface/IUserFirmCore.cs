@@ -17,5 +17,6 @@ namespace WebApiHiringItm.CORE.Core.User.Interface
         Task<List<RollDto>> GetAllRolls();
         Task<List<TypeUserFileDto>> GetAllTypeUserFile();
         Task<IGenericResponse<string>> SaveUserDocument(UserFileDto modelFirm);
+        Task<IGenericResponse<string>> SaveAttachFile(List<UserFileDto> modelAnexo);
     }
 }

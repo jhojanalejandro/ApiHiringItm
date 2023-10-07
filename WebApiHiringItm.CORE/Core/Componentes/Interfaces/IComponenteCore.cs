@@ -12,6 +12,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes.Interfaces
         Task<ActivityDto> GetActivityById(Guid id);
         Task<IGenericResponse<string>> SaveComponentContract(ComponenteDto model);
         Task<IGenericResponse<string>> DeleteComponentContract(Guid id);
+        Task<IGenericResponse<string>> DeleteActivityContract(string activityContract);
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -141,6 +142,30 @@ namespace WebApiHiringItm.CORE.Core.User
             }
             await _context.SaveChangesAsync();
             return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+
+        }
+
+        public async Task<IGenericResponse<string>> SaveAttachFile(List<UserFileDto> modelAnexo)
+        {
+            try
+            {
+                var typeUserFileId = _context.UserFileType.Where(x => x.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.Id).FirstOrDefault();
+
+                var modelAnexoMap = _mapper.Map<List<UserFile>>(modelAnexo);
+                foreach (var item in modelAnexoMap)
+                {
+                    item.Id = Guid.NewGuid();
+                }
+                _context.UserFile.AddRange(modelAnexoMap);
+                await _context.SaveChangesAsync();
+                return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+
+            }
+
 
         }
 

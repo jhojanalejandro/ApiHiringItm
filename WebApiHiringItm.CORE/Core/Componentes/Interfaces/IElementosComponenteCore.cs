@@ -7,6 +7,6 @@ namespace WebApiHiringItm.CORE.Core.Componentes.Interfaces
     {
         Task<IGenericResponse<string>> SaveElement(ElementComponentDto model);
         Task<List<ElementComponentDto>?> GetElementsByComponent(Guid? id);
-        Task<ElementComponentDto> GetById(Guid id);
+        Task<ElementComponentDto> GetElementById(Guid id);
     }
 }

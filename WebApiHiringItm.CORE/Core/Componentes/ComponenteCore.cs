@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.EntityFrameworkCore;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
@@ -72,22 +73,20 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             if (modelActivity.ComponentId == Guid.Empty)
                 return ApiResponseHelper.CreateErrorResponse<string>(Resource.GUIDNOTVALID);
 
-            var exist = _context.Activity.FirstOrDefault(x => x.Id == modelActivity.Id);
+            var exist = _context.Activity.FirstOrDefault(x => x.Id.Equals(modelActivity.Id));
 
             if (exist == null)
             {
                 var map = _mapper.Map<Activity>(modelActivity);
                 map.Id = Guid.NewGuid();
                 _context.Activity.Add(map);
-                var resp  = await _save.SaveChangesDB();
             }
             else
             {
                 var mapUpdate = _mapper.Map(modelActivity, exist);
                 _context.Activity.Update(mapUpdate);
-                var res = await _save.SaveChangesDB();
-                     
             }
+            var resp = await _save.SaveChangesDB();
 
             return ApiResponseHelper.CreateResponse<string>(Resource.REGISTERSUCCESSFULL);
 
@@ -166,7 +165,6 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 activity.Where(w => w.ComponentId.Equals(Guid.Parse(id))).ToList();
             }
 
-
             if (activity.ToList().Count() > 0 )
             {
                 map.Activities = _mapper.Map<List<ActivityDto>>(activity);
@@ -189,7 +187,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         public async Task<IGenericResponse<string>> DeleteComponentContract(Guid id)
         {
             var resultData = _context.ElementComponent.Where(x => x.ComponentId == id).ToList();
-            List<ElementComponent?> elementComponent = new List<ElementComponent?>();
+            List<ElementComponent> elementComponent = new List<ElementComponent>();
             if (resultData != null)
             {
                 foreach (var item in resultData)
@@ -212,6 +210,32 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             return ApiResponseHelper.CreateResponse<string>(null, true,Resource.DELETESUCCESS);
         }
 
+        public async Task<IGenericResponse<string>> DeleteActivityContract(string activityContract)
+        {
+            var resultData = _context.ElementComponent.Where(x => x.ActivityId.Equals(Guid.Parse(activityContract))).ToList();
+            List<ElementComponent> elementComponent = new List<ElementComponent>();
+            if (resultData != null)
+            {
+                foreach (var item in resultData)
+                {
+                    var element = _context.ElementComponent.FirstOrDefault(x => x.Id == item.Id);
+                    elementComponent.Add(element);
+                }
+            }
+
+            if (elementComponent.Count > 0)
+            {
+                _context.ElementComponent.RemoveRange(elementComponent);
+            }
+
+            var activityData = _context.Activity.FirstOrDefault(x => x.Id.Equals(Guid.Parse(activityContract)));
+            if (activityData != null)
+            {
+                var result = _context.Activity.Remove(activityData);
+            }
+            await _save.SaveChangesDB();
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.DELETESUCCESS);
+        }
         #endregion
         #region PRIVATE METHODS
         private  List<ElementComponentDto> getElementsByActivity(Guid activityId)
