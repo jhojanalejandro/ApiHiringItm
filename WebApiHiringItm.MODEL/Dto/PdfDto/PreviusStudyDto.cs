@@ -6,12 +6,6 @@ using System.Threading.Tasks;
 
 namespace WebApiHiringItm.MODEL.Dto.PdfDto
 {
-    public class PreviusStudyContractorsDto
-    {
-        public List<PersonalInChargeDto> PersonalInCharge { get; set; }
-
-        public List<PreviusStudyDto> PreviusStudyDto { get; set; }
-    }
     public class PreviusStudyDto
     {
         public Guid? Id { get; set; }
@@ -30,6 +24,8 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string? RequiredProfile { get; set; }
         public string? RequiredProfileAcademic { get; set; }
         public string? RequiredProfileExperience { get; set; }
+        public string? ActivityContractor { get; set; }
+        public string? DutyContract { get; set; }
 
     }
 

@@ -13,7 +13,6 @@ namespace WebApiHiringItm.MODEL.Dto.Usuario
         public string FileData { get; set; }
         public Guid? RollId { get; set; }
         public string? OwnerFirm { get; set; }
-        public string? UserfileName { get; set; }
         public bool IsOwner { get; set; }
         public Guid? UserFileType { get; set; }
         public string FileType { get; set; }

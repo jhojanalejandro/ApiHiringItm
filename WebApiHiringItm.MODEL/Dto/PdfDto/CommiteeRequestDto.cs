@@ -6,16 +6,6 @@ using System.Threading.Tasks;
 
 namespace WebApiHiringItm.MODEL.Dto.PdfDto
 {
-    public class CommiteeRequestDtoContractorsDto
-    {
-        public string ContractNumber { get; set; }
-        public string ContractObject { get; set; }
-        public DateTime RegisterDate { get; set; }
-        public string ContractName { get; set; }
-        public List<PersonalInChargeDto> PersonalInCharge { get; set; }
-        public List<CommiteeRequestDto> CommiteeRequestDto { get; set; }
-    }
-
     public class CommiteeRequestDto
     {
         public Guid? Id { get; set; }

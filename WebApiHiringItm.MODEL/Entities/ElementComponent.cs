@@ -28,7 +28,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? Recursos { get; set; }
         public decimal ValorPorDia { get; set; }
         public Guid? CpcId { get; set; }
-        public Guid? DetailId { get; set; }
         public bool? Modificacion { get; set; }
         public string Consecutivo { get; set; }
         public string ObjetoElemento { get; set; }

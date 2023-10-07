@@ -34,6 +34,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? StatusContractId { get; set; }
         public string FuenteRubro { get; set; }
         public string DescriptionContract { get; set; }
+        public decimal? ResourceContract { get; set; }
+        public string DutyContract { get; set; }
 
         public virtual RubroType RubroNavigation { get; set; }
         public virtual StatusContract StatusContract { get; set; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApiHiringItm.MODEL.Dto.PdfDto
 {
-    public class MinuteExtensionDto
+    public class MinuteModifyDataDto
     {
         public string ContractorName { get; set; }
         public string ContractorIdentification { get; set; }
@@ -30,6 +30,9 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string? RubroContract { get; set; }
         public decimal? AdditionValue { get; set; }
         public string? TypeModify { get; set; }
+        public DateTime InitialDateContract { get; set; }
+        public DateTime FinalDateContract { get; set; }
+        public decimal UnitValueContract { get; set; }
 
     }
 }

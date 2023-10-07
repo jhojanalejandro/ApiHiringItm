@@ -12,9 +12,16 @@ namespace WebApiHiringItm.MODEL.Entities
         public string Observation { get; set; }
         public decimal PaymentPension { get; set; }
         public decimal PaymentArl { get; set; }
-        public decimal PaymentHealth { get; set; }
+        public decimal PaymentEps { get; set; }
         public DateTime RegisterDate { get; set; }
         public int Consecutive { get; set; }
+        public string PayrollNumber { get; set; }
+        public DateTime PaymentPeriodDate { get; set; }
+        public bool CorrectArlPayment { get; set; }
+        public bool CorrectAfpPayment { get; set; }
+        public bool CorrectEpsPayment { get; set; }
+        public bool CorrectSheet { get; set; }
+        public bool VerifySheet { get; set; }
 
         public virtual ContractorPayments ContractorPaymentsNavigation { get; set; }
     }
