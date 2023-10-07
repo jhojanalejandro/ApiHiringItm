@@ -13,6 +13,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public decimal? GastosOperativos { get; set; }
         public decimal? ValorSubTotal { get; set; }
         public int? ContractorsCant { get; set; }
+        public decimal? Recursos { get; set; }
 
     }
 }

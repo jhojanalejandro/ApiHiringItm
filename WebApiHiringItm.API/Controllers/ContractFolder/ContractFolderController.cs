@@ -179,8 +179,7 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
                 var isSuccess = await _project.UpdateCost(modelCost);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {

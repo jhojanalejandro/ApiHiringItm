@@ -17,6 +17,8 @@ using System.Globalization;
 using System.Data.Entity;
 using WebApiHiringItm.MODEL.Dto.PdfDto;
 using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Security;
+using WebApiHiringItm.CORE.Core.FileCore.Interface;
 
 namespace WebApiHiringItm.CORE.Core.Contractors
 {
@@ -24,12 +26,14 @@ namespace WebApiHiringItm.CORE.Core.Contractors
     {
         private readonly HiringContext _context;
         private readonly IMapper _mapper;
+        private readonly IFilesCore _fileCore;
 
 
-        public ContractorPaymentCore(HiringContext context, IMapper mapper)
+        public ContractorPaymentCore(HiringContext context, IMapper mapper, IFilesCore filesCore)
         {
             _context = context;
             _mapper = mapper;
+            _fileCore = filesCore;
         }
 
         public async Task<List<ContractorPaymentsDto>> GetAll()
@@ -208,5 +212,33 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
             return ApiResponseHelper.CreateResponse(hiringData);
         }
+
+        public async Task<IGenericResponse<string>> SaveContractorSecurity(ContractorPaymentSecurityDto contractorPaymentSecurityModel)
+        {
+
+            var getData = _context.ContractorPaymentSecurity.Where(x => x.ContractorPayments.Equals(contractorPaymentSecurityModel.ContractorPayments) && x.PaymentPeriodDate.Equals(contractorPaymentSecurityModel.PaymentPeriodDate)).FirstOrDefault();
+            if (getData != null)
+            {
+                var mapContractorPaymentSecurityUpdate = _mapper.Map(contractorPaymentSecurityModel, getData);
+                mapContractorPaymentSecurityUpdate.Id = getData.Id;
+                _context.ContractorPaymentSecurity.Update(mapContractorPaymentSecurityUpdate);
+
+            }
+            else
+            {
+                var mapContractorPaymentSecurity = _mapper.Map<ContractorPaymentSecurity>(contractorPaymentSecurityModel);
+                mapContractorPaymentSecurity.Id = Guid.NewGuid();
+                _context.ContractorPaymentSecurity.Add(mapContractorPaymentSecurity);
+
+            }
+            if (contractorPaymentSecurityModel.ContractorFile != null)
+            {
+                await _fileCore.AddFilePayrollContractor(contractorPaymentSecurityModel.ContractorFile, contractorPaymentSecurityModel.Consecutive);
+            }
+            await _context.SaveChangesAsync();
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+
+        }
+
     }
 }

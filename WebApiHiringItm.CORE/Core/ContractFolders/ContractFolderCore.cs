@@ -432,6 +432,35 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             var res = await _context.SaveChangesAsync();
             return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
         }
+
+        public async Task<List<ContractFolderDto>> GetStatusPostContractual()
+        {
+            var projects = _context.ContractFolder
+               .Include(i => i.DetailContract);
+            return await projects
+                .Select(s => new ContractFolderDto
+                {
+                    Id = s.Id,
+                    Project = s.Project,
+                    CompanyName = s.CompanyName,
+                    ProjectName = s.ProjectName,
+                    ObjectContract = s.ObjectContract,
+                    Activate = s.EnableProject,
+                    EnableProject = s.EnableProject,
+                    ContractorsCant = s.ContractorsCant,
+                    ValorContrato = s.ValorContrato,
+                    GastosOperativos = s.GastosOperativos,
+                    ValorSubTotal = s.ValorSubTotal,
+                    NumberProject = s.NumberProject,
+                    Rubro = s.RubroNavigation.RubroNumber,
+                    NombreRubro = s.RubroNavigation.Rubro,
+                    FuenteRubro = s.FuenteRubro,
+                    FechaContrato = s.DetailContract.Select(s => s.FechaContrato).FirstOrDefault(),
+                    FechaFinalizacion = s.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault()
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
         #endregion
 
         #region METODOS PRIVADOS

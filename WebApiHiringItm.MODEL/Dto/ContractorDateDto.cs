@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace WebApiHiringItm.MODEL.Dto
 {
-    public class EntityHealthDto
+    public class ContractorDateDto
     {
-        public Guid? Id { get; set; }
-        public string EntityHealthDescription { get; set; }
-        public string Code { get; set; }
+        public DateTime? DateContract { get; set; }
+        public DateTime? FinalDateContract { get; set; }
 
     }
 }

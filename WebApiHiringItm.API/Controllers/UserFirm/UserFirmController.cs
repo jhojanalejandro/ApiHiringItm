@@ -118,5 +118,28 @@ namespace WebApiHiringItm.API.Controllers.UserFirm
                 throw new Exception("Error", ex);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveAttachFile(List<UserFileDto> model)
+        {
+            try
+            {
+                var isSuccess = await _userFirm.SaveAttachFile(model);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
     }
 }

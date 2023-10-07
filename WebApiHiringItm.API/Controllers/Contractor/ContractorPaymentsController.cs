@@ -6,6 +6,7 @@ using System.Diagnostics.Contracts;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto.Contratista;
+using WebApiHiringItm.MODEL.Dto.Security;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.API.Controllers.Contractor
@@ -21,6 +22,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
         {
             _contractorPayment = contractorPayment;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -163,6 +165,29 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
             catch (Exception ex)
             {
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveContractorPaymentSecurity(ContractorPaymentSecurityDto contractorPaymentSecurity)
+        {
+            try
+            {
+                var isSuccess = await _contractorPayment.SaveContractorSecurity(contractorPaymentSecurity);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+
                 var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
                 return BadRequest(response);
             }

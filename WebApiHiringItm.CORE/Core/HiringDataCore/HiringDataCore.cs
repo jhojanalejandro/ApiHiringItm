@@ -21,7 +21,6 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
         #region FIELDS
         private readonly HiringContext _context;
         private readonly IMapper _mapper;
-        IQueryable<DetailContractor> hiringResult;
         #endregion
 
         public HiringDataCore(HiringContext context, IMapper mapper)
@@ -176,6 +175,17 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             await _context.SaveChangesAsync();
 
             return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+        }
+
+        public async Task<ContractorDateDto?> GetDateContractById(string contractorId, string contractId)
+        {
+            var getData = _context.DetailContractor.Where(x => x.ContractorId.Equals(Guid.Parse(contractorId)) && x.ContractId.Equals(Guid.Parse(contractId)));
+            return getData.Select(data => new ContractorDateDto
+            {
+                DateContract =  data.HiringData.FechaRealDeInicio,
+                FinalDateContract = data.HiringData.FechaFinalizacionConvenio
+            }).AsNoTracking()
+            .FirstOrDefault();
         }
         #endregion
 

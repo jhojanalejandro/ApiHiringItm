@@ -24,7 +24,9 @@
         public Guid? ActivityId { get; set; }
         public int? CantidadEnable { get; set; }
         public string? NombreCpc { get; set; }
-        public string? CpcNumber { get; set; } = null;
+        public string? CpcNumber { get; set; }
+        public string? PerfilRequeridoAcademico { get; set; }
+        public string? PerfilRequeridoExperiencia { get; set; }
 
     }
 }

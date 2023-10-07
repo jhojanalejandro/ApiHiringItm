@@ -34,16 +34,16 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             if (modelElement.ComponentId == Guid.Empty)
                 return ApiResponseHelper.CreateErrorResponse<string>(Resource.GUIDNOTVALID);
 
-            var exist = _context.ElementComponent.Where(w => w.Id.Equals(modelElement.Id)).FirstOrDefault();
-            if (exist == null)
+            var getElement = _context.ElementComponent.Where(w => w.Id.Equals(modelElement.Id)).FirstOrDefault();
+            if (getElement == null)
             {
                 modelElement.Id = Guid.NewGuid();
-                var map = _mapper.Map<ElementComponent>(modelElement);
-                _context.ElementComponent.Add(map);
+                var mapElement = _mapper.Map<ElementComponent>(modelElement);
+                _context.ElementComponent.Add(mapElement);
             }
             else
             {
-                var mapUpdate = _mapper.Map(modelElement, exist);
+                var mapUpdate = _mapper.Map(modelElement, getElement);
                 _context.ElementComponent.Update(mapUpdate);
             }
             await _save.SaveChangesDB();
@@ -67,14 +67,31 @@ namespace WebApiHiringItm.CORE.Core.Componentes
 
         }
 
-        public async Task<ElementComponentDto> GetById(Guid id)
+        public async Task<ElementComponentDto?> GetElementById(Guid id)
         {
-            var result = _context.ElementComponent.Where(x => x.Id.Equals(id)).FirstOrDefault();
-            var map = _mapper.Map<ElementComponentDto>(result);
-            return await Task.FromResult(map);
+            var result = _context.ElementComponent.Where(x => x.Id.Equals(id));
+            return await result.Select(element => new ElementComponentDto
+            {
+                NombreElemento = element.NombreElemento,
+                CpcNumber = element.Cpc.CpcNumber,
+                CpcId = element.CpcId,
+                NombreCpc = element.Cpc.CpcName,
+                ObjetoElemento = element.ObjetoElemento,
+                ValorPorDia = element.ValorPorDia,
+                ValorTotal = element.ValorTotal,
+                ValorUnidad = element.ValorUnidad,
+                Recursos = element.Recursos,
+                Consecutivo = element.Consecutivo,
+                ObligacionesEspecificas = element.ObligacionesEspecificas,
+                ObligacionesGenerales = element.ObligacionesGenerales,
+                PerfilRequeridoAcademico = element.PerfilRequeridoAcademico,
+                PerfilRequeridoExperiencia = element.PerfilRequeridoExperiencia,
+                CantidadDias = element.CantidadDias,
+
+            }).AsNoTracking()
+           .FirstOrDefaultAsync();
+
         }
-
-
 
         #endregion
     }

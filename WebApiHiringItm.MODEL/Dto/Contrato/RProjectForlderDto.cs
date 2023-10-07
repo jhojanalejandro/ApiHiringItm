@@ -20,6 +20,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public string? FuenteRubro { get; set; }
         public string? StatusContractId { get; set; }
         public string? ObjectContract { get; set; }
+        public string? DutyContract { get; set; }
 
         public DetailContractDto DetalleContratoDto { get; set; }
 

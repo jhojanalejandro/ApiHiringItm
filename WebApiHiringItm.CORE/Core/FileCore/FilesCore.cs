@@ -201,7 +201,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
         }
 
-        public async Task<IGenericResponse<string>> AddFileContractor(FilesDto modelFileDto)
+        public async Task<IGenericResponse<string>>AddFileContractor(FilesDto modelFileDto)
         {
             Guid folderId = Guid.Empty;
             bool documentExist = false;
@@ -406,6 +406,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             return ApiResponseHelper.CreateResponse<string>(null,true,Resource.MAILSENDSUCCESS);
 
         }
+        
         public async Task<bool> CreateDetail(DetailFileDto model, bool contractor,bool documentExist, bool anexo)
         {
 
@@ -635,6 +636,86 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<IGenericResponse<string>> AddFilePayrollContractor(FilesDto modelFileDto, int consecutive)
+        {
+            Guid folderId = Guid.Empty;
+            bool documentExist = false;
+            var getDataFile = _context.DetailFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(x => x.File.DocumentTypeNavigation.Id.Equals(modelFileDto.DocumentType) && x.ContractorId.Equals(modelFileDto.ContractorId) && x.File.ContractId.Equals(modelFileDto.ContractId));
+            var getFolderId = _context.FolderType.FirstOrDefault(x => x.Code.Equals(FolderTypeCodeEnum.PAGOSCODE.Description()));
+            var getUser = _context.AssigmentContract.FirstOrDefault(x => x.ContractId.Equals(modelFileDto.ContractId) && x.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.CONTRACTUALCONTRATO.Description()));
+
+            var getFolder = _context.Folder.FirstOrDefault(x => x.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.PAGOSCODE.Description()) && x.ContractorId.Equals(modelFileDto.ContractorId));
+            if (getFolder == null)
+            {
+                Folder folderPago = new Folder();
+                folderPago.Id = Guid.NewGuid();
+                folderPago.FolderType = getFolderId.Id;
+                folderPago.FolderName = PAGO;
+                folderPago.DescriptionProject = "CARPETA SEGURIDAD";
+                folderPago.ContractorId = modelFileDto.ContractorId;
+                folderPago.ContractId = modelFileDto.ContractId;
+                folderPago.RegisterDate = DateTime.Now;
+                folderPago.ModifyDate = DateTime.Now;
+                folderPago.Consutive = consecutive;
+                _context.Folder.Add(folderPago);
+                folderId = folderPago.Id;
+            }
+            else
+            {
+                folderId = getFolder.Id;
+            }
+            var map = _mapper.Map<Files>(modelFileDto);
+            map.Id = Guid.NewGuid();
+            map.FolderId = folderId;
+            _context.Files.Add(map);
+            DetailFileDto detailFileDto = new();
+            detailFileDto.Passed = false;
+            detailFileDto.RegisterDate = modelFileDto.RegisterDate;
+            detailFileDto.FileId = map.Id;
+            detailFileDto.ContractorId = modelFileDto.ContractorId;
+
+            if (getDataFile != null)
+            {
+                documentExist = true;
+            }
+
+            var resultDetail = await CreateDetailPayroll(detailFileDto);
+            if (resultDetail)
+            {
+                return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.ERRORDETAILFILE);
+
+            }
+
+        }
+        
+        private async Task<bool> CreateDetailPayroll(DetailFileDto model)
+        {
+            var getDetailFile = _context.DetailFile.OrderByDescending(o => o.RegisterDate).Where(w => w.FileId.Equals(model.FileId)).FirstOrDefault();
+            if (getDetailFile != null)
+            {
+                model.Id = getDetailFile.Id;
+                var mapDetail = _mapper.Map(model, getDetailFile);
+                _context.DetailFile.Update(mapDetail);
+            }
+            else
+            {
+                var getStatusFileList = _context.StatusFile.Where(w => w.Code.Equals(StatusFileEnum.APROBADO.Description())).Select(s => s.Id).FirstOrDefault();
+                var map = _mapper.Map<DetailFile>(model);
+                map.Id = Guid.NewGuid();
+                map.StatusFileId = getStatusFileList;
+                _context.DetailFile.Add(map);
+            }
+
+            var res = await _context.SaveChangesAsync();
+            return res > 0 ? true : false;
+
+        }
+
         #endregion
         #region PRIVATE METHODS
         private async Task<bool> DeleteDetail(string id)

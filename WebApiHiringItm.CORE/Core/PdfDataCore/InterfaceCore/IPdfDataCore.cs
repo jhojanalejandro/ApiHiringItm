@@ -15,8 +15,8 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore
         Task<ExecutionReportDto> GetExecutionReport(Guid contractId, Guid ContractorId);
         Task<MacroMinuteDto?> GetminuteMacroContract(Guid contractId);
         Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors);
-        Task<List<MinuteExtensionDto>> GetminuteExtension(ContractContractorsDto contractors);
-        Task<PreviusStudyContractorsDto> GetPreviusStudy(ContractContractorsDto contractors);
-        Task<CommiteeRequestDtoContractorsDto> GetCommitteeRequest(ContractContractorsDto contractors);
+        Task<ResponsePdfDataDto<PreviusStudyDto>> GetPreviusStudy(ContractContractorsDto contractors);
+        Task<ResponsePdfDataDto<CommiteeRequestDto>> GetCommitteeRequest(ContractContractorsDto contractors);
+        Task<ResponsePdfDataDto<MinuteModifyDataDto>> GetminuteModifyData(ContractContractorsDto contractors);
     }
 }

@@ -15,5 +15,6 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore.Interface
         Task<bool> Delete(Guid id);
         Task<IGenericResponse<string>> SaveHiringData(List<HiringDataDto> model);
         Task<IGenericResponse<HiringDataDto>> GetByIdHinringData(string contractorId, string contractId);
+        Task<ContractorDateDto?> GetDateContractById(string contractorId, string contractId);
     }
 }

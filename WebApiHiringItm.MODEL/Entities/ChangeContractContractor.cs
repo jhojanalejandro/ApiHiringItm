@@ -19,7 +19,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? CpcId { get; set; }
         public bool? IsModify { get; set; }
         public string ElementObject { get; set; }
-        public string RequiereProfile { get; set; }
         public DateTime? InitialAdditionDate { get; set; }
         public DateTime? FinalAdditionDate { get; set; }
         public DateTime RegisterDate { get; set; }
@@ -27,6 +26,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public string NoAddition { get; set; }
         public int Consecutive { get; set; }
         public bool? IsAddition { get; set; }
+        public string PerfilRequeridoAcademico { get; set; }
+        public string PerfilRequeridoExperiencia { get; set; }
 
         public virtual DetailContractor DetailContractor { get; set; }
         public virtual EconomicdataContractor EconomicdataContractorNavigation { get; set; }

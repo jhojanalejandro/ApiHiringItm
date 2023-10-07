@@ -27,5 +27,14 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public string? Email { get; set; }
         public string? GeneralObligation { get; set; }
         public string? SpecificObligation { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public string? Arl { get; set; }
+        public string? Afp { get; set; }
+        public string? Eps { get; set; }
+        public string? ContractorMail { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? ContractorAddress { get; set; }
+
+
     }
 }
