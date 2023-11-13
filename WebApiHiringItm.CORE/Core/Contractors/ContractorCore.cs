@@ -519,8 +519,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                         economicdataContractor.Missing = 0;
                         economicdataContractor.Freed = getData.Debt;
 
-
-
                         economicdataContractor.Id = Guid.NewGuid();
                         _context.EconomicdataContractor.Add(economicdataContractor);
                     }
