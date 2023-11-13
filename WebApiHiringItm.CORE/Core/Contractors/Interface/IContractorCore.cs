@@ -19,8 +19,12 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
         Task<IGenericResponse<string>> SavePersonalInformation(PersonalInformation model);
         Task<IGenericResponse<string>> SaveModifyMinute(ChangeContractContractorDto economicDataModel);
         Task<IGenericResponse<string>> AddNewness(NewnessContractorDto model);
-        Task<IGenericResponse<List<ContractorByContractDto>>> GetContractorByContract(string contractId, bool originNomina);
+        Task<IGenericResponse<List<ContractorByContractDto>>> GetContractorsByContract(string contractId);
         Task<IGenericResponse<List<ContractorsPrePayrollDto>>> GetContractorByContractPrePayroll(string contractId);
         Task<ContractorDto?> GetById(string contractorId);
+        Task<IGenericResponse<ContractorByContractDto>> GetContractorByContract(string contractId, string contractorId);
+        Task<List<NewnessContractorDto>?> GetNewnessContractor(Guid contractId, Guid contractorId);
+        Task<IGenericResponse<string>> AddNewnessList(List<NewnessContractorDto> modelList);
+        Task<bool> GetStatusContractor(string contractorId, string contractId);
     }
 }

@@ -130,7 +130,7 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
 
 
         [HttpPost]
-        public async Task<IActionResult> GenrateReportContract(RequestReportContract requestReportContract)
+        public async Task<IActionResult> GenerateReportContract(RequestReportContract requestReportContract)
         {
             try
             {
@@ -154,6 +154,25 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
             try
             {
                 var result = await _export.GenerateSatisfactionReport(Guid.Parse(satisfaccionReportRequest.contractId), satisfaccionReportRequest.base64);
+                Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
+                if (result == null)
+                {
+                    return NoContent();
+                }
+                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "REPORTE CONTRATO.xlsx");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GenerateEconomicTable(SatisfaccionReportRequest satisfaccionReportRequest)
+        {
+            try
+            {
+                var result = await _export.GenerateEconomicTable(Guid.Parse(satisfaccionReportRequest.contractId), satisfaccionReportRequest.base64);
                 Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
                 if (result == null)
                 {

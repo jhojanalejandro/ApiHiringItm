@@ -98,7 +98,7 @@ namespace WebApiHiringItm.CORE.Core.EconomicdataContractorCore
                     .OrderByDescending(o => o.Consecutive)
                     .FirstOrDefault(x => x.DetailContractor.ContractorId.Equals(model[i].ContractorId) && x.DetailContractor.ContractId.Equals(model[i].ContractId));
 
-                if (getData != null && model[i].TotalValue != null && model[i].TotalValue > 0)
+                if (getData != null && model[i].TotalValue != null)
                 {
      
                     model[i].Id = getData.Id;

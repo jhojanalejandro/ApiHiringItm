@@ -126,6 +126,9 @@
   <data name="AUTENTICATERESPONSE" xml:space="preserve">
     <value>Autenticación exitosa</value>
   </data>
+  <data name="BANKEXIST" xml:space="preserve">
+    <value>Ya esta registrado el banco</value>
+  </data>
   <data name="DELETESUCCESS" xml:space="preserve">
     <value>Registro Eliminado exitosamente</value>
   </data>

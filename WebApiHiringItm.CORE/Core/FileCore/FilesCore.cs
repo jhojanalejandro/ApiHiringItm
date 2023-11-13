@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.Formula.Atp;
 using System.Diagnostics;
@@ -140,9 +141,28 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         public async Task<List<GetFilesPaymentDto>> GetAllByDate(Guid contractId, string type, string date)
         {
-            var result = _context.Files.Where(x => x.ContractId.Equals(contractId) && x.MonthPayment.Equals(date) && x.DocumentTypeNavigation.Code.Equals(type)).ToList();
-            var map = _mapper.Map<List<GetFilesPaymentDto>>(result);
-            return await Task.FromResult(map);
+            if (type == null || type == "null" || type == "")
+            {
+                type = Guid.NewGuid().ToString();
+            }
+            var result = _context.DetailFile.Where(x => x.File.ContractId.Equals(contractId) && x.File.MonthPayment.Equals(date) && x.File.DocumentType.Equals(Guid.Parse(type)));
+            return await result.Select(f => new GetFilesPaymentDto
+            {
+                     Id = f.FileId,
+                     FilesName = f.File.FilesName,
+                     FileType = f.File.FileType,
+                     DescriptionFile = f.File.DescriptionFile,
+                     RegisterDate = f.RegisterDate,
+                     DocumentTypes = f.File.DocumentTypeNavigation.DocumentTypeDescription,
+                     Passed = f.Passed,
+                     StatusFile = f.StatusFileId.ToString(),
+                     FolderName = f.File.Folder.FolderName,
+                     DocumentTypeCode = f.File.DocumentTypeNavigation.Code,
+                     CategoryCode = f.StatusFile.Category,
+                     ContractId = contractId
+                 })
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<FileDetailDto?> GetByIdFile(Guid FileId)
@@ -341,8 +361,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             _context.DetailFile.AddRange(mapDetailFiles);
             await _context.SaveChangesAsync(); 
             return ApiResponseHelper.CreateResponse<string>(null,true,Resource.DOCUMENTGENERATE);
-
-
         }
 
         public async Task<IGenericResponse<string>> SaveCommitteeContractor(FilesDto modelFile)
@@ -471,6 +489,59 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         }
 
+        public async Task<bool> CreateDetailList(List<DetailFileDto> modelDetailFile)
+        {
+            try
+            {
+                List<DetailFileDto> listAddFile = new();
+                List<DetailFileDto> listUpdateFile = new();
+                var getDetailFileList = _context.DetailFile.OrderByDescending(o => o.RegisterDate).Where(w => w.FileId.Equals(modelDetailFile[0].FileId)).ToList();
+                var getStatusFileId = _context.StatusFile.Where(w => w.Code.Equals(StatusFileEnum.APROBADO.Description())).Select(s => s.Id).FirstOrDefault();
+
+                foreach (var item in modelDetailFile)
+                {
+                    var getDetailFile = getDetailFileList.Find(f => f.ContractorId.Equals(item.ContractorId));
+                    if (getDetailFile != null)
+                    {
+                        item.Id = getDetailFile.Id;
+                        item.StatusFileId = getStatusFileId;
+                        listUpdateFile.Add(item);
+                    }
+                    else
+                    {
+                        item.Id = Guid.NewGuid();
+                        item.StatusFileId = getStatusFileId;
+                        listAddFile.Add(item);
+
+                    }
+
+                }
+                if (listUpdateFile.Count > 0)
+                {
+                    var mapDetailUpdate = _mapper.Map<List<DetailFile>>(listUpdateFile);
+                    _context.DetailFile.UpdateRange(mapDetailUpdate);
+
+
+                }
+                else if (listAddFile.Count > 0)
+                {
+                    var mapDetailAdd = _mapper.Map<List<DetailFile>>(listAddFile);
+                    _context.DetailFile.AddRange(mapDetailAdd);
+                }
+
+                var res = await _context.SaveChangesAsync();
+                return res > 0 ? true : false;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return false;
+       
+
+        }
         public async Task<IGenericResponse<string>> CreateDetailCommittee(DetailFileDto model)
         {
             var getDetailFileList = _context.DetailFile.OrderByDescending(o => o.RegisterDate).Where(w => w.FileId.Equals(model.FileId)).ToList();
@@ -716,6 +787,82 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 
         }
 
+        public async Task<List<FileContractDto>> GetFileContractorByFolderToDownload(Guid contractorId, string folderId, Guid contractId)
+        {
+            var getFolderContract = _context.Folder.Any(wf => wf.Id.Equals(Guid.Parse(folderId)) && wf.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description()));
+
+            var result = _context.DetailFile
+                .Include(i => i.File)
+                .Include(i => i.StatusFile)
+                .Include(i => i.File)
+                    .ThenInclude(i => i.Folder)
+                .Where(x => x.ContractorId.Equals(contractorId) && x.File.ContractId.Equals(contractId) && x.File.FolderId.Equals(Guid.Parse(folderId)) || (!x.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description()) && !x.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description()) && getFolderContract && x.ContractorId.Equals(contractorId))).OrderByDescending(o => o.RegisterDate);
+            return await result
+                .OrderByDescending(o => o.RegisterDate)
+                .GroupBy(f => new {
+                    f.FileId,
+                    f.File.FilesName,
+                    f.File.FileType,
+                    f.File.DescriptionFile,
+                    f.File.DocumentTypeNavigation.Code,
+                    f.File.DocumentTypeNavigation.DocumentTypeDescription,
+                    f.File.Folder.FolderName
+                })
+                .Select(f => new FileContractDto
+                {
+                    Id = f.Key.FileId,
+                    FilesName = f.Key.FilesName,
+                    FileType = f.Key.FileType,
+                    DescriptionFile = f.Key.DescriptionFile,
+                    RegisterDate = f.First().RegisterDate,
+                    DocumentTypes = f.Key.DocumentTypeDescription,
+                    Passed = f.OrderByDescending(o => o.RegisterDate).First().Passed,
+                    StatusFile = f.OrderByDescending(o => o.RegisterDate).First().StatusFileId,
+                    FolderName = f.Key.FolderName,
+                    DocumentTypeCode = f.Key.Code,
+                    CategoryCode = f.First().StatusFile.Category,
+                    ContractId = contractId,
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+
+        public async Task<IGenericResponse<string>> AddFileShareContractor(FilesDto modelFileDto)
+        {
+            var getDataFile = _context.DetailFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(x => x.File.DocumentTypeNavigation.Id.Equals(modelFileDto.DocumentType) && x.ContractorId.Equals(modelFileDto.ContractorId) && x.File.ContractId.Equals(modelFileDto.ContractId));
+
+            List<DetailFileDto> detailFileList = new();
+            List<Files> FilesList = new();
+            var map = _mapper.Map<Files>(modelFileDto);
+            map.Id = Guid.NewGuid();
+            foreach (var item in modelFileDto.Contractors)
+            {
+                DetailFileDto detailFileDto = new();
+                detailFileDto.Passed = false;
+                detailFileDto.RegisterDate = modelFileDto.RegisterDate;
+                detailFileDto.FileId = map.Id;
+                detailFileDto.ContractorId = item;
+                detailFileDto.ContractId = modelFileDto.ContractId.ToString();
+                detailFileDto.UserId = modelFileDto.UserId;
+                detailFileList.Add(detailFileDto);
+                FilesList.Add(map);
+
+            }
+            _context.Files.AddRange(FilesList);
+
+            var resultDetail = await CreateDetailList(detailFileList);
+            if (resultDetail)
+            {
+                return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.ERRORDETAILFILE);
+            }
+
+        }
+
         #endregion
         #region PRIVATE METHODS
         private async Task<bool> DeleteDetail(string id)
@@ -747,62 +894,70 @@ namespace WebApiHiringItm.CORE.Core.FileCore
         }
         private async Task<List<SaveFileResponse>> SaveFileContractor(List<FilesDto> modelFiles)
         {
-            var getFolderList = _context.Folder.Where(x => x.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description()) && x.ContractId.Equals(modelFiles[0].ContractId)).ToList();
-
-            var getFileList = _context.DetailFile
-                .Include(i => i.File)
-                    .ThenInclude(i => i.DocumentTypeNavigation)
-                .Where(x => x.File.DocumentTypeNavigation.Id.Equals(modelFiles[0].DocumentType)).ToList();
-            List<Files> SaveFiles = new();
-            List<SaveFileResponse> saveFileResponses = new();
-            List<Files> updateFiles = new();
-
-            foreach (var item in modelFiles)
+            try
             {
-                var getFolder = getFolderList.OrderByDescending(O => O.RegisterDate).Where(x => x.ContractId.Equals(item.ContractId) && x.ContractorId.Equals(item.ContractorId)).FirstOrDefault();
+                var getFolderList = _context.Folder.Where(x => x.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description()) && x.ContractId.Equals(modelFiles[0].ContractId)).ToList();
 
-                var getFile = getFileList.Find(x => x.ContractorId.Equals(item.ContractorId) && x.File.DocumentTypeNavigation.Id.Equals(item.DocumentType));
-                SaveFileResponse saveFileResponse = new SaveFileResponse();
-                bool FileExist = false;
-                item.FolderId = getFolder.Id;
+                var getFileList = _context.DetailFile
+                    .Include(i => i.File)
+                        .ThenInclude(i => i.DocumentTypeNavigation)
+                    .Where(x => x.File.DocumentTypeNavigation.Id.Equals(modelFiles[0].DocumentType)).ToList();
+                List<Files> SaveFiles = new();
+                List<SaveFileResponse> saveFileResponses = new();
+                List<Files> updateFiles = new();
 
-                if (getFile != null)
+                foreach (var item in modelFiles)
                 {
-                    FileExist = true;
-                    item.Id = getFile.File.Id;
-                    var updateFile = _mapper.Map(item, getFile.File);
-                    saveFileResponse.RegisterDate = item.RegisterDate;
-                    saveFileResponse.UserId = item.UserId.Value;
-                    saveFileResponse.FileId = updateFile.Id;
-                    saveFileResponse.ContractorId = item.ContractorId;
-                    updateFiles.Add(updateFile);
+                    var getFolder = getFolderList.OrderByDescending(O => O.RegisterDate).Where(x => x.ContractId.Equals(item.ContractId) && x.ContractorId.Equals(item.ContractorId)).FirstOrDefault();
+
+                    var getFile = getFileList.Find(x => x.ContractorId.Equals(item.ContractorId) && x.File.DocumentTypeNavigation.Id.Equals(item.DocumentType));
+                    SaveFileResponse saveFileResponse = new SaveFileResponse();
+                    bool FileExist = false;
+                    item.FolderId = getFolder.Id;
+
+                    if (getFile != null)
+                    {
+                        FileExist = true;
+                        item.Id = getFile.File.Id;
+                        var updateFile = _mapper.Map(item, getFile.File);
+                        saveFileResponse.RegisterDate = item.RegisterDate;
+                        saveFileResponse.UserId = item.UserId.Value;
+                        saveFileResponse.FileId = updateFile.Id;
+                        saveFileResponse.ContractorId = item.ContractorId;
+                        updateFiles.Add(updateFile);
+                    }
+                    else
+                    {
+                        FileExist = false;
+                        var mapModel = _mapper.Map<Files>(item);
+                        mapModel.Id = Guid.NewGuid();
+                        saveFileResponse.RegisterDate = item.RegisterDate;
+                        saveFileResponse.UserId = item.UserId.Value;
+                        saveFileResponse.FileId = mapModel.Id;
+                        saveFileResponse.FileExist = FileExist;
+                        saveFileResponse.ContractorId = item.ContractorId;
+                        SaveFiles.Add(mapModel);
+
+                    }
+                    saveFileResponses.Add(saveFileResponse);
+
                 }
-                else
+                if (SaveFiles.Count > 0)
                 {
-                    FileExist = false;
-                    var mapModel = _mapper.Map<Files>(item);
-                    mapModel.Id = Guid.NewGuid();
-                    saveFileResponse.RegisterDate = item.RegisterDate;
-                    saveFileResponse.UserId = item.UserId.Value;
-                    saveFileResponse.FileId = mapModel.Id;
-                    saveFileResponse.FileExist = FileExist;
-                    saveFileResponse.ContractorId = item.ContractorId;
-                    SaveFiles.Add(mapModel);
-
+                    _context.Files.AddRange(SaveFiles);
                 }
-                saveFileResponses.Add(saveFileResponse);
+                if (updateFiles.Count > 0)
+                {
+                    _context.Files.UpdateRange(updateFiles);
+                }
+                await _context.SaveChangesAsync();
+                return saveFileResponses;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
 
-            }
-            if (SaveFiles.Count > 0)
-            {
-                _context.Files.AddRange(SaveFiles);
-            }
-            if (updateFiles.Count > 0)
-            {
-                _context.Files.UpdateRange(updateFiles);
-            }
-            await _context.SaveChangesAsync();
-            return saveFileResponses;
 
         }
 

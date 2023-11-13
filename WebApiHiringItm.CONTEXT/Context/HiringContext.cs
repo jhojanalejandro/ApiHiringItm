@@ -369,6 +369,11 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasForeignKey(d => d.ContractorPayments)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Contracto__Contr__1EA48E88");
+
+                entity.HasOne(d => d.DetailContractorNavigation)
+                    .WithMany(p => p.ContractorPaymentSecurity)
+                    .HasForeignKey(d => d.DetailContractor)
+                    .HasConstraintName("FK__Contracto__Detai__1F98B2C1");
             });
 
             modelBuilder.Entity<ContractorPayments>(entity =>
@@ -960,18 +965,18 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Roll)
                     .WithMany(p => p.UserFile)
                     .HasForeignKey(d => d.RollId)
-                    .HasConstraintName("FK__UserFile__RollId__2180FB33");
+                    .HasConstraintName("FK__UserFile__RollId__123EB7A3");
 
                 entity.HasOne(d => d.UserFileTypeNavigation)
                     .WithMany(p => p.UserFile)
                     .HasForeignKey(d => d.UserFileType)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserFile__UserFi__22751F6C");
+                    .HasConstraintName("FK__UserFile__UserFi__1332DBDC");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserFile)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__UserFile__UserId__236943A5");
+                    .HasConstraintName("FK__UserFile__UserId__14270015");
             });
 
             modelBuilder.Entity<UserFileType>(entity =>

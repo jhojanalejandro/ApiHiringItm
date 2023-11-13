@@ -22,7 +22,9 @@ namespace WebApiHiringItm.MODEL.Entities
         public bool CorrectEpsPayment { get; set; }
         public bool CorrectSheet { get; set; }
         public bool VerifySheet { get; set; }
+        public Guid? DetailContractor { get; set; }
 
         public virtual ContractorPayments ContractorPaymentsNavigation { get; set; }
+        public virtual DetailContractor DetailContractorNavigation { get; set; }
     }
 }

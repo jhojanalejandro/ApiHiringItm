@@ -130,6 +130,7 @@ namespace WebApiHiringItm.Core.User
             .AsNoTracking()
             .FirstOrDefaultAsync();
         }
+        
         public async Task<bool> GetUserForgetPassword(RetrievePassword model)
         {
             var result = _context.UserT.FirstOrDefault(x => x.UserEmail == model.UserEmail && x.UserName == model.UserName);
@@ -149,6 +150,7 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
+       
         public async Task<IGenericResponse<string>> UpdateTeamRoll(UserTDto model)
         {
             if (model.Id == null || model.Id == Guid.Empty)
@@ -170,7 +172,6 @@ namespace WebApiHiringItm.Core.User
             return ApiResponseHelper.CreateResponse<string>(null, true, Resource.UPDATESUCCESSFULL);
         }
 
-
         public async Task<bool> UpdatePassword(UserUpdatePasswordDto model)
         {
             if (model.Id != null)
@@ -184,6 +185,7 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
+        
         public async Task<bool> UpdateRoll(UpdateRollDto model)
         {
             if (model.Id != null)
@@ -196,6 +198,7 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
+        
         public async Task<bool> Delete(Guid id)
         {
             var user = _context.UserT.Where(x => x.Id == id).FirstOrDefault();
@@ -208,6 +211,7 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
+        
         public async Task<IGenericResponse<string>> SignUp(UserTDto model)
         {
 

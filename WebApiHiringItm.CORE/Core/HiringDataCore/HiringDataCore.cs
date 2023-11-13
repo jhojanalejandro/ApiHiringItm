@@ -4,6 +4,7 @@ using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
 using WebApiHiringItm.CORE.Helpers.Enums;
 using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
+using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 using WebApiHiringItm.CORE.Helpers.GenericValidation;
@@ -146,6 +147,10 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 {
                     if (hiring != null)
                     {
+                        if (model[i].StatusContractor == null)
+                        {
+                            model[i].StatusContractor = _context.StatusContractor.Where(w => w.Code.Equals(StatusContractorEnum.CONTRATANDO.Description())).Select(s => s.StatusContractorDescription).FirstOrDefault();
+                        }
                         var stattusId = getStatusId.Find(f => f.StatusContractorDescription.Equals(model[i].StatusContractor)).Id;
                         DetailContractor DetailContractor = new DetailContractor();
                         mapHiring[i].Id = Guid.NewGuid();

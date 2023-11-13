@@ -12,14 +12,10 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
     {
         public Guid? ContractorId { get; set; }
         public DateTime? FinalContractDate { get; set; }
-        public string? Contrato { get; set; }
         public string? Compromiso { get; set; }
         public DateTime? FechaExaPreocupacional { get; set; }
-        public string? Supervisor { get; set; }
-        public string? SupervisorCharge { get; set; }
-        public string? SupervisorIdentification { get; set; }
         public DateTime? ComiteDate { get; set; }
-        public bool? RequierePoliza { get; set; }
+        public bool? RequirePolice { get; set; }
         public DateTime? FechaExpedicionPoliza { get; set; }
         public string? Rubro { get; set; }
         public string? RUbroName { get; set; }

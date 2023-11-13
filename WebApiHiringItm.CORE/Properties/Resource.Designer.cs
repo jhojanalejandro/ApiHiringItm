@@ -88,6 +88,15 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Ya esta registrado el banco.
+        /// </summary>
+        internal static string BANKEXIST {
+            get {
+                return ResourceManager.GetString("BANKEXIST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Registro Eliminado exitosamente.
         /// </summary>
         internal static string DELETESUCCESS {

@@ -32,7 +32,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public string? DutyContract { get; set; }
 
 
-        public List<ComponenteDto?> Componentes { get; set; } = null;
+        public List<ComponentDto?> Componentes { get; set; } = null;
         //public DetalleContratoDto? DetailContract { get; set; }
 
     }

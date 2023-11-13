@@ -24,5 +24,8 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.Hiring
         [Display(Description = "RCONT")]
         RECONTRATAR = 4,
 
+        [Display(Description = "IVNTD")]
+        INVITADO = 4,
+
     }
 }

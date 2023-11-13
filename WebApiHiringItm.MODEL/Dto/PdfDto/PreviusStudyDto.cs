@@ -26,6 +26,7 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string? RequiredProfileExperience { get; set; }
         public string? ActivityContractor { get; set; }
         public string? DutyContract { get; set; }
+        public bool? PoliceRequire { get; set; }
 
     }
 

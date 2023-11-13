@@ -10,6 +10,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public DetailContractor()
         {
             ChangeContractContractor = new HashSet<ChangeContractContractor>();
+            ContractorPaymentSecurity = new HashSet<ContractorPaymentSecurity>();
             ContractorPayments = new HashSet<ContractorPayments>();
             EconomicdataContractor = new HashSet<EconomicdataContractor>();
             TermContract = new HashSet<TermContract>();
@@ -33,6 +34,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual HiringData HiringData { get; set; }
         public virtual StatusContractor StatusContractorNavigation { get; set; }
         public virtual ICollection<ChangeContractContractor> ChangeContractContractor { get; set; }
+        public virtual ICollection<ContractorPaymentSecurity> ContractorPaymentSecurity { get; set; }
         public virtual ICollection<ContractorPayments> ContractorPayments { get; set; }
         public virtual ICollection<EconomicdataContractor> EconomicdataContractor { get; set; }
         public virtual ICollection<TermContract> TermContract { get; set; }

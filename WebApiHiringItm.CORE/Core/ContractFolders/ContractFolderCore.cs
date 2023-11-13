@@ -66,7 +66,8 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 FuenteRubro = contract.FuenteRubro,
                 StatusContract = contract.StatusContract.StatusContractDescription,
                 FechaContrato = contract.DetailContract.Select(s => s.FechaContrato).FirstOrDefault(),
-                FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault()
+                FechaFinalizacion = contract.DetailContract.Select(s => s.FechaFinalizacion).FirstOrDefault(),
+                DutyContract = contract.DutyContract
             })
             .AsNoTracking()
             .ToListAsync();
@@ -101,6 +102,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 ObjectContract = contract.ObjectContract,
                 DetailContractId = contract.DetailContract.OrderByDescending(o => o.RegisterDate).Select(s => s.Id.ToString()).FirstOrDefault(),
                 DetailType = contract.DetailContract.OrderByDescending(o => o.Consecutive).Select(s => s.DetailType.ToString()).FirstOrDefault(),
+                DutyContract = contract.DutyContract
 
             }).AsNoTracking()
               .ToListAsync();
@@ -142,6 +144,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 DetailContractId = contract.DetailContract.OrderByDescending(o => o.Consecutive).Select(s => s.Id.ToString()).FirstOrDefault(),
                 IsAssigmentUser = contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.CONTRACTUALCONTRATO.Description())).Select(s => s.User).ToList().Count > 0 ? "ASIGNADO" : "NO ASIGNADO",
                 DetailType = contract.DetailContract.OrderByDescending(o => o.Consecutive).Select(s => s.DetailType.ToString()).FirstOrDefault(),
+                DutyContract = contract.DutyContract
             }).AsNoTracking()
               .ToListAsync();
 
@@ -331,12 +334,12 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
 
         public async Task<IGenericResponse<string>> AssignmentUser(List<AssignmentUserDto> modelAssignment)
         {
+            var IdUserList = modelAssignment.Select(s => s.UserId).ToList();
             var getContractAssignment = _context.AssigmentContract.Where(x => x.ContractId == modelAssignment[0].ContractId).ToList();
             List<AssigmentContract> updateAssignment = new();
             List<AssigmentContract> addAssignment = new();
-            if (getContractAssignment.Count > 0)
+            if (getContractAssignment.Count > 0 && getContractAssignment.Any(a => IdUserList.Contains(a.UserId)))
             {
-
 
                 foreach (var item in modelAssignment)
                 {
@@ -352,7 +355,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                     }
                     else
                     {
-                        var mapAdd = _mapper.Map<AssigmentContract>(addAssignment);
+                        var mapAdd = _mapper.Map<AssigmentContract>(item);
                         addAssignment.Add(mapAdd);
                     }
                 }
@@ -370,7 +373,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             }
             if (addAssignment.Count > 0)
             {
-                _context.AssigmentContract.AddRange(getContractAssignment);
+                _context.AssigmentContract.AddRange(addAssignment);
             }
             await _context.SaveChangesAsync();
             return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);

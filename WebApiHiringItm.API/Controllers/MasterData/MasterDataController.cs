@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.FileCore.Interface;
 using WebApiHiringItm.CORE.Core.MasterDataCore.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.MODEL.Dto.MasterDataDto;
+using WebApiHiringItm.MODEL.Dto.Usuario;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.API.Controllers.MasterData
@@ -230,6 +234,73 @@ namespace WebApiHiringItm.API.Controllers.MasterData
             {
 
                 throw new Exception("Error", ex);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveRubro(RubroTypeDto model)
+        {
+            try
+            {
+                var isSuccess = await _masterDataCore.SaveRubro(model);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveBank(BanksDto model)
+        {
+            try
+            {
+                var isSuccess = await _masterDataCore.SaveBank(model);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveCpcType(CpcTypeDto model)
+        {
+            try
+            {
+                var isSuccess = await _masterDataCore.SaveCpcType(model);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
     }

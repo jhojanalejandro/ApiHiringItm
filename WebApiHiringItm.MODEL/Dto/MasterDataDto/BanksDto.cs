@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto.MasterDataDto
 {
     public class BanksDto
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public string BankName { get; set; }
     }
 }

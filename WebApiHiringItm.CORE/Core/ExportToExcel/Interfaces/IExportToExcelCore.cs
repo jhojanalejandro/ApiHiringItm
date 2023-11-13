@@ -13,5 +13,6 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces
         Task<MemoryStream> GenerateSatisfactionReport(Guid contractId, string base64);
         Task<MemoryStream> GenerateReport(RequestReportContract reportContract);
         Task<IGenericResponse<MemoryStream>> ExportToExcelCdp(Guid ContractId);
+        Task<MemoryStream> GenerateEconomicTable(Guid contractId, string base64);
     }
 }
