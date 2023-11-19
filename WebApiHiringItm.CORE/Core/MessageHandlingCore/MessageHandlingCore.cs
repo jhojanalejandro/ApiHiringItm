@@ -23,6 +23,9 @@ using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.CORE.Helpers.GenericValidation;
 using WebApiHiringItm.MODEL.Dto.MessageDto;
+using WebApiHiringItm.CORE.Core.Contractors.Interface;
+using WebApiHiringItm.MODEL.Dto.Contratista;
+using WebApiHiringItm.CORE.Helpers.Enums.Hiring;
 
 namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 {
@@ -32,10 +35,12 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
         private const string NOASIGNADA = "NoAsignada";
         private readonly HiringContext _context;
         private readonly MailSettings _mailSettings;
-        public MessageHandlingCore(HiringContext context, IOptions<MailSettings> mailSettings)
+        private readonly IContractorCore _contractorCore;
+        public MessageHandlingCore(HiringContext context, IOptions<MailSettings> mailSettings, IContractorCore contractorCore)
         {
             _context = context;
             _mailSettings = mailSettings.Value;
+            _contractorCore = contractorCore;
         }
         public async Task<IGenericResponse<string>> SendContractorCount(SendMessageAccountDto contractors)
         {
@@ -85,12 +90,27 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 
                 var resultDetailList = _context.DetailContractor
                     .Include(i => i.StatusContractorNavigation)
-                    .Where(x =>  x.ContractId.Equals(contractors.ContractId)).ToList();
+                    .Where(x =>  x.ContractId.Equals(contractors.ContractId) && (x.StatusContractorNavigation.Code.Equals(StatusContractorEnum.CONTRATADO.Description()))).ToList();
+                List<NewnessContractorDto> newnewwModelList = new();
+                var getDataNewnessType = _context.NewnessType
+                    .Where(x => x.Code.Equals(NewnessTypeCodeEnum.RECONTRATAR.Description())).FirstOrDefault();
+
+                var getDataNewnessList = _context.NewnessContractor
+                    .Where(x => x.ContractId.Equals(contractors.ContractId)).ToList();
                 foreach (Guid idContractor in contractors.ContractorsId)
                 {
+                    var dataNewness = getDataNewnessList.Find(f => f.ContractorId.Equals(idContractor));
+                    NewnessContractorDto newnewwModel = new();
+                    newnewwModel.NewnessDescripcion = "Invitación a proceso de contratación";
+                    newnewwModel.RegisterDate = DateTime.Now;
+                    newnewwModel.ContractorId = idContractor.ToString();
+                    newnewwModel.NewnessType = getDataNewnessType.Id.ToString();
+                    newnewwModel.ContractId = contractors.ContractId;
+                    newnewwModel.Consecutive = dataNewness != null ? dataNewness.Consecutive+1 : 1;
+
                     var getContractor = _context.Contractor.Where(x => x.Id.Equals(idContractor)).FirstOrDefault();
                     var getTermDate = getTermDateList.Find(x => x.DetailContractorNavigation.ContractorId.Equals(idContractor));
-
+                    newnewwModelList.Add(newnewwModel);
                     var resultDetail = resultDetailList.Find(x => x.ContractorId.Equals(idContractor));
                     if (getContractor != null)
                     {
@@ -109,6 +129,8 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                     }
 
                 }
+
+                await _contractorCore.AddNewnessList(newnewwModelList);
 
                 return ApiResponseHelper.CreateResponse<string>(Resource.MAILSENDSUCCESS);
 

@@ -80,7 +80,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 ValorPorDia = element.ValorPorDia,
                 ValorTotal = element.ValorTotal,
                 ValorUnidad = element.ValorUnidad,
-                Recursos = element.Recursos,
+                Recursos = 0,
                 Consecutivo = element.Consecutivo,
                 ObligacionesEspecificas = element.ObligacionesEspecificas,
                 ObligacionesGenerales = element.ObligacionesGenerales,

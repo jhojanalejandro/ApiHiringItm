@@ -23,6 +23,7 @@ namespace WebApiHiringItm.MODEL.Dto.Security
         public bool? CorrectAfpPayment { get; set; }
         public bool? CorrectEpsPayment { get; set; }
         public bool CorrectSheet { get; set; }
+        public Guid? DetailContractor { get; set; }
         public FilesDto ContractorFile { get; set; }
 
     }

@@ -29,5 +29,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore.Interface
         Task<IGenericResponse<string>> CreateDetailCommittee(DetailFileDto model);
         Task<IGenericResponse<string>> CreateDetailObservation(ObservationFileRequest modelDetailFile);
         Task<IGenericResponse<string>> AddFilePayrollContractor(FilesDto modelFileDto, int consecutive);
+        Task<List<FileContractDto>> GetFileContractorByFolderToDownload(Guid contractorId, string folderId, Guid contractId);
+        Task<IGenericResponse<string>> AddFileShareContractor(FilesDto modelFileDto);
     }
 }

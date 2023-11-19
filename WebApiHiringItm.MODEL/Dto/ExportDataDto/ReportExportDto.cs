@@ -15,6 +15,11 @@ namespace WebApiHiringItm.MODEL.Dto.ExportDataDto
         public string? ContractorIdentification { get; set; }
         public string? ContractorMail { get; set; }
         public string? JuridicProcess { get; set; }
+        public string? LegalProccess { get; set; }
+        public string? HiringStatus { get; set; }
+        public string? MinuteGnenerated { get; set; }
+        public string? ComiteGenerated { get; set; }
+
         public string? Contractualprocess { get; set; }
         public string? Comite { get; set; }
         public string? Minute { get; set; }

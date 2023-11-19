@@ -8,7 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto.MasterDataDto
 {
     public class CpcTypeDto
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public string CpcNumber { get; set; }
         public string CpcName { get; set; }
     }

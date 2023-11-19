@@ -20,6 +20,11 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string ContractNumber { get; set; }
         public string ContractObject { get; set; }
         public DateTime RegisterDate { get; set; }
-        public string ContractName { get; set; }
+        public string CompanyName { get; set; }
+        public string ProjectName { get; set; }
+        public string Rubro { get; set; }
+        public string RubroName { get; set; }
+        public string RubroOrigin { get; set; }
+
     }
 }

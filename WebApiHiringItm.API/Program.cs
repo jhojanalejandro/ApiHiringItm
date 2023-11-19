@@ -65,7 +65,6 @@ builder.Services.AddDbContext<HiringContext>(options =>
       .UseLazyLoadingProxies()
       .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
       .UseSqlServer(builder.Configuration.GetConnectionString("HiringDatabase"))
-      
       );
 
 

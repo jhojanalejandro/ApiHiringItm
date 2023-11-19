@@ -40,11 +40,33 @@ namespace WebApiHiringItm.API.Controllers.Contractor
 
 
         [HttpGet]
-        public async Task<IActionResult> GetContractorByContract(string contractId, bool originNomina)
+        public async Task<IActionResult> GetContractorsByContract(string contractId)
         {
             try
             {
-                var isSuccess = await _contactor.GetContractorByContract(contractId, originNomina);
+                var isSuccess = await _contactor.GetContractorsByContract(contractId);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetContractorByContract(string contractId, string contractorId)
+        {
+            try
+            {
+                var isSuccess = await _contactor.GetContractorByContract(contractId, contractorId);
                 if (isSuccess.Success)
                 {
                     return Ok(isSuccess);
@@ -252,6 +274,38 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
 
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetNewnessContractor(string contractId, string contractorId)
+        {
+            try
+            {
+                var Data = await _contactor.GetNewnessContractor(Guid.Parse(contractId),Guid.Parse(contractorId));
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetStatusContractor(string contractorId, string contractId)
+        {
+            try
+            {
+                var Data = await _contactor.GetStatusContractor(contractorId, contractId);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error", ex);
+            }
+
+        }
+
         #endregion
 
     }

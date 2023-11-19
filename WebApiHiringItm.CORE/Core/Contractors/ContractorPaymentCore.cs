@@ -1,24 +1,22 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Contracts;
+using System.Globalization;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
-using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Core.FileCore.Interface;
+using WebApiHiringItm.CORE.Helpers.Enums;
+using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
+using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 using WebApiHiringItm.CORE.Helpers.GenericValidation;
 using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto.Contratista;
-using WebApiHiringItm.MODEL.Entities;
-using WebApiHiringItm.MODEL.Models;
-using System.Globalization;
-using System.Data.Entity;
+using WebApiHiringItm.MODEL.Dto.Contrato;
 using WebApiHiringItm.MODEL.Dto.PdfDto;
-using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Security;
-using WebApiHiringItm.CORE.Core.FileCore.Interface;
+using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.Contractors
 {
@@ -148,9 +146,9 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                 return ApiResponseHelper.CreateErrorResponse<EntityHealthResponseDto>(Resource.GUIDNOTVALID);
 
             var result = _context.Contractor
-                        .Include(i => i.Eps)
-                        .Include(i => i.Arl)
-                        .Include(i => i.Afp)
+                        .Include(i => i.EpsNavigation)
+                        .Include(i => i.ArlNavigation)
+                        .Include(i => i.AfpNavigation)
                         .Where(p => p.Id.Equals(Guid.Parse(contractorId)));
             var response = result.Select(ec => new EntityHealthResponseDto
             {
@@ -215,12 +213,14 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
         public async Task<IGenericResponse<string>> SaveContractorSecurity(ContractorPaymentSecurityDto contractorPaymentSecurityModel)
         {
+            var getDetailContractor = _context.DetailContractor.Where(x => x.ContractId.Equals(contractorPaymentSecurityModel.ContractorFile.ContractId) && x.ContractorId.Equals(contractorPaymentSecurityModel.ContractorFile.ContractorId)).FirstOrDefault();
 
             var getData = _context.ContractorPaymentSecurity.Where(x => x.ContractorPayments.Equals(contractorPaymentSecurityModel.ContractorPayments) && x.PaymentPeriodDate.Equals(contractorPaymentSecurityModel.PaymentPeriodDate)).FirstOrDefault();
             if (getData != null)
             {
                 var mapContractorPaymentSecurityUpdate = _mapper.Map(contractorPaymentSecurityModel, getData);
                 mapContractorPaymentSecurityUpdate.Id = getData.Id;
+                mapContractorPaymentSecurityUpdate.DetailContractor = getData.DetailContractor;
                 _context.ContractorPaymentSecurity.Update(mapContractorPaymentSecurityUpdate);
 
             }
@@ -228,6 +228,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             {
                 var mapContractorPaymentSecurity = _mapper.Map<ContractorPaymentSecurity>(contractorPaymentSecurityModel);
                 mapContractorPaymentSecurity.Id = Guid.NewGuid();
+                mapContractorPaymentSecurity.DetailContractor = getDetailContractor.Id;
                 _context.ContractorPaymentSecurity.Add(mapContractorPaymentSecurity);
 
             }
@@ -240,5 +241,143 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
         }
 
+        public async Task<IGenericResponse<List<PosContractualDto>>?> GetContractorSecurity(string contractId)
+        {
+            if (!contractId.IsGuid())
+                return ApiResponseHelper.CreateErrorResponse<List<PosContractualDto>>(Resource.GUIDNOTVALID);
+
+            var monthPayment = DateTime.Now.Month - 1;
+          
+            var getDetailcContractor = _context.DetailContractor
+            .Where(w => w.ContractId.Equals(Guid.Parse(contractId)));
+
+            getDetailcContractor = getDetailcContractor.Where(w => w.StatusContractorNavigation.Code.Equals(StatusContractorEnum.CONTRATADO.Description()));
+
+            var resultByContract = await getDetailcContractor.Select(ct => new PosContractualDto
+            {
+                Id = ct.Contractor.Id,
+                Nombre = ct.Contractor.Nombres + " " + ct.Contractor.Apellidos,
+                Identificacion = ct.Contractor.Identificacion,
+                FechaNacimiento = ct.Contractor.FechaNacimiento,
+                Telefono = ct.Contractor.Telefono,
+                Celular = ct.Contractor.Celular,
+                Correo = ct.Contractor.Correo,
+                Direccion = ct.Contractor.Direccion,
+                ElementId = ct.ElementId.ToString().ToLower(),
+                ComponentId = ct.ComponentId.ToString().ToLower(),
+                ActivityId = ct.ActivityId.ToString().ToLower(),
+                AssignmentUser = ct.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.CONTRACTUALCONTRATO.Description())).Select(s => s.User.Id).ToList(),
+                Gender = ct.Contractor.Genero,
+                ContractValue = ct.EconomicdataContractor.OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue).FirstOrDefault(),
+                Nacionality = ct.Contractor.Nacionalidad,
+                ExpeditionPlace = ct.Contractor.LugarExpedicion,
+                InitialContractDate = ct.HiringData.FechaRealDeInicio,
+                FinalContractDate = ct.HiringData.FechaFinalizacionConvenio,
+                Cdp = ct.HiringData.Cdp,
+                BankEntity = ct.Contractor.EntidadCuentaBancariaNavigation.BankName,
+                Level = ct.HiringData.Nivel,
+                Eps = ct.Contractor.Eps.ToString().ToLower(),
+                Afp = ct.Contractor.Afp.ToString().ToLower(),
+                Arl = ct.Contractor.Arl.ToString().ToLower(),
+                RegisterDate = ct.ContractorPaymentSecurity.Select(s => s).FirstOrDefault() != null ? ct.ContractorPaymentSecurity.Where(w => w.DetailContractor.Equals(ct.Id)).Select(s => s.RegisterDate).FirstOrDefault()  :  null,
+                PaymentsCant = ct.ContractorPayments.Select(s => s.Consecutive).FirstOrDefault(),
+                StatusContractor = ct.StatusContractorNavigation.StatusContractorDescription,
+                PeriodPaymented = ct.ContractorPayments.Select(s => s).FirstOrDefault() != null ? ct.ContractorPayments.OrderByDescending(o => o.Consecutive).Select(s => s.FromDate.ToString("yyyy-MM-dd")).FirstOrDefault() + "  "+ ct.ContractorPayments.Select(s => s.FromDate.ToString("yyyy-MM-dd")).FirstOrDefault() : "NO REGISTRADO",
+                PaymentCant = ct.ContractorPayments.Select(s => s).FirstOrDefault() != null ? ct.ContractorPayments.OrderByDescending(o => o.Consecutive).Select(s => s.Paymentcant.ToString("N0")).FirstOrDefault() : "0",
+                Debt = ct.EconomicdataContractor.OrderByDescending(o => o.Consecutive).Select(s => s.Debt.ToString("N0")).FirstOrDefault(),
+            })
+              .AsNoTracking()
+              .ToListAsync();
+
+            return ApiResponseHelper.CreateResponse(resultByContract);
+        }
+
+        public async Task<IGenericResponse<List<ContractorNominaDto>>?> GetContractorNomina(string contractId)
+        {
+            try
+            {
+                if (!contractId.IsGuid())
+                    return ApiResponseHelper.CreateErrorResponse<List<ContractorNominaDto>>(Resource.GUIDNOTVALID);
+
+                var monthPayment = DateTime.Now.Month - 1;
+
+                var getDetailcContractor = _context.DetailContractor
+                .Where(w => w.ContractId.Equals(Guid.Parse(contractId)));
+
+                getDetailcContractor = getDetailcContractor.Where(w => w.StatusContractorNavigation.Code.Equals(StatusContractorEnum.CONTRATADO.Description()));
+
+                var resultByContract = await getDetailcContractor.Select(ct => new ContractorNominaDto
+                {
+                    Id = ct.Contractor.Id,
+                    Nombre = ct.Contractor.Nombres + " " + ct.Contractor.Apellidos,
+                    Identificacion = ct.Contractor.Identificacion,
+                    FechaNacimiento = ct.Contractor.FechaNacimiento,
+                    Telefono = ct.Contractor.Telefono,
+                    Celular = ct.Contractor.Celular,
+                    Correo = ct.Contractor.Correo,
+                    Direccion = ct.Contractor.Direccion,
+                    ElementId = ct.ElementId.ToString()!.ToLower(),
+                    ComponentId = ct.ComponentId.ToString()!.ToLower(),
+                    ActivityId = ct.ActivityId.ToString()!.ToLower(),
+                    AssignmentUser = ct.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.CONTRACTUALCONTRATO.Description())).Select(s => s.User.Id).ToList(),
+                    Gender = ct.Contractor.Genero,
+                    ContractValue = ct.EconomicdataContractor.OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue).FirstOrDefault(),
+                    Nacionality = ct.Contractor.Nacionalidad,
+                    ExpeditionPlace = ct.Contractor.LugarExpedicion,
+                    InitialContractDate = ct.HiringData.FechaRealDeInicio,
+                    FinalContractDate = ct.HiringData.FechaFinalizacionConvenio,
+                    Cdp = ct.HiringData.Cdp,
+                    BankEntity = ct.Contractor.EntidadCuentaBancariaNavigation.BankName,
+                    Level = ct.HiringData.Nivel,
+                    Eps = ct.Contractor.Eps.ToString()!.ToLower(),
+                    Afp = ct.Contractor.Afp.ToString()!.ToLower(),
+                    Arl = ct.Contractor.Arl.ToString()!.ToLower(),
+                    PaymentPension = ct.ContractorPaymentSecurity.Select(s => s).FirstOrDefault() != null ? ct.ContractorPaymentSecurity.Where(w => w.DetailContractor.Equals(ct.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.PaymentPension).FirstOrDefault() : 0,
+                    PaymentArl = ct.ContractorPaymentSecurity.Select(s => s).FirstOrDefault() != null ? ct.ContractorPaymentSecurity.Where(w => w.DetailContractor.Equals(ct.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.PaymentArl).FirstOrDefault() : 0,
+                    PaymentEps = ct.ContractorPaymentSecurity.Select(s => s).FirstOrDefault() != null ? ct.ContractorPaymentSecurity.Where(w => w.DetailContractor.Equals(ct.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.PaymentEps).FirstOrDefault() : 0,
+                    RegisterDate = ct.ContractorPaymentSecurity.Select(s => s).FirstOrDefault() != null ? ct.ContractorPaymentSecurity.Where(w => w.DetailContractor.Equals(ct.Id)).Select(s => s.RegisterDate).FirstOrDefault() : null,
+                    PayrollNumber = ct.ContractorPaymentSecurity.Select(s => s).FirstOrDefault() != null ? ct.ContractorPaymentSecurity.Where(w => w.DetailContractor.Equals(ct.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.PayrollNumber).FirstOrDefault() : "NO REGISTRADO",
+                    PaymentPeriodDate = ct.ContractorPaymentSecurity.Select(s => s).FirstOrDefault() != null ? ct.ContractorPaymentSecurity.Where(w => w.DetailContractor.Equals(ct.Id) && w.PaymentPeriodDate.Month == monthPayment).Select(s => s.PaymentPeriodDate).FirstOrDefault() : null,
+                    CorrectArlPayment = ct.ContractorPaymentSecurity.Select(s => s).FirstOrDefault() != null ? ct.ContractorPaymentSecurity.Where(w => w.DetailContractor.Equals(ct.Id) && w.PaymentPeriodDate.Month == monthPayment).OrderByDescending(o => o.Consecutive).Select(s => s.CorrectArlPayment).FirstOrDefault() == true ? "PAGO CORRECTO" : "PAGO NO CORRECTO" : "PAGO NO REGISTRADO",
+                    CorrectAfpPayment = ct.ContractorPaymentSecurity.Select(s => s).FirstOrDefault() != null ? ct.ContractorPaymentSecurity.Where(w => w.DetailContractor.Equals(ct.Id) && w.PaymentPeriodDate.Month == monthPayment).OrderByDescending(o => o.Consecutive).Select(s => s.CorrectAfpPayment).FirstOrDefault() == true ? "PAGO CORRECTO" : "PAGO NO CORRECTO" : "PAGO NO REGISTRADO",
+                    CorrectEpsPayment = ct.ContractorPaymentSecurity.Select(s => s).FirstOrDefault() != null ? ct.ContractorPaymentSecurity.Where(w => w.DetailContractor.Equals(ct.Id) && w.PaymentPeriodDate.Month == monthPayment).OrderByDescending(o => o.Consecutive).Select(s => s.CorrectEpsPayment).FirstOrDefault() == true ? "PAGO CORRECTO" : "PAGO NO CORRECTO" : "PAGO NO REGISTRADO",
+                    CorrectSheet = ct.ContractorPaymentSecurity.Select(s => s).FirstOrDefault() != null ? ct.ContractorPaymentSecurity.Where(w => w.DetailContractor.Equals(ct.Id) && w.PaymentPeriodDate.Month == monthPayment).OrderByDescending(o => o.Consecutive).Select(s => s.CorrectSheet).FirstOrDefault() == true ? "PAGO CORRECTO" : "PAGO NO CORRECTO" : "PAGO NO REGISTRADO",
+
+                })
+                  .AsNoTracking()
+                  .ToListAsync();
+
+                return ApiResponseHelper.CreateResponse(resultByContract);
+            }
+            catch(Exception ex)
+            {
+                return ApiResponseHelper.CreateErrorResponse<List<ContractorNominaDto>>(ex.Message);
+            }
+           
+        }
+
+        public async Task<IGenericResponse<List<ContractorPaymentListDto>>> GetPaymentsContractors(string contractorId)
+        {
+
+            if (!contractorId.IsGuid())
+                return ApiResponseHelper.CreateErrorResponse<List<ContractorPaymentListDto>>(Resource.GUIDNOTVALID);
+
+            var result = _context.ContractorPayments
+                .Where(x => x.DetailContractorNavigation.ContractorId.Equals(Guid.Parse(contractorId))).OrderByDescending(d => d.Consecutive);
+
+            var hiringData = result.Select(report => new ContractorPaymentListDto
+            {
+                FromDate = report.FromDate,
+                ToDate = report.ToDate,
+                DescriptionPayment = report.DescriptionPayment,
+                Paymentcant = report.Paymentcant.ToString("N0"),
+                Consecutive = report.Consecutive,
+                ProjectName = report.DetailContractorNavigation.Contract.ProjectName
+            })
+            .AsNoTracking()
+            .ToList();
+
+            return ApiResponseHelper.CreateResponse(hiringData);
+        }
     }
 }

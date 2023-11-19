@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.MasterDataCore.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Dto.MasterDataDto;
@@ -156,6 +160,61 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore
             var result = await _context.EntityHealth.ToListAsync();
             var map = _mapper.Map<List<EntityHealthDto>>(result);
             return await Task.FromResult(map);
+        }
+
+        public async Task<IGenericResponse<string>> SaveBank(BanksDto banksDtoModel)
+        {
+            var getBankc = _context.Banks.Where(w => w.BankName.Equals(banksDtoModel.BankName)).FirstOrDefault();
+            if (getBankc == null)
+            {
+                var mapBank = _mapper.Map<Banks>(banksDtoModel);
+                mapBank.Id = Guid.NewGuid();
+                _context.Banks.Add(mapBank);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.BANKEXIST);
+
+            }
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+        }
+
+        public async Task<IGenericResponse<string>> SaveCpcType(CpcTypeDto CpcTypeDto)
+        {
+            var getCpcType = _context.CpcType.Where(w => w.CpcNumber.Equals(CpcTypeDto.CpcNumber)).FirstOrDefault();
+            if (getCpcType == null)
+            {
+                var mapCpcType = _mapper.Map<CpcType>(CpcTypeDto);
+                mapCpcType.Id = Guid.NewGuid();
+                _context.CpcType.Add(mapCpcType);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.BANKEXIST);
+
+            }
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+        }
+
+
+        public async Task<IGenericResponse<string>> SaveRubro(RubroTypeDto rubroType)
+        {
+            var getCpcType = _context.RubroType.Where(w => w.RubroNumber.Equals(rubroType.RubroNumber)).FirstOrDefault();
+            if (getCpcType == null)
+            {
+                var mapRubro = _mapper.Map<RubroType>(rubroType);
+                mapRubro.Id = Guid.NewGuid();
+                _context.RubroType.Add(mapRubro);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.BANKEXIST);
+
+            }
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
         }
     }
 }

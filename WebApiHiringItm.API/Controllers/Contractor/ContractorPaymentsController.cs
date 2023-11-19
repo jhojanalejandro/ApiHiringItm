@@ -155,8 +155,7 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 var isSuccess = await _contractorPayment.GetChargeAccount(contractId, ContractorId);
                 if (isSuccess.Success)
                 {
-                    var response = ApiResponseHelper.CreateResponse(isSuccess);
-                    return Ok(response);
+                    return Ok(isSuccess);
                 }
                 else
                 {
@@ -192,5 +191,74 @@ namespace WebApiHiringItm.API.Controllers.Contractor
                 return BadRequest(response);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetContractorPaymentSecurity(string contractId)
+        {
+            try
+            {
+                var isSuccess = await _contractorPayment.GetContractorSecurity(contractId);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetContractorListNomina(string contractId)
+        {
+            try
+            {
+                var isSuccess = await _contractorPayment.GetContractorNomina(contractId);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPaymentsContractor(string ContractorId)
+        {
+            try
+            {
+                var isSuccess = await _contractorPayment.GetPaymentsContractors(ContractorId);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
     }
 }

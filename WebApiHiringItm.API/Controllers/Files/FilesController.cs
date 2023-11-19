@@ -326,6 +326,45 @@ namespace WebApiHiringItm.API.Controllers.Files
                 return BadRequest(response);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFileContractorByFolderToDownload(Guid contractorId, string folderId, Guid contractId)
+        {
+            try
+            {
+                var Data = await _file.GetFileContractorByFolderToDownload(contractorId, folderId, contractId);
+                return Data != null ? Ok(Data) : NoContent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddFileShareContractor(FilesDto model)
+        {
+            try
+            {
+                var isSuccess = await _file.AddFileShareContractor(model);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
+
+
         #endregion
 
     }

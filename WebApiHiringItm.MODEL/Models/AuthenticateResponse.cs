@@ -37,7 +37,6 @@ namespace WebApiHiringItm.MODEL.Models
             UserEmail = user.Correo;
             accessToken = token;
             code = _code;
-
         }
     }
 }

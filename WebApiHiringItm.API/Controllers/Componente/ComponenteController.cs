@@ -26,7 +26,7 @@ namespace WebApiHiringItm.API.Controllers.Component
 
         #region Methods
         [HttpPost]
-        public async Task<IActionResult> SaveComponentContract(ComponenteDto model)
+        public async Task<IActionResult> SaveComponentContract(ComponentDto model)
         {
             try
             {

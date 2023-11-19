@@ -29,5 +29,7 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.Rolls
         Desactivada = 8,
         [Display(Description = "RCTR")]
         RECTOR = 9,
+        [Display(Description = "JFUE")]
+        JEFEUNIDADESTRATEGICA = 10,
     }
 }

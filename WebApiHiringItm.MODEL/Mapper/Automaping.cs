@@ -33,7 +33,7 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<GetFileDto, Files>().ReverseMap();
             CreateMap<ContractorPayments, ContractorPaymentsDto>().ReverseMap();
             CreateMap<EconomicdataContractor, EconomicdataContractorDto>().ReverseMap(); 
-            CreateMap<ComponenteDto, Component>().ReverseMap();
+            CreateMap<ComponentDto, Component>().ReverseMap();
             CreateMap<ElementComponentDto, ElementComponent>().ReverseMap();
             CreateMap<DetailContractDto, DetailContract>()
                 .ForMember(c => c.Id, cd => cd.MapFrom(src => src.Id))
@@ -52,6 +52,7 @@ namespace WebApiHiringItm.MODEL.Mapper
                 .ForMember(c => c.Project, cd => cd.MapFrom(src => src.Project))
                 .ForMember(c => c.FuenteRubro, cd => cd.MapFrom(src => src.FuenteRubro))
                 .ForMember(c => c.NumberProject, cd => cd.MapFrom(src => src.NumberProject))
+                .ForMember(c => c.DutyContract, cd => cd.MapFrom(src => src.DutyContract))
                 .ReverseMap();
             CreateMap<ProjectFolderCostsDto, ContractFolder>().ReverseMap();
             CreateMap<DetailFileDto, DetailFile>().ReverseMap();

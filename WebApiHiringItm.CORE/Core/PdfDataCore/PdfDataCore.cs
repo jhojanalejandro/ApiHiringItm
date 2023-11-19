@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.ContractFolders;
@@ -6,6 +7,7 @@ using WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore;
 using WebApiHiringItm.CORE.Helpers.Enums;
 using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
 using WebApiHiringItm.CORE.Helpers.Enums.File;
+using WebApiHiringItm.CORE.Helpers.Enums.Rolls;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Contratista;
@@ -78,69 +80,18 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 Object = report.Contract.ObjectContract,
                 TotalValueContract = report.Contract.ValorContrato,
                 CompanyName = report.Contract.CompanyName
-                //Supervisor = report.HiringData.SupervisorItm,
-                //SupervisorCharge = report.HiringData.CargoSupervisorItm,
-                //SupervisorIdentification = report.HiringData.IdentificacionSupervisor
             })
             .AsNoTracking()
             .FirstOrDefaultAsync();
         }
 
-        public async Task<List<MinutaDto>> GetDataBill(ContractContractorsDto contractors)
+        public async Task<ResponsePdfDataDto<MinutaDto>> GetDataBill(ContractContractorsDto contractors)
         {
-            try
-            {
-                var contractor = _context.DetailContractor.Where(x => x.ContractId.Equals(Guid.Parse(contractors.contractId)))
-                .Include(dt => dt.Contractor)
-                .Include(hd => hd.HiringData)
-                .Include(el => el.Element)
-                .Include(el => el.Contract)
-                    .ThenInclude(i => i.RubroNavigation)
-                .Include(i => i.EconomicdataContractor)
-                .Where(w => contractors.contractors.Contains(w.Contractor.Id.ToString()) && !w.StatusContractor.Equals(StatusContractorEnum.INHABILITADO.Description()));
-
-                return await contractor.Select(ct => new MinutaDto
-                {
-                    ContractorId = ct.ContractorId,
-                    FinalContractDate = ct.HiringData.FechaFinalizacionConvenio,
-                    InitialDateContract = ct.HiringData.FechaRealDeInicio,
-                    Contrato = ct.Contract.NumberProject,
-                    Compromiso = ct.HiringData.Compromiso,
-                    Supervisor = ct.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.UserName).FirstOrDefault(),
-                    SupervisorCharge = ct.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Professionalposition).FirstOrDefault(),
-                    SupervisorIdentification = ct.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Identification).FirstOrDefault(),
-                    ComiteDate = ct.HiringData.FechaDeComite,
-                    Rubro = ct.Contract.RubroNavigation.RubroNumber,
-                    RUbroName = ct.Contract.RubroNavigation.Rubro,
-                    RubroOrigin = ct.Contract.FuenteRubro,
-                    NumeroActa = ct.HiringData.NumeroActa,
-                    ElementName = ct.Element.NombreElemento,
-                    GeneralObligations = ct.Element.ObligacionesGenerales,
-                    SpecificObligations = ct.Element.ObligacionesEspecificas,
-                    UnitValue = Math.Ceiling(ct.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(ct.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.UnitValue).FirstOrDefault()),
-                    TotalValueContract = Math.Ceiling(ct.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(ct.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue).FirstOrDefault()),
-                    Cpc = ct.Element.Cpc.CpcNumber,
-                    CpcName = ct.Element.Cpc.CpcName,
-                    ElementObject = ct.Element.ObjetoElemento,
-                    ContractorName = ct.Contractor.Nombres + " " + ct.Contractor.Apellidos,
-                    ContractorIdentification = ct.Contractor.Identificacion,
-                    ContractorExpeditionPlace = ct.Contractor.LugarExpedicion,
-                    BirthDate = ct.Contractor.FechaNacimiento,
-                    ContractorMail = ct.Contractor.Correo,
-                    ContractNumber = ct.HiringData.Contrato,
-                    ComiteGenerated = ct.Contractor.DetailFile.Where(wd => wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description())).Select(s => s).FirstOrDefault() != null ? true : false,
-                    PreviusStudy = ct.Contractor.DetailFile.Where(wd => wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.ESTUDIOSPREVIOS.Description())).Select(s => s).FirstOrDefault() != null ? true : false,
-
-                })
-                  .AsNoTracking()
-                  .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-
+            ResponsePdfDataDto<MinutaDto> previusStudyContractors = new();
+            previusStudyContractors.DataContract = GetDataContract(Guid.Parse(contractors.contractId));
+            previusStudyContractors.GetDataContractors = await getDataMinuteContractor(contractors);
+            previusStudyContractors.PersonalInCharge = await GetPersonalContractual(Guid.Parse(contractors.contractId));
+            return previusStudyContractors;
         }
 
         public async Task<ResponsePdfDataDto<PreviusStudyDto>> GetPreviusStudy(ContractContractorsDto contractors)
@@ -171,17 +122,16 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
         private async Task<List<PersonalInChargeDto>> GetPersonalContractual(Guid contarctId)
         {
 
-            var GetPersonal = _context.AssigmentContract
-                 .Where(w => w.ContractId.Equals(contarctId));
+            var GetPersonal = _context.UserT
+                 .Where(w => w.AssigmentContract.Select(s =>s.ContractId).FirstOrDefault().Equals(contarctId) || w.Roll.Code.Equals(RollEnum.JEFEUNIDADESTRATEGICA.Description()));
             return await GetPersonal.Select(s => new PersonalInChargeDto
             {
-                UserName = s.User.UserName,
-                UserCharge = s.User.Professionalposition,
-                UserIdentification = s.User.Identification,
-                UserFirm = s.User.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileData).FirstOrDefault(),
-                UserFirmType = s.User.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileType).FirstOrDefault(),
-                UserChargeCode = s.User.Roll.Code,
-
+                UserName = s.UserName,
+                UserCharge = s.Professionalposition,
+                UserIdentification = s.Identification,
+                UserFirm = s.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileData).FirstOrDefault(),
+                UserFirmType = s.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileType).FirstOrDefault(),
+                UserChargeCode = s.Roll.Code,
             }).AsNoTracking()
             .ToListAsync();
         }
@@ -210,7 +160,8 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 RequiredProfileAcademic = study.Element.PerfilRequeridoAcademico,
                 RequiredProfileExperience = study.Element.PerfilRequeridoExperiencia,
                 ActivityContractor = study.HiringData.ActividadContratista,
-                DutyContract = study.Contract.DutyContract
+                DutyContract = study.Contract.DutyContract,
+                PoliceRequire = study.HiringData.RequierePoliza
             })
             .AsNoTracking()
             .ToListAsync();
@@ -287,12 +238,55 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
             DataContractDto dto = new DataContractDto();
             var getDataContract = _context.DetailContract
             .Include(i => i.Contract)
+                .ThenInclude(ti => ti.RubroNavigation)
             .Where(w => w.ContractId.Equals(contractId)).FirstOrDefault();
             dto.RegisterDate = getDataContract.RegisterDate;
             dto.ContractNumber = getDataContract.Contract.NumberProject;
-            dto.ContractName = getDataContract.Contract.ProjectName;
+            dto.ProjectName = getDataContract.Contract.ProjectName;
+            dto.CompanyName = getDataContract.Contract.CompanyName;
             dto.ContractObject = getDataContract.Contract.ObjectContract;
+            dto.Rubro = getDataContract.Contract.RubroNavigation.RubroNumber;
+            dto.RubroName = getDataContract.Contract.RubroNavigation.Rubro;
+            dto.RubroOrigin = getDataContract.Contract.FuenteRubro;
             return dto;
+        }
+        
+        private async Task<List<MinutaDto>> getDataMinuteContractor(ContractContractorsDto contractors)
+        {
+            var contractor = _context.DetailContractor.Where(x => x.ContractId.Equals(Guid.Parse(contractors.contractId)))
+            .Where(w => contractors.contractors.Contains(w.Contractor.Id.ToString()) && !w.StatusContractor.Equals(StatusContractorEnum.INHABILITADO.Description()));
+
+            return await contractor.Select(ct => new MinutaDto
+            {
+                ContractorId = ct.ContractorId,
+                FinalContractDate = ct.HiringData.FechaFinalizacionConvenio,
+                InitialDateContract = ct.HiringData.FechaRealDeInicio,
+                Compromiso = ct.HiringData.Compromiso,
+                ComiteDate = ct.HiringData.FechaDeComite,
+                Rubro = ct.Contract.RubroNavigation.RubroNumber,
+                RUbroName = ct.Contract.RubroNavigation.Rubro,
+                RubroOrigin = ct.Contract.FuenteRubro,
+                NumeroActa = ct.HiringData.NumeroActa,
+                ElementName = ct.Element.NombreElemento,
+                GeneralObligations = ct.Element.ObligacionesGenerales,
+                SpecificObligations = ct.Element.ObligacionesEspecificas,
+                UnitValue = Math.Ceiling(ct.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(ct.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.UnitValue).FirstOrDefault()),
+                TotalValueContract = Math.Ceiling(ct.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(ct.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue).FirstOrDefault()),
+                Cpc = ct.Element.Cpc.CpcNumber,
+                CpcName = ct.Element.Cpc.CpcName,
+                ElementObject = ct.Element.ObjetoElemento,
+                ContractorName = ct.Contractor.Nombres + " " + ct.Contractor.Apellidos,
+                ContractorIdentification = ct.Contractor.Identificacion,
+                ContractorExpeditionPlace = ct.Contractor.LugarExpedicion,
+                BirthDate = ct.Contractor.FechaNacimiento,
+                ContractorMail = ct.Contractor.Correo,
+                ContractNumber = ct.HiringData.Contrato,
+                ComiteGenerated = ct.Contractor.DetailFile.Where(wd => wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description())).Select(s => s).FirstOrDefault() != null ? true : false,
+                PreviusStudy = ct.Contractor.DetailFile.Where(wd => wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.ESTUDIOSPREVIOS.Description())).Select(s => s).FirstOrDefault() != null ? true : false,
+                RequirePolice = ct.HiringData.RequierePoliza
+            })
+              .AsNoTracking()
+              .ToListAsync();
         }
         #endregion
     }

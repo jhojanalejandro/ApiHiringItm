@@ -33,7 +33,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         #endregion
 
         #region Methods
-        public async Task<IGenericResponse<string>> SaveComponentContract(ComponenteDto model)
+        public async Task<IGenericResponse<string>> SaveComponentContract(ComponentDto model)
         {
             var exist = _context.Component.FirstOrDefault(x => x.Id == model.Id);
 
@@ -92,14 +92,14 @@ namespace WebApiHiringItm.CORE.Core.Componentes
 
         }
 
-        public async Task<List<ComponenteDto>?> GetComponentsByContract(Guid contractId)
+        public async Task<List<ComponentDto>?> GetComponentsByContract(Guid contractId)
         {
             try
             {
                 var result = _context.Component.Where(x => x.ContractId == contractId).ToList();
                 if (result.Count != 0)
                 {
-                    var map = _mapper.Map<List<ComponenteDto>>(result);
+                    var map = _mapper.Map<List<ComponentDto>>(result);
                     foreach (var items in map)
                     {
                         var element = _context.ElementComponent.Where(w => w.ComponentId.Equals(items.Id) && w.ActivityId == null).ToList();
@@ -117,12 +117,12 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 }
                 else
                 {
-                    return new List<ComponenteDto>();
+                    return new List<ComponentDto>();
                 }
             }
             catch (Exception e)
             {
-                return new List<ComponenteDto>(); throw;
+                return new List<ComponentDto>(); throw;
             }
         }
         public async Task<List<ActivityDto>?> GetActivityByComponent(Guid id)
@@ -138,14 +138,14 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             var mapctivity = _mapper.Map<ActivityDto>(result);
             return await Task.FromResult(mapctivity);
         }
-        public async Task<IGenericResponse<ComponenteDto>> GetByIdComponent(string id, string? activityId, string? elementId)
+        public async Task<IGenericResponse<ComponentDto>> GetByIdComponent(string id, string? activityId, string? elementId)
         {
             if (string.IsNullOrEmpty(id) || !id.IsGuid())
-                return ApiResponseHelper.CreateErrorResponse<ComponenteDto>(Resource.GUIDNOTVALID);
+                return ApiResponseHelper.CreateErrorResponse<ComponentDto>(Resource.GUIDNOTVALID);
 
             var result = _context.Component.FirstOrDefault(x => x.Id.Equals(Guid.Parse(id)));
 
-            var map = _mapper.Map<ComponenteDto>(result);
+            var map = _mapper.Map<ComponentDto>(result);
             var activity = _context.Activity;
             if (!string.IsNullOrEmpty(elementId) && elementId != "null")
             {
@@ -179,7 +179,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
             }
             else
             {
-                return ApiResponseHelper.CreateErrorResponse<ComponenteDto>(Resource.INFORMATIONEMPTY);
+                return ApiResponseHelper.CreateErrorResponse<ComponentDto>(Resource.INFORMATIONEMPTY);
             }
 
         }
@@ -249,7 +249,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 CantidadDias = s.CantidadDias,
                 CpcId = s.CpcId,
                 NombreCpc = s.Cpc.CpcName,
-                Recursos = s.Recursos,
+                Recursos = 0,
                 ValorPorDia = s.ValorPorDia,
                 ValorPorDiaContratista = s.ValorPorDiaContratista,
                 ValorTotal = s.ValorTotal,
