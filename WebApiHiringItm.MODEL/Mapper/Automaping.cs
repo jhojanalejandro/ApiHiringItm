@@ -52,6 +52,7 @@ namespace WebApiHiringItm.MODEL.Mapper
                 .ForMember(c => c.Project, cd => cd.MapFrom(src => src.Project))
                 .ForMember(c => c.FuenteRubro, cd => cd.MapFrom(src => src.FuenteRubro))
                 .ForMember(c => c.NumberProject, cd => cd.MapFrom(src => src.NumberProject))
+                .ForMember(c => c.DutyContract, cd => cd.MapFrom(src => src.DutyContract))
                 .ReverseMap();
             CreateMap<ProjectFolderCostsDto, ContractFolder>().ReverseMap();
             CreateMap<DetailFileDto, DetailFile>().ReverseMap();

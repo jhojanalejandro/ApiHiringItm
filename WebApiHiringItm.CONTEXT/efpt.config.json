@@ -76,6 +76,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Detailpayroll]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[DetailType]",
          "ObjectType": 0
       },
@@ -128,7 +132,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[PorcenterSecurity]",
+         "Name": "[dbo].[PayrollContract]",
          "ObjectType": 0
       },
       {
@@ -185,6 +189,7 @@
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
    "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,

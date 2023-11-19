@@ -25,7 +25,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal ValorTotal { get; set; }
         public decimal? ValorTotalContratista { get; set; }
         public decimal? ValorPorDiaContratista { get; set; }
-        public decimal? Recursos { get; set; }
         public decimal ValorPorDia { get; set; }
         public Guid? CpcId { get; set; }
         public bool? Modificacion { get; set; }

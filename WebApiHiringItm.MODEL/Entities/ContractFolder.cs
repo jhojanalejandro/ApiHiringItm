@@ -16,6 +16,7 @@ namespace WebApiHiringItm.MODEL.Entities
             Files = new HashSet<Files>();
             Folder = new HashSet<Folder>();
             NewnessContractor = new HashSet<NewnessContractor>();
+            PayrollContract = new HashSet<PayrollContract>();
         }
 
         public Guid Id { get; set; }
@@ -28,6 +29,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? ValorContrato { get; set; }
         public decimal? GastosOperativos { get; set; }
         public decimal? ValorSubTotal { get; set; }
+        public decimal? RecursosAdicionales { get; set; }
+        public decimal? TotalLiberado { get; set; }
         public string NumberProject { get; set; }
         public string Project { get; set; }
         public Guid? Rubro { get; set; }
@@ -36,6 +39,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public string DescriptionContract { get; set; }
         public decimal? ResourceContract { get; set; }
         public string DutyContract { get; set; }
+        public string AreaCode { get; set; }
 
         public virtual RubroType RubroNavigation { get; set; }
         public virtual StatusContract StatusContract { get; set; }
@@ -46,5 +50,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual ICollection<Files> Files { get; set; }
         public virtual ICollection<Folder> Folder { get; set; }
         public virtual ICollection<NewnessContractor> NewnessContractor { get; set; }
+        public virtual ICollection<PayrollContract> PayrollContract { get; set; }
     }
 }
