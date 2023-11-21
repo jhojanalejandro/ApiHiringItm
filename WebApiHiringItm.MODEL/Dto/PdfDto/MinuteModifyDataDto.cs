@@ -33,6 +33,7 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public DateTime InitialDateContract { get; set; }
         public DateTime FinalDateContract { get; set; }
         public decimal UnitValueContract { get; set; }
+        public decimal? InitialValue { get; set; }
 
     }
 }

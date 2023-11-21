@@ -40,6 +40,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? ResourceContract { get; set; }
         public string DutyContract { get; set; }
         public string AreaCode { get; set; }
+        public DateTime? RegisterDateContract { get; set; }
 
         public virtual RubroType RubroNavigation { get; set; }
         public virtual StatusContract StatusContract { get; set; }
