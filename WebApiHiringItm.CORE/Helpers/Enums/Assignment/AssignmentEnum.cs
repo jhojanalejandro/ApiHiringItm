@@ -12,8 +12,13 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.Assignment
         [Display(Description = "SPVC")]
         SUPERVISORCONTRATO = 0,
         [Display(Description = "JRDCC")]
-        JIRIDICOCONTRATO = 1,
+        JURIDICONTRATO = 1,
         [Display(Description = "RPSC")]
         CONTRACTUALCONTRATO = 2,
+        [Display(Description = "RPSC")]
+        APOYOCONTRACTUALCONTRATO = 3,
+        [Display(Description = "AJRDC")]
+        APOYOJURIDICOCONTRATO = 4,
+
     }
 }

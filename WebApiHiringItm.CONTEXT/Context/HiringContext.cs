@@ -8,7 +8,7 @@ using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CONTEXT.Context
 {
-    public partial class HiringContext : DbContext,IHiringContext
+    public partial class HiringContext : DbContext, IHiringContext
     {
         public HiringContext()
         {
@@ -171,8 +171,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasColumnType("date")
                     .HasColumnName("registerDate");
 
-                entity.Property(e => e.Resources).HasColumnType("money");
-
                 entity.Property(e => e.ValueDay).HasColumnType("money");
 
                 entity.HasOne(d => d.DetailContractor)
@@ -234,6 +232,8 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasMaxLength(300);
 
                 entity.Property(e => e.RecursosAdicionales).HasColumnType("money");
+
+                entity.Property(e => e.RegisterDateContract).HasColumnType("date");
 
                 entity.Property(e => e.ResourceContract).HasColumnType("money");
 

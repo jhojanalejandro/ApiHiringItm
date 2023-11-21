@@ -122,9 +122,13 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
         private async Task<List<PersonalInChargeDto>> GetPersonalContractual(Guid contarctId)
         {
 
-            var GetPersonal = _context.UserT
-                 .Where(w => w.AssigmentContract.Select(s =>s.ContractId).FirstOrDefault().Equals(contarctId) || w.Roll.Code.Equals(RollEnum.JEFEUNIDADESTRATEGICA.Description()));
-            return await GetPersonal.Select(s => new PersonalInChargeDto
+            var GetPersonal = _context.AssigmentContract
+                 .Where(w => (w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.JURIDICONTRATO.Description()) || w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.CONTRACTUALCONTRATO.Description()) || w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())) && (w.ContractId.Equals(contarctId) || w.User.Roll.Code.Equals(RollEnum.JEFEUNIDADESTRATEGICA.Description())));
+
+            var getJob = _context.UserT
+            .Where(w => w.Roll.Code.Equals(RollEnum.JEFEUNIDADESTRATEGICA.Description()));
+
+            var mapJob = getJob.Select(s => new PersonalInChargeDto
             {
                 UserName = s.UserName,
                 UserCharge = s.Professionalposition,
@@ -132,8 +136,20 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 UserFirm = s.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileData).FirstOrDefault(),
                 UserFirmType = s.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileType).FirstOrDefault(),
                 UserChargeCode = s.Roll.Code,
+            }).FirstOrDefault();
+
+            var resp = await GetPersonal.Select(s => new PersonalInChargeDto
+            {
+                UserName = s.User.UserName,
+                UserCharge = s.User.Professionalposition,
+                UserIdentification = s.User.Identification,
+                UserFirm = s.User.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileData).FirstOrDefault(),
+                UserFirmType = s.User.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileType).FirstOrDefault(),
+                UserChargeCode = s.User.Roll.Code,
             }).AsNoTracking()
             .ToListAsync();
+            resp.Add(mapJob);
+            return resp;
         }
 
         private async Task<List<PreviusStudyDto>> GetPrevusStudyContractorsList(ContractContractorsDto contractors)
@@ -217,8 +233,8 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 ExtensionInitialDate = report.DetailContractor.ChangeContractContractor.Where(w => w.MinuteTypeNavigation.Code.Equals(contractors.TypeMinute)).OrderByDescending(o => o.Consecutive).Select(s => s.InitialAdditionDate.Value).FirstOrDefault(),
                 ExtensionFinalDate = report.DetailContractor.ChangeContractContractor.Where(w => w.MinuteTypeNavigation.Code.Equals(contractors.TypeMinute)).OrderByDescending(o => o.Consecutive).Select(s => s.FinalAdditionDate.Value).FirstOrDefault(),
                 Object = report.DetailContractor.Element.ObjetoElemento,
-                UnitValueContract = Math.Ceiling(report.DetailContractor.EconomicdataContractor.OrderBy(o => o.Consecutive).Select(s => s.UnitValue).FirstOrDefault()),
-                TotalValueContract = Math.Ceiling(report.DetailContractor.EconomicdataContractor.OrderBy(o => o.Consecutive).Select(s => s.TotalValue).FirstOrDefault()),
+                UnitValueContract = Math.Ceiling(report.DetailContractor.EconomicdataContractor.OrderByDescending(o => o.Consecutive).Select(s => s.UnitValue).FirstOrDefault()),
+                TotalValueContract = Math.Ceiling(report.DetailContractor.EconomicdataContractor.OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue).FirstOrDefault()),
                 Supervisor = report.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.UserName).FirstOrDefault(),
                 SupervisorCharge = report.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Professionalposition).FirstOrDefault(),
                 SupervisorIdentification = report.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Identification).FirstOrDefault(),
@@ -227,7 +243,9 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 NumberModify = report.Consecutive,
                 RubroContract = report.DetailContractor.Contract.RubroNavigation.RubroNumber,
                 TypeModify = report.MinuteTypeNavigation.Code,
-                AdditionValue = report.EconomicdataContractorNavigation.TotalValue,
+                AdditionValue = report.DetailContractor.EconomicdataContractor.OrderByDescending(o => o.Consecutive).Select(s => s.AdditionalValue).FirstOrDefault(),
+                InitialValue = report.DetailContractor.EconomicdataContractor.OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue - s.AdditionalValue).FirstOrDefault()
+
             })
             .AsNoTracking()
             .ToListAsync();
@@ -239,7 +257,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
             var getDataContract = _context.DetailContract
             .Include(i => i.Contract)
                 .ThenInclude(ti => ti.RubroNavigation)
-            .Where(w => w.ContractId.Equals(contractId)).FirstOrDefault();
+            .Where(w => w.ContractId.Equals(contractId)).OrderByDescending(o => o.Consecutive).FirstOrDefault();
             dto.RegisterDate = getDataContract.RegisterDate;
             dto.ContractNumber = getDataContract.Contract.NumberProject;
             dto.ProjectName = getDataContract.Contract.ProjectName;
@@ -283,7 +301,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 ContractNumber = ct.HiringData.Contrato,
                 ComiteGenerated = ct.Contractor.DetailFile.Where(wd => wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description())).Select(s => s).FirstOrDefault() != null ? true : false,
                 PreviusStudy = ct.Contractor.DetailFile.Where(wd => wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.ESTUDIOSPREVIOS.Description())).Select(s => s).FirstOrDefault() != null ? true : false,
-                RequirePolice = ct.HiringData.RequierePoliza
+                RequirePolice = ct.HiringData.RequierePoliza,
             })
               .AsNoTracking()
               .ToListAsync();

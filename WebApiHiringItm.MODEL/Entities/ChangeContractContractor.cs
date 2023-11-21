@@ -14,7 +14,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public string SpecificObligations { get; set; }
         public string GeneralObligations { get; set; }
         public int? CantDays { get; set; }
-        public decimal? Resources { get; set; }
         public decimal? ValueDay { get; set; }
         public Guid? CpcId { get; set; }
         public bool? IsModify { get; set; }
