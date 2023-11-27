@@ -22,6 +22,8 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public string? Type { get; set; }
         public string? DocumentTypes { get; set; }
         public Guid? StatusFile { get; set; }
-
+        public string? DocumentTypeCode { get; set; }
+        public string? FolderName { get; set; }
+        public string CategoryCode { get; set; }
     }
 }

@@ -8,9 +8,9 @@ namespace WebApiHiringItm.MODEL.Dto.MasterDataDto
 {
     public class RubroTypeDto
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public string Rubro { get; set; }
         public string RubroNumber { get; set; }
-        public string RubroOrigin { get; set; }
+        public string? RubroOrigin { get; set; }
     }
 }

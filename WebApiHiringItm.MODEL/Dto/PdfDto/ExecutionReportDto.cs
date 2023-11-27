@@ -12,8 +12,8 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string ContractorName { get; set; }
         public string ContractorIdentification { get; set; }
         public string ContractNumber { get; set; }
-        public string? ContractInitialDate { get; set; }
-        public string? ContractFinalDate { get; set; }
+        public string ContractInitialDate { get; set; }
+        public string ContractFinalDate { get; set; }
         public string? SupervisorContract { get; set; }
         public string? SupervisorIdentification { get; set; }
         public string? PeriodExecutedInitialDate { get; set; }
@@ -21,7 +21,7 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
 
         public string SpecificObligations { get; set; }
         public string ElementObject { get; set; }
-        public decimal? TotalValue { get; set; }
+        public decimal TotalValue { get; set; }
         public string? TotalValuePeriod { get; set; }
 
 

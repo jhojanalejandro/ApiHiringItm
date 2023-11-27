@@ -147,34 +147,51 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
 
 
         [HttpGet]
-        public async Task<IActionResult> UpdateStateContract(Guid id)
+        public async Task<IActionResult> UpdateStateContract(string contractId)
         {
             try
             {
-                var Data = await _project.UpdateStateContract(id);
-
-                return Data == true ? Ok(Data) : NoContent();
+                var isSuccess = await _project.UpdateStateContract(contractId);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateCost(ProjectFolderCostsDto model)
+        public async Task<IActionResult> UpdateCost(ProjectFolderCostsDto modelCost)
         {
             try
             {
-                var Data = await _project.UpdateCost(model);
-
-                return Data != null ? Ok(Data) : NoContent();
+                var isSuccess = await _project.UpdateCost(modelCost);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -214,13 +231,21 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         {
             try
             {
-                var Data = await _project.AssignmentUser(assignmentUser);
-                return Data == true ? Ok(Data) : NoContent();
+                var isSuccess = await _project.AssignmentUser(assignmentUser);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -230,13 +255,21 @@ namespace WebApiHiringItm.API.Controllers.ContractFolder
         {
             try
             {
-                var Data = await _project.SaveTermFileContract(modelTermContract);
-                return Data == true ? Ok(Data) : NoContent();
+                var isSuccess = await _project.SaveTermFileContract(modelTermContract);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 

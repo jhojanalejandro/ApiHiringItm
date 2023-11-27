@@ -17,19 +17,18 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public DateTime? ContractFinalDate { get; set; }
         public string SpecificObligations { get; set; }
         public string GeneralObligations { get; set; }
-        public string User { get; set; }
-        public string? UserCharge { get; set; }
-        public string? UserIdentification { get; set; }
-        public string? UserJuridic { get; set; }
-        public string? UserFirm { get; set; }
-        public string? UserJuridicFirm { get; set; }
-        public string? SupervisorItmName { get; set; }
-        public string? SupervisorFirm { get; set; }
-        public string? SupervisorCharge { get; set; }
         public string ElementObject { get; set; }
-        public decimal? TotalValue { get; set; }
+        public decimal TotalValue { get; set; }
         public string MinuteNumber { get; set; }
         public string UnifiedProfile { get; set; }
+        public string? RequiredProfile { get; set; }
+        public string? RequiredProfileAcademic { get; set; }
+        public string? RequiredProfileExperience { get; set; }
+        public string? ActivityContractor { get; set; }
+        public string? DutyContract { get; set; }
+        public bool? PoliceRequire { get; set; }
 
     }
+
+
 }

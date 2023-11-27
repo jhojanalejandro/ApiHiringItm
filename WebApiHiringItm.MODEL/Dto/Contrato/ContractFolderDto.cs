@@ -26,12 +26,13 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public string NombreRubro { get; set; }
         public string? FuenteRubro { get; set; }
         public Guid? StatusContractId { get; set; }
-
         public DateTime? FechaContrato { get; set; }
         public DateTime? FechaFinalizacion { get; set; }
+        public decimal? ResourceContract { get; set; }
+        public string? DutyContract { get; set; }
 
 
-        public List<ComponenteDto?> Componentes { get; set; } = null;
+        public List<ComponentDto?> Componentes { get; set; } = null;
         //public DetalleContratoDto? DetailContract { get; set; }
 
     }

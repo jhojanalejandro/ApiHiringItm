@@ -15,6 +15,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid Id { get; set; }
         public string DocumentTypeDescription { get; set; }
         public string Code { get; set; }
+        public string TypeCode { get; set; }
 
         public virtual ICollection<Files> Files { get; set; }
     }

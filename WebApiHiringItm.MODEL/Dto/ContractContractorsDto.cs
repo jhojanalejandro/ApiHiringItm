@@ -8,7 +8,8 @@ namespace WebApiHiringItm.MODEL.Dto
 {
     public class ContractContractorsDto
     {
-        public Guid contractId { get; set; }    
+        public string TypeMinute { get; set; }
+        public string contractId { get; set; }    
         public string[] contractors { get; set; }
     }
 }

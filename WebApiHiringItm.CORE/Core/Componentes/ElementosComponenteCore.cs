@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
 using WebApiHiringItm.CORE.Helpers.InterfacesHelpers;
+using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Entities;
 namespace WebApiHiringItm.CORE.Core.Componentes
@@ -26,54 +30,69 @@ namespace WebApiHiringItm.CORE.Core.Componentes
         #endregion
 
         #region PUBLIC METHODS
-        public async Task<bool> SaveElement(ElementComponentDto model)
+        public async Task<IGenericResponse<string>> SaveElement(ElementComponentDto modelElement)
         {
-            try
-            {
-                var exist = _context.ElementComponent.Where(w => w.Id.Equals(model.Id)).FirstOrDefault();
-                if (exist == null)
-                {
-                    model.Id = Guid.NewGuid();
-                    var map = _mapper.Map<ElementComponent>(model);
-                    _context.ElementComponent.Add(map);
-                }
-                else
-                {
-                    var mapUpdate = _mapper.Map(model, exist);
-                    _context.ElementComponent.Update(mapUpdate);
-                }
-                await _save.SaveChangesDB();
-                return true;
-            }
-            catch(Exception ex)
-            {
-               return false;
-            }
+            if (modelElement.ComponentId == Guid.Empty)
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.GUIDNOTVALID);
 
+            var getElement = _context.ElementComponent.Where(w => w.Id.Equals(modelElement.Id)).FirstOrDefault();
+            if (getElement == null)
+            {
+                modelElement.Id = Guid.NewGuid();
+                var mapElement = _mapper.Map<ElementComponent>(modelElement);
+                _context.ElementComponent.Add(mapElement);
+            }
+            else
+            {
+                var mapUpdate = _mapper.Map(modelElement, getElement);
+                _context.ElementComponent.Update(mapUpdate);
+            }
+            await _save.SaveChangesDB();
+            return ApiResponseHelper.CreateResponse<string>(Resource.REGISTERSUCCESSFULL);
         }
 
         public async Task<List<ElementComponentDto>?> GetElementsByComponent(Guid? id)
         {
-            var result = _context.ElementComponent.Where(x => x.ComponentId == id).ToList();
-            if (result.Count != 0)
+
+            var result = _context.ElementComponent.Where(x => x.ComponentId == id);
+
+            return result.Select(s => new ElementComponentDto
             {
-                var map = _mapper.Map<List<ElementComponentDto>>(result);
-                return await Task.FromResult(map);
-            }
-            else
-            {
-                return new List<ElementComponentDto>();
-            }
+                NombreElemento = s.NombreElemento,
+                Id = s.Id,
+                CantidadContratistas = s.CantidadContratistas,
+                CantidadEnable = s.CantidadContratistas - s.DetailContractor.Select(s => s.ElementId.Equals(s.Id)).ToList().Count ,
+
+            }).AsNoTracking()
+            .ToList();
+
         }
 
-        public async Task<ElementComponentDto> GetById(Guid id)
+        public async Task<ElementComponentDto?> GetElementById(Guid id)
         {
-            var result = _context.ElementComponent.Where(x => x.Id.Equals(id)).FirstOrDefault();
-            var map = _mapper.Map<ElementComponentDto>(result);
-            return await Task.FromResult(map);
+            var result = _context.ElementComponent.Where(x => x.Id.Equals(id));
+            return await result.Select(element => new ElementComponentDto
+            {
+                NombreElemento = element.NombreElemento,
+                CpcNumber = element.Cpc.CpcNumber,
+                CpcId = element.CpcId,
+                NombreCpc = element.Cpc.CpcName,
+                ObjetoElemento = element.ObjetoElemento,
+                ValorPorDia = element.ValorPorDia,
+                ValorTotal = element.ValorTotal,
+                ValorUnidad = element.ValorUnidad,
+                Recursos = element.DetailContractor.Select(s => s.Contract).FirstOrDefault()!.RecursosAdicionales,
+                Consecutivo = element.Consecutivo,
+                ObligacionesEspecificas = element.ObligacionesEspecificas,
+                ObligacionesGenerales = element.ObligacionesGenerales,
+                PerfilRequeridoAcademico = element.PerfilRequeridoAcademico,
+                PerfilRequeridoExperiencia = element.PerfilRequeridoExperiencia,
+                CantidadDias = element.CantidadDias,
+
+            }).AsNoTracking()
+           .FirstOrDefaultAsync();
+
         }
-
-
 
         #endregion
     }

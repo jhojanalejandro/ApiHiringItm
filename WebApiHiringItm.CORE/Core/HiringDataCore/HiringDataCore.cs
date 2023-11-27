@@ -4,9 +4,15 @@ using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.HiringDataCore.Interface;
 using WebApiHiringItm.CORE.Helpers.Enums;
 using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
+using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericValidation;
+using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Dto.Contratista;
+using WebApiHiringItm.MODEL.Dto.PdfDto;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.HiringDataCore
@@ -16,7 +22,6 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
         #region FIELDS
         private readonly HiringContext _context;
         private readonly IMapper _mapper;
-        IQueryable<DetailContractor> hiringResult;
         #endregion
 
         public HiringDataCore(HiringContext context, IMapper mapper)
@@ -33,15 +38,22 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             return await Task.FromResult(map);
         }
 
-        public async Task<HiringDataDto?> GetByIdHinringData(Guid contractorId, Guid contractId)
+        public async Task<IGenericResponse<HiringDataDto>> GetByIdHinringData(string contractorId, string contractId)
         {
+            if (!contractId.IsGuid())
+                return ApiResponseHelper.CreateErrorResponse<HiringDataDto>(Resource.GUIDNOTVALID);
+
+            if (!contractorId.IsGuid())
+                return ApiResponseHelper.CreateErrorResponse<HiringDataDto>(Resource.GUIDNOTVALID);
+
             var hiringResult = _context.DetailContractor
                  .Include(x => x.HiringData)
-                 .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId.Equals(contractId));
+                 .Where(x => x.ContractorId.Equals(Guid.Parse(contractorId)) && x.ContractId.Equals(Guid.Parse(contractId)));
             var getType = _context.DetailContractor
                     .Include(x => x.HiringData)
-                    .Where(x => x.ContractorId.Equals(contractorId) && x.ContractId.Equals(contractId));
-            return await hiringResult.Select(hd => new HiringDataDto
+                    .Where(x => x.ContractorId.Equals(Guid.Parse(contractorId)) && x.ContractId.Equals(Guid.Parse(contractId)));
+
+            var hiringData = await hiringResult.Select(hd => new HiringDataDto
             {
                 Id = hd.HiringData.Id,
                 FechaRealDeInicio = hd.HiringData.FechaRealDeInicio,
@@ -61,13 +73,16 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 Nivel = hd.HiringData.Nivel,
                 Caso = hd.HiringData.Caso,
                 NombreRubro = hd.Contract.RubroNavigation.Rubro,
-                FuenteRubro = hd.Contract.RubroNavigation.RubroOrigin,
+                FuenteRubro = hd.Contract.FuenteRubro,
                 Cdp = hd.HiringData.Cdp,
                 NumeroActa = hd.HiringData.NumeroActa,
+                ActividadContratista = hd.HiringData.ActividadContratista,
                 SupervisorId = hd.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Id.ToString()).FirstOrDefault(),
             })
              .AsNoTracking()
              .FirstOrDefaultAsync();
+            return ApiResponseHelper.CreateResponse(hiringData);
+
         }
 
         public async Task<bool> Updates(string model)
@@ -101,7 +116,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             }
         }
 
-        public async Task<bool> SaveHiringData(List<HiringDataDto> model)
+        public async Task<IGenericResponse<string>> SaveHiringData(List<HiringDataDto> model)
         {
             var getStatusId = _context.StatusContractor.ToList();
 
@@ -130,9 +145,13 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                 }
                 else
                 {
-                    if (getData != null)
+                    if (hiring != null)
                     {
-                        var stattusId = getStatusId.Find(f => f.StatusContractorDescription.Equals(model[i].StatusContractor))?.Id;
+                        if (model[i].StatusContractor == null)
+                        {
+                            model[i].StatusContractor = _context.StatusContractor.Where(w => w.Code.Equals(StatusContractorEnum.CONTRATANDO.Description())).Select(s => s.StatusContractorDescription).FirstOrDefault();
+                        }
+                        var stattusId = getStatusId.Find(f => f.StatusContractorDescription.Equals(model[i].StatusContractor)).Id;
                         DetailContractor DetailContractor = new DetailContractor();
                         mapHiring[i].Id = Guid.NewGuid();
                         DetailContractor.HiringDataId = mapHiring[i].Id;
@@ -146,10 +165,6 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                         detailDataListAdd.Add(DetailContractor);
                         hiringDataListAdd.Add(mapHiring[i]);
                     }
-                    else
-                    {
-                        return false;
-                    }
 
                 }
             }
@@ -161,23 +176,26 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             await _context.SaveChangesAsync();
 
             if (detailDataListAdd.Count > 0)
-                return await updateDetails(detailDataListAdd);
+                _context.DetailContractor.UpdateRange(detailDataListAdd);
+            await _context.SaveChangesAsync();
 
-            return true;
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+        }
+
+        public async Task<ContractorDateDto?> GetDateContractById(string contractorId, string contractId)
+        {
+            var getData = _context.DetailContractor.Where(x => x.ContractorId.Equals(Guid.Parse(contractorId)) && x.ContractId.Equals(Guid.Parse(contractId)));
+            return getData.Select(data => new ContractorDateDto
+            {
+                DateContract =  data.HiringData.FechaRealDeInicio,
+                FinalDateContract = data.HiringData.FechaFinalizacionConvenio
+            }).AsNoTracking()
+            .FirstOrDefault();
         }
         #endregion
-        
+
         #region PRIVATE METHODS
-        private async Task<bool> updateDetails(List<DetailContractor> detailProjectContractors)
-        {
-            _context.DetailContractor.UpdateRange(detailProjectContractors);
-            var result = await _context.SaveChangesAsync();
-            if (result > 0)
-            {
-                return true;
-            }
-            return false;
-        }
+
         #endregion
     }
 }

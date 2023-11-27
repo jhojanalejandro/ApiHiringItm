@@ -1,28 +1,26 @@
 ﻿using AutoMapper;
+using MailKit.Security;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
+using MimeKit;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using WebApiHiringItm.CONTEXT.Context;
+using WebApiHiringItm.CORE.Core.User.Interface;
 using WebApiHiringItm.CORE.Helpers;
+using WebApiHiringItm.CORE.Helpers.Enums;
+using WebApiHiringItm.CORE.Helpers.Enums.Rolls;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Properties;
+using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.Usuario;
 using WebApiHiringItm.MODEL.Entities;
 using WebApiHiringItm.MODEL.Models;
-using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.MODEL.Dto;
-using System.Security.Principal;
-using System.Security.Cryptography;
-using MimeKit;
-using MailKit.Security;
-using System.Net.Mail;
-using System.Net;
-using MimeKit.Text;
-using WebApiHiringItm.CORE.Core.User.Interface;
-using WebApiHiringItm.MODEL.Dto.Usuario;
-using WebApiHiringItm.CORE.Helpers.Enums.Rolls;
-using WebApiHiringItm.CORE.Helpers.Enums;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebApiHiringItm.Core.User
 {
@@ -46,8 +44,11 @@ namespace WebApiHiringItm.Core.User
         #endregion
 
         #region PUBLIC METODS
-        public AuthenticateResponse Authenticate(AuthenticateRequest model)
+        public IGenericResponse<AuthenticateResponse> Authenticate(AuthenticateRequest model)
         {
+            if (string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.UserType))
+                return ApiResponseHelper.CreateErrorResponse<AuthenticateResponse>(Resource.AUTENTICATEFIELDERROR);
+
             if (model.UserType.Equals(RollEnum.Contratista.Description()))
             {
                 var getUserC = _context.Contractor
@@ -55,13 +56,15 @@ namespace WebApiHiringItm.Core.User
 
                 if (getUserC == null)
                 {
-                    return null;
+                    return ApiResponseHelper.CreateErrorResponse<AuthenticateResponse>(Resource.ERRORAUTENTICATE);
                 }
                 var map = _mapper.Map<AuthDto>(getUserC);
 
                 var token = generateJwtToken(map);
 
-                return new AuthenticateResponse(getUserC, token, model.UserType);
+                var resp = new AuthenticateResponse(getUserC, token, model.UserType);
+                return ApiResponseHelper.CreateResponse(resp);
+
             }
             else
             {
@@ -71,13 +74,14 @@ namespace WebApiHiringItm.Core.User
 
                 if (getUser == null)
                 {
-                    return null;
+                    return ApiResponseHelper.CreateErrorResponse<AuthenticateResponse>(Resource.ERRORAUTENTICATE);
                 }
                 var map = _mapper.Map<AuthDto>(getUser);
 
                 var token = generateJwtToken(map);
 
-                return new AuthenticateResponse(getUser, token, getUser.Roll.Code);
+                var resp=  new AuthenticateResponse(getUser, token, getUser.Roll.Code);
+                return ApiResponseHelper.CreateResponse(resp);
             }
 
         }
@@ -126,6 +130,7 @@ namespace WebApiHiringItm.Core.User
             .AsNoTracking()
             .FirstOrDefaultAsync();
         }
+        
         public async Task<bool> GetUserForgetPassword(RetrievePassword model)
         {
             var result = _context.UserT.FirstOrDefault(x => x.UserEmail == model.UserEmail && x.UserName == model.UserName);
@@ -145,32 +150,27 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
-        public async Task<bool> UpdateTeamRoll(UserTDto model)
+       
+        public async Task<IGenericResponse<string>> UpdateTeamRoll(UserTDto model)
         {
-            if (model.Id != null)
+            if (model.Id == null || model.Id == Guid.Empty)
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.GUIDNOTVALID);
+
+            var userupdate = _context.UserT.FirstOrDefault(x => x.Id.Equals(model.Id));
+            if (userupdate != null)
             {
-                try
+                if (model.RollId == null || model.RollId == Guid.Empty)
                 {
-                    var userupdate = _context.UserT.FirstOrDefault(x => x.Id.Equals(model.Id));
-                    if (userupdate != null)
-                    {
-                        model.UserPassword = userupdate.UserPassword;
-                        model.PasswordMail = userupdate.PasswordMail;
-                        var map = _mapper.Map(model, userupdate);
-                        _context.UserT.Update(map);
-                        var res = await _context.SaveChangesAsync();
-                        return res != 0 ? true : false;
-                    }
+                    model.RollId = userupdate.RollId;
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception("Error", ex);
-                }
-
+                model.UserPassword = userupdate.UserPassword;
+                model.PasswordMail = userupdate.PasswordMail;
+                var map = _mapper.Map(model, userupdate);
+                _context.UserT.Update(map);
+                await _context.SaveChangesAsync();
             }
-            return false;
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.UPDATESUCCESSFULL);
         }
-
 
         public async Task<bool> UpdatePassword(UserUpdatePasswordDto model)
         {
@@ -185,6 +185,7 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
+        
         public async Task<bool> UpdateRoll(UpdateRollDto model)
         {
             if (model.Id != null)
@@ -197,6 +198,7 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
+        
         public async Task<bool> Delete(Guid id)
         {
             var user = _context.UserT.Where(x => x.Id == id).FirstOrDefault();
@@ -209,33 +211,26 @@ namespace WebApiHiringItm.Core.User
             }
             return false;
         }
-        public async Task<string> SignUp(UserTDto model)
+        
+        public async Task<IGenericResponse<string>> SignUp(UserTDto model)
         {
-            try
-            {
-                var getRoll = _context.Roll.FirstOrDefault(x => x.Code.Equals(RollEnum.Desactivada.Description()));
-                var userupdate = _context.UserT.FirstOrDefault(x => x.UserEmail.Equals(model.UserEmail));
-                if (userupdate != null)
-                {
-                    return null;
-                }
-                else
-                {
-                    var map = _mapper.Map<UserT>(model);
-                    map.Id = Guid.NewGuid();
-                    map.RollId = getRoll.Id;
-                    _context.UserT.Add(map);
-                    var resp = await _context.SaveChangesAsync();
-                    return resp > 0 ? "Registro Exitoso" : null;
-                }
 
-            }
-            catch (Exception e)
+            var getRoll = _context.Roll.FirstOrDefault(x => x.Code.Equals(RollEnum.Desactivada.Description()));
+            var userupdate = _context.UserT.FirstOrDefault(x => x.UserEmail.Equals(model.UserEmail));
+            if (userupdate != null)
             {
-
-                new Exception("Error", e);
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.USEREXIST);
             }
-            return "Error en el Registro";
+            else
+            {
+                var map = _mapper.Map<UserT>(model);
+                map.Id = Guid.NewGuid();
+                map.RollId = getRoll.Id;
+                _context.UserT.Add(map);
+                await _context.SaveChangesAsync();
+            }
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+
 
         }
         public string generateJwtToken(AuthDto user)
