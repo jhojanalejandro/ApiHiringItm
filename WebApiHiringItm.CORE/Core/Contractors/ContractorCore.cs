@@ -236,8 +236,9 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
             var getDetail = _context.DetailContractor.Where(x => x.ContractorId.Equals(model.ContractorPersonalInformation.Id)).FirstOrDefault();
             var getData = _context.Contractor.Where(x => x.Id.Equals(model.ContractorPersonalInformation.Id)).FirstOrDefault();
-            var getAcademicInformation = _context.AcademicInformation.Where(x => x.Contractor.Equals(model.ContractorPersonalInformation.Id)).FirstOrDefault();
-
+            var getAcademicInformation = _context.AcademicInformation.Where(x => x.Contractor.Equals(model.ContractorPersonalInformation.Id)).ToList();
+            var informationsUpdate = new List <AcademicInformation>();
+            var informationsInsert = new List<AcademicInformation>();
             if (getData != null)
             {
 
@@ -245,30 +246,48 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                 getDetail.Consecutive = getDetail.Consecutive;
 
                 var map = _mapper.Map(model.ContractorPersonalInformation, getData);
-                if (getAcademicInformation != null)
+                if (getAcademicInformation.Count > 0)
                 {
-                    var mapContractorStudyDto = _mapper.Map(model.AcademicInformation, getAcademicInformation);
-                    _context.AcademicInformation.UpdateRange(mapContractorStudyDto);
+                    foreach(var item in model.AcademicInformation)
+                    {
+                        var exist = getAcademicInformation.Any(w => w.Id.Equals(item.Id));
+                        if (exist)
+                        {
+                            var mapContractorStudyDto = _mapper.Map<AcademicInformation>(item);
+                            informationsUpdate.Add(mapContractorStudyDto);
+                        }
+                        else
+                        {
+                            item.Id = Guid.NewGuid();
+                            var mapContractorStudyDto = _mapper.Map<AcademicInformation>(item);
+                            informationsInsert.Add(mapContractorStudyDto);
+                        }
+                    }
+               
                 }
                 else
                 {
-                    var mapContractorStudyDto = _mapper.Map<List<AcademicInformation>>(model.AcademicInformation);
-                    foreach (var item in mapContractorStudyDto)
+                    foreach (var item in model.AcademicInformation)
                     {
                         item.Id = Guid.NewGuid();
                     }
-                    _context.AcademicInformation.AddRange(mapContractorStudyDto);
+                    informationsInsert = _mapper.Map<List<AcademicInformation>>(model.AcademicInformation);
 
                 }
-                _context.Contractor.Update(map);
-                _context.DetailContractor.Update(getDetail);
-                await _context.SaveChangesAsync();
             }
-            else
+            if (informationsUpdate.Count > 0)
             {
-
-                await _context.SaveChangesAsync();
+                _context.AcademicInformation.UpdateRange(informationsUpdate);
             }
+
+            if (informationsInsert.Count > 0)
+            {
+                _context.AcademicInformation.AddRange(informationsInsert);
+            }
+
+            await _context.SaveChangesAsync();
+
+
             return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
 
         }
