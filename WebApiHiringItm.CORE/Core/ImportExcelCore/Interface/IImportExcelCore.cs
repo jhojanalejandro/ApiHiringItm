@@ -13,5 +13,6 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore.Interface
         Task<string> ImportarExcel(FileRequest obj);
         Task<IGenericResponse<string>> ImportElement(FileRequest model);
         Task<IGenericResponse<string>> ImportCdp(FileRequest model);
+        Task<string> ImportarPassenger(FileRequest model);
     }
 }

@@ -10,6 +10,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using WebApiHiringItm.CONTEXT.Context;
+using WebApiHiringItm.CORE.Core.MessageHandlingCore.Interface;
+using WebApiHiringItm.CORE.Core.Share;
 using WebApiHiringItm.CORE.Core.User.Interface;
 using WebApiHiringItm.CORE.Helpers;
 using WebApiHiringItm.CORE.Helpers.Enums;
@@ -32,14 +34,16 @@ namespace WebApiHiringItm.Core.User
         private readonly MailSettings _mailSettings;
         static readonly byte[] keys = Encoding.UTF8.GetBytes("401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1");
         private readonly AppSettings _appSettings;
+        private readonly IMessageHandlingCore _messageHandling;
         #endregion
         #region CONTRUCTOR
-        public UserCore(HiringContext context, IMapper mapper, IOptions<AppSettings> appSettings, IOptions<MailSettings> mailSettings)
+        public UserCore(HiringContext context, IMapper mapper, IOptions<AppSettings> appSettings, IOptions<MailSettings> mailSettings, IMessageHandlingCore messageHandling)
         {
             _context = context;
             _mapper = mapper;
             _appSettings = appSettings.Value;
             _mailSettings = mailSettings.Value;
+            _messageHandling = messageHandling;
         }
         #endregion
 
@@ -131,26 +135,45 @@ namespace WebApiHiringItm.Core.User
             .FirstOrDefaultAsync();
         }
         
-        public async Task<bool> GetUserForgetPassword(RetrievePassword model)
+        public async Task<IGenericResponse<string>> GetUserForgetPassword(ForgotPasswordRequest mail)
         {
-            var result = _context.UserT.FirstOrDefault(x => x.UserEmail == model.UserEmail && x.UserName == model.UserName);
-
-            if (result != null)
+            var resultUser = _context.UserT.FirstOrDefault(x => x.UserEmail.Equals(mail.Mail));
+            var resultContractors = _context.Contractor.FirstOrDefault(x => x.Correo.Equals(mail.Mail));
+            bool activateReset = false;
+            bool userC = true;
+            var userId = "";
+            var userMail = "";
+            if (resultUser != null)
             {
-                var message = new MailRequest();
-                message.Body = "hei que tal, hemos visto que perdiste tu clave, aqui te damos la clave que olvidaste, recuerda por seguridad actualizarla cuando inicies sesion" + "Tu Clave es: " + result.UserPassword;
-                message.ToEmail = result.UserEmail;
-                message.Subject = "rifa familiar Clave perdida";
-
-                if (await sendMessage(message))
-                {
-                    return true;
-                }
-
+                userId = GenericCore.Encrypt(resultUser.Id.ToString());
+                userC = false;
+                userMail = resultUser.UserEmail;
+                resultUser.EnableChangePassword = true;
+                _context.UserT.Update(resultUser);
             }
-            return false;
+            else if (resultContractors != null)
+            {
+                userId = GenericCore.Encrypt(resultContractors.Id.ToString());
+                userC = false;
+                resultContractors.EnableChangePassword = true;
+                userMail = resultContractors.Correo;
+                _context.Contractor.Update(resultContractors);
+            }
+            if (string.IsNullOrEmpty(userId))
+                return ApiResponseHelper.CreateErrorResponse<string>("El sistema no puede enviar el correo electronico se puede deber");
+           
+
+            var resp = await _messageHandling.SendMessageForgotPasswors(userMail,userId);
+            if (resp)
+            {
+                _context.SaveChanges();
+                return ApiResponseHelper.CreateResponse<string>(null, true, Resource.RESETPASSWORDSUCCESS);
+            }
+
+            return ApiResponseHelper.CreateErrorResponse<string>(Resource.MAILNOTEXIST);
+
         }
-       
+
         public async Task<IGenericResponse<string>> UpdateTeamRoll(UserTDto model)
         {
             if (model.Id == null || model.Id == Guid.Empty)
@@ -233,6 +256,7 @@ namespace WebApiHiringItm.Core.User
 
 
         }
+        
         public string generateJwtToken(AuthDto user)
         {
             // generate token that is valid for 7 days
@@ -247,6 +271,7 @@ namespace WebApiHiringItm.Core.User
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+        
         public async Task<bool> ValidateT(string authToken)
         {
             if (IsJwtTokenValid(authToken))
@@ -256,10 +281,33 @@ namespace WebApiHiringItm.Core.User
             return false;
         }
 
+        public async Task<IGenericResponse<string>> ResetPasswordUser(ResetPasswordRequest updatePassword)
+        {
+            var userupdate = _context.UserT.FirstOrDefault(x => x.Id.Equals(Guid.Parse(updatePassword.Id)) && x.EnableChangePassword == true);
+            var contractorupdate = _context.Contractor.FirstOrDefault(x => x.Id.Equals(Guid.Parse(updatePassword.Id)) && x.EnableChangePassword == true);
+
+            if (userupdate != null)
+            {
+                userupdate.EnableChangePassword = false;
+                userupdate.PasswordMail = updatePassword.Password;
+                _context.UserT.Update(userupdate);
+            }else if (contractorupdate != null)
+            {
+                contractorupdate.EnableChangePassword = false;
+                contractorupdate.ClaveUsuario = updatePassword.Password;
+                _context.Contractor.Update(contractorupdate);
+            }
+            if(userupdate != null)
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.DISABLEMAIL);
+
+            await _context.SaveChangesAsync();
+            return ApiResponseHelper.CreateResponse<string>(null,true,Resource.RESETSUCCESS);
+        }
 
         #endregion
 
         #region PRIVATE METODS
+
         private static bool IsJwtTokenValid(string token)
         {
             // example of token:
@@ -302,36 +350,6 @@ namespace WebApiHiringItm.Core.User
             }
         }
 
-        private async Task<bool> sendMessage(MailRequest mailRequest)
-        {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
-            var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
-            //email.From.Add(MailboxAddress.Parse("alejoyepes.1000@gmail.com"));
-            email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
-            email.Subject = mailRequest.Subject;
-            var builder = new BodyBuilder();
-            //CreateTestMessage2();
-            //message();
-            builder.HtmlBody = mailRequest.Body;
-            email.Body = builder.ToMessageBody();
-            using var smtp = new MailKit.Net.Smtp.SmtpClient();
-            var resp = smtp;
-            smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-            smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
-            try
-            {
-                await smtp.SendAsync(email);
-                return true;
-
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-
-        }
         #endregion
     }
 }

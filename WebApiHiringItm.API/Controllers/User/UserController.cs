@@ -179,18 +179,46 @@ namespace WebApiHiringItm.API.Controllers.User
         }
 
         [HttpPost]
-        public async Task<IActionResult> retrievePassword(RetrievePassword model)
+        public async Task<IActionResult> retrievePassword(ForgotPasswordRequest mail)
         {
             try
             {
-                var Data = await _user.GetUserForgetPassword(model);
-
-                return Data != false ? Ok(Data) : NoContent();
+                var isSuccess = await _user.GetUserForgetPassword(mail);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
             }
             catch (Exception ex)
             {
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
 
-                throw new Exception("Error", ex);
+        [HttpPatch]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest model)
+        {
+            try
+            {
+                var isSuccess = await _user.ResetPasswordUser(model);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
     }

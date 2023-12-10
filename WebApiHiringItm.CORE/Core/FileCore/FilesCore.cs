@@ -248,6 +248,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 folderPago.ContractId = modelFileDto.ContractId;
                 folderPago.RegisterDate = DateTime.Now;
                 folderPago.ModifyDate = DateTime.Now;
+                folderPago.Consutive = 1;
                 _context.Folder.Add(folderPago);
                 folderId = folderPago.Id;
             }
@@ -542,6 +543,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
        
 
         }
+        
         public async Task<IGenericResponse<string>> CreateDetailCommittee(DetailFileDto model)
         {
             var getDetailFileList = _context.DetailFile.OrderByDescending(o => o.RegisterDate).Where(w => w.FileId.Equals(model.FileId)).ToList();
@@ -579,8 +581,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                     sendMessageObservationtDto.UserId = modelDetailFile.UserId.ToString();
                     foreach (var item in modelDetailFile.Files)
                     {
-                        sendMessageObservationtDto.Documentos = new();
-                        sendMessageObservationtDto.Documentos.Add(item.DocumentTypes);
+                        sendMessageObservationtDto.Documents.Add(item.DocumentTypes);
                     }
                     sendMessageObservationtDto.Observation += modelDetailFile.Observation;
                     sendMessageObservationtDto.TermDate = modelDetailFile.TermDate;
@@ -763,7 +764,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
 
         }
-        
+
         private async Task<bool> CreateDetailPayroll(DetailFileDto model)
         {
             var getDetailFile = _context.DetailFile.OrderByDescending(o => o.RegisterDate).Where(w => w.FileId.Equals(model.FileId)).FirstOrDefault();
@@ -909,10 +910,14 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 foreach (var item in modelFiles)
                 {
                     var getFolder = getFolderList.OrderByDescending(O => O.RegisterDate).Where(x => x.ContractId.Equals(item.ContractId) && x.ContractorId.Equals(item.ContractorId)).FirstOrDefault();
-
+                    if (getFolder == null)
+                    {
+                        return null;
+                    }
                     var getFile = getFileList.Find(x => x.ContractorId.Equals(item.ContractorId) && x.File.DocumentTypeNavigation.Id.Equals(item.DocumentType));
                     SaveFileResponse saveFileResponse = new SaveFileResponse();
                     bool FileExist = false;
+
                     item.FolderId = getFolder.Id;
 
                     if (getFile != null)

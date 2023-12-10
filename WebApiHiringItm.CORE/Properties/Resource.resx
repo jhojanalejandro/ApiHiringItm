@@ -132,6 +132,9 @@
   <data name="DELETESUCCESS" xml:space="preserve">
     <value>Registro Eliminado exitosamente</value>
   </data>
+  <data name="DISABLEMAIL" xml:space="preserve">
+    <value>Correo ya se ha actualizado, vuelva arequerir cambio de clave</value>
+  </data>
   <data name="DOCUMENTGENERATE" xml:space="preserve">
     <value>Docuemnto generado exitosamente</value>
   </data>
@@ -159,6 +162,9 @@
   <data name="INFORMATIONEMPTY" xml:space="preserve">
     <value>No se encontro información</value>
   </data>
+  <data name="MAILNOTEXIST" xml:space="preserve">
+    <value>El correo proporcionado no esta registrado</value>
+  </data>
   <data name="MAILSENDSUCCESS" xml:space="preserve">
     <value>Invitación envida exitosamente</value>
   </data>
@@ -167,6 +173,12 @@
   </data>
   <data name="REGISTERSUCCESSFULL" xml:space="preserve">
     <value>Información registra exitosamnete</value>
+  </data>
+  <data name="RESETPASSWORDSUCCESS" xml:space="preserve">
+    <value>¡Restablecimiento de contraseña enviado! Recibirás un correo electrónico si estás registrado en nuestro sistema.</value>
+  </data>
+  <data name="RESETSUCCESS" xml:space="preserve">
+    <value>Contraseña restaurada exitosamente</value>
   </data>
   <data name="TERMDATENOTFOUND" xml:space="preserve">
     <value>No se encontraron fechas limite para la entrega de los documentos|</value>
