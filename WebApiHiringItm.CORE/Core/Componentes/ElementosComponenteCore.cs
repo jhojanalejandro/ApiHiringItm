@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
@@ -80,7 +81,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 ValorPorDia = element.ValorPorDia,
                 ValorTotal = element.ValorTotal,
                 ValorUnidad = element.ValorUnidad,
-                Recursos = 0,
+                Recursos = element.DetailContractor.Select(s => s.Contract).FirstOrDefault()!.ResourceContract,
                 Consecutivo = element.Consecutivo,
                 ObligacionesEspecificas = element.ObligacionesEspecificas,
                 ObligacionesGenerales = element.ObligacionesGenerales,

@@ -102,7 +102,9 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
                 ObjectContract = contract.ObjectContract,
                 DetailContractId = contract.DetailContract.OrderByDescending(o => o.RegisterDate).Select(s => s.Id.ToString()).FirstOrDefault(),
                 DetailType = contract.DetailContract.OrderByDescending(o => o.Consecutive).Select(s => s.DetailType.ToString()).FirstOrDefault(),
-                DutyContract = contract.DutyContract
+                DutyContract = contract.DutyContract,
+                ResourceContract = contract.ResourceContract,
+                AreaCode = contract.AreaCode
 
             }).AsNoTracking()
               .ToListAsync();
@@ -228,6 +230,7 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
 
                 model.Id = getData.Id;
                 model.ContractorsCant = getData.ContractorsCant;
+                model.EnableProject = getData.EnableProject;
                 var map = _mapper.Map(model, getData);
                 CreateDetail(model.DetalleContratoDto);
                 _context.ContractFolder.Update(map);
@@ -473,6 +476,8 @@ namespace WebApiHiringItm.CORE.Core.ContractFolders
             if (getDataDetail != null)
             {
                 model.Consecutive = getDataDetail.Consecutive;
+                model.RegisterDate = getDataDetail.RegisterDate;
+                model.ModifyDate = DateTime.Now;
                 var map = _mapper.Map(model, getDataDetail);
                 _context.DetailContract.Update(map);
 

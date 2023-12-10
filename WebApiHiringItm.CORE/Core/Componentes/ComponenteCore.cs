@@ -249,7 +249,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 CantidadDias = s.CantidadDias,
                 CpcId = s.CpcId,
                 NombreCpc = s.Cpc.CpcName,
-                Recursos = 0,
+                Recursos = s.DetailContractor.Select(s => s.Contract).FirstOrDefault()!.ResourceContract,
                 ValorPorDia = s.ValorPorDia,
                 ValorPorDiaContratista = s.ValorPorDiaContratista,
                 ValorTotal = s.ValorTotal,
@@ -264,6 +264,8 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 ComponentId = s.ComponentId.Value,
                 ActivityId = s.ActivityId.Value,
                 CantidadEnable = s.CantidadContratistas - _context.DetailContractor.Where(w => w.ElementId.Equals(s.Id)).Count(),
+                PerfilRequeridoAcademico = s.PerfilRequeridoAcademico,
+                PerfilRequeridoExperiencia = s.PerfilRequeridoExperiencia
             })
             .AsNoTracking()
             .ToList();

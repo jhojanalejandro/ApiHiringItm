@@ -26,6 +26,9 @@ using WebApiHiringItm.MODEL.Dto.MessageDto;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.CORE.Helpers.Enums.Hiring;
+using System.Data.Entity.Core.Metadata.Edm;
+using MimeKit;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 {
@@ -50,21 +53,21 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 
             var getStatusId = _context.StatusContractor.Where(x => x.Code.Equals(StatusContractorEnum.INVITADO.Description())).Select(s => s.Id).FirstOrDefault();
 
-                var attachmentMessage = _context.UserFile.Where(x => x.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.ARCHIVOSMENSAJE.Description())).ToList().Count > 0 
-                ? _context.UserFile.Where(x => x.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.ARCHIVOSMENSAJE.Description()))
-                .Select(s => new FileAttach
-                {
-                    FileData = s.FileData,
-                    FileName = s.FileNameC,
-                    FileType = s.FileType,
-                })
-                .ToList() : null;
+            var attachmentMessage = _context.UserFile.Where(x => x.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.ARCHIVOSMENSAJE.Description())).ToList().Count > 0
+            ? _context.UserFile.Where(x => x.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.ARCHIVOSMENSAJE.Description()))
+            .Select(s => new FileAttach
+            {
+                FileData = s.FileData,
+                FileName = s.FileNameC,
+                FileType = s.FileType,
+            })
+            .ToList() : null;
 
             if (attachmentMessage == null)
                 return ApiResponseHelper.CreateErrorResponse<string>(Resource.ATTACHMENTEMPTY);
 
             var getCredencialUser = _context.UserFile
-                .Where(x => x.UserId.Equals(Guid.Parse(contractors.UserId)))
+                .Where(x => x.UserId.Equals(Guid.Parse(contractors.UserId)) && x.UserFileTypeNavigation.Code.Equals("IMGC"))
                 .Select(s => new MailRequestContractor
                 {
                     FromEmail = s.User.UserEmail,
@@ -90,7 +93,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 
                 var resultDetailList = _context.DetailContractor
                     .Include(i => i.StatusContractorNavigation)
-                    .Where(x =>  x.ContractId.Equals(contractors.ContractId) && (x.StatusContractorNavigation.Code.Equals(StatusContractorEnum.CONTRATADO.Description()))).ToList();
+                    .Where(x => x.ContractId.Equals(contractors.ContractId) && (x.StatusContractorNavigation.Code.Equals(StatusContractorEnum.CONTRATADO.Description()))).ToList();
                 List<NewnessContractorDto> newnewwModelList = new();
                 var getDataNewnessType = _context.NewnessType
                     .Where(x => x.Code.Equals(NewnessTypeCodeEnum.RECONTRATAR.Description())).FirstOrDefault();
@@ -106,7 +109,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                     newnewwModel.ContractorId = idContractor.ToString();
                     newnewwModel.NewnessType = getDataNewnessType.Id.ToString();
                     newnewwModel.ContractId = contractors.ContractId;
-                    newnewwModel.Consecutive = dataNewness != null ? dataNewness.Consecutive+1 : 1;
+                    newnewwModel.Consecutive = dataNewness != null ? dataNewness.Consecutive + 1 : 1;
 
                     var getContractor = _context.Contractor.Where(x => x.Id.Equals(idContractor)).FirstOrDefault();
                     var getTermDate = getTermDateList.Find(x => x.DetailContractorNavigation.ContractorId.Equals(idContractor));
@@ -138,7 +141,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             else
             {
                 //w.ClaveUsuario.Equals(NOASIGNADA) &&
-                var contractorList = _context.Contractor.Where(w =>  w.DetailContractor.Select(s => s.ContractId).Contains(Guid.Parse(contractors.ContractId))).ToList();
+                var contractorList = _context.Contractor.Where(w => w.DetailContractor.Select(s => s.ContractId).Contains(Guid.Parse(contractors.ContractId))).ToList();
                 List<DetailContractor> listDetailContractor = new();
                 if (getTermDateList.Count() < contractorList.Count())
                     return ApiResponseHelper.CreateErrorResponse<string>(Resource.TERMDATENOTFOUND);
@@ -175,7 +178,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             var getContractor = _context.Contractor.Where(x => x.Id.Equals(messageObservation.ContractorId)).FirstOrDefault();
 
             var getCredencialUser = _context.UserFile
-            .Where(x => x.UserId.Equals(Guid.Parse(messageObservation.UserId)))
+            .Where(x => x.UserId.Equals(Guid.Parse(messageObservation.UserId)) && x.UserFileTypeNavigation.Code.Equals("IMGC"))
             .Select(s => new MailRequestContractor
             {
                 FromEmail = s.User.UserEmail,
@@ -187,11 +190,11 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             .FirstOrDefault();
             getCredencialUser.ToEmail = getContractor.Correo;
             getCredencialUser.TermDate = messageObservation.TermDate;
-            getCredencialUser.Documents = messageObservation.Documentos;
+            getCredencialUser.Documents = messageObservation.Documents;
             getCredencialUser.Body = messageObservation.Observation;
 
             await sendMessageObservation(getCredencialUser);
-            return ApiResponseHelper.CreateResponse<string>(null, true,Resource.MAILSENDSUCCESS);
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.MAILSENDSUCCESS);
         }
 
         private async Task<string> createPassword(MailRequestContractor message)
@@ -231,7 +234,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             byte[] imageBytes = Convert.FromBase64String(mailRequest.ImageMessage);
 
             LinkedResource userImage = new LinkedResource(new MemoryStream(imageBytes), "image/jpg");
-            userImage.ContentId = "imagen1";
+            userImage.ContentId = "firma";
 
             // Crea el objeto AlternateView para el contenido HTML
             //string cuerpoHTML = "<html><body><h1>"+ asunto + "</h1><img src=\"cid:imagen1\" /> <p>"+ mailRequest.Body + "<p/></body></html>";
@@ -239,9 +242,14 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             int anio = mailRequest.TermDate.Year;
             int diaMes = mailRequest.TermDate.Day;
             string diaDeLaSemana = mailRequest.TermDate.ToString("dddd");
+            //string cuerpoHTML = "<html> <body>" +
+            //        // ... (contenido del cuerpo del mensaje) ...
+            //        "<img src=\"cid:firma\" />" +
+            //        "</body> </html>";
+
             string cuerpoHTML = "<html> <body>" +
                                 "<p>Nos permitimos informar que se está realizando el proceso de contratación para la prestación del servicio en el marco del contrato interadministrativo " + mailRequest.ContractNumber + " suscrito con el ITM, por tanto y para poder realizar el proceso contractual es necesario que por favor nos hagan llegar los documentos relacionados y así poder verificar el cumplimiento de los requisitos.</p>" +
-                                "<p>Con plazo para enviar documentos hasta el "+ diaDeLaSemana.ToUpper() +" "+ diaMes + " DE " + mes.ToUpper()+ " DE " + anio + "</p>" +
+                                "<p>Con plazo para enviar documentos hasta el " + diaDeLaSemana.ToUpper() + " " + diaMes + " DE " + mes.ToUpper() + " DE " + anio + "</p>" +
                                 "<p>Tener en cuenta las siguientes consideraciones:</p>" +
                                 "<p>Deberán entregar 4 archivos de PDF de la siguiente forma:</p>" +
                                 "<ol>" +
@@ -289,15 +297,23 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                              "</ol>" +
                              "<p> " + mailRequest.Body + "</p>" +
                              "<p> NOTA: La solicitud y recepción de los documentos antes relacionados no obligan al ITM a su contratación final.</p>" +
-                             "<img src=\"cid:imagen1\" />" +
-                        "</body> </html>";
+                             "<br>" +
+                             "<br>" +
+                             "<p> Cordialmente:</p>" +
+                             "<img src=\"cid:firma\" />" +
+
+                        "</body> " +
+
+                        "</html>";
 
             // Crea un nuevo correo electrónico
             MailMessage correo = new MailMessage(remitente, destinatario, asunto, cuerpoHTML);
             correo.IsBodyHtml = true;
+            AlternateView contenidoHTML = AlternateView.CreateAlternateViewFromString(cuerpoHTML, null, MediaTypeNames.Text.Html);
+            contenidoHTML.LinkedResources.Add(userImage);
+            correo.AlternateViews.Add(contenidoHTML);
             if (mailRequest.FileMessageAttach.Count > 0)
             {
-                AlternateView contenidoHTML = AlternateView.CreateAlternateViewFromString(cuerpoHTML, null, MediaTypeNames.Text.Html);
 
                 for (int i = 0; i < mailRequest.FileMessageAttach.Count; i++)
                 {
@@ -314,11 +330,11 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                     imagenAdicional.ContentType = archivoAdjuntoContentType;
                     contenidoHTML.LinkedResources.Add(imagenAdicional);
                 }
-                //contenidoHTML.LinkedResources.Add(attachImage);
-                correo.AlternateViews.Add(contenidoHTML);
+
             }
 
             // Envía el correo
+
             using (clienteSmtp)
             {
                 clienteSmtp.Send(correo);
@@ -346,6 +362,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             byte[] imageBytes = Convert.FromBase64String(mailRequest.ImageMessage);
 
             LinkedResource userImage = new LinkedResource(new MemoryStream(imageBytes), "image/jpg");
+
             userImage.ContentId = "imagen1";
 
             // Crea el objeto AlternateView para el contenido HTML
@@ -356,7 +373,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             string diaDeLaSemana = mailRequest.TermDate.ToString("dddd");
             string cuerpoHTML = "<html> <body>" +
                 "<p>Remito novedades a subsanar.</p>" +
-                "<p>Con plazo para enviar documentos hasta el " + diaDeLaSemana +" "+ diaMes + " de " + mes + " de " + anio + "</p>" +
+                "<p>Con plazo para enviar documentos hasta el " + diaDeLaSemana + " " + diaMes + " de " + mes + " de " + anio + "</p>" +
                 "<p>Documentos que se deben modificar:</p>" +
                 "<ul>";
             foreach (var documento in mailRequest.Documents)
@@ -379,5 +396,48 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             }
             return true;
         }
+
+
+        public async Task<bool> SendMessageForgotPasswors(string userMail, string userId)
+        {
+            SecureString password = new SecureString();
+            foreach (char c in _mailSettings.Password)
+            {
+                password.AppendChar(c);
+            }
+            string asunto = "Restaurar contraseña";
+
+            // Crea una instancia de SmtpClient
+            SmtpClient clienteSmtp = new SmtpClient(_mailSettings.Host, _mailSettings.Port);
+            clienteSmtp.Credentials = new NetworkCredential(_mailSettings.Mail, password);
+            clienteSmtp.EnableSsl = true;
+
+            // Crea una instancia de LinkedResource con la imagen en base64
+            //byte[] imageBytes = Convert.FromBase64String(mailRequest.ImageMessage);
+
+            //LinkedResource userImage = new LinkedResource(new MemoryStream(imageBytes), "image/jpg");
+
+            //userImage.ContentId = "imagen1";
+
+            // Crea el objeto AlternateView para el contenido HTML
+            //string cuerpoHTML = "<html><body><h1>"+ asunto + "</h1><img src=\"cid:imagen1\" /> <p>"+ mailRequest.Body + "<p/></body></html>";
+            string cuerpoHTML = "<html> <body>" +
+                "<p>hemos visto que perdiste tu clave, para restaurar tu contraseña ingresa al siguiente link: </p>" + Const.RESETPASSWORD + userId+
+                "<p>Documentos que se deben modificar:</p>" +
+                "<ul>";
+   
+  
+            // Crea un nuevo correo electrónico
+            MailMessage correo = new MailMessage(_mailSettings.Mail, userMail, asunto, cuerpoHTML);
+            correo.IsBodyHtml = true;
+
+            // Envía el correo
+            using (clienteSmtp)
+            {
+                clienteSmtp.Send(correo);
+            }
+            return true;
+        }
+
     }
 }

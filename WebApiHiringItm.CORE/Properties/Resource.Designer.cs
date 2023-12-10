@@ -106,6 +106,15 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Correo ya se ha actualizado, vuelva arequerir cambio de clave.
+        /// </summary>
+        internal static string DISABLEMAIL {
+            get {
+                return ResourceManager.GetString("DISABLEMAIL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Docuemnto generado exitosamente.
         /// </summary>
         internal static string DOCUMENTGENERATE {
@@ -187,6 +196,15 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a El correo proporcionado no esta registrado.
+        /// </summary>
+        internal static string MAILNOTEXIST {
+            get {
+                return ResourceManager.GetString("MAILNOTEXIST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Invitación envida exitosamente.
         /// </summary>
         internal static string MAILSENDSUCCESS {
@@ -210,6 +228,24 @@ namespace WebApiHiringItm.CORE.Properties {
         internal static string REGISTERSUCCESSFULL {
             get {
                 return ResourceManager.GetString("REGISTERSUCCESSFULL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a ¡Restablecimiento de contraseña enviado! Recibirás un correo electrónico si estás registrado en nuestro sistema..
+        /// </summary>
+        internal static string RESETPASSWORDSUCCESS {
+            get {
+                return ResourceManager.GetString("RESETPASSWORDSUCCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Contraseña restaurada exitosamente.
+        /// </summary>
+        internal static string RESETSUCCESS {
+            get {
+                return ResourceManager.GetString("RESETSUCCESS", resourceCulture);
             }
         }
         

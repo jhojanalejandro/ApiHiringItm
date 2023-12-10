@@ -42,5 +42,6 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public bool? PreviusStudy { get; set; }
         public DateTime? InitialDateContract { get; set; }
 
+
     }
 }

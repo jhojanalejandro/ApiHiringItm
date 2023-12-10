@@ -17,11 +17,11 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string Supervisor { get; set; }
         public string? SupervisorIdentification { get; set; }
         public string SupervisorCharge { get; set; }
-        public DateTime ExtensionInitialDate { get; set; }
-        public DateTime ExtensionFinalDate { get; set; }
+        public DateTime? ExtensionInitialDate { get; set; }
+        public DateTime? ExtensionFinalDate { get; set; }
         public string ContractNumber { get; set; }
         public string ContractName { get; set; }
-        public string Consecutive { get; set; }
+        public int Consecutive { get; set; }
         public string NoAdicion { get; set; }
         public string ContractorId { get; set; }
         public int? NumberModify { get; set; }
@@ -33,6 +33,7 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public DateTime InitialDateContract { get; set; }
         public DateTime FinalDateContract { get; set; }
         public decimal UnitValueContract { get; set; }
+        public decimal? InitialValue { get; set; }
 
     }
 }
