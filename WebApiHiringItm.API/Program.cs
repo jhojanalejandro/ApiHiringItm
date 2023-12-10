@@ -1,17 +1,13 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Core;
 using WebApiHiringItm.CORE.Helpers;
 using WebApiHiringItm.IOC.Dependencies;
 using WebApiHiringItm.MODEL.Mapper;
 using WebApiHiringItm.MODEL.Models;
-using WebApiRifa.CORE.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,16 +78,12 @@ var app = builder.Build();
 //{
 
 //}
+app.UseCors(MyAllowSpecificOrigins);
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseCors(x => x
-.AllowAnyOrigin()
-.AllowAnyMethod()
-.AllowAnyHeader());
 app.UseMiddleware<JwtMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseCors(MyAllowSpecificOrigins);
 app.Run();

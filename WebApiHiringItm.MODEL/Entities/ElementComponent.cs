@@ -25,14 +25,13 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal ValorTotal { get; set; }
         public decimal? ValorTotalContratista { get; set; }
         public decimal? ValorPorDiaContratista { get; set; }
-        public decimal? Recursos { get; set; }
         public decimal ValorPorDia { get; set; }
         public Guid? CpcId { get; set; }
-        public Guid? DetailId { get; set; }
         public bool? Modificacion { get; set; }
         public string Consecutivo { get; set; }
         public string ObjetoElemento { get; set; }
-        public string PerfilRequerido { get; set; }
+        public string PerfilRequeridoAcademico { get; set; }
+        public string PerfilRequeridoExperiencia { get; set; }
 
         public virtual Activity Activity { get; set; }
         public virtual Component Component { get; set; }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Componentes.Interfaces;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto.Componentes;
 
 namespace WebApiHiringItm.API.Controllers.Component
@@ -28,12 +29,23 @@ namespace WebApiHiringItm.API.Controllers.Component
         {
             try
             {
-                var res = await _element.SaveElement(model);
-                return res != false ? Ok(res) : BadRequest();
+                var isSuccess = await _element.SaveElement(model);
+                if (isSuccess.Success)
+                {
+                    var response = ApiResponseHelper.CreateResponse(isSuccess);
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = ApiResponseHelper.CreateErrorResponse<string>(isSuccess.Message);
+                    return BadRequest(response);
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(e.Message);
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -54,11 +66,11 @@ namespace WebApiHiringItm.API.Controllers.Component
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetElementById(Guid id)
         {
             try
             {
-                var res = await _element.GetById(id);
+                var res = await _element.GetElementById(id);
                 return res != null ? Ok(res) : BadRequest();
             }
             catch (Exception e)

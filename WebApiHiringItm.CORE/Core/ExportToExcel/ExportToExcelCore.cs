@@ -1,21 +1,20 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml.Style;
-using OfficeOpenXml;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces;
-using WebApiHiringItm.MODEL.Dto.ContratoDto;
-using WebApiHiringItm.MODEL.Dto;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Color = System.Drawing.Color;
-using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using WebApiHiringItm.CONTEXT.Context;
+using WebApiHiringItm.CORE.Core.Contractors.Interface;
+using WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces;
 using WebApiHiringItm.CORE.Helpers.Enums;
+using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Properties;
+using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Dto.ContratoDto;
+using WebApiHiringItm.MODEL.Dto.ExportDataDto;
+using WebApiHiringItm.MODEL.Models;
+using Color = System.Drawing.Color;
 
 namespace WebApiHiringItm.CORE.Core.ExportToExcel
 {
@@ -23,19 +22,19 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
     {
         #region Dependency
         private readonly HiringContext _context;
-        private readonly IMapper _mapper;
+        private readonly IContractorCore _contractorCore;
         #endregion
 
         #region Constructor
-        public ExportToExcelCore(HiringContext context, IMapper mapper)
+        public ExportToExcelCore(HiringContext context, IContractorCore contractorCore)
         {
             _context = context;
-            _mapper = mapper;
+            _contractorCore = contractorCore;
         }
         #endregion
 
         #region PUBLIC METHODS
-        public async Task<MemoryStream> ExportToExcelCdp(Guid ContractId)
+        public async Task<IGenericResponse<MemoryStream>> ExportToExcelCdp(Guid ContractId)
         {
 
             var stream = new MemoryStream();
@@ -51,71 +50,102 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["A1"].Value = "IdentificadorBaseDedatos";
                 worksheet.Cells["B1"].Value = "Consecutivo";
                 worksheet.Cells["C1"].Value = "Convenio";
-                worksheet.Cells["D1"].Value = "Nombre Contratista";
-                worksheet.Cells["E1"].Value = "Cedula";
-                worksheet.Cells["F1"].Value = "Objeto";
-                worksheet.Cells["G1"].Value = "Duración";
-                worksheet.Cells["H1"].Value = "Valor Contrato";
-                worksheet.Cells["I1"].Value = "Elemento";
-                worksheet.Cells["J1"].Value = "Obligaciones";
-                worksheet.Cells["K1"].Value = "CDP";
-                worksheet.Cells["L1"].Value = "Número Contrato";
-                worksheet.Cells["A1:P1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["A1:P1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
-                worksheet.Cells["A1:P1"].Style.Font.Bold = true;
-                worksheet.Cells["A1:P1"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:P1"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:P1"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:P1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["D1"].Value = "Cedula";
+                worksheet.Cells["E1"].Value = "Nombre Contratista";
+                worksheet.Cells["F1"].Value = "Fecha nacimiento";
+                worksheet.Cells["G1"].Value = "Telefono";
+                worksheet.Cells["H1"].Value = "Direción";
+                worksheet.Cells["I1"].Value = "Correo";
+                worksheet.Cells["J1"].Value = "Eps";
+                worksheet.Cells["K1"].Value = "Arl";
+                worksheet.Cells["L1"].Value = "Afp";
+                worksheet.Cells["M1"].Value = "Objeto";
+                worksheet.Cells["N1"].Value = "Duración";
+                worksheet.Cells["O1"].Value = "Valor Contrato";
+                worksheet.Cells["P1"].Value = "Elemento";
+                worksheet.Cells["Q1"].Value = "Obligaciones";
+                worksheet.Cells["R1"].Value = "CDP";
+                worksheet.Cells["S1"].Value = "Número Contrato";
+                var celdasBloqueadas = worksheet.Cells["A2:Q2"];
+                celdasBloqueadas.Style.Locked = true;
+                worksheet.Protection.IsProtected = true;
+                worksheet.Protection.SetPassword("ContractacionITM");
+
+                var celdasEditables = worksheet.Cells["R2:S50"];
+                celdasEditables.Style.Locked = false;
+                worksheet.Cells["A1:V1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A1:V1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
+                worksheet.Cells["A1:V1"].Style.Font.Bold = true;
+                worksheet.Cells["A1:V1"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:V1"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:V1"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:V1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                //worksheet.Protection.IsProtected = true;
+                //worksheet.Protection.SetPassword("ContratacionITM");
+
 
                 row = 2;
-                var data = _context.DetailContractor
-                            .Include(x => x.Contractor)
-                            .Include(x => x.Element)
-                            .Include(x => x.HiringData)
-                            .Include(x => x.Component)
-                            .Include(x => x.Contract)
-                            .Where(x => x.ContractId == ContractId);
+                var data = _context.EconomicdataContractor
+                            .Where(x => x.DetailContractor.ContractId == ContractId);
                 var dataList = data.Select(w => new DetailProjectContractorDto()
                 {
-                    ContractorId = w.ContractorId.ToString(),
-                    NombreComponente = w.Component.NombreComponente,
-                    Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
-                    Identificacion = w.Contractor.Identificacion,
-                    ObjetoConvenio = w.Element.ObjetoElemento,
-                    ValorTotal = w.EconomicdataNavigation.TotalValue,
-                    NombreElemento = w.Element.NombreElemento,
-                    GeneralObligation = w.Element.ObligacionesGenerales,
-                    SpecificObligation = w.Element.ObligacionesEspecificas,
-                    InitialDate = w.HiringData.FechaRealDeInicio,
-                    FinalDate = w.HiringData.FechaFinalizacionConvenio,
-                    Convenio = w.Contract.ProjectName
-
+                    ContractorId = w.DetailContractor.ContractorId.ToString(),
+                    NombreComponente = w.DetailContractor.Component.NombreComponente,
+                    Nombre = w.DetailContractor.Contractor.Nombres + " " + w.DetailContractor.Contractor.Apellidos,
+                    Identificacion = w.DetailContractor.Contractor.Identificacion,
+                    ObjetoConvenio = w.DetailContractor.Element.ObjetoElemento,
+                    ValorTotal = Math.Ceiling(w.TotalValue),
+                    NombreElemento = w.DetailContractor.Element.NombreElemento,
+                    GeneralObligation = w.DetailContractor.Element.ObligacionesGenerales,
+                    SpecificObligation = w.DetailContractor.Element.ObligacionesEspecificas,
+                    InitialDate = w.DetailContractor.HiringData.FechaRealDeInicio,
+                    FinalDate = w.DetailContractor.HiringData.FechaFinalizacionConvenio,
+                    Convenio = w.DetailContractor.Contract.ProjectName,
+                    ContractorAddress = w.DetailContractor.Contractor.Direccion,
+                    ContractorMail = w.DetailContractor.Contractor.Correo,
+                    Eps = w.DetailContractor.Contractor.EpsNavigation.EntityHealthDescription,
+                    Arl = w.DetailContractor.Contractor.ArlNavigation.EntityHealthDescription,
+                    Afp = w.DetailContractor.Contractor.AfpNavigation.EntityHealthDescription,
+                    BirthDate = w.DetailContractor.Contractor.FechaNacimiento
                 })
                 .AsNoTracking()
                 .ToList();
                 int nro = 0;
                 foreach (var user in dataList)
                 {
-                    if (user.InitialDate.HasValue && user.FinalDate.HasValue && user.NombreElemento != null && user.ValorTotal != null && user.ObjetoConvenio != null && user.NombreElemento != null)
+                    if (user.InitialDate != null && user.FinalDate != null && user.NombreElemento != null && user.ValorTotal != null && user.ObjetoConvenio != null && user.NombreElemento != null)
                     {
                         nro++;
-                        var durationContract = CalculateDateContract(user.InitialDate.Value, user.FinalDate.Value);
+                        var durationContract = DateInDays(user.InitialDate.Value, user.FinalDate.Value);
                         var unifyObligation = SeparateObligation(user.GeneralObligation, user.SpecificObligation);
+                        string totalValue = user.ValorTotal.ToString("N0");                 
+                      
                         worksheet.Cells[row, 1].Value = user.ContractorId;
                         worksheet.Cells[row, 2].Value = nro;
                         worksheet.Cells[row, 3].Value = user.Convenio;
-                        worksheet.Cells[row, 4].Value = user.Nombre;
-                        worksheet.Cells[row, 5].Value = user.Identificacion;
-                        worksheet.Cells[row, 6].Value = user.ObjetoConvenio;
-                        worksheet.Cells[row, 7].Value = durationContract;
-                        worksheet.Cells[row, 8].Value = user.ValorTotal;
-                        worksheet.Cells[row, 9].Value = user.NombreElemento;
-                        worksheet.Cells[row, 10].Value = unifyObligation;
-                        worksheet.Cells[row, 11].Value = "";
-                        worksheet.Cells[row, 12].Value = "";
+                        worksheet.Cells[row, 4].Value = user.Identificacion;
+                        worksheet.Cells[row, 5].Value = user.Nombre;
+                        worksheet.Cells[row, 6].Value = user.BirthDate;
+                        worksheet.Cells[row, 7].Value = user.PhoneNumber;
+                        worksheet.Cells[row, 8].Value = user.ContractorAddress;
+                        worksheet.Cells[row, 9].Value = user.ContractorMail;
+                        worksheet.Cells[row, 10].Value = user.Eps;
+                        worksheet.Cells[row, 11].Value = user.Arl;
+                        worksheet.Cells[row, 12].Value = user.Afp;
+                        worksheet.Cells[row, 13].Value = user.ObjetoConvenio;
+                        worksheet.Cells[row, 14].Value = durationContract;
+                        worksheet.Cells[row, 15].Value = totalValue;
+                        worksheet.Cells[row, 16].Value = user.NombreElemento;
+                        worksheet.Cells[row, 17].Value = unifyObligation;
+                        worksheet.Cells[row, 18].Value = "";
+                        worksheet.Cells[row, 19].Value = "";
                         row++;
                     }
+                }
+                if (nro == 0)
+                {
+                    return ApiResponseHelper.CreateErrorResponse<MemoryStream>(Resource.EXCELEMPTY);
+
                 }
                 worksheet.Columns.AutoFit();
 
@@ -128,7 +158,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
 
             }
             stream.Position = 0;
-            return await Task.FromResult(stream);
+            return ApiResponseHelper.CreateResponse(stream);
         }
 
         public async Task<MemoryStream> ExportContratacionDap(ControllerBase controller, Guid ContractId)
@@ -173,7 +203,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     CompanyName = w.Contract.CompanyName,
                     NombreComponente = w.Component.NombreComponente,
                     Cpc = w.Element.Cpc.CpcName,
-                    Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
+                    Nombre = w.Contractor.Nombres + " " + w.Contractor.Apellidos,
                     Identificacion = w.Contractor.Identificacion,
                     ObjetoConvenio = w.Contract.ObjectContract,
                     ValorTotal = w.Element.ValorTotal,
@@ -211,14 +241,6 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
 
         public async Task<MemoryStream> ExportCdp(ControllerBase controller, Guid ContractId)
         {
-            // Get the user list 
-            var data = _context.DetailContractor.Where(x => x.ContractId == ContractId)
-                .Include(x => x.Contractor)
-                .Include(x => x.Element)
-                    .ThenInclude(t => t.Cpc)
-                .Include(x => x.HiringData)
-                .Include(x => x.Component)
-                .Include(x => x.Contract);
 
             var stream = new MemoryStream();
 
@@ -268,32 +290,38 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                
                 row = 2;
                 int nro = 0;
+                // Get the user list 
+                var data = _context.EconomicdataContractor.Where(x => x.DetailContractor.ContractId.Equals(ContractId));
+
                 var dataList = data.Select(w => new SolicitudCdpDto()
                 {
-                    Consecutivo = w.Element.Consecutivo,
-                    NombreElemento = w.Element.NombreElemento,
-                    NombreComponente = w.Component.NombreComponente,
-                    NumeroConvenio = w.Contract.NumberProject,
-                    CedulaSupervisor = w.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Identification).FirstOrDefault(),
-                    NombreSupervisor = w.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.UserName).FirstOrDefault(),
-                    Rubro = w.Contract.RubroNavigation.RubroNumber,
-                    Cpc = w.Element.Cpc.CpcName,
-                    Projecto = w.Contract.Project,
-                    Nombre = w.Contractor.Nombre,
-                    Cedula = w.Contractor.Identificacion
+                    Consecutivo = w.DetailContractor.Element.Consecutivo,
+                    NombreElemento = w.DetailContractor.Element.NombreElemento,
+                    NombreComponente = w.DetailContractor.Component.NombreComponente,
+                    NumeroConvenio = w.DetailContractor.Contract.NumberProject,
+                    CedulaSupervisor = w.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Identification).FirstOrDefault(),
+                    NombreSupervisor = w.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.UserName).FirstOrDefault(),
+                    Rubro = w.DetailContractor.Contract.RubroNavigation.RubroNumber,
+                    Cpc = w.DetailContractor.Element.Cpc.CpcNumber,
+                    Projecto = w.DetailContractor.Contract.Project,
+                    Nombre = w.DetailContractor.Contractor.Nombres,
+                    Cedula = w.DetailContractor.Contractor.Identificacion,
+                    ValorTotal = w.TotalValue
                 })
                 .AsNoTracking()
                 .ToList();
                 var year = DateTime.Now.Year;
                 var month = DateTime.Now.Month;
                 var day = DateTime.Now.Day;
-                var date = DateTime.Now.ToString("dd/MM/yyyy");
+                var date = DateTime.Now.ToString("yyyyMMdd");
 
                 foreach (var user in dataList)
                 {
-                    if (user.Consecutivo != null && user.NombreElemento != null && user.NumeroConvenio != null && user.Cpc != null)
+                    if (user.Consecutivo != null && user.NombreElemento != null && user.NumeroConvenio != null && user.Cpc != null && user.ValorTotal > 0)
                     {
                         nro++;
+                        string valorTotal = user.ValorTotal.ToString("N0");
+
                         worksheet.Cells[row, 1].Value = 108;
                         worksheet.Cells[row, 2].Value = nro;
                         worksheet.Cells[row, 3].Value = 49;
@@ -309,21 +337,19 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                         worksheet.Cells[row, 13].Value = 0;
                         worksheet.Cells[row, 14].Value = month;
                         worksheet.Cells[row, 15].Value = day;
-                        worksheet.Cells[row, 16].Value = user.NumeroConvenio + "/" + year + user.NombreElemento + "(" + user.Consecutivo + ")";
-                        worksheet.Cells[row, 17].Value = user.Rubro;
+                        worksheet.Cells[row, 16].Value = user.Rubro;
+                        worksheet.Cells[row, 17].Value = user.NumeroConvenio + "/" + year + user.NombreElemento + "(" + user.Consecutivo + ")";
                         worksheet.Cells[row, 18].Value = "1016231102123";
                         worksheet.Cells[row, 19].Value = user.Projecto;
                         worksheet.Cells[row, 20].Value = user.Cpc;
                         worksheet.Cells[row, 21].Value = "S";
-                        worksheet.Cells[row, 22].Value = user.Rubro;
+                        worksheet.Cells[row, 22].Value = valorTotal;
                         worksheet.Cells[row, 23].Value = 0;
                         worksheet.Cells[row, 24].Value = user.Cedula;
                         worksheet.Cells[row, 25].Value = user.Nombre;
-
                         row++;
                     }
                 }
-                { }
                 worksheet.Columns.AutoFit();
                 xlPackage.Workbook.Properties.Title = "Solicitud CDP";
                 xlPackage.Workbook.Properties.Author = "ITM";
@@ -380,7 +406,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["N4"].Value = "Ubicación";
                 worksheet.Cells["O4"].Value = "Nombre del responsable";
                 worksheet.Cells["P4"].Value = "Teléfono del responsable ";
-                worksheet.Cells["R4"].Value = "Correo electrónico del responsable";
+                worksheet.Cells["Q4"].Value = "Correo electrónico del responsable";
                 worksheet.Cells["R4"].Value = "Proyecto de inversión";
                 worksheet.Cells["S4"].Value = "DOCUMENTO";
                 worksheet.Cells["T4"].Value = "NOMBRE";
@@ -400,22 +426,24 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["A4:AA4"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                 worksheet.Cells["A4:AA4"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
                 worksheet.Cells["A4:AA4"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                var data = _context.DetailContractor.Where(x => x.ContractId == ContractId)
-                .Select(w => new DetailProjectContractorDto()
-                {
-                    Convenio = w.Contract.ProjectName,
-                    CompanyName = w.Contract.CompanyName,
-                    NombreComponente = w.Component.NombreComponente,
-                    Nombre = w.Contractor.Nombre + " " + w.Contractor.Apellido,
-                    Identificacion = w.Contractor.Identificacion,
-                    ObjetoConvenio = w.Element.ObjetoElemento,
-                    ValorTotal = w.EconomicdataNavigation.TotalValue,
-                    InitialDate = w.HiringData.FechaRealDeInicio,
-                    FinalDate = w.HiringData.FechaFinalizacionConvenio,
-                    User = w.Contractor.User.UserName,
-                    Email = w.Contractor.User.UserEmail,
-                    UnitValue = w.EconomicdataNavigation.UnitValue
+                var data = _context.EconomicdataContractor
+                    .Where(x => x.DetailContractor.ContractId.Equals(ContractId));
 
+                var result =  data.Select(w => new DetailProjectContractorDto()
+                {
+                    ContractorId = w.DetailContractor.ContractorId.ToString(),
+                    Convenio = w.DetailContractor.Contract.ProjectName,
+                    CompanyName = w.DetailContractor.Contract.CompanyName,
+                    NombreComponente = w.DetailContractor.Component.NombreComponente,
+                    Nombre = w.DetailContractor.Contractor.Nombres + " " + w.DetailContractor.Contractor.Apellidos,
+                    Identificacion = w.DetailContractor.Contractor.Identificacion,
+                    ObjetoConvenio = w.DetailContractor.Element.ObjetoElemento,
+                    ValorTotal = Math.Ceiling(w.TotalValue),
+                    InitialDate = w.DetailContractor.HiringData.FechaRealDeInicio,
+                    FinalDate = w.DetailContractor.HiringData.FechaFinalizacionConvenio,
+                    User = w.DetailContractor.Contractor.User.UserName,
+                    Email = w.DetailContractor.Contractor.User.UserEmail,
+                    UnitValue = Math.Ceiling( w.UnitValue),
                 })
                 .AsNoTracking()
                 .ToList();
@@ -425,11 +453,13 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 var date = DateTime.Now.ToString("dd/MM/yyyy");
                 row = 5;
                 int nro = 0;
-                foreach (var user in data)
+                foreach (var user in result)
                 {
                     if ( user.ObjetoConvenio != null && user.ValorTotal != null && user.InitialDate.HasValue && user.FinalDate.HasValue)
                     {
-                        var durationContract = CalculateDateContract(user.InitialDate.Value, user.FinalDate.Value);
+                        var durationContract = DateInDays(user.InitialDate.Value, user.FinalDate.Value);
+                        string numeroFormateado = user.ValorTotal.ToString("N0");
+
                         nro++;
                         worksheet.Cells[row, 1].Value = 80111600;
                         worksheet.Cells[row, 2].Value = user.ObjetoConvenio;
@@ -439,8 +469,8 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                         worksheet.Cells[row, 6].Value = durationContract;
                         worksheet.Cells[row, 7].Value = "CCE-16";
                         worksheet.Cells[row, 8].Value = 0;
-                        worksheet.Cells[row, 9].Value = user.ValorTotal;
-                        worksheet.Cells[row, 10].Value = user.ValorTotal;
+                        worksheet.Cells[row, 9].Value = numeroFormateado;
+                        worksheet.Cells[row, 10].Value = numeroFormateado;
                         worksheet.Cells[row, 11].Value = 0;
                         worksheet.Cells[row, 12].Value = 0;
                         worksheet.Cells[row, 13].Value = "Unidad estratégica de negociosos";
@@ -481,7 +511,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             return await Task.FromResult(stream);
         }
 
-        public async Task<MemoryStream> ExportElement(ControllerBase controller, Guid ContractId)
+        public async Task<MemoryStream> ExportElement(ControllerBase controller, Guid contractId)
         {
 
             var stream = new MemoryStream();
@@ -502,20 +532,31 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 worksheet.Cells["D1"].Value = "Actividad";
                 worksheet.Cells["E1"].Value = "Consecutivo Elemento";
                 worksheet.Cells["F1"].Value = "Nombre Elemento";
-                worksheet.Cells["G1"].Value = "Perfil Requerido";
+                worksheet.Cells["G1"].Value = "Perfil Academico Requerido";
+                worksheet.Cells["H1"].Value = "Perfil Experiencia Requerido";
+                var celdasBloqueadas = worksheet.Cells["A2:F2"];
+                celdasBloqueadas.Style.Locked = true;
+                worksheet.Protection.IsProtected = true;
+                worksheet.Protection.SetPassword("ContractacionITM");
 
-                worksheet.Cells["A1:G1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["A1:G1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
-                worksheet.Cells["A1:G1"].Style.Font.Bold = true;
-                worksheet.Cells["A1:G1"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:G1"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:G1"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A1:G1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                var celdasEditablesG1 = worksheet.Cells["G2:G40"];
+                celdasEditablesG1.Style.Locked = false;
+                var celdasEditablesH1 = worksheet.Cells["H2:H40"];
+                celdasEditablesH1.Style.Locked = false;
+                //var celdasEditablesG2 = worksheet.Cells["G30"];
+                //celdasEditablesG2.Style.Locked = false;
+                worksheet.Cells["A1:H1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A1:H1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
+                worksheet.Cells["A1:H1"].Style.Font.Bold = true;
+                worksheet.Cells["A1:H1"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:H1"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:H1"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A1:H1"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
 
                 var data = _context.ElementComponent
                     .Include(i => i.Component)
                     .Include(i => i.Activity)
-                    .Where(x => x.Component.ContractId.Equals(ContractId));
+                    .Where(x => x.Component.ContractId.Equals(contractId));
 
                 var dataList = data.Select(w => new ExportElementDto()
                 {
@@ -565,6 +606,763 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
             stream.Position = 0;
             return await Task.FromResult(stream);
         }
+
+        public async Task<MemoryStream> GenerateReport(RequestReportContract reportContract)
+        {
+            var stream = new MemoryStream();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            var getDataContract = _context.ContractFolder.Where(w => w.Id.Equals(Guid.Parse(reportContract.ContractId))).FirstOrDefault();
+            var getReportContract = await _contractorCore.GetContractorsByContract(reportContract.ContractId);
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                var worksheet = xlPackage.Workbook.Worksheets.Add("Adquisiciones");
+                var namedStyle = xlPackage.Workbook.Styles.CreateNamedStyle("HyperLink");
+                namedStyle.Style.Font.UnderLine = true;
+                namedStyle.Style.Font.Color.SetColor(Color.Blue);
+                const int startRow = 5;
+                var row = startRow;
+                //Create Headers and format them
+                worksheet.Cells["A1"].Value = "REPORTE DEL ESTADO DE CONVENIO INTER ADMINISTRATIVO " + getDataContract.ProjectName + " CON NÚMERO "+ getDataContract.NumberProject;
+                using (var r = worksheet.Cells["A1:J2"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+                worksheet.Cells["A3"].Value = "Consecutivo";
+                worksheet.Cells["B3"].Value = "Cedula";
+                worksheet.Cells["C3"].Value = "Nombres";
+                worksheet.Cells["D3"].Value = "Correo";
+                worksheet.Cells["E3"].Value = "Estado de la contratación";
+                worksheet.Cells["F3"].Value = "Estado Proceso juridico";
+                worksheet.Cells["G3"].Value = "Estado Proceso Contractual";
+                worksheet.Cells["H3"].Value = "Solicitud de comite";
+                worksheet.Cells["I3"].Value = "Estudios previos";
+                worksheet.Cells["J3"].Value = "Minuta contrato";
+ 
+                worksheet.Cells["A3:J3"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A3:J3"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(70, 130, 180));
+                worksheet.Cells["A3:J3"].Style.Font.Bold = true;
+                worksheet.Cells["A3:J3"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A3:J3"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A3:J3"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A3:J3"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+
+                var year = DateTime.Now.Year;
+                var month = DateTime.Now.Month;
+                var day = DateTime.Now.Day;
+                var date = DateTime.Now.ToString("dd/MM/yyyy");
+                row = 4;
+                int nro = 0;
+
+                foreach (var user in getReportContract.Data)
+                {
+                    nro++;
+                    worksheet.Cells[row, 1].Value = nro;
+                    worksheet.Cells[row, 2].Value = user.Identificacion;
+                    worksheet.Cells[row, 3].Value = user.Nombre;
+                    worksheet.Cells[row, 4].Value = user.Correo;
+                    worksheet.Cells[row, 5].Value = user.StatusContractor;
+                    worksheet.Cells[row, 6].Value = user.LegalProccess;
+                    worksheet.Cells[row, 7].Value = user.HiringStatus;
+                    worksheet.Cells[row, 8].Value = user.ComiteGenerated;
+                    worksheet.Cells[row, 9].Value = user.PreviusStudy;
+                    worksheet.Cells[row, 10].Value = user.MinuteGnenerated;
+                    row++;
+                    //if (user.StatusContractor == "INVITADO")
+                    //{
+                    //    worksheet.Cells[row, 5].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    //    worksheet.Cells[row, 5].Style.Fill.BackgroundColor.SetColor(Color.Gray);
+                    
+                    //}else if (user.StatusContractor == "EN REVISIÓN")
+                    //{
+                    //    worksheet.Cells[row, 5].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    //    worksheet.Cells[row, 5].Style.Fill.BackgroundColor.SetColor(Color.Red);
+
+                    //}else if (user.StatusContractor == "CONTRATANDO")
+                    //{
+                    //    worksheet.Cells[row, 5].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    //    worksheet.Cells[row, 5].Style.Fill.BackgroundColor.SetColor(Color.Blue);
+                    //}
+
+                }
+                if (nro > 0)
+                {
+                    worksheet.Columns.AutoFit();
+                    xlPackage.Workbook.Properties.Title = "REPORTE DE ESTADO";
+                    xlPackage.Workbook.Properties.Author = "ITM";
+                    xlPackage.Workbook.Properties.Created = DateTime.Now;
+                    xlPackage.Workbook.Properties.Subject = "REPORTE DE ESTADO";
+                    xlPackage.Save();
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            stream.Position = 0;
+            return await Task.FromResult(stream);
+        }
+
+
+        public async Task<MemoryStream> GenerateSatisfactionReport(Guid contractId,string base64)
+        {
+            var getReportContract = _context.DetailContractor.Where(x => x.ContractId.Equals(contractId))
+                    .Select(w => new ReportExportDto()
+                    {
+                        //ProjecName = w.Contract.ProjectName,
+                        contractorNames = w.Contractor.Nombres,
+                        ContractorLastNames = w.Contractor.Apellidos,
+                        ContractorIdentification = w.Contractor.Identificacion,
+                        ContractorMail = w.Contractor.Correo,
+                       
+                        //UnitValue = Math.Ceiling(w.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(w.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.UnitValue.Value).FirstOrDefault()),
+                    })
+                    .AsNoTracking()
+                    .ToList();
+            var stream = new MemoryStream();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                var worksheet = xlPackage.Workbook.Worksheets.Add("JUSTICIA");
+                worksheet.Cells["E1"].Value = "RECIBIDO A SATISFACCIÓN PARA CONTRATISTAS (CONTRATOS Y CONVENIOS INTERADMINISTRATIVOS)";
+                using (var r = worksheet.Cells["E1:O3"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.White);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+                worksheet.Cells["P1"].Value = "Código";
+                worksheet.Cells["P2"].Value = "Versión";
+                worksheet.Cells["P3"].Value = "Fecha";
+                worksheet.Cells["R1"].Value = "FG 016";
+                worksheet.Cells["R2"].Value = "02";
+                worksheet.Cells["R3"].Value = "13-09-2019";
+                worksheet.Cells["A4"].Value = "Medellin," + DateTime.Now;
+                worksheet.Cells["A6"].Value = "En mi calidad de supervisor de los contratos de prestación de servicios del  contrato N° 4600094802  DE 2022 cuyo objeto es \"CONTRATO INTERADMINISTRATIVO PARA EL FORTALECIMIENTO DE LOS PROCESOS DE ATENCIÓN EN LAS CASAS DE JUSTICIA Y COMISARÍAS DE FAMILIA DE LA CIUDAD..\", me permito certificar que las personas que relaciono a continuación, cumplieron con las obligaciones contraídas en el objeto contractual según los informes de productos entregados por los contratistas. Igualmente certifico que se ha verificado el pago de los aportes al sistema de seguridad social en salud, pensión y riesgos laborales (ARL) correspondientes al periodo de cobro.\r\n\r\nPor lo anterior considero pertinente desembolsar el pago a las siguientes personas.\r\n";
+
+                worksheet.Cells["A14"].Value = "No. ";
+                worksheet.Cells["B14"].Value = "No. Contrato";
+                worksheet.Cells["C14"].Value = "vr Contrato";
+                worksheet.Cells["D14"].Value = "No. Adición";
+                worksheet.Cells["E14"].Value = "Documento de Identidad";
+                worksheet.Cells["F14"].Value = "Apellidos";
+                worksheet.Cells["G14"].Value = "Nombres";
+                worksheet.Cells["H14"].Value = "Periodo inicial";
+                worksheet.Cells["I14"].Value = "Periodo final";
+                worksheet.Cells["J14"].Value = "vr a pagar del periodo";
+                worksheet.Cells["K14"].Value = "vr Salud - Pensión - ARL";
+                worksheet.Cells["L14"].Value = "ARL - Riesgos Lab.";
+                worksheet.Cells["M14"].Value = "Aportes a Salud";
+                worksheet.Cells["N14"].Value = "Aportes a Pensión";
+                worksheet.Cells["O14"].Value = "(*) Novedad";
+                worksheet.Cells["P14"].Value = "Días";
+                worksheet.Cells["Q14"].Value = "Código área de negocios";
+                worksheet.Cells["R14"].Value = "Nombre área de negocios ";
+                worksheet.Cells["S14"].Value = "No.PLANILLA SS ";
+                worksheet.Cells["T14"].Value = "NOVEDAD";
+
+                worksheet.Cells["W14"].Value = "IBC";
+                worksheet.Cells["X14"].Value = "PENSION";
+                worksheet.Cells["Y14"].Value = "SALUD";
+                worksheet.Cells["Z14"].Value = "NIVEL RIESGO";
+                worksheet.Cells["AA14"].Value = "ARL";
+                worksheet.Cells["AB14"].Value = "SUMATORIA";
+
+
+                worksheet.Cells["A14:AB14"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A14:AB14"].Style.Fill.BackgroundColor.SetColor(Color.White);
+                worksheet.Cells["A14:AB14"].Style.Font.Bold = true;
+                worksheet.Cells["A14:AB14"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A14:AB14"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A14:AB14"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A14:AB14"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+
+                using (var r = worksheet.Cells["A6:s12"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.White);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+
+                using (var r = worksheet.Cells["A4:H4"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+                using (var r = worksheet.Cells["P1:Q1"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center; 
+
+                }
+
+                using (var r = worksheet.Cells["P2:Q2"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+
+                //border.Bottom.Color.SetColor(Color.Green);  // Color rojo
+                using (var r = worksheet.Cells["P3:Q3"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+                using (var r2 = worksheet.Cells["R3:S3"])
+                {
+                    r2.Style.WrapText = true;
+                    r2.Merge = true;
+                    r2.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r2.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r2.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+                using (var r2 = worksheet.Cells["R1:S1"])
+                {
+                    r2.Style.WrapText = true;
+                    r2.Merge = true;
+                    r2.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r2.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+                using (var r2 = worksheet.Cells["R2:S2"])
+                {
+                    r2.Style.WrapText = true;
+                    r2.Merge = true;
+                    //r.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
+                    r2.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r2.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+
+                using (var r = worksheet.Cells["A1:D3"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+                const int startRow = 1;
+                if (base64.StartsWith("data:image/png;base64,"))
+                {
+                    base64 = base64.Substring("data:image/png;base64,".Length);
+                }
+
+                byte[] imageBytes = Convert.FromBase64String(base64);
+
+                // Guardar la imagen temporal en formato PNG
+                string tempFilePath = Path.GetTempFileName();
+                string imagePath = Path.ChangeExtension(tempFilePath, "png"); // Cambiar la extensión a .png
+                File.WriteAllBytes(imagePath, imageBytes);
+
+                FileInfo imageFile = new FileInfo(imagePath);
+
+                // Agregar la imagen a la hoja de cálculo
+                var row = 15;
+                int nro = 0;
+                var data = _context.ElementComponent
+                    .Include(i => i.Component)
+                    .Include(i => i.Activity)
+                    .Where(x => x.Component.ContractId.Equals(contractId));
+
+                var dataList = data.Select(w => new ExportElementDto()
+                {
+                    Id = w.Id.ToString(),
+                    Consecutive = w.Consecutivo,
+                    ElementName = w.NombreElemento,
+                    ComponentName = w.Component.NombreComponente,
+                    ActivityName = w.Activity.NombreActividad
+                })
+                .AsNoTracking()
+                .ToList();
+
+                for (int i = 0; i < 15; i++)
+                {
+                    nro++;
+                    worksheet.Cells[row, 1].Value = nro;
+                    worksheet.Cells["A:AD"].AutoFitColumns(); // Ajusta automáticamente el ancho de las columnas dentro del rango
+
+                    worksheet.Cells[row, 2].Value = "user.Identificacion";
+                    worksheet.Cells[row, 3].Value = "user.Nombre";
+                    worksheet.Cells[row, 4].Value = "user.Correo";
+                    worksheet.Cells[row, 5].Value = "user.StatusContractor";
+                    worksheet.Cells[row, 6].Value = "user.LegalProccess";
+                    worksheet.Cells[row, 7].Value = "user.HiringStatus";
+                    worksheet.Cells[row, 8].Value = "user.ComiteGenerated";
+                    worksheet.Cells[row, 9].Value = "user.PreviusStudy";
+                    worksheet.Cells[row, 10].Value = "user.MinuteGnenerated";
+                    worksheet.Cells[row, 11].Value = "user.MinuteGnenerated";
+                    worksheet.Cells[row, 12].Value = "user.MinuteGnenerated";
+                    worksheet.Cells[row, 13].Value = "user.MinuteGnenerated";
+                    worksheet.Cells[row, 14].Value = "user.MinuteGnenerated";
+                    worksheet.Cells[row, 15].Value = "user.MinuteGnenerated";
+                    worksheet.Cells[row, 16].Value = "user.MinuteGnenerated";
+                    row++;
+                }
+                var excelImage = worksheet.Drawings.AddPicture("imageName", imageFile);
+                excelImage.SetPosition(startRow, 0, 1, 0); // Row, Column, StartRow, StartColumn
+                excelImage.SetSize(160, 40);
+
+                xlPackage.Save(); // Guardar el paquete Excel
+                stream.Seek(0, SeekOrigin.Begin); // Establecer la posición del MemoryStream al principio
+             
+                //foreach (var user in 5)
+                //{
+                //    nro++;
+                //    worksheet.Cells[row, 1].Value = nro;
+                //    worksheet.Cells["A:T"].AutoFitColumns(); // Ajusta automáticamente el ancho de las columnas dentro del rango
+
+                //    worksheet.Cells[row, 2].Value = "user.Identificacion";
+                //    worksheet.Cells[row, 3].Value = "user.Nombre";
+                //    worksheet.Cells[row, 4].Value = "user.Correo";
+                //    worksheet.Cells[row, 5].Value = "user.StatusContractor";
+                //    worksheet.Cells[row, 6].Value = "user.LegalProccess";
+                //    worksheet.Cells[row, 7].Value = "user.HiringStatus";
+                //    worksheet.Cells[row, 8].Value = "user.ComiteGenerated";
+                //    worksheet.Cells[row, 9].Value = "user.PreviusStudy";
+                //    worksheet.Cells[row, 10].Value = "user.MinuteGnenerated";
+                //    row++;
+                //}
+
+            }
+            //stream.Position = 0;
+            return await Task.FromResult(stream);
+        }
+
+        public async Task<MemoryStream> GenerateEconomicTable(Guid contractId, string base64)
+        {
+            var ComponentsList = _context.Component
+                .Where(w => w.ContractId.Equals(contractId)).ToList();
+            if (ComponentsList.Count <= 0)
+            {
+                return null;
+            }
+            var lisIdComponent = ComponentsList.Select(w => w.Id).ToList(); 
+            var ActivitiesList = _context.Activity.Where(w => lisIdComponent.Contains(w.ComponentId)).ToList();
+            var idLidActivity = ActivitiesList.Select(w => w.Id).ToList();
+            var ElementsList = _context.ElementComponent.Where(w => idLidActivity.Contains(w.ActivityId.Value) || lisIdComponent.Contains(w.ComponentId.Value)).ToList();
+            var getReportContract = _context.DetailContract.OrderByDescending(o => o.Consecutive).Where(x => x.ContractId.Equals(contractId))
+                    .Select(w => new EconomicTableDto()
+                    {
+                        ProjecName = w.Contract.ProjectName,
+                        TotalValue = w.Contract.ValorContrato,
+                        SubTotal = w.Contract.ValorSubTotal,
+                        OperatingExpenses = w.Contract.GastosOperativos,
+                        CompanyName = w.Contract.CompanyName
+                    })
+                    .AsNoTracking()
+                    .FirstOrDefault();
+            var stream = new MemoryStream();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var xlPackage = new ExcelPackage(stream))
+            {
+                //int row = 5; // Fila
+                //int col = 1; // Columna
+
+                var worksheet = xlPackage.Workbook.Worksheets.Add("JUSTICIA");
+                //foreach (char c in "Componente")
+                //{
+                //    worksheet.Cells[row, col].Value = c.ToString();
+                //    worksheet.Cells[row, col].Style.TextRotation = 90; // Rotar texto verticalmente
+                //    row++;
+                //}
+                worksheet.Cells["D1"].Value = "INSTITUTO TECNOLÓGICO METROPOLITANO";
+                worksheet.Cells["D2"].Value = getReportContract.CompanyName;
+                worksheet.Cells["D3"].Value = getReportContract.ProjecName;
+                worksheet.Column(5).Width = 20;
+                worksheet.Column(9).Width = 20;
+                worksheet.Column(10).Width = 20;
+                worksheet.Column(11).Width = 20;
+                worksheet.Column(3).Width = 15;
+                worksheet.Column(4).Width = 20;
+
+                using (var r = worksheet.Cells["D1:I1"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.White);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+
+                using (var r = worksheet.Cells["D2:I2"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.White);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+
+                using (var r = worksheet.Cells["D3:I3"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.White);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+
+                worksheet.Cells["J1"].Value = "Código";
+                worksheet.Cells["J2"].Value = "Versión";
+                worksheet.Cells["J3"].Value = "Fecha";
+                worksheet.Cells["K1"].Value = "FPS 002";
+                worksheet.Cells["K2"].Value = "05";
+                worksheet.Cells["K3"].Value = " ";
+                worksheet.Cells["A4"].Value = "Descripción/ Componente";
+                worksheet.Cells["F4"].Value = "Cant.";
+                worksheet.Cells["G4"].Value = "Duración";
+                worksheet.Cells["H4"].Value = "Vr. Unidad";
+                worksheet.Cells["I4"].Value = "Vr. Total";
+                worksheet.Cells["J4"].Value = "REQUIERE CONTRATARSE (Marque X)";
+                worksheet.Cells["J6"].Value = "SI";
+                worksheet.Cells["K6"].Value = "NO";
+
+                worksheet.Cells["A4:K4"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                worksheet.Cells["A4:K4"].Style.Fill.BackgroundColor.SetColor(Color.White);
+                worksheet.Cells["A4:K4"].Style.Font.Bold = true;
+                worksheet.Cells["A4:K4"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A4:K4"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A4:K4"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                worksheet.Cells["A4:K4"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+
+
+                using (var r = worksheet.Cells["J6"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.Gray);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+                using (var r = worksheet.Cells["K6"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.Gray);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+                using (var r = worksheet.Cells["J4:K5"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.Gray);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+
+                using (var r = worksheet.Cells["G4:G6"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+
+                using (var r = worksheet.Cells["F4:F6"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+                using (var r = worksheet.Cells["H4:I6"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+
+                using (var r = worksheet.Cells["A4:E6"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+                using (var r = worksheet.Cells["J1"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                }
+
+                using (var r = worksheet.Cells["J2"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+
+                //border.Bottom.Color.SetColor(Color.Green);  // Color rojo
+                using (var r = worksheet.Cells["J3"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+                using (var r2 = worksheet.Cells["K3"])
+                {
+                    r2.Style.WrapText = true;
+                    r2.Merge = true;
+                    r2.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r2.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r2.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+                using (var r2 = worksheet.Cells["K1"])
+                {
+                    r2.Style.WrapText = true;
+                    r2.Merge = true;
+                    r2.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r2.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+                using (var r2 = worksheet.Cells["K2"])
+                {
+                    r2.Style.WrapText = true;
+                    r2.Merge = true;
+                    //r.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(240, 232, 230));
+                    r2.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r2.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+
+                using (var r = worksheet.Cells["A1:C3"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+                var number = 7;
+                var number2 = 0;
+                var LastValue = 6;
+                for (int i = 0; i < ComponentsList.Count; i++)
+                {
+                    var getActivities = ActivitiesList.Where(f => f.ComponentId.Equals(ComponentsList[i].Id)).Select(s => s.Id).ToList();
+                    var elements = ElementsList.Where(w => getActivities.Contains(w.ComponentId.Value) || w.ComponentId.Equals(ComponentsList[i].Id)).Count();
+                    if (i > 0)
+                    {
+                        number = elements;
+                        LastValue = elements;
+                    }
+                    else
+                    {
+                        LastValue = elements + 7;
+                    }
+                    number2 = elements + LastValue;
+                    var cellValue = "A" + number;
+                    var cellValue2 = "B" + number2;
+                    using (var r = worksheet.Cells[cellValue + ":" + cellValue2])
+                    {
+                        r.Style.WrapText = true;
+                        r.Merge = true;
+                        r.Style.Font.Color.SetColor(Color.Black);
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    }
+                    if (getActivities.Count > 0)
+                    {
+                        elements = ElementsList.Where(w => getActivities.Contains(w.ComponentId.Value)).Count();
+                        var cellValueAct = "C" + number;
+                        var cellValueAct2 = "C" + number2;
+                        using (var r = worksheet.Cells[cellValueAct + ":" + cellValueAct2])
+                        {
+                            r.Style.WrapText = true;
+                            r.Merge = true;
+                            r.Style.Font.Color.SetColor(Color.Black);
+                            r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                            r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        }
+                    }
+                }
+
+
+                const int startRow = 1;
+                if (base64.StartsWith("data:image/png;base64,"))
+                {
+                    base64 = base64.Substring("data:image/png;base64,".Length);
+                }
+
+                byte[] imageBytes = Convert.FromBase64String(base64);
+
+                // Guardar la imagen temporal en formato PNG
+                string tempFilePath = Path.GetTempFileName();
+                string imagePath = Path.ChangeExtension(tempFilePath, "png"); // Cambiar la extensión a .png
+                File.WriteAllBytes(imagePath, imageBytes);
+
+                FileInfo imageFile = new FileInfo(imagePath);
+
+                // Agregar la imagen a la hoja de cálculo
+                var row = 7;
+                int nro = 0;
+                var data = _context.ElementComponent
+                    .Include(i => i.Component)
+                    .Include(i => i.Activity)
+                    .Where(x => x.Component.ContractId.Equals(contractId));
+
+                var dataList = data.Select(w => new ExportElementDto()
+                {
+                    Id = w.Id.ToString(),
+                    Consecutive = w.Consecutivo,
+                    ElementName = w.NombreElemento,
+                    ComponentName = w.Component.NombreComponente,
+                    ActivityName = w.Activity.NombreActividad
+                })
+                .AsNoTracking()
+                .ToList();
+
+                for (int i = 0; i < ComponentsList.Count; i++)
+                {
+                    nro++;
+                    worksheet.Cells[row, 1].Value = nro;
+                    for (int j = 0; j < ActivitiesList.Count; j++)
+                    {
+                        worksheet.Cells[row, 3].Value = "user.Identificacion";
+                        worksheet.Cells[row, 3].Value = "user.Nombre";
+                        worksheet.Cells[row, 4].Value = "user.Correo";
+                        for (int k = 0; k < ElementsList.Count; k++)
+                        {
+                            worksheet.Cells["A:K"].AutoFitColumns(); // Ajusta automáticamente el ancho de las columnas dentro del rango
+
+                            worksheet.Cells[row, 5].Value = "user.StatusContractor";
+                            worksheet.Cells[row, 6].Value = "user.LegalProccess";
+                            worksheet.Cells[row, 7].Value = "user.HiringStatus";
+                            worksheet.Cells[row, 8].Value = "user.ComiteGenerated";
+                            worksheet.Cells[row, 9].Value = "user.PreviusStudy";
+                            worksheet.Cells[row, 10].Value = "user.MinuteGnenerated";
+                            worksheet.Cells[row, 11].Value = "user.MinuteGnenerated";
+                            worksheet.Cells[row, 12].Value = "user.MinuteGnenerated";
+                            worksheet.Cells[row, 13].Value = "user.MinuteGnenerated";
+                            worksheet.Cells[row, 14].Value = "user.MinuteGnenerated";
+                            worksheet.Cells[row, 15].Value = "user.MinuteGnenerated";
+                            worksheet.Cells[row, 16].Value = "user.MinuteGnenerated";
+                            row++;
+                        }
+                    }
+
+                }
+                var excelImage = worksheet.Drawings.AddPicture("imageName", imageFile);
+                excelImage.SetPosition(startRow, 0, 1, 0); // Row, Column, StartRow, StartColumn
+                excelImage.SetSize(160, 40);
+
+                xlPackage.Save(); // Guardar el paquete Excel
+                stream.Seek(0, SeekOrigin.Begin); // Establecer la posición del MemoryStream al principio
+
+                //foreach (var user in 5)
+                //{
+                //    nro++;
+                //    worksheet.Cells[row, 1].Value = nro;
+                //    worksheet.Cells["A:T"].AutoFitColumns(); // Ajusta automáticamente el ancho de las columnas dentro del rango
+
+                //    worksheet.Cells[row, 2].Value = "user.Identificacion";
+                //    worksheet.Cells[row, 3].Value = "user.Nombre";
+                //    worksheet.Cells[row, 4].Value = "user.Correo";
+                //    worksheet.Cells[row, 5].Value = "user.StatusContractor";
+                //    worksheet.Cells[row, 6].Value = "user.LegalProccess";
+                //    worksheet.Cells[row, 7].Value = "user.HiringStatus";
+                //    worksheet.Cells[row, 8].Value = "user.ComiteGenerated";
+                //    worksheet.Cells[row, 9].Value = "user.PreviusStudy";
+                //    worksheet.Cells[row, 10].Value = "user.MinuteGnenerated";
+                //    row++;
+                //}
+
+            }
+            //stream.Position = 0;
+            return await Task.FromResult(stream);
+        }
+
         #endregion
 
         #region PRIVATE METHODS
@@ -595,22 +1393,44 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
 
         }
 
+        private int DateInDays(DateTime initialDate, DateTime finalDate)
+        {
+            TimeSpan diferencia = finalDate - initialDate;
+            // Muestra la diferencia en días
+            return diferencia.Days;
+
+        }
+
         private string SeparateObligation(string generalObligation, string specificObligation)
         {
             string unifyObligation = null;
             var generalObligationList = generalObligation.Split("->");
             var specificObligationList = specificObligation.Split("->");
-
+            var ObligacionesGenerales = "OBLIGACIONES GENERALES: ";
+            var ObligacionesEspecificas = "OBLIGACIONES ESPECIFICAS: ";
+            var cont = 0;
             foreach (var item in generalObligationList)
             {
+                cont++;
+                if (cont == 1)
+                {
+                    unifyObligation =ObligacionesGenerales;
+                }
                 unifyObligation += item;
             }
+            cont = 0;
             foreach (var item in specificObligationList)
             {
+                cont++;
+                if (cont == 1)
+                {
+                     unifyObligation += ObligacionesEspecificas;
+                }
                 unifyObligation += item;
             }
             return unifyObligation;
         }
+
         #endregion
     }
 }

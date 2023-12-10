@@ -22,6 +22,9 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public string? DocumentTypes { get; set; }
         public string? StatusPayment { get; set; }
         public string? DocumentTypesCode { get; set; }
+        public string? Reason { get; set; }
+        public string? Observation { get; set; }
+        public string? UserContractual { get; set; }
 
         public DetailFileDto? DetailFile { get; set; } = null;
 

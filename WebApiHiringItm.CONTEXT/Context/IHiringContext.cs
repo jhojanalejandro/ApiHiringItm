@@ -19,6 +19,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<ContractFolder> ContractFolder { get; set; }
         DbSet<Contractor> Contractor { get; set; }
         DbSet<ContractorPayments> ContractorPayments { get; set; }
+        DbSet<ContractorPaymentSecurity> ContractorPaymentSecurity { get; set; }
         DbSet<CpcType> CpcType { get; set; }
         DbSet<DetailContract> DetailContract { get; set; }
         DbSet<DetailContractor> DetailContractor { get; set; }
@@ -27,7 +28,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<EconomicdataContractor> EconomicdataContractor { get; set; }
         DbSet<ElementComponent> ElementComponent { get; set; }
         DbSet<ElementType> ElementType { get; set; }
-        DbSet<EmptityHealth> EmptityHealth { get; set; }
+        DbSet<EntityHealth> EntityHealth { get; set; }
         DbSet<Files> Files { get; set; }
         DbSet<Folder> Folder { get; set; }
         DbSet<FolderType> FolderType { get; set; }
@@ -37,7 +38,7 @@ namespace WebApiHiringItm.CONTEXT.Context
         DbSet<NewnessType> NewnessType { get; set; }
         DbSet<Roll> Roll { get; set; }
         DbSet<RubroType> RubroType { get; set; }
-        DbSet<SharedData> SharedData { get; set; }
+        //DbSet<SharedData> SharedData { get; set; }
         DbSet<StatusContract> StatusContract { get; set; }
         DbSet<StatusContractor> StatusContractor { get; set; }
         DbSet<StatusFile> StatusFile { get; set; }

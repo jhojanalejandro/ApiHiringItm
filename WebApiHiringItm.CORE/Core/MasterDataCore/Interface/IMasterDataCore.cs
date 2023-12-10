@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Dto.MasterDataDto;
+using WebApiHiringItm.MODEL.Dto.Security;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.MasterDataCore.Interface
@@ -23,5 +26,10 @@ namespace WebApiHiringItm.CORE.Core.MasterDataCore.Interface
         Task<List<AssignmentTypeDto>> GetAllAssignmentType();
         Task<List<TermTypeDto>> GetAllTermType();
         Task<List<DetailTypeDto>> GetAllDetailType();
+        Task<List<NewnessTypeDto>> GetNewnessType();
+        Task<List<EntityHealthDto>> GetEmptityHealth();
+        Task<IGenericResponse<string>> SaveBank(BanksDto banksDtoModel);
+        Task<IGenericResponse<string>> SaveRubro(RubroTypeDto rubroType);
+        Task<IGenericResponse<string>> SaveCpcType(CpcTypeDto CpcTypeDto);
     }
 }

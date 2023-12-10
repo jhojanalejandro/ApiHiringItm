@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using WebApiHiringItm.CORE.Core.ExportToExcel.Interfaces;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.MODEL.Dto;
+using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.API.Controllers.ExportToExcel
 {
@@ -85,19 +88,24 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
         [HttpGet("{ContractId}")]
         public async Task<IActionResult> ExportToExcelCdp(Guid ContractId)
         {
+
             try
             {
-                var result = await _export.ExportToExcelCdp(ContractId);
-                Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
-                if (result == null)
+                var isSuccess = await _export.ExportToExcelCdp(ContractId);
+                if (isSuccess.Success)
                 {
-                    return NoContent();
+                    Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
+                    return File(isSuccess.Data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Exportar CDP.xlsx");
                 }
-                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Exportar CDP.xlsx");
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -119,6 +127,67 @@ namespace WebApiHiringItm.API.Controllers.ExportToExcel
                 throw new Exception("Error", ex);
             }
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> GenerateReportContract(RequestReportContract requestReportContract)
+        {
+            try
+            {
+                var result = await _export.GenerateReport(requestReportContract);
+                Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
+                if (result == null)
+                {
+                    return NoContent();
+                }
+                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "REPORTE CONTRATO.xlsx");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GenerateSatisfactionReport(SatisfaccionReportRequest satisfaccionReportRequest)
+        {
+            try
+            {
+                var result = await _export.GenerateSatisfactionReport(Guid.Parse(satisfaccionReportRequest.contractId), satisfaccionReportRequest.base64);
+                Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
+                if (result == null)
+                {
+                    return NoContent();
+                }
+                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "REPORTE CONTRATO.xlsx");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GenerateEconomicTable(SatisfaccionReportRequest satisfaccionReportRequest)
+        {
+            try
+            {
+                var result = await _export.GenerateEconomicTable(Guid.Parse(satisfaccionReportRequest.contractId), satisfaccionReportRequest.base64);
+                Response.ContentType = new MediaTypeHeaderValue("application/octet-stream").ToString();
+                if (result == null)
+                {
+                    return NoContent();
+                }
+                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "REPORTE CONTRATO.xlsx");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error", ex);
+            }
+        }
+
+
+
         #endregion
     }
 }

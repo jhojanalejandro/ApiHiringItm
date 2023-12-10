@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApiHiringItm.MODEL.Dto.PdfDto
 {
-    public class CommitteeRequestDto
+    public class CommiteeRequestDto
     {
         public Guid? Id { get; set; }
         public string? ContractorId { get; set; }
@@ -20,8 +20,9 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public string? UserFirm { get; set; }
         public string ElementObject { get; set; }
         public string ElementName { get; set; }
-        public string? TotalValue { get; set; }
+        public decimal TotalValue { get; set; }
         public string ProfileRequire { get; set; }
+        public DateTime RegisterDate { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -10,6 +11,9 @@ using WebApiHiringItm.CORE.Core.User.Interface;
 using WebApiHiringItm.CORE.Helpers.Enums;
 using WebApiHiringItm.CORE.Helpers.Enums.File;
 using WebApiHiringItm.CORE.Helpers.Enums.Rolls;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Usuario;
 using WebApiHiringItm.MODEL.Entities;
@@ -82,7 +86,7 @@ namespace WebApiHiringItm.CORE.Core.User
         }
 
 
-        public async Task<bool> SaveUserDocument(UserFileDto modelFirm)
+        public async Task<IGenericResponse<string>> SaveUserDocument(UserFileDto modelFirm)
         {
             var typeUserFileId = _context.UserFileType.Where(x => x.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.Id).FirstOrDefault();
 
@@ -93,13 +97,15 @@ namespace WebApiHiringItm.CORE.Core.User
                 .Where(w => w.Id.Equals(modelFirm.UserId)).FirstOrDefault();
                 if (!modelFirm.UserFileType.Equals(typeUserFileId))
                 {
-                    var getImageMesagge = _context.UserFile.Where(x => x.UserFileType.Equals(typeUserFileIdImage) && x.UserId.Equals(modelFirm.UserId)).FirstOrDefault();
+                    var getImageMesagge = _context.UserFile.Where(x => x.UserFileType.Equals(typeUserFileIdImage)).FirstOrDefault();
                     if (getImageMesagge != null)
                     {
-                        getImageMesagge.FileData = modelFirm.FileData;
-                        getImageMesagge.RollId = modelFirm.RollId;
-                        _context.UserFile.Update(getImageMesagge);
-
+                        //getImageMesagge.FileData = modelFirm.FileData;
+                        //getImageMesagge.RollId = modelFirm.RollId;
+                        //_context.UserFile.Update(getImageMesagge);
+                        var map = _mapper.Map<UserFile>(modelFirm);
+                        map.Id = Guid.NewGuid();
+                        _context.UserFile.Add(map);
                     }
                     else
                     {
@@ -127,18 +133,39 @@ namespace WebApiHiringItm.CORE.Core.User
 
                     }
                 }
-
-                var resp = await _context.SaveChangesAsync();
-                return resp > 0 ? true : false;
             }
             else
             {
                 var map = _mapper.Map<UserFile>(modelFirm);
                 map.Id = Guid.NewGuid();
                 _context.UserFile.Add(map);
-                var resp = await _context.SaveChangesAsync();
-                return resp > 0 ? true : false;
             }
+            await _context.SaveChangesAsync();
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+
+        }
+
+        public async Task<IGenericResponse<string>> SaveAttachFile(List<UserFileDto> modelAnexo)
+        {
+            try
+            {
+                var typeUserFileId = _context.UserFileType.Where(x => x.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.Id).FirstOrDefault();
+
+                var modelAnexoMap = _mapper.Map<List<UserFile>>(modelAnexo);
+                foreach (var item in modelAnexoMap)
+                {
+                    item.Id = Guid.NewGuid();
+                }
+                _context.UserFile.AddRange(modelAnexoMap);
+                await _context.SaveChangesAsync();
+                return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+
+            }
+
 
         }
 

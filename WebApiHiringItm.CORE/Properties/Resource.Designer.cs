@@ -70,11 +70,119 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Alguno de los valores ingresados no es correcto.
+        /// </summary>
+        internal static string AUTENTICATEFIELDERROR {
+            get {
+                return ResourceManager.GetString("AUTENTICATEFIELDERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Autenticación exitosa.
+        /// </summary>
+        internal static string AUTENTICATERESPONSE {
+            get {
+                return ResourceManager.GetString("AUTENTICATERESPONSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Ya esta registrado el banco.
+        /// </summary>
+        internal static string BANKEXIST {
+            get {
+                return ResourceManager.GetString("BANKEXIST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Registro Eliminado exitosamente.
+        /// </summary>
+        internal static string DELETESUCCESS {
+            get {
+                return ResourceManager.GetString("DELETESUCCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Correo ya se ha actualizado, vuelva arequerir cambio de clave.
+        /// </summary>
+        internal static string DISABLEMAIL {
+            get {
+                return ResourceManager.GetString("DISABLEMAIL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Docuemnto generado exitosamente.
+        /// </summary>
+        internal static string DOCUMENTGENERATE {
+            get {
+                return ResourceManager.GetString("DOCUMENTGENERATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error en el correo o contraseña.
+        /// </summary>
+        internal static string ERRORAUTENTICATE {
+            get {
+                return ResourceManager.GetString("ERRORAUTENTICATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La información del detalle del archivo fallo al registrarse.
+        /// </summary>
+        internal static string ERRORDETAILFILE {
+            get {
+                return ResourceManager.GetString("ERRORDETAILFILE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Error al cargar el excel porque esta imcompleto.
+        /// </summary>
+        internal static string ERRORUPLOADEXCEL {
+            get {
+                return ResourceManager.GetString("ERRORUPLOADEXCEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a la información esta incompleta para generar el documento.
+        /// </summary>
+        internal static string EXCELEMPTY {
+            get {
+                return ResourceManager.GetString("EXCELEMPTY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Excel importado exitosamente.
+        /// </summary>
+        internal static string EXCELIMPORTSUCCESS {
+            get {
+                return ResourceManager.GetString("EXCELIMPORTSUCCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a El identificador no contiene la  estructura valida.
         /// </summary>
         internal static string GUIDNOTVALID {
             get {
                 return ResourceManager.GetString("GUIDNOTVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a No se encontro la firma del usuario para el mensaje.
+        /// </summary>
+        internal static string IMAGEUSERMESSAGE {
+            get {
+                return ResourceManager.GetString("IMAGEUSERMESSAGE", resourceCulture);
             }
         }
         
@@ -88,6 +196,15 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a El correo proporcionado no esta registrado.
+        /// </summary>
+        internal static string MAILNOTEXIST {
+            get {
+                return ResourceManager.GetString("MAILNOTEXIST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Invitación envida exitosamente.
         /// </summary>
         internal static string MAILSENDSUCCESS {
@@ -97,11 +214,47 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Error al registrar la información de pago.
+        /// </summary>
+        internal static string PAYMENTERROR {
+            get {
+                return ResourceManager.GetString("PAYMENTERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Información registra exitosamnete.
         /// </summary>
         internal static string REGISTERSUCCESSFULL {
             get {
                 return ResourceManager.GetString("REGISTERSUCCESSFULL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a ¡Restablecimiento de contraseña enviado! Recibirás un correo electrónico si estás registrado en nuestro sistema..
+        /// </summary>
+        internal static string RESETPASSWORDSUCCESS {
+            get {
+                return ResourceManager.GetString("RESETPASSWORDSUCCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Contraseña restaurada exitosamente.
+        /// </summary>
+        internal static string RESETSUCCESS {
+            get {
+                return ResourceManager.GetString("RESETSUCCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a No se encontraron fechas limite para la entrega de los documentos|.
+        /// </summary>
+        internal static string TERMDATENOTFOUND {
+            get {
+                return ResourceManager.GetString("TERMDATENOTFOUND", resourceCulture);
             }
         }
         
@@ -120,6 +273,15 @@ namespace WebApiHiringItm.CORE.Properties {
         internal static string UPDATESUCCESSFULL {
             get {
                 return ResourceManager.GetString("UPDATESUCCESSFULL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Ya existe un usuario registrado con ese correo.
+        /// </summary>
+        internal static string USEREXIST {
+            get {
+                return ResourceManager.GetString("USEREXIST", resourceCulture);
             }
         }
     }

@@ -7,7 +7,7 @@ using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.MODEL.Dto.Componentes
 {
-    public class ComponenteDto
+    public class ComponentDto
     {
 
         public Guid? Id { get; set; }

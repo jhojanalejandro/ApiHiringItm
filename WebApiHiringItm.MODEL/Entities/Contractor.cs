@@ -11,16 +11,15 @@ namespace WebApiHiringItm.MODEL.Entities
         {
             AcademicInformation = new HashSet<AcademicInformation>();
             DetailContractor = new HashSet<DetailContractor>();
-            EmptityHealth = new HashSet<EmptityHealth>();
-            Files = new HashSet<Files>();
+            DetailFile = new HashSet<DetailFile>();
             Folder = new HashSet<Folder>();
             HiringData = new HashSet<HiringData>();
             NewnessContractor = new HashSet<NewnessContractor>();
         }
 
         public Guid Id { get; set; }
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
+        public string Nombres { get; set; }
+        public string Apellidos { get; set; }
         public string Identificacion { get; set; }
         public string LugarExpedicion { get; set; }
         public string Genero { get; set; }
@@ -40,14 +39,21 @@ namespace WebApiHiringItm.MODEL.Entities
         public string ClaveUsuario { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaActualizacion { get; set; }
-        public Guid? RollId { get; set; }
+        public Guid RollId { get; set; }
+        public Guid? Eps { get; set; }
+        public Guid? Arl { get; set; }
+        public Guid? Afp { get; set; }
+        public bool? EnableEdit { get; set; }
+        public bool? EnableChangePassword { get; set; }
 
+        public virtual EntityHealth AfpNavigation { get; set; }
+        public virtual EntityHealth ArlNavigation { get; set; }
         public virtual Banks EntidadCuentaBancariaNavigation { get; set; }
+        public virtual EntityHealth EpsNavigation { get; set; }
         public virtual UserT User { get; set; }
         public virtual ICollection<AcademicInformation> AcademicInformation { get; set; }
         public virtual ICollection<DetailContractor> DetailContractor { get; set; }
-        public virtual ICollection<EmptityHealth> EmptityHealth { get; set; }
-        public virtual ICollection<Files> Files { get; set; }
+        public virtual ICollection<DetailFile> DetailFile { get; set; }
         public virtual ICollection<Folder> Folder { get; set; }
         public virtual ICollection<HiringData> HiringData { get; set; }
         public virtual ICollection<NewnessContractor> NewnessContractor { get; set; }

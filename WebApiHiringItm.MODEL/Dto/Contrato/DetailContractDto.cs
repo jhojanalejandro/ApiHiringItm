@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApiHiringItm.MODEL.Dto.ContratoDto
 {
-    public class DetalleContratoDto
+    public class DetailContractDto
     {
         public Guid Id { get; set; }
         public Guid? ContractId { get; set; }

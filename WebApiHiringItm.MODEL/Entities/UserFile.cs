@@ -12,7 +12,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public string FileData { get; set; }
         public Guid? RollId { get; set; }
         public string OwnerFirm { get; set; }
-        public string UserfileName { get; set; }
         public Guid? UserId { get; set; }
         public string FileType { get; set; }
         public string FileNameC { get; set; }

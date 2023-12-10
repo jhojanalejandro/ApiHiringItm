@@ -10,9 +10,13 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
     {
         public Guid? Id { get; set; }
         public string ContractorId { get; set; }
-        public string DescripcionNovedad { get; set; }
-        public string TipoNovedad { get; set; }
+        public string NewnessDescripcion { get; set; }
+        public string NewnessType { get; set; }
         public string ContractId { get; set; }
+        public string? NewnessCode { get; set; }
+        public int? Consecutive { get; set; }
+        public DateTime RegisterDate { get; set; }
+        public string? TypeStatus { get; set; }
 
     }
 }

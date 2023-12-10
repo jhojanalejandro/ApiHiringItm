@@ -11,13 +11,20 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
     {
         Task<List<ContractorDto>> GetAll();
         
-        Task<bool> SavePersonalInformation(PersonalInformation model);
         Task<bool> UpdateAsignment(AsignElementOrCompoenteDto model);
         Task<List<ContractsContarctorDto>> getContractsByContractor(string contractorId);
         Task<FilesDto?> GetDocumentPdf(Guid contractId, Guid contractorId);
-        Task<bool> AddNewness(NewnessContractorDto model);
         Task<List<HistoryContractorDto>> GetHistoryContractor();
-        Task<IGenericResponse<List<ContractorByContractDto>>> GetContractorByContract(string contractId);
         ValidateFileDto ValidateDocumentUpload(Guid contractId, Guid contractorId);
+        Task<IGenericResponse<string>> SavePersonalInformation(PersonalInformation model);
+        Task<IGenericResponse<string>> SaveModifyMinute(ChangeContractContractorDto economicDataModel);
+        Task<IGenericResponse<string>> AddNewness(NewnessContractorDto model);
+        Task<IGenericResponse<List<ContractorByContractDto>>> GetContractorsByContract(string contractId);
+        Task<IGenericResponse<List<ContractorsPrePayrollDto>>> GetContractorByContractPrePayroll(string contractId);
+        Task<ContractorDto?> GetById(string contractorId);
+        Task<IGenericResponse<ContractorByContractDto>> GetContractorByContract(string contractId, string contractorId);
+        Task<List<NewnessContractorDto>?> GetNewnessContractor(Guid contractId, Guid contractorId);
+        Task<IGenericResponse<string>> AddNewnessList(List<NewnessContractorDto> modelList);
+        Task<bool> GetStatusContractor(string contractorId, string contractId);
     }
 }

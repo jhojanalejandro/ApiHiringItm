@@ -13,7 +13,6 @@ namespace WebApiHiringItm.MODEL.Entities
         }
 
         public Guid Id { get; set; }
-        public string NewnessType1 { get; set; }
         public string NewnessDescription { get; set; }
         public string Code { get; set; }
 

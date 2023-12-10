@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.CORE.Core.MessageHandlingCore.Interface;
 using WebApiHiringItm.CORE.Helpers.GenericResponse;
-using WebApiHiringItm.MODEL.Dto.ContratoDto;
+using WebApiHiringItm.MODEL.Dto.MessageDto;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.API.Controllers.MessageHandling
