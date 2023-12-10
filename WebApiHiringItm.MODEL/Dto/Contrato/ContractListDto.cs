@@ -35,7 +35,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contrato
         public DateTime? FechaContrato { get; set; }
         public DateTime? FechaFinalizacion { get; set; }
         public string? AreaCode { get; set; }
-        public decimal? RecursosAdicionales { get; set; }
+        public decimal? ResourceContract { get; set; }
 
     }
 }

@@ -494,9 +494,9 @@ namespace WebApiHiringItm.CORE.Core.Contractors
             try
             {
                 var getDetailId = _context.DetailContractor.Where(w => w.ContractId.Equals(Guid.Parse(economicDataModel.ContractId)) && w.ContractorId.Equals(Guid.Parse(economicDataModel.ContractorId))).OrderByDescending(o => o.Consecutive).FirstOrDefault();
-                var getEconomicData = _context.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(getDetailId.Id)).OrderByDescending(o => o.Consecutive).FirstOrDefault();
+                var getEconomicData = _context.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(getDetailId.Id)).OrderBy(o => o.Consecutive).FirstOrDefault();
                 var getModify = _context.ChangeContractContractor.Where(w => w.DetailContractorId.Equals(getDetailId.Id)).OrderByDescending(o => o.Consecutive).FirstOrDefault();
-
+                var economicData = Guid.Empty;
                 if (economicDataModel.IsAddition == true)
                 {
                     var getData = _context
@@ -520,20 +520,18 @@ namespace WebApiHiringItm.CORE.Core.Contractors
                         economicdataContractor.Debt = economicDataModel.TotalValue;
                         economicdataContractor.AdditionalValue = economicDataModel.TotalValue - getData.TotalValue;
 
-
                         economicdataContractor.Id = Guid.NewGuid();
+                        economicData = economicdataContractor.Id;
                         _context.EconomicdataContractor.Add(economicdataContractor);
                     }
-                    await _context.SaveChangesAsync();
-
                 }
 
                 var mapChangeContarctor = _mapper.Map<ChangeContractContractor>(economicDataModel);
                 mapChangeContarctor.Id = Guid.NewGuid();
                 mapChangeContarctor.DetailContractorId = getDetailId.Id;
-                mapChangeContarctor.Consecutive += 1;
-                mapChangeContarctor.NoAddition = economicDataModel.NoAddition;
-                mapChangeContarctor.EconomicdataContractor = getEconomicData.Id;
+                mapChangeContarctor.Consecutive = getModify == null ? 1 : getModify.Consecutive+ 1;
+                mapChangeContarctor.NoAddition = economicDataModel.NoAddition == null ? "0" : economicDataModel.NoAddition;
+                mapChangeContarctor.EconomicdataContractor = economicData == Guid.Empty ? getEconomicData.Id : economicData;
                 _context.ChangeContractContractor.Add(mapChangeContarctor);
                 await _context.SaveChangesAsync();
                 return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);

@@ -19,9 +19,10 @@ namespace WebApiHiringItm.CORE.Core.User.Interface
         Task<bool> Delete(Guid id);
         Task<bool> ValidateT(string authToken);
         Task<bool> UpdatePassword(UserUpdatePasswordDto model);
-        Task<bool> GetUserForgetPassword(RetrievePassword model);
+        Task<IGenericResponse<string>> GetUserForgetPassword(ForgotPasswordRequest model);
         Task<IGenericResponse<string>> UpdateTeamRoll(UserTDto model);
         IGenericResponse<AuthenticateResponse> Authenticate(AuthenticateRequest model);
         Task<IGenericResponse<string>> SignUp(UserTDto model);
+        Task<IGenericResponse<string>> ResetPasswordUser(ResetPasswordRequest updatePassword);
     }
 }

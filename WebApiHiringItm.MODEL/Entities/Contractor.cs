@@ -44,6 +44,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? Arl { get; set; }
         public Guid? Afp { get; set; }
         public bool? EnableEdit { get; set; }
+        public bool? EnableChangePassword { get; set; }
 
         public virtual EntityHealth AfpNavigation { get; set; }
         public virtual EntityHealth ArlNavigation { get; set; }

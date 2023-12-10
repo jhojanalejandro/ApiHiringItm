@@ -230,21 +230,22 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 ContractName = report.DetailContractor.Contract.CompanyName,
                 InitialDateContract = report.DetailContractor.HiringData.FechaRealDeInicio.Value,
                 FinalDateContract = report.DetailContractor.HiringData.FechaFinalizacionConvenio.Value,
-                ExtensionInitialDate = report.DetailContractor.ChangeContractContractor.Where(w => w.MinuteTypeNavigation.Code.Equals(contractors.TypeMinute)).OrderByDescending(o => o.Consecutive).Select(s => s.InitialAdditionDate.Value).FirstOrDefault(),
-                ExtensionFinalDate = report.DetailContractor.ChangeContractContractor.Where(w => w.MinuteTypeNavigation.Code.Equals(contractors.TypeMinute)).OrderByDescending(o => o.Consecutive).Select(s => s.FinalAdditionDate.Value).FirstOrDefault(),
+                ExtensionInitialDate = report.InitialAdditionDate,
+                ExtensionFinalDate = report.FinalAdditionDate,
                 Object = report.DetailContractor.Element.ObjetoElemento,
-                UnitValueContract = Math.Ceiling(report.DetailContractor.EconomicdataContractor.OrderByDescending(o => o.Consecutive).Select(s => s.UnitValue).FirstOrDefault()),
-                TotalValueContract = Math.Ceiling(report.DetailContractor.EconomicdataContractor.OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue).FirstOrDefault()),
-                Supervisor = report.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.UserName).FirstOrDefault(),
-                SupervisorCharge = report.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Professionalposition).FirstOrDefault(),
+                UnitValueContract = Math.Ceiling(report.EconomicdataContractorNavigation.UnitValue),
+                TotalValueContract = Math.Ceiling(report.EconomicdataContractorNavigation.TotalValue),
+                Supervisor = report.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.UserName).FirstOrDefault()!,
+                SupervisorCharge = report.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Professionalposition).FirstOrDefault()!,
                 SupervisorIdentification = report.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Identification).FirstOrDefault(),
                 SpecificObligations = report.SpecificObligations,
                 GeneralObligations = report.GeneralObligations,
                 NumberModify = report.Consecutive,
                 RubroContract = report.DetailContractor.Contract.RubroNavigation.RubroNumber,
                 TypeModify = report.MinuteTypeNavigation.Code,
-                AdditionValue = report.DetailContractor.EconomicdataContractor.OrderByDescending(o => o.Consecutive).Select(s => s.AdditionalValue).FirstOrDefault(),
-                InitialValue = report.DetailContractor.EconomicdataContractor.OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue - s.AdditionalValue).FirstOrDefault()
+                AdditionValue =  report.EconomicdataContractorNavigation.AdditionalValue,
+                InitialValue = report.EconomicdataContractorNavigation.TotalValue - report.EconomicdataContractorNavigation.AdditionalValue,
+                Consecutive = report.Consecutive
 
             })
             .AsNoTracking()

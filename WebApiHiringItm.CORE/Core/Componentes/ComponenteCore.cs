@@ -249,7 +249,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 CantidadDias = s.CantidadDias,
                 CpcId = s.CpcId,
                 NombreCpc = s.Cpc.CpcName,
-                Recursos = s.DetailContractor.Select(s => s.Contract).FirstOrDefault()!.RecursosAdicionales,
+                Recursos = s.DetailContractor.Select(s => s.Contract).FirstOrDefault()!.ResourceContract,
                 ValorPorDia = s.ValorPorDia,
                 ValorPorDiaContratista = s.ValorPorDiaContratista,
                 ValorTotal = s.ValorTotal,

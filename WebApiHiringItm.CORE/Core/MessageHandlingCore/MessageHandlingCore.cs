@@ -27,6 +27,8 @@ using WebApiHiringItm.CORE.Core.Contractors.Interface;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.CORE.Helpers.Enums.Hiring;
 using System.Data.Entity.Core.Metadata.Edm;
+using MimeKit;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 {
@@ -188,7 +190,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             .FirstOrDefault();
             getCredencialUser.ToEmail = getContractor.Correo;
             getCredencialUser.TermDate = messageObservation.TermDate;
-            getCredencialUser.Documents = messageObservation.Documentos;
+            getCredencialUser.Documents = messageObservation.Documents;
             getCredencialUser.Body = messageObservation.Observation;
 
             await sendMessageObservation(getCredencialUser);
@@ -394,5 +396,48 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             }
             return true;
         }
+
+
+        public async Task<bool> SendMessageForgotPasswors(string userMail, string userId)
+        {
+            SecureString password = new SecureString();
+            foreach (char c in _mailSettings.Password)
+            {
+                password.AppendChar(c);
+            }
+            string asunto = "Restaurar contraseña";
+
+            // Crea una instancia de SmtpClient
+            SmtpClient clienteSmtp = new SmtpClient(_mailSettings.Host, _mailSettings.Port);
+            clienteSmtp.Credentials = new NetworkCredential(_mailSettings.Mail, password);
+            clienteSmtp.EnableSsl = true;
+
+            // Crea una instancia de LinkedResource con la imagen en base64
+            //byte[] imageBytes = Convert.FromBase64String(mailRequest.ImageMessage);
+
+            //LinkedResource userImage = new LinkedResource(new MemoryStream(imageBytes), "image/jpg");
+
+            //userImage.ContentId = "imagen1";
+
+            // Crea el objeto AlternateView para el contenido HTML
+            //string cuerpoHTML = "<html><body><h1>"+ asunto + "</h1><img src=\"cid:imagen1\" /> <p>"+ mailRequest.Body + "<p/></body></html>";
+            string cuerpoHTML = "<html> <body>" +
+                "<p>hemos visto que perdiste tu clave, para restaurar tu contraseña ingresa al siguiente link: </p>" + Const.RESETPASSWORD + userId+
+                "<p>Documentos que se deben modificar:</p>" +
+                "<ul>";
+   
+  
+            // Crea un nuevo correo electrónico
+            MailMessage correo = new MailMessage(_mailSettings.Mail, userMail, asunto, cuerpoHTML);
+            correo.IsBodyHtml = true;
+
+            // Envía el correo
+            using (clienteSmtp)
+            {
+                clienteSmtp.Send(correo);
+            }
+            return true;
+        }
+
     }
 }

@@ -81,7 +81,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 ValorPorDia = element.ValorPorDia,
                 ValorTotal = element.ValorTotal,
                 ValorUnidad = element.ValorUnidad,
-                Recursos = element.DetailContractor.Select(s => s.Contract).FirstOrDefault()!.RecursosAdicionales,
+                Recursos = element.DetailContractor.Select(s => s.Contract).FirstOrDefault()!.ResourceContract,
                 Consecutivo = element.Consecutivo,
                 ObligacionesEspecificas = element.ObligacionesEspecificas,
                 ObligacionesGenerales = element.ObligacionesGenerales,

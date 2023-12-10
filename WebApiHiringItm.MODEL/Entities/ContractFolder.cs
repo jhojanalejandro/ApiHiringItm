@@ -29,7 +29,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal? ValorContrato { get; set; }
         public decimal? GastosOperativos { get; set; }
         public decimal? ValorSubTotal { get; set; }
-        public decimal? RecursosAdicionales { get; set; }
         public decimal? TotalLiberado { get; set; }
         public string NumberProject { get; set; }
         public string Project { get; set; }
