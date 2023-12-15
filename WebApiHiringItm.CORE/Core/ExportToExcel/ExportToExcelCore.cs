@@ -679,7 +679,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     //if (user.StatusContractor == "INVITADO")
                     //{
                     //    worksheet.Cells[row, 5].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    //    worksheet.Cells[row, 5].Style.Fill.BackgroundColor.SetColor(Color.Gray);
+                    //    worksheet.Cells[row, 5].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
                     
                     //}else if (user.StatusContractor == "EN REVISIÓN")
                     //{
@@ -884,7 +884,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 FileInfo imageFile = new FileInfo(imagePath);
 
                 // Agregar la imagen a la hoja de cálculo
-                var row = 15;
+                var row = 16;
                 int nro = 0;
                 var data = _context.ElementComponent
                     .Include(i => i.Component)
@@ -906,7 +906,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 {
                     nro++;
                     worksheet.Cells[row, 1].Value = nro;
-                    worksheet.Cells["A:AD"].AutoFitColumns(); // Ajusta automáticamente el ancho de las columnas dentro del rango
+                    worksheet.Cells["A:I"].AutoFitColumns(); // Ajusta automáticamente el ancho de las columnas dentro del rango
 
                     worksheet.Cells[row, 2].Value = "user.Identificacion";
                     worksheet.Cells[row, 3].Value = "user.Nombre";
@@ -992,17 +992,12 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 //    worksheet.Cells[row, col].Style.TextRotation = 90; // Rotar texto verticalmente
                 //    row++;
                 //}
-                worksheet.Cells["D1"].Value = "INSTITUTO TECNOLÓGICO METROPOLITANO";
-                worksheet.Cells["D2"].Value = getReportContract.CompanyName;
-                worksheet.Cells["D3"].Value = getReportContract.ProjecName;
-                worksheet.Column(5).Width = 20;
-                worksheet.Column(9).Width = 20;
-                worksheet.Column(10).Width = 20;
-                worksheet.Column(11).Width = 20;
-                worksheet.Column(3).Width = 15;
-                worksheet.Column(4).Width = 20;
+                worksheet.Cells["C1"].Value = "INSTITUTO TECNOLÓGICO METROPOLITANO";
+                worksheet.Cells["C3"].Value = getReportContract.CompanyName;
+                worksheet.Cells["C4"].Value = getReportContract.ProjecName;
 
-                using (var r = worksheet.Cells["D1:I1"])
+
+                using (var r = worksheet.Cells["C1:G2"])
                 {
                     r.Style.WrapText = true;
                     r.Merge = true;
@@ -1016,7 +1011,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                 }
 
-                using (var r = worksheet.Cells["D2:I2"])
+                using (var r = worksheet.Cells["C3:G3"])
                 {
                     r.Style.WrapText = true;
                     r.Merge = true;
@@ -1030,7 +1025,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                 }
 
-                using (var r = worksheet.Cells["D3:I3"])
+                using (var r = worksheet.Cells["C4:G4"])
                 {
                     r.Style.WrapText = true;
                     r.Merge = true;
@@ -1044,112 +1039,101 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                 }
 
-                worksheet.Cells["J1"].Value = "Código";
-                worksheet.Cells["J2"].Value = "Versión";
-                worksheet.Cells["J3"].Value = "Fecha";
-                worksheet.Cells["K1"].Value = "FPS 002";
-                worksheet.Cells["K2"].Value = "05";
-                worksheet.Cells["K3"].Value = " ";
-                worksheet.Cells["A4"].Value = "Descripción/ Componente";
-                worksheet.Cells["F4"].Value = "Cant.";
-                worksheet.Cells["G4"].Value = "Duración";
-                worksheet.Cells["H4"].Value = "Vr. Unidad";
-                worksheet.Cells["I4"].Value = "Vr. Total";
-                worksheet.Cells["J4"].Value = "REQUIERE CONTRATARSE (Marque X)";
-                worksheet.Cells["J6"].Value = "SI";
-                worksheet.Cells["K6"].Value = "NO";
+                worksheet.Cells["H1"].Value = "Código";
+                worksheet.Cells["H2"].Value = "Versión";
+                worksheet.Cells["H3"].Value = "Fecha";
+                worksheet.Cells["I1"].Value = "FPS 002";
+                worksheet.Cells["I2"].Value = "05";
+                worksheet.Cells["I3"].Value = " ";
+                worksheet.Cells["A5"].Value = "Descripción/ Componente";
+                worksheet.Cells["D5"].Value = "Cant.";
+                worksheet.Cells["E5"].Value = "Duración";
+                worksheet.Cells["F5"].Value = "Vr. Unidad";
+                worksheet.Cells["G5"].Value = "Vr. Total";
+                worksheet.Cells["H5"].Value = "REQUIERE CONTRATARSE (Marque X)";
+                worksheet.Cells["H7"].Value = "SI";
+                worksheet.Cells["I7"].Value = "NO";
 
-                worksheet.Cells["A4:K4"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells["A4:K4"].Style.Fill.BackgroundColor.SetColor(Color.White);
-                worksheet.Cells["A4:K4"].Style.Font.Bold = true;
-                worksheet.Cells["A4:K4"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A4:K4"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A4:K4"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells["A4:K4"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-
-
-                using (var r = worksheet.Cells["J6"])
+                using (var r = worksheet.Cells["H7"])
                 {
                     r.Style.WrapText = true;
                     r.Merge = true;
                     r.Style.Font.Color.SetColor(Color.Black);
                     r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    r.Style.Fill.BackgroundColor.SetColor(Color.Gray);
+                    r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
                     r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                 }
-                using (var r = worksheet.Cells["K6"])
+                using (var r = worksheet.Cells["I7"])
                 {
                     r.Style.WrapText = true;
                     r.Merge = true;
                     r.Style.Font.Color.SetColor(Color.Black);
                     r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    r.Style.Fill.BackgroundColor.SetColor(Color.Gray);
-                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                }
-                using (var r = worksheet.Cells["J4:K5"])
-                {
-                    r.Style.WrapText = true;
-                    r.Merge = true;
-                    r.Style.Font.Color.SetColor(Color.Black);
-                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    r.Style.Fill.BackgroundColor.SetColor(Color.Gray);
+                    r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
                     r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                 }
 
-                using (var r = worksheet.Cells["G4:G6"])
+                using (var r = worksheet.Cells["H3:H4"])
                 {
                     r.Style.WrapText = true;
                     r.Merge = true;
                     r.Style.Font.Color.SetColor(Color.Black);
                     r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                     r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                 }
 
-                using (var r = worksheet.Cells["F4:F6"])
-                {
-                    r.Style.WrapText = true;
-                    r.Merge = true;
-                    r.Style.Font.Color.SetColor(Color.Black);
-                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                }
-                using (var r = worksheet.Cells["H4:I6"])
+                using (var r = worksheet.Cells["H5:I6"])
                 {
                     r.Style.WrapText = true;
                     r.Merge = true;
                     r.Style.Font.Color.SetColor(Color.Black);
                     r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                     r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+                using (var r = worksheet.Cells["I3:I4"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                 }
 
-                using (var r = worksheet.Cells["A4:E6"])
+
+                using (var r = worksheet.Cells["F5:F7"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+
+                using (var r = worksheet.Cells["G5:G7"])
                 {
                     r.Style.WrapText = true;
                     r.Merge = true;
@@ -1157,50 +1141,81 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                     r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
                     r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                 }
-                using (var r = worksheet.Cells["J1"])
+
+                using (var r = worksheet.Cells["D5:D7"])
                 {
                     r.Style.WrapText = true;
                     r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
                     r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                }
-
-                using (var r = worksheet.Cells["J2"])
-                {
-                    r.Style.WrapText = true;
-                    r.Merge = true;
-                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                }
-
-                //border.Bottom.Color.SetColor(Color.Green);  // Color rojo
-                using (var r = worksheet.Cells["J3"])
-                {
-                    r.Style.WrapText = true;
-                    r.Merge = true;
+                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+                using (var r = worksheet.Cells["E5:E7"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                }
+
+                using (var r = worksheet.Cells["A5:C7"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.Font.Color.SetColor(Color.Black);
+                    r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+
+                }
+
+                using (var r = worksheet.Cells["H1"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                }
+
+                using (var r = worksheet.Cells["H2"])
+                {
+                    r.Style.WrapText = true;
+                    r.Merge = true;
                     r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 }
-                using (var r2 = worksheet.Cells["K3"])
+
+                using (var r2 = worksheet.Cells["I1"])
                 {
                     r2.Style.WrapText = true;
                     r2.Merge = true;
                     r2.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    r2.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     r2.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 }
-                using (var r2 = worksheet.Cells["K1"])
-                {
-                    r2.Style.WrapText = true;
-                    r2.Merge = true;
-                    r2.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    r2.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                }
-                using (var r2 = worksheet.Cells["K2"])
+                using (var r2 = worksheet.Cells["I2"])
                 {
                     r2.Style.WrapText = true;
                     r2.Merge = true;
@@ -1209,15 +1224,17 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     r2.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 }
 
-                using (var r = worksheet.Cells["A1:C3"])
+                using (var r = worksheet.Cells["A1:B4"])
                 {
                     r.Style.WrapText = true;
                     r.Merge = true;
                     r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Distributed;
+                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Distributed;
+
                 }
-                var number = 7;
+                var number = 8;
                 var number2 = 0;
                 var LastValue = 6;
                 for (int i = 0; i < ComponentsList.Count; i++)
@@ -1240,13 +1257,145 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     {
                         r.Style.WrapText = true;
                         r.Merge = true;
-                        r.Style.Font.Color.SetColor(Color.Black);
+                        //r.Style.Font.Color.SetColor(Color.Black);
                         r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        //r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                         r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                         r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+
+                    }
+
+                    var cellValueText = "A" + (number2 + 1);
+                    var cellValueText2 = "F" + (number2 + 1);
+                    using (var r = worksheet.Cells[cellValueText + ":" + cellValueText2])
+                    {
+                        r.Style.WrapText = true;
+                        r.Merge = true;
+                        //r.Style.Font.Color.SetColor(Color.Black);
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                        r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+
+                    }
+                    cellValueText = "G" + (number2 + 1);
+                    using (var r = worksheet.Cells[cellValueText])
+                    {
+                        r.Style.WrapText = true;
+                        r.Merge = true;
+                        //r.Style.Font.Color.SetColor(Color.Black);
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                        r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    }
+
+                    cellValueText = "G" + (number2 + 2);
+                    using (var r = worksheet.Cells[cellValueText])
+                    {
+                        r.Style.WrapText = true;
+                        r.Merge = true;
+                        //r.Style.Font.Color.SetColor(Color.Black);
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                        r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+
+                    }
+
+                    cellValueText = "G" + (number2 + 3);
+                    using (var r = worksheet.Cells[cellValueText])
+                    {
+                        r.Style.WrapText = true;
+                        r.Merge = true;
+                        //r.Style.Font.Color.SetColor(Color.Black);
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                        r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+
+                    }
+
+                    cellValueText = "H" + (number2 + 1);
+                    cellValueText2 = "I" + (number2 + 3);
+                    using (var r = worksheet.Cells[cellValueText + ":" + cellValueText2])
+                    {
+                        r.Style.WrapText = true;
+                        r.Merge = true;
+                        //r.Style.Font.Color.SetColor(Color.Black);
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                        r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+
+                    }
+
+
+                    cellValueText = "A" + (number2 + 2);
+                    cellValueText2 = "F" + (number2 + 2);
+                    using (var r = worksheet.Cells[cellValueText + ":" + cellValueText2])
+                    {
+                        r.Style.WrapText = true;
+                        r.Merge = true;
+                        //r.Style.Font.Color.SetColor(Color.Black);
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                        r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+
+                    }
+
+                    cellValueText = "A" + (number2 + 3);
+                    cellValueText2 = "F" + (number2 + 3);
+                    using (var r = worksheet.Cells[cellValueText + ":" + cellValueText2])
+                    {
+                        r.Style.WrapText = true;
+                        r.Merge = true;
+                        //r.Style.Font.Color.SetColor(Color.Black);
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        r.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                        r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+
                     }
                     if (getActivities.Count > 0)
                     {
@@ -1257,17 +1406,33 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                         {
                             r.Style.WrapText = true;
                             r.Merge = true;
-                            r.Style.Font.Color.SetColor(Color.Black);
+                            //r.Style.Font.Color.SetColor(Color.Black);
                             r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                            r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            //r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                             r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
                             r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                             r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                             r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            r.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                            r.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                         }
                     }
                 }
 
+
+                using (var r = worksheet.Cells["A1:I"])
+                {
+                    // Establecer el color y estilo del borde
+                    r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                    r.Style.Border.Top.Color.SetColor(Color.Black);
+                    r.Style.Border.Bottom.Color.SetColor(Color.Black);
+                    r.Style.Border.Left.Color.SetColor(Color.Black);
+                    r.Style.Border.Right.Color.SetColor(Color.Black);
+                }
 
                 const int startRow = 1;
                 if (base64.StartsWith("data:image/png;base64,"))
@@ -1285,7 +1450,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 FileInfo imageFile = new FileInfo(imagePath);
 
                 // Agregar la imagen a la hoja de cálculo
-                var row = 7;
+                var row = 8;
                 int nro = 0;
                 var data = _context.ElementComponent
                     .Include(i => i.Component)
@@ -1306,36 +1471,58 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 for (int i = 0; i < ComponentsList.Count; i++)
                 {
                     nro++;
-                    worksheet.Cells[row, 1].Value = nro;
+                    worksheet.Cells[row, 1].Value = "ADMINISTRACIÓN PLATAFORMA E_LEARNING MOODLE";
                     for (int j = 0; j < ActivitiesList.Count; j++)
                     {
-                        worksheet.Cells[row, 3].Value = "user.Identificacion";
-                        worksheet.Cells[row, 3].Value = "user.Nombre";
-                        worksheet.Cells[row, 4].Value = "user.Correo";
+                        worksheet.Cells[row, 3].Value = "Administración de la plataforma LMS Moodle";
                         for (int k = 0; k < ElementsList.Count; k++)
                         {
-                            worksheet.Cells["A:K"].AutoFitColumns(); // Ajusta automáticamente el ancho de las columnas dentro del rango
-
-                            worksheet.Cells[row, 5].Value = "user.StatusContractor";
-                            worksheet.Cells[row, 6].Value = "user.LegalProccess";
-                            worksheet.Cells[row, 7].Value = "user.HiringStatus";
-                            worksheet.Cells[row, 8].Value = "user.ComiteGenerated";
-                            worksheet.Cells[row, 9].Value = "user.PreviusStudy";
-                            worksheet.Cells[row, 10].Value = "user.MinuteGnenerated";
-                            worksheet.Cells[row, 11].Value = "user.MinuteGnenerated";
-                            worksheet.Cells[row, 12].Value = "user.MinuteGnenerated";
-                            worksheet.Cells[row, 13].Value = "user.MinuteGnenerated";
-                            worksheet.Cells[row, 14].Value = "user.MinuteGnenerated";
-                            worksheet.Cells[row, 15].Value = "user.MinuteGnenerated";
-                            worksheet.Cells[row, 16].Value = "user.MinuteGnenerated";
+                            worksheet.Cells["A:I"].AutoFitColumns(); // Ajusta automáticamente el ancho de las columnas dentro del rango
+                            worksheet.Cells[row, 4].Value = "10";
+                            worksheet.Cells[row, 5].Value = "20";
+                            worksheet.Cells[row, 6].Value = "5000000";
+                            worksheet.Cells[row, 7].Value = "30000000";
+                            worksheet.Cells[row, 8].Value = "X";
                             row++;
                         }
                     }
+                    row++;
+                    worksheet.Cells[row, 1].Value = "TOTAL APOYO TECNICO Y/O PROFESIONAL";
+                    worksheet.Cells[row, 7].Value = "RESULTADO";
+                    row++;
+                    worksheet.Cells[row, 1].Value = "GASTOS OPERATIVOS Y/O ADMIN 8%";
+                    worksheet.Cells[row, 7].Value = "RESULTADO";
+                    row++;
+                    worksheet.Cells[row, 1].Value = "TOTAL";
+                    worksheet.Cells[row, 7].Value = "RESULTADO";
+                    //for (int k = 0; k < ElementsList.Count; k++)
+                    //{
+                    //    worksheet.Cells["A:K"].AutoFitColumns(); // Ajusta automáticamente el ancho de las columnas dentro del rango
+
+                    //    worksheet.Cells[row, 5].Value = "Administración de la plataforma LMS Moodle";
+                    //    worksheet.Cells[row, 6].Value = "user.LegalProccess";
+                    //    worksheet.Cells[row, 7].Value = "user.HiringStatus";
+                    //    worksheet.Cells[row, 8].Value = "user.ComiteGenerated";
+                    //    worksheet.Cells[row, 9].Value = "user.PreviusStudy";
+                    //    worksheet.Cells[row, 10].Value = "user.MinuteGnenerated";
+                    //    worksheet.Cells[row, 11].Value = "user.MinuteGnenerated";
+                    //    row++;
+                    //}
 
                 }
+                worksheet.Column(1).Width = 15;
+                worksheet.Column(2).Width = 15;
+                worksheet.Column(3).Width = 50;
+                worksheet.Column(5).Width = 15;
+                worksheet.Column(6).Width = 15;
+                worksheet.Column(7).Width = 15;
+                worksheet.Column(8).Width = 10;
+                worksheet.Column(9).Width = 10;
+
+
                 var excelImage = worksheet.Drawings.AddPicture("imageName", imageFile);
-                excelImage.SetPosition(startRow, 0, 1, 0); // Row, Column, StartRow, StartColumn
-                excelImage.SetSize(160, 40);
+                excelImage.SetPosition(startRow, 1, 1, 1); // Row, Column, StartRow, StartColumn
+                excelImage.SetSize(140, 40);
 
                 xlPackage.Save(); // Guardar el paquete Excel
                 stream.Seek(0, SeekOrigin.Begin); // Establecer la posición del MemoryStream al principio
