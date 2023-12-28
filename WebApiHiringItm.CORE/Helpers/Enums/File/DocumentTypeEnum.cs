@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WebApiHiringItm.CORE.Helpers.Enums.File
 {
@@ -31,6 +26,8 @@ namespace WebApiHiringItm.CORE.Helpers.Enums.File
         ANEXO = 9,
         [Display(Description = "DCTCT")]
         DOCUMENTOSCONTRATACION = 10,
+        [Display(Description = "RSLCM")]
+        RESPUESTASOLICITUDCOMITE = 11,
     }
 
 }

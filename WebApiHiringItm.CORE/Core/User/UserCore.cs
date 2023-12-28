@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using MailKit.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -31,18 +32,16 @@ namespace WebApiHiringItm.Core.User
         #region VARIABLE
         private readonly HiringContext _context;
         private readonly IMapper _mapper;
-        private readonly MailSettings _mailSettings;
         static readonly byte[] keys = Encoding.UTF8.GetBytes("401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1");
         private readonly AppSettings _appSettings;
         private readonly IMessageHandlingCore _messageHandling;
         #endregion
         #region CONTRUCTOR
-        public UserCore(HiringContext context, IMapper mapper, IOptions<AppSettings> appSettings, IOptions<MailSettings> mailSettings, IMessageHandlingCore messageHandling)
+        public UserCore(HiringContext context, IMapper mapper, IOptions<AppSettings> appSettings, IMessageHandlingCore messageHandling)
         {
             _context = context;
             _mapper = mapper;
             _appSettings = appSettings.Value;
-            _mailSettings = mailSettings.Value;
             _messageHandling = messageHandling;
         }
         #endregion
@@ -56,11 +55,20 @@ namespace WebApiHiringItm.Core.User
             if (model.UserType.Equals(RollEnum.Contratista.Description()))
             {
                 var getUserC = _context.Contractor
-                    .FirstOrDefault(x => x.Correo.Equals(model.Username) && x.ClaveUsuario.Equals(model.Password));
+                    .FirstOrDefault(x => x.Correo.Equals(model.Username));
 
                 if (getUserC == null)
                 {
                     return ApiResponseHelper.CreateErrorResponse<AuthenticateResponse>(Resource.ERRORAUTENTICATE);
+                }
+                else
+                {
+                    var password = GenericCore.Descrypt(getUserC.ClaveUsuario);
+                    if (!model.Password.Equals(password))
+                    {
+                        return ApiResponseHelper.CreateErrorResponse<AuthenticateResponse>(Resource.ERRORAUTENTICATE);
+                    }
+
                 }
                 var map = _mapper.Map<AuthDto>(getUserC);
 
@@ -237,6 +245,8 @@ namespace WebApiHiringItm.Core.User
         
         public async Task<IGenericResponse<string>> SignUp(UserTDto model)
         {
+            var password = GenericCore.Encrypt(model.UserPassword);
+            var passwordMail = GenericCore.Encrypt(model.PasswordMail);
 
             var getRoll = _context.Roll.FirstOrDefault(x => x.Code.Equals(RollEnum.Desactivada.Description()));
             var userupdate = _context.UserT.FirstOrDefault(x => x.UserEmail.Equals(model.UserEmail));
@@ -249,6 +259,8 @@ namespace WebApiHiringItm.Core.User
                 var map = _mapper.Map<UserT>(model);
                 map.Id = Guid.NewGuid();
                 map.RollId = getRoll.Id;
+                map.UserPassword = password;
+                map.PasswordMail = passwordMail;
                 _context.UserT.Add(map);
                 await _context.SaveChangesAsync();
             }
@@ -283,8 +295,9 @@ namespace WebApiHiringItm.Core.User
 
         public async Task<IGenericResponse<string>> ResetPasswordUser(ResetPasswordRequest updatePassword)
         {
-            var userupdate = _context.UserT.FirstOrDefault(x => x.Id.Equals(Guid.Parse(updatePassword.Id)) && x.EnableChangePassword == true);
-            var contractorupdate = _context.Contractor.FirstOrDefault(x => x.Id.Equals(Guid.Parse(updatePassword.Id)) && x.EnableChangePassword == true);
+            var userId = GenericCore.Descrypt(updatePassword.Id.ToString());
+            var userupdate = _context.UserT.FirstOrDefault(x => x.Id.Equals(Guid.Parse(userId)) && x.EnableChangePassword == true);
+            var contractorupdate = _context.Contractor.FirstOrDefault(x => x.Id.Equals(Guid.Parse(userId)) && x.EnableChangePassword == true);
 
             if (userupdate != null)
             {
@@ -297,7 +310,7 @@ namespace WebApiHiringItm.Core.User
                 contractorupdate.ClaveUsuario = updatePassword.Password;
                 _context.Contractor.Update(contractorupdate);
             }
-            if(userupdate != null)
+            if (userupdate == null)
                 return ApiResponseHelper.CreateErrorResponse<string>(Resource.DISABLEMAIL);
 
             await _context.SaveChangesAsync();

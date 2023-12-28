@@ -41,6 +41,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public bool? ComiteGenerated { get; set; }
         public bool? PreviusStudy { get; set; }
         public DateTime? InitialDateContract { get; set; }
+        public bool LegalprocessAprove { get; set; }
 
 
     }

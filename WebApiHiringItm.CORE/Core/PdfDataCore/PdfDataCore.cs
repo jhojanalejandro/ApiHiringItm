@@ -7,13 +7,14 @@ using WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore;
 using WebApiHiringItm.CORE.Helpers.Enums;
 using WebApiHiringItm.CORE.Helpers.Enums.Assignment;
 using WebApiHiringItm.CORE.Helpers.Enums.File;
+using WebApiHiringItm.CORE.Helpers.Enums.Hiring;
 using WebApiHiringItm.CORE.Helpers.Enums.Rolls;
 using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
+using WebApiHiringItm.CORE.Helpers.Enums.StatusFile;
 using WebApiHiringItm.MODEL.Dto;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Dto.PdfDto;
-using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CORE.Core.PdfDataCore
 {
@@ -133,8 +134,8 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 UserName = s.UserName,
                 UserCharge = s.Professionalposition,
                 UserIdentification = s.Identification,
-                UserFirm = s.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileData).FirstOrDefault(),
-                UserFirmType = s.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileType).FirstOrDefault(),
+                UserFirm = s.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(Helpers.Enums.File.TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileData).FirstOrDefault(),
+                UserFirmType = s.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(Helpers.Enums.File.TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileType).FirstOrDefault(),
                 UserChargeCode = s.Roll.Code,
             }).FirstOrDefault();
 
@@ -143,8 +144,8 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 UserName = s.User.UserName,
                 UserCharge = s.User.Professionalposition,
                 UserIdentification = s.User.Identification,
-                UserFirm = s.User.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileData).FirstOrDefault(),
-                UserFirmType = s.User.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileType).FirstOrDefault(),
+                UserFirm = s.User.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(Helpers.Enums.File.TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileData).FirstOrDefault(),
+                UserFirmType = s.User.UserFile.Where(w => w.UserFileTypeNavigation.Code.Equals(Helpers.Enums.File.TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileType).FirstOrDefault(),
                 UserChargeCode = s.User.Roll.Code,
             }).AsNoTracking()
             .ToListAsync();
@@ -154,10 +155,13 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
 
         private async Task<List<PreviusStudyDto>> GetPrevusStudyContractorsList(ContractContractorsDto contractors)
         {
-
+            var getStatusFiles = _context.DetailFile
+            .Include(i => i.File)
+                .ThenInclude(i => i.DocumentTypeNavigation)
+            .Include(i => i.StatusFile);
             var result = _context.DetailContractor
                 .Where(x => contractors.contractors.Contains(x.ContractorId.ToString()) && x.ContractId.Equals(Guid.Parse(contractors.contractId)));
-            var typeUserFileId = _context.UserFileType.Where(x => x.Code.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.Id).FirstOrDefault();
+            var typeUserFileId = _context.UserFileType.Where(x => x.Code.Equals(Helpers.Enums.File.TypeUserFileEnum.FIRMA.Description())).Select(s => s.Id).FirstOrDefault();
 
             return await result.Select(study => new PreviusStudyDto
             {
@@ -177,7 +181,11 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 RequiredProfileExperience = study.Element.PerfilRequeridoExperiencia,
                 ActivityContractor = study.HiringData.ActividadContratista,
                 DutyContract = study.Contract.DutyContract,
-                PoliceRequire = study.HiringData.RequierePoliza
+                PoliceRequire = study.HiringData.RequierePoliza,
+                LegalprocessAprove = getStatusFiles.Where(w => w.File.ContractId.Equals(study.ContractId) && w.ContractorId.Equals(study.ContractorId)
+                 && w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description())
+                 || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.DOCUMENTOSCONTRATACION.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description())))).ToList().Count >= 4
+                 ? true : false
             })
             .AsNoTracking()
             .ToListAsync();
@@ -185,7 +193,10 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
 
         private async Task<List<CommiteeRequestDto>> GetCommiteeContractorsList(ContractContractorsDto contractors)
         {
-
+            var getStatusFiles = _context.DetailFile
+            .Include(i => i.File)
+                .ThenInclude(i => i.DocumentTypeNavigation)
+            .Include(i => i.StatusFile);
             var result = _context.DetailContractor
                .Include(i => i.Contract)
                .Include(i => i.Element)
@@ -203,13 +214,16 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 ElementName = study.Element.NombreElemento,
                 ElementObject = study.Element.ObjetoElemento,
                 User = study.Contractor.User.UserName,
-                UserFirm = study.Contractor.User.UserFile.Where(w => w.UserFileType.Equals(TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileData).FirstOrDefault(),
+                UserFirm = study.Contractor.User.UserFile.Where(w => w.UserFileType.Equals(Helpers.Enums.File.TypeUserFileEnum.FIRMA.Description())).Select(s => s.FileData).FirstOrDefault(),
                 UserIdentification = study.Contractor.User.Identification,
                 ContractInitialDate = study.ContractorPayments.OrderByDescending(d => d.FromDate).Select(s => s.FromDate.ToString()).FirstOrDefault(),
                 ContractFinalDate = study.ContractorPayments.OrderByDescending(d => d.ToDate).Select(s => s.ToDate.ToString()).FirstOrDefault(),
                 TotalValue = Math.Ceiling(study.ContractorPayments.OrderByDescending(d => d.FromDate.ToString()).Select(s => s.Paymentcant).FirstOrDefault()),
                 ProfileRequire = study.Element.PerfilRequeridoAcademico != null && study.Element.PerfilRequeridoExperiencia != null ? study.Element.PerfilRequeridoAcademico  + " " + study.Element.PerfilRequeridoExperiencia : null,
-                
+                LegalprocessAprove = getStatusFiles.Where(w => w.File.ContractId.Equals(study.ContractId) && w.ContractorId.Equals(study.ContractorId)
+                 && w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description())
+                 || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.DOCUMENTOSCONTRATACION.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description())))).ToList().Count >= 4
+                            ? true : false
             })
             .AsNoTracking()
             .ToListAsync();
@@ -274,7 +288,10 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
         {
             var contractor = _context.DetailContractor.Where(x => x.ContractId.Equals(Guid.Parse(contractors.contractId)))
             .Where(w => contractors.contractors.Contains(w.Contractor.Id.ToString()) && !w.StatusContractor.Equals(StatusContractorEnum.INHABILITADO.Description()));
-
+            var getStatusFiles = _context.DetailFile
+            .Include(i => i.File)
+                .ThenInclude(i => i.DocumentTypeNavigation)
+            .Include(i => i.StatusFile);
             return await contractor.Select(ct => new MinutaDto
             {
                 ContractorId = ct.ContractorId,
@@ -300,9 +317,13 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 BirthDate = ct.Contractor.FechaNacimiento,
                 ContractorMail = ct.Contractor.Correo,
                 ContractNumber = ct.HiringData.Contrato,
-                ComiteGenerated = ct.Contractor.DetailFile.Where(wd => wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description())).Select(s => s).FirstOrDefault() != null ? true : false,
-                PreviusStudy = ct.Contractor.DetailFile.Where(wd => wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.ESTUDIOSPREVIOS.Description())).Select(s => s).FirstOrDefault() != null ? true : false,
+                ComiteGenerated = ct.Contractor.DetailFile.Where(wd => wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description()) && wd.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description())).Select(s => s).FirstOrDefault() != null ? true : false,
+                PreviusStudy = ct.Contractor.DetailFile.Where(wd => wd.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.ESTUDIOSPREVIOS.Description()) && wd.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description())).Select(s => s).FirstOrDefault() != null ? true : false,
                 RequirePolice = ct.HiringData.RequierePoliza,
+                LegalprocessAprove = getStatusFiles.Where(w => w.File.ContractId.Equals(ct.ContractId) && w.ContractorId.Equals(ct.ContractorId)
+                && w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description())
+                || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.DOCUMENTOSCONTRATACION.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description())))).ToList().Count >= 4
+                ? true: false
             })
               .AsNoTracking()
               .ToListAsync();

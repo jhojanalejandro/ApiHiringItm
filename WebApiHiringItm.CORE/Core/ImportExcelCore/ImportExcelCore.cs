@@ -51,7 +51,7 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
         #endregion
 
         #region PUBLIC METHODS
-        public async Task<string> ImportarExcel(FileRequest model)
+        public async Task<string> ImportarExcelContractor(FileRequest model)
         {
             List<DetailContractor> listDetail = new List<DetailContractor>();
             string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", model.Excel.FileName);
@@ -93,6 +93,22 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             DataColumn newColumnRollId = new DataColumn("Roll Id", typeof(Guid));
             newColumnRollId.DefaultValue = RollIdId;
             dataTable.Columns.Add(newColumnRollId);
+            //DataColumn newColumnEnableEdit = new DataColumn("EnableEdit", typeof(bool));
+            //newColumnEnableEdit.DefaultValue = true;
+            //dataTable.Columns.Add(newColumnEnableEdit);
+            //DataColumn newColumnableChangePassword = new DataColumn("EnableChangePassword", typeof(bool));
+            //newColumnableChangePassword.DefaultValue = true;
+            //dataTable.Columns.Add(newColumnableChangePassword);
+
+            //DataColumn newColumnEps = new DataColumn("Eps", typeof(Guid));
+            //newColumnEps.DefaultValue = null;
+            //dataTable.Columns.Add(newColumnEps);
+            //DataColumn newColumnArl = new DataColumn("Arl", typeof(Guid));
+            //newColumnArl.DefaultValue = null;
+            //dataTable.Columns.Add(newColumnArl); 
+            //DataColumn newColumnAfp = new DataColumn("Afp", typeof(Guid));
+            //newColumnAfp.DefaultValue = null;
+            //dataTable.Columns.Add(newColumnAfp);
             for (int i = 0; i < dataTable.Columns.Count; i++)
             {
                 dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
@@ -121,6 +137,7 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
                         {
                             DetailContractor DetailContractor = new DetailContractor();
                             DetailContractor.ContractId = model.ContractId;
+
                             DetailContractor.ContractorId = (Guid)dataTable.Rows[j]["Id"];
                             var resultado = _context.Contractor.FirstOrDefault(x => x.Identificacion.Equals(valor));
                             if (resultado != null)
@@ -176,132 +193,7 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             return await Task.FromResult(result);
         }
 
-        public async Task<string> ImportarPassenger(FileRequest model)
-        {
-            List<PassengerDto> passengerList = new();
-            List<DetailContractor> listDetail = new List<DetailContractor>();
-            string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", model.Excel.FileName);
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            //Save the uploaded Excel file.
-            string fileName = Path.GetFileName(model.Excel.FileName);
-            string filePath = Path.Combine(path, fileName);
-            using (FileStream stream = new FileStream(filePath, FileMode.Create))
-            {
-                model.Excel.CopyTo(stream);
-            }
-            FileStream test = new FileStream(filePath, FileMode.Open);
-
-            Workbook workbook = new Workbook(test);
-
-            Worksheet worksheet = workbook.Worksheets[0];
-            Guid RollIdId = _context.Roll.Where(w => w.Code.Equals(RollEnum.Contratista.Description())).Select(s => s.Id).FirstOrDefault();
-            DataTable dataTable = worksheet.Cells.ExportDataTable(0, 0, worksheet.Cells.MaxRow + 1, worksheet.Cells.LastCell.Column + 1, true);
-            dataTable.TableName = "Contractor";
-            DataColumn newColumn = new DataColumn("User Id", typeof(Guid));
-            newColumn.DefaultValue = model.UserId;
-            dataTable.Columns.Add(newColumn);
-            DataColumn newColumnid = new DataColumn("Id", typeof(Guid));
-            newColumnid.DefaultValue = Guid.NewGuid();
-            dataTable.Columns.Add(newColumnid);
-            DataColumn newColumnPassword = new DataColumn("Clave Usuario", typeof(string));
-            newColumnPassword.DefaultValue = "NoAsignada";
-            dataTable.Columns.Add(newColumnPassword);
-            DataColumn newColumn3 = new DataColumn("Fecha Creacion", typeof(DateTime));
-            newColumn3.DefaultValue = DateTime.Now;
-            dataTable.Columns.Add(newColumn3);
-            DataColumn newColumn4 = new DataColumn("Fecha Actualizacion", typeof(DateTime));
-            newColumn4.DefaultValue = DateTime.Now;
-            dataTable.Columns.Add(newColumn4);
-            DataColumn newColumnRollId = new DataColumn("Roll Id", typeof(Guid));
-            newColumnRollId.DefaultValue = RollIdId;
-            dataTable.Columns.Add(newColumnRollId);
-            for (int i = 0; i < dataTable.Columns.Count; i++)
-            {
-                dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
-                var columna = dataTable.Columns[i].ColumnName;
-                var listaHring = _context.Contractor.ToList();
-
-                if (columna.Equals("Identificacion"))
-                {
-                    for (int j = 0; j < dataTable.Rows.Count; j++)
-                    {
-                        int posicion = j;
-                        if (dataTable.Rows.Count == 1)
-                        {
-                            posicion = 0;
-
-                        }
-                        else if (dataTable.Rows.Count == 0)
-                        {
-                            return "No se agrego la Información por que es repetida";
-                        }
-
-                        var valor = dataTable.Rows[j]["Identificacion"];
-                        Guid idValor = (Guid)dataTable.Rows[j]["Id"];
-                        dataTable.Rows[j]["Id"] = Guid.NewGuid();
-                        if (valor != null)
-                        {
-                            //DetailContractor DetailContractor = new DetailContractor();
-                            //DetailContractor.ContractId = model.ContractId;
-                            //DetailContractor.ContractorId = (Guid)dataTable.Rows[j]["Id"];
-                            var resultado = _context.Contractor.FirstOrDefault(x => x.Identificacion.Equals(valor));
-                            //if (resultado != null)
-                            //{
-                            //    DetailContractor.ContractorId = resultado.Id;
-                            //    dataTable.Rows.Remove(dataTable.Rows[j]);
-                            //    j--;
-                            //}
-                            //listDetail.Add(DetailContractor);
-                        }
-
-                    }
-                }
-
-            }
-            test.Close();
-            var conn = _context.Database.GetConnectionString();
-            //File.Delete(filePath);
-            using (SqlConnection connection = new SqlConnection(conn))
-            {
-
-                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn))
-                {
-                    connection.Open();
-
-                    foreach (DataColumn c in dataTable.Columns)
-                        bulkCopy.ColumnMappings.Add(c.ColumnName, c.ColumnName);
-                    bulkCopy.DestinationTableName = dataTable.TableName;
-                    try
-                    {
-                        bulkCopy.WriteToServer(dataTable);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-                connection.Close();
-            }
-            List<Dictionary<string, object>> filas = new List<Dictionary<string, object>>();
-            Dictionary<string, object> row;
-            foreach (DataRow dr in dataTable.Rows)
-            {
-                row = new Dictionary<string, object>();
-                foreach (DataColumn col in dataTable.Columns)
-                {
-                    row.Add(col.ColumnName, dr[col]);
-                }
-                filas.Add(row);
-            }
-            var result = JsonConvert.SerializeObject(filas);
-            await UpdateDetailContract(listDetail);
-            return await Task.FromResult(result);
-        }
-
+  
         static async Task HacerPeticionApi()
         {
             // URL de la API a la que quieres hacer la petición

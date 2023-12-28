@@ -29,6 +29,7 @@ using WebApiHiringItm.CORE.Helpers.Enums.Hiring;
 using System.Data.Entity.Core.Metadata.Edm;
 using MimeKit;
 using DocumentFormat.OpenXml.Spreadsheet;
+using WebApiHiringItm.CORE.Core.Share;
 
 namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 {
@@ -71,7 +72,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                 .Select(s => new MailRequestContractor
                 {
                     FromEmail = s.User.UserEmail,
-                    Password = s.User.PasswordMail,
+                    Password =  GenericCore.Descrypt(s.User.PasswordMail),
                     ImageMessage = s.FileData,
                     FileMessageAttach = attachmentMessage
                 }
@@ -119,12 +120,15 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                     {
                         getCredencialUser.ToEmail = getContractor.Correo;
                         getCredencialUser.TermDate = getTermDate.TermDate;
-                        getContractor.ClaveUsuario = await createPassword(getCredencialUser);
+                        var clave = await createPassword(getCredencialUser);
+
+                        getContractor.ClaveUsuario = clave;
                         getCredencialUser.Body = "Para ingresar utilice la contraseña Asignada  " +
                         " CONTRASEÑA ASIGNADA ES:    " + getContractor.ClaveUsuario + "   en el siguiente link http://localhost:4200/sign-in";
                         getCredencialUser.Subject = "PARTICIPACIÓN PROCESO DE CONTRATACIÓN";
+                        getContractor.ClaveUsuario = GenericCore.Encrypt(clave);
 
-                        await sendMessageInvitation(getCredencialUser);
+                        await SendMessageInvitation(getCredencialUser);
                         //resultDetail.StatusContractor = getStatusId;
                         _context.Contractor.Update(getContractor);
                         _context.DetailContractor.Update(resultDetail);
@@ -160,7 +164,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                     " CONTRASEÑA ASIGNADA ES:    " + item.ClaveUsuario + "   en el siguiente link http://localhost:4200/sign-in";
                     getCredencialUser.Subject = "PARTICIPACIÓN PROCESO DE CONTRATACIÓN";
 
-                    await sendMessageInvitation(getCredencialUser);
+                    await SendMessageInvitation(getCredencialUser);
                     resultDetail.StatusContractor = getStatusId;
                     _context.Contractor.Update(item);
                     _context.DetailContractor.Update(resultDetail);
@@ -182,7 +186,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             .Select(s => new MailRequestContractor
             {
                 FromEmail = s.User.UserEmail,
-                Password = s.User.PasswordMail,
+                Password = GenericCore.Descrypt(s.User.PasswordMail),
                 ImageMessage = s.FileData
             }
             )
@@ -214,27 +218,76 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             return finalString;
         }
 
-        private async Task<bool> sendMessageInvitation(MailRequestContractor mailRequest)
+        private async Task<bool> SendMessageInvitation(MailRequestContractor mailRequest)
         {
             string remitente = mailRequest.FromEmail;
-            SecureString contraseña = new SecureString();
-            foreach (char c in mailRequest.Password)
-            {
-                contraseña.AppendChar(c);
-            }
+            string contraseña = mailRequest.Password;
             string destinatario = mailRequest.ToEmail;
             string asunto = mailRequest.Subject;
 
-            // Crea una instancia de SmtpClient
-            SmtpClient clienteSmtp = new SmtpClient(_mailSettings.Host, _mailSettings.Port);
-            clienteSmtp.Credentials = new NetworkCredential(remitente, contraseña);
-            clienteSmtp.EnableSsl = true;
+            using (SmtpClient clienteSmtp = new SmtpClient(_mailSettings.Host, _mailSettings.Port))
+            {
+                clienteSmtp.Credentials = new NetworkCredential(remitente, contraseña);
+                clienteSmtp.EnableSsl = true;
 
-            // Crea una instancia de LinkedResource con la imagen en base64
-            byte[] imageBytes = Convert.FromBase64String(mailRequest.ImageMessage);
+                // Crea una instancia de LinkedResource con la imagen en base64
+                byte[] imageBytes = Convert.FromBase64String(mailRequest.ImageMessage);
+                LinkedResource userImage = new LinkedResource(new MemoryStream(imageBytes), "image/jpg");
+                userImage.ContentId = "firma";
 
-            LinkedResource userImage = new LinkedResource(new MemoryStream(imageBytes), "image/jpg");
-            userImage.ContentId = "firma";
+                // Crea el objeto AlternateView para el contenido HTML
+                string cuerpoHTML = BuildHtmlBody(mailRequest);
+
+                // Crea un nuevo correo electrónico
+                using (MailMessage correo = new MailMessage(remitente, destinatario, asunto, cuerpoHTML))
+                {
+                    correo.IsBodyHtml = true;
+                    AlternateView contenidoHTML = AlternateView.CreateAlternateViewFromString(cuerpoHTML, null, MediaTypeNames.Text.Html);
+                    contenidoHTML.LinkedResources.Add(userImage);
+                    correo.AlternateViews.Add(contenidoHTML);
+
+                    // Adjunta archivos
+                    AttachFiles(correo, mailRequest.FileMessageAttach);
+
+                    // Envía el correo
+                    try
+                    {
+                        await clienteSmtp.SendMailAsync(correo);
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        // Manejar la excepción (registro, notificación, etc.)
+                        Console.WriteLine($"Error al enviar el correo: {ex.Message}");
+                        return false;
+                    }
+                }
+            }
+        }
+
+        private void AttachFiles(MailMessage correo, List<FileAttach> fileAttachments)
+        {
+            if (fileAttachments != null && fileAttachments.Count > 0)
+            {
+                for (int i = 0; i < fileAttachments.Count; i++)
+                {
+                    string contentType = "application/" + fileAttachments[i].FileType;
+
+                    byte[] attachBytes = Convert.FromBase64String(fileAttachments[i].FileData);
+                    LinkedResource imagenAdicional = new LinkedResource(new MemoryStream(attachBytes), contentType);
+                    imagenAdicional.ContentId = $"pdf{i + 2}";
+
+                    System.Net.Mime.ContentType archivoAdjuntoContentType = new System.Net.Mime.ContentType(contentType);
+                    archivoAdjuntoContentType.Name = $"{fileAttachments[i].FileName}.{fileAttachments[i].FileType}";
+
+                    imagenAdicional.ContentType = archivoAdjuntoContentType;
+                    correo.AlternateViews[0].LinkedResources.Add(imagenAdicional);
+                }
+            }
+        }
+
+        private string BuildHtmlBody(MailRequestContractor mailRequest)
+        {
 
             // Crea el objeto AlternateView para el contenido HTML
             //string cuerpoHTML = "<html><body><h1>"+ asunto + "</h1><img src=\"cid:imagen1\" /> <p>"+ mailRequest.Body + "<p/></body></html>";
@@ -247,7 +300,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             //        "<img src=\"cid:firma\" />" +
             //        "</body> </html>";
 
-            string cuerpoHTML = "<html> <body>" +
+            return "<html> <body>" +
                                 "<p>Nos permitimos informar que se está realizando el proceso de contratación para la prestación del servicio en el marco del contrato interadministrativo " + mailRequest.ContractNumber + " suscrito con el ITM, por tanto y para poder realizar el proceso contractual es necesario que por favor nos hagan llegar los documentos relacionados y así poder verificar el cumplimiento de los requisitos.</p>" +
                                 "<p>Con plazo para enviar documentos hasta el " + diaDeLaSemana.ToUpper() + " " + diaMes + " DE " + mes.ToUpper() + " DE " + anio + "</p>" +
                                 "<p>Tener en cuenta las siguientes consideraciones:</p>" +
@@ -305,43 +358,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                         "</body> " +
 
                         "</html>";
-
-            // Crea un nuevo correo electrónico
-            MailMessage correo = new MailMessage(remitente, destinatario, asunto, cuerpoHTML);
-            correo.IsBodyHtml = true;
-            AlternateView contenidoHTML = AlternateView.CreateAlternateViewFromString(cuerpoHTML, null, MediaTypeNames.Text.Html);
-            contenidoHTML.LinkedResources.Add(userImage);
-            correo.AlternateViews.Add(contenidoHTML);
-            if (mailRequest.FileMessageAttach.Count > 0)
-            {
-
-                for (int i = 0; i < mailRequest.FileMessageAttach.Count; i++)
-                {
-                    string contentType = "application/" + mailRequest.FileMessageAttach[i].FileType; // Cambia esto según el tipo de archivo adjunto
-
-                    byte[] attachBytes = Convert.FromBase64String(mailRequest.FileMessageAttach[i].FileData);
-                    LinkedResource imagenAdicional = new LinkedResource(new MemoryStream(attachBytes), contentType);
-                    imagenAdicional.ContentId = "pdf" + (i + 2);
-
-                    System.Net.Mime.ContentType archivoAdjuntoContentType = new System.Net.Mime.ContentType(contentType);
-                    archivoAdjuntoContentType.Name = mailRequest.FileMessageAttach[i].FileName + "." + mailRequest.FileMessageAttach[i].FileType; // Cambia "nombre_del_archivo.pdf" por el nombre deseado
-
-                    // Agrega el archivo adjunto a LinkedResource
-                    imagenAdicional.ContentType = archivoAdjuntoContentType;
-                    contenidoHTML.LinkedResources.Add(imagenAdicional);
-                }
-
-            }
-
-            // Envía el correo
-
-            using (clienteSmtp)
-            {
-                clienteSmtp.Send(correo);
-            }
-            return true;
         }
-
         private async Task<bool> sendMessageObservation(MailRequestContractor mailRequest)
         {
             string remitente = mailRequest.FromEmail;
@@ -358,12 +375,9 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             clienteSmtp.Credentials = new NetworkCredential(remitente, contraseña);
             clienteSmtp.EnableSsl = true;
 
-            // Crea una instancia de LinkedResource con la imagen en base64
             byte[] imageBytes = Convert.FromBase64String(mailRequest.ImageMessage);
-
             LinkedResource userImage = new LinkedResource(new MemoryStream(imageBytes), "image/jpg");
-
-            userImage.ContentId = "imagen1";
+            userImage.ContentId = "firma";
 
             // Crea el objeto AlternateView para el contenido HTML
             //string cuerpoHTML = "<html><body><h1>"+ asunto + "</h1><img src=\"cid:imagen1\" /> <p>"+ mailRequest.Body + "<p/></body></html>";
@@ -383,18 +397,40 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             cuerpoHTML += "</ul>" +
                     "<p>Tener en cuenta las siguientes observaciones:</p>" +
                     mailRequest.Body +
-                    "<img src=\"cid:imagen1\" />" +
-                    "</body> </html>";
+                    "<br>" +
+                    "<br>" +
+                    "<p> Cordialmente:</p>" +
+                    "<img src=\"cid:firma\" />" +
+                        "</body> </html>";
             // Crea un nuevo correo electrónico
-            MailMessage correo = new MailMessage(remitente, destinatario, asunto, cuerpoHTML);
-            correo.IsBodyHtml = true;
+            // Crea un nuevo correo electrónico
+            using (MailMessage correo = new MailMessage(remitente, destinatario, asunto, cuerpoHTML))
+            {
+                correo.IsBodyHtml = true;
+                AlternateView contenidoHTML = AlternateView.CreateAlternateViewFromString(cuerpoHTML, null, MediaTypeNames.Text.Html);
+                contenidoHTML.LinkedResources.Add(userImage);
+                correo.AlternateViews.Add(contenidoHTML);
+
+                // Envía el correo
+                try
+                {
+                    await clienteSmtp.SendMailAsync(correo);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    // Manejar la excepción (registro, notificación, etc.)
+                    Console.WriteLine($"Error al enviar el correo: {ex.Message}");
+                    return false;
+                }
+            }
 
             // Envía el correo
-            using (clienteSmtp)
-            {
-                clienteSmtp.Send(correo);
-            }
-            return true;
+            //using (clienteSmtp)
+            //{
+            //    clienteSmtp.Send(correo);
+            //}
+            //return true;
         }
 
 
@@ -407,36 +443,60 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             }
             string asunto = "Restaurar contraseña";
 
-            // Crea una instancia de SmtpClient
-            SmtpClient clienteSmtp = new SmtpClient(_mailSettings.Host, _mailSettings.Port);
-            clienteSmtp.Credentials = new NetworkCredential(_mailSettings.Mail, password);
-            clienteSmtp.EnableSsl = true;
-
-            // Crea una instancia de LinkedResource con la imagen en base64
-            //byte[] imageBytes = Convert.FromBase64String(mailRequest.ImageMessage);
-
-            //LinkedResource userImage = new LinkedResource(new MemoryStream(imageBytes), "image/jpg");
-
-            //userImage.ContentId = "imagen1";
-
-            // Crea el objeto AlternateView para el contenido HTML
-            //string cuerpoHTML = "<html><body><h1>"+ asunto + "</h1><img src=\"cid:imagen1\" /> <p>"+ mailRequest.Body + "<p/></body></html>";
-            string cuerpoHTML = "<html> <body>" +
-                "<p>hemos visto que perdiste tu clave, para restaurar tu contraseña ingresa al siguiente link: </p>" + Const.RESETPASSWORD + userId+
-                "<p>Documentos que se deben modificar:</p>" +
-                "<ul>";
-   
-  
-            // Crea un nuevo correo electrónico
-            MailMessage correo = new MailMessage(_mailSettings.Mail, userMail, asunto, cuerpoHTML);
-            correo.IsBodyHtml = true;
-
-            // Envía el correo
-            using (clienteSmtp)
+            try
             {
-                clienteSmtp.Send(correo);
+                // Crea una instancia de SmtpClient
+                SmtpClient clienteSmtp = new SmtpClient(_mailSettings.Host, _mailSettings.Port);
+                clienteSmtp.EnableSsl = true;
+                clienteSmtp.UseDefaultCredentials = false;
+                clienteSmtp.Credentials = new NetworkCredential(_mailSettings.Mail, password);
+                clienteSmtp.EnableSsl = true;
+                clienteSmtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                clienteSmtp.ServicePoint.MaxIdleTime = 2;
+                clienteSmtp.ServicePoint.ConnectionLimit = 10; // Número máximo de conexiones a mantener abiertas
+
+                // Crea una instancia de LinkedResource con la imagen en base64
+                //byte[] imageBytes = Convert.FromBase64String(mailRequest.ImageMessage);
+
+                //LinkedResource userImage = new LinkedResource(new MemoryStream(imageBytes), "image/jpg");
+
+                //userImage.ContentId = "imagen1";
+
+                // Crea el objeto AlternateView para el contenido HTML
+                //string cuerpoHTML = "<html><body><h1>"+ asunto + "</h1><img src=\"cid:imagen1\" /> <p>"+ mailRequest.Body + "<p/></body></html>";
+                string cuerpoHTML = "<html> <body>" +
+                    "<p>hemos visto que perdiste tu clave, para restaurar tu contraseña ingresa al siguiente link: </p>" + Const.RESETPASSWORD + userId +
+                    "<p>Documentos que se deben modificar:</p>" +
+                    "<ul>";
+
+
+                // Crea un nuevo correo electrónico
+                MailMessage correo = new MailMessage(_mailSettings.Mail, userMail, asunto, cuerpoHTML);
+                correo.IsBodyHtml = true;
+
+                // Envía el correo
+                using (clienteSmtp)
+                {
+                    correo.IsBodyHtml = true;
+
+                    // Envía el correo
+                    try
+                    {
+                        await clienteSmtp.SendMailAsync(correo);
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        // Manejar la excepción (registro, notificación, etc.)
+                        Console.WriteLine($"Error al enviar el correo: {ex.Message}");
+                        return false;
+                    }
+                }
             }
-            return true;
+            catch(Exception ex)
+            {
+                throw new ArgumentOutOfRangeException(ex.Message);
+            }
         }
 
     }

@@ -23,7 +23,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public string? DutyContract { get; set; }
         public string? AreaCode { get; set; }
         public decimal? ResourceContract { get; set; }
-        public decimal? RegisterDateContract { get; set; }
+        public DateTime? RegisterDateContract { get; set; }
 
         public DetailContractDto DetalleContratoDto { get; set; }
 

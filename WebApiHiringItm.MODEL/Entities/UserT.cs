@@ -26,8 +26,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public string PhoneNumber { get; set; }
         public string Identification { get; set; }
         public string PasswordMail { get; set; }
-        public bool? EnableChangePassword { get; set; }
         public DateTime? ConectionDate { get; set; }
+        public bool? EnableChangePassword { get; set; }
 
         public virtual Roll Roll { get; set; }
         public virtual ICollection<AssigmentContract> AssigmentContract { get; set; }

@@ -27,7 +27,7 @@ namespace WebApiHiringItm.API.Controllers.ImportExcel
         {
             try
             {
-                var result = await _importExcel.ImportarExcel(model);
+                var result = await _importExcel.ImportarExcelContractor(model);
                 return Ok(result);
             }
             catch (Exception ex)

@@ -89,7 +89,7 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.NombreActividad)
                     .IsRequired()
-                    .HasMaxLength(30);
+                    .HasMaxLength(500);
 
                 entity.HasOne(d => d.Component)
                     .WithMany(p => p.Activity)
@@ -198,7 +198,7 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.NombreComponente)
                     .IsRequired()
-                    .HasMaxLength(100);
+                    .HasMaxLength(500);
 
                 entity.HasOne(d => d.Contract)
                     .WithMany(p => p.Component)
@@ -230,6 +230,8 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.ProjectName)
                     .IsRequired()
                     .HasMaxLength(300);
+
+                entity.Property(e => e.RecursosAdicionales).HasColumnType("money");
 
                 entity.Property(e => e.RegisterDateContract).HasColumnType("date");
 
@@ -285,8 +287,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.Direccion)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-
-                entity.Property(e => e.EnableChangePassword).HasColumnName("enableChangePassword");
 
                 entity.Property(e => e.FechaActualizacion).HasColumnType("date");
 
@@ -437,7 +437,7 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.ModifyDate).HasColumnType("date");
 
-                entity.Property(e => e.RegisterDate).HasColumnType("date");
+                entity.Property(e => e.RegisterDate).HasColumnType("datetime");
 
                 entity.Property(e => e.TipoContrato)
                     .HasMaxLength(50)
@@ -524,7 +524,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.DetailFile)
                     .HasForeignKey(d => d.ContractorId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__DetailFil__Contr__2A164134");
 
                 entity.HasOne(d => d.File)
@@ -1042,8 +1041,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.ConectionDate)
                     .HasColumnType("datetime")
                     .HasColumnName("conectionDate");
-
-                entity.Property(e => e.EnableChangePassword).HasColumnName("enableChangePassword");
 
                 entity.Property(e => e.Identification)
                     .IsRequired()

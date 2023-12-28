@@ -23,6 +23,7 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public decimal TotalValue { get; set; }
         public string ProfileRequire { get; set; }
         public DateTime RegisterDate { get; set; }
+        public bool LegalprocessAprove {get; set;}
 
     }
 }

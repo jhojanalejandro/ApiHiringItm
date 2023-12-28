@@ -241,7 +241,7 @@ namespace WebApiHiringItm.CORE.Core.Contractors
 
         }
 
-        public async Task<IGenericResponse<List<PosContractualDto>>?> GetContractorSecurity(string contractId)
+        public async Task<IGenericResponse<List<PosContractualDto>>> GetContractorSecurity(string contractId)
         {
             if (!contractId.IsGuid())
                 return ApiResponseHelper.CreateErrorResponse<List<PosContractualDto>>(Resource.GUIDNOTVALID);

@@ -35,7 +35,7 @@ namespace WebApiHiringItm.CORE.Core.Share
             }
         }
 
-        public static string Decrypt(string cipherText)
+        public static string Descrypt(string cipherText)
         {
             using (Aes aesAlg = Aes.Create())
             {
