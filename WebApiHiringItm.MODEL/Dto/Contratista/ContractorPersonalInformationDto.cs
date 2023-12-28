@@ -39,6 +39,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
 
     public class AcademicInformationDto
     {
+        public Guid? Id { get; set; }
         public string AcademicInformationType { get; set; }
         public string CollegeDegree { get; set; }
         public string Institution { get; set; }
