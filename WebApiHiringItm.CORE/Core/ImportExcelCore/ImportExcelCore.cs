@@ -51,7 +51,7 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
         #endregion
 
         #region PUBLIC METHODS
-        public async Task<string> ImportarExcel(FileRequest model)
+        public async Task<string> ImportarExcelContractor(FileRequest model)
         {
             List<DetailContractor> listDetail = new List<DetailContractor>();
             string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", model.Excel.FileName);
@@ -93,22 +93,22 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             DataColumn newColumnRollId = new DataColumn("Roll Id", typeof(Guid));
             newColumnRollId.DefaultValue = RollIdId;
             dataTable.Columns.Add(newColumnRollId);
-            DataColumn newColumnEnableEdit = new DataColumn("EnableEdit", typeof(bool));
-            newColumnEnableEdit.DefaultValue = true;
-            dataTable.Columns.Add(newColumnEnableEdit);
-            DataColumn newColumnableChangePassword = new DataColumn("EnableChangePassword", typeof(bool));
-            newColumnableChangePassword.DefaultValue = true;
-            dataTable.Columns.Add(newColumnableChangePassword);
+            //DataColumn newColumnEnableEdit = new DataColumn("EnableEdit", typeof(bool));
+            //newColumnEnableEdit.DefaultValue = true;
+            //dataTable.Columns.Add(newColumnEnableEdit);
+            //DataColumn newColumnableChangePassword = new DataColumn("EnableChangePassword", typeof(bool));
+            //newColumnableChangePassword.DefaultValue = true;
+            //dataTable.Columns.Add(newColumnableChangePassword);
 
-            DataColumn newColumnEps = new DataColumn("Eps", typeof(Guid));
-            newColumnEps.DefaultValue = null;
-            dataTable.Columns.Add(newColumnEps);
-            DataColumn newColumnArl = new DataColumn("Arl", typeof(Guid));
-            newColumnArl.DefaultValue = null;
-            dataTable.Columns.Add(newColumnArl); 
-            DataColumn newColumnAfp = new DataColumn("Afp", typeof(Guid));
-            newColumnAfp.DefaultValue = null;
-            dataTable.Columns.Add(newColumnAfp);
+            //DataColumn newColumnEps = new DataColumn("Eps", typeof(Guid));
+            //newColumnEps.DefaultValue = null;
+            //dataTable.Columns.Add(newColumnEps);
+            //DataColumn newColumnArl = new DataColumn("Arl", typeof(Guid));
+            //newColumnArl.DefaultValue = null;
+            //dataTable.Columns.Add(newColumnArl); 
+            //DataColumn newColumnAfp = new DataColumn("Afp", typeof(Guid));
+            //newColumnAfp.DefaultValue = null;
+            //dataTable.Columns.Add(newColumnAfp);
             for (int i = 0; i < dataTable.Columns.Count; i++)
             {
                 dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));

@@ -10,7 +10,7 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore.Interface
 {
     public interface IImportExcelCore
     {
-        Task<string> ImportarExcel(FileRequest obj);
+        Task<string> ImportarExcelContractor(FileRequest obj);
         Task<IGenericResponse<string>> ImportElement(FileRequest model);
         Task<IGenericResponse<string>> ImportCdp(FileRequest model);
     }
