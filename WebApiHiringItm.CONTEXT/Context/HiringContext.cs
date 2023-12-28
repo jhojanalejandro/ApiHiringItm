@@ -8,7 +8,7 @@ using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.CONTEXT.Context
 {
-    public partial class HiringContext : DbContext, IHiringContext
+    public partial class HiringContext : DbContext,IHiringContext
     {
         public HiringContext()
         {
@@ -89,7 +89,7 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.NombreActividad)
                     .IsRequired()
-                    .HasMaxLength(30);
+                    .HasMaxLength(500);
 
                 entity.HasOne(d => d.Component)
                     .WithMany(p => p.Activity)
@@ -198,7 +198,7 @@ namespace WebApiHiringItm.CONTEXT.Context
 
                 entity.Property(e => e.NombreComponente)
                     .IsRequired()
-                    .HasMaxLength(100);
+                    .HasMaxLength(500);
 
                 entity.HasOne(d => d.Contract)
                     .WithMany(p => p.Component)
@@ -287,8 +287,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.Direccion)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-
-                entity.Property(e => e.EnableChangePassword).HasColumnName("enableChangePassword");
 
                 entity.Property(e => e.FechaActualizacion).HasColumnType("date");
 
@@ -526,7 +524,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.HasOne(d => d.Contractor)
                     .WithMany(p => p.DetailFile)
                     .HasForeignKey(d => d.ContractorId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__DetailFil__Contr__2A164134");
 
                 entity.HasOne(d => d.File)
@@ -1044,8 +1041,6 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.ConectionDate)
                     .HasColumnType("datetime")
                     .HasColumnName("conectionDate");
-
-                entity.Property(e => e.EnableChangePassword).HasColumnName("enableChangePassword");
 
                 entity.Property(e => e.Identification)
                     .IsRequired()

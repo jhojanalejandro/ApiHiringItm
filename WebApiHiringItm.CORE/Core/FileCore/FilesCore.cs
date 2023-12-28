@@ -60,7 +60,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 .Include(i => i.StatusFile)
                 .Include(i => i.File)
                     .ThenInclude(i => i.Folder)
-                .Where(x => x.ContractorId.Equals(contractorId) && x.File.ContractId.Equals(contractId) && x.File.FolderId.Equals(Guid.Parse(folderId)) || (x.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description()) && getFolderContract && x.ContractorId.Equals(contractorId))).OrderByDescending(o => o.RegisterDate);
+                .Where(x => (x.ContractorId.Equals(contractorId) && x.File.ContractId.Equals(contractId) && x.File.FolderId.Equals(Guid.Parse(folderId))) || (x.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description()) && getFolderContract && x.ContractorId.Equals(contractorId))).OrderByDescending(o => o.RegisterDate);
             return await result
                 .OrderByDescending(o => o.RegisterDate)
                 .GroupBy(f => new { f.FileId,f.File.FilesName,
@@ -776,7 +776,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
             else
             {
-                var getStatusFileList = _context.StatusFile.Where(w => w.Code.Equals(StatusFileEnum.APROBADO.Description())).Select(s => s.Id).FirstOrDefault();
+                var getStatusFileList = _context.StatusFile.Where(w => w.Code.Equals(StatusFileEnum.APROBADO.Description()) && w.Category.Equals(CategoryEnum.CARGADO.Description())).Select(s => s.Id).FirstOrDefault();
                 var map = _mapper.Map<DetailFile>(model);
                 map.Id = Guid.NewGuid();
                 map.StatusFileId = getStatusFileList;
@@ -973,12 +973,12 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             var getDetailFile = _context.DetailFile
                 .Include(i => i.File)
                     .ThenInclude(i => i.DocumentTypeNavigation)
-                .Where(w => w.File.DocumentTypeNavigation.Id.Equals(modelFiles.DocumentType) && modelFiles.Contractors.Contains(w.ContractorId)).FirstOrDefault();
+                .Where(w => w.File.DocumentTypeNavigation.Id.Equals(modelFiles.DocumentType) && modelFiles.Contractors.Contains(w.ContractorId.Value)).FirstOrDefault();
             var contractorIdsToCheck = modelFiles.Contractors; // Lista de ContractorId a verificar
             var getDetailFileContarctors = _context.DetailFile
                 .Include(i => i.File)
                 .ThenInclude(i => i.DocumentTypeNavigation)
-                .Where(w => w.File.DocumentTypeNavigation.Id.Equals(modelFiles.DocumentType) && contractorIdsToCheck.Contains(w.ContractorId))
+                .Where(w => w.File.DocumentTypeNavigation.Id.Equals(modelFiles.DocumentType) && contractorIdsToCheck.Contains(w.ContractorId.Value))
                 .ToList(); // Ejecuta la consulta y obtiene los resultados en una lista
 
             //var missingContractors = contractorIdsToCheck.Except(getDetailFileContarctors.Select(r => r.ContractorId)).ToList();

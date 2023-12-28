@@ -33,6 +33,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public Guid Eps { get; set; }
         public Guid Arl { get; set; }
         public Guid Afp { get; set; }
+        public bool EnableChangePassword { get; set; }
 
 
     }
