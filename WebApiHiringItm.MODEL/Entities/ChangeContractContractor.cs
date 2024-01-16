@@ -27,6 +27,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public bool? IsAddition { get; set; }
         public string PerfilRequeridoAcademico { get; set; }
         public string PerfilRequeridoExperiencia { get; set; }
+        public string AdditionalText { get; set; }
+        public string ObligationType { get; set; }
 
         public virtual DetailContractor DetailContractor { get; set; }
         public virtual EconomicdataContractor EconomicdataContractorNavigation { get; set; }

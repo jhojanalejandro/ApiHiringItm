@@ -88,6 +88,7 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<ContractorPaymentSecurityDto, ContractorPaymentSecurity>().ReverseMap();
             CreateMap<NewnessTypeDto, NewnessType>().ReverseMap();
             CreateMap<ObservationFileRequest, DetailFile>().ReverseMap();
+            CreateMap<FilePaymentDto, Files>().ReverseMap();
 
 
         }

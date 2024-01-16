@@ -149,6 +149,8 @@ namespace WebApiHiringItm.CONTEXT.Context
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.AdditionalText).IsUnicode(false);
+
                 entity.Property(e => e.ElementName).HasMaxLength(100);
 
                 entity.Property(e => e.ElementObject).IsUnicode(false);
@@ -162,6 +164,10 @@ namespace WebApiHiringItm.CONTEXT.Context
                 entity.Property(e => e.NoAddition)
                     .IsRequired()
                     .HasMaxLength(20);
+
+                entity.Property(e => e.ObligationType)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.PerfilRequeridoAcademico).IsUnicode(false);
 
@@ -271,7 +277,7 @@ namespace WebApiHiringItm.CONTEXT.Context
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ClaveUsuario).HasMaxLength(15);
+                entity.Property(e => e.ClaveUsuario).HasMaxLength(300);
 
                 entity.Property(e => e.Correo)
                     .IsRequired()

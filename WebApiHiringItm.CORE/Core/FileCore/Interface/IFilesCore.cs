@@ -31,5 +31,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore.Interface
         Task<IGenericResponse<string>> AddFilePayrollContractor(FilesDto modelFileDto, int consecutive);
         Task<List<FileContractDto>> GetFileContractorByFolderToDownload(Guid contractorId, string folderId, Guid contractId);
         Task<IGenericResponse<string>> AddFileShareContractor(FilesDto modelFileDto);
+        Task<IGenericResponse<string>> AddFileContractorPayment(FilePaymentDto modelFileDto);
     }
 }

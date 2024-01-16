@@ -30,6 +30,7 @@ using System.Data.Entity.Core.Metadata.Edm;
 using MimeKit;
 using DocumentFormat.OpenXml.Spreadsheet;
 using WebApiHiringItm.CORE.Core.Share;
+using Google.Protobuf;
 
 namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 {
@@ -123,9 +124,15 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                         var clave = await createPassword(getCredencialUser);
 
                         getContractor.ClaveUsuario = clave;
-                        getCredencialUser.Body = "Para ingresar utilice la contraseña Asignada  " +
-                        " CONTRASEÑA ASIGNADA ES:    " + getContractor.ClaveUsuario + "   en el siguiente link http://localhost:4200/sign-in";
+
+
+                        getCredencialUser.Body = "<strong style='background: yellow; color: black; text-decoration: underline;'>Para ingresar a la plataflorma, utilice el correo que recibe este mensaje, y la contraseña Asignada </strong>" +
+                           "<strong style='background: yellow; color: black; text-decoration: underline;'>CONTRASEÑA ASIGNADA ES: " + getContractor.ClaveUsuario + "</strong> en el siguiente link " +
+                           "<a href='http://localhost:4200/sign-in' style='color: yellow; text-decoration: underline; padding: 8px 16px; background-color: green; border-radius: 8px; display: inline-block;'>InixiR Sesión</a>" +
+                           "   \"<ol>\" +\r\n                                    " +
+                           "\"<li>1.En la ventana de inicio de sesión seleccionar tipo usuario como contratista      :</li>\" +\r\n    \"<ol type=\" + \"a\" + \">\" +\r\n    \"<li>(si es primera vez que ingresa) registre sus datos personales </li>\" +\r\n  \"<li>PRESIONE EL BOTON CARGAR ARCHIVOS y cargue los archivos especificados anteriormente</li>\" +\r\n\"</ol>\" +";
                         getCredencialUser.Subject = "PARTICIPACIÓN PROCESO DE CONTRATACIÓN";
+
                         getContractor.ClaveUsuario = GenericCore.Encrypt(clave);
 
                         await SendMessageInvitation(getCredencialUser);
@@ -158,11 +165,14 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 
                     getCredencialUser.ToEmail = item.Correo;
                     getCredencialUser.TermDate = getTermDate.TermDate;
+                    var clave = await createPassword(getCredencialUser);
 
-                    item.ClaveUsuario = await createPassword(getCredencialUser);
+                    item.ClaveUsuario = clave;
                     getCredencialUser.Body = "Para ingresar utilice la contraseña Asignada  " +
                     " CONTRASEÑA ASIGNADA ES:    " + item.ClaveUsuario + "   en el siguiente link http://localhost:4200/sign-in";
+
                     getCredencialUser.Subject = "PARTICIPACIÓN PROCESO DE CONTRATACIÓN";
+                    item.ClaveUsuario = GenericCore.Encrypt(clave);
 
                     await SendMessageInvitation(getCredencialUser);
                     resultDetail.StatusContractor = getStatusId;
@@ -397,6 +407,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             cuerpoHTML += "</ul>" +
                     "<p>Tener en cuenta las siguientes observaciones:</p>" +
                     mailRequest.Body +
+                    "<h1>Recuerde que los docuemntos se cargan por la plataforma de la misma manera que se hacde incialmente</h1>" +
                     "<br>" +
                     "<br>" +
                     "<p> Cordialmente:</p>" +
@@ -466,7 +477,7 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
                 //string cuerpoHTML = "<html><body><h1>"+ asunto + "</h1><img src=\"cid:imagen1\" /> <p>"+ mailRequest.Body + "<p/></body></html>";
                 string cuerpoHTML = "<html> <body>" +
                     "<p>hemos visto que perdiste tu clave, para restaurar tu contraseña ingresa al siguiente link: </p>" + Const.RESETPASSWORD + userId +
-                    "<p>Documentos que se deben modificar:</p>" +
+                    "<p>Con este link puedes ingresar y recuperar tu conttraseña:</p>" +
                     "<ul>";
 
 

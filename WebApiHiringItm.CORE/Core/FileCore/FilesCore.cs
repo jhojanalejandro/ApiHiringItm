@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.Formula.Atp;
@@ -26,8 +27,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore
 {
     public class FilesCore : IFilesCore
     {
-
-
         #region FIELD
         private readonly HiringContext _context;
         private readonly IMapper _mapper;
@@ -53,14 +52,21 @@ namespace WebApiHiringItm.CORE.Core.FileCore
         #region PUBLIC METHODS
         public async Task<List<FileContractDto>> GetFileContractorByFolder(Guid contractorId, string folderId, Guid contractId)
         {
-            var getFolderContract = _context.Folder.Any(wf => wf.Id.Equals(Guid.Parse(folderId)) && wf.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description()));
+            var getFolderContract = _context.Folder.Include(i => i.FolderTypeNavigation).FirstOrDefault(wf => wf.Id.Equals(Guid.Parse(folderId)) && (wf.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.CONTRATO.Description()) || wf.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.PAGOSCODE.Description())));
 
             var result = _context.DetailFile
                 .Include(i => i.File)
+                    .ThenInclude(t => t.DocumentTypeNavigation)
                 .Include(i => i.StatusFile)
                 .Include(i => i.File)
                     .ThenInclude(i => i.Folder)
-                .Where(x => (x.ContractorId.Equals(contractorId) && x.File.ContractId.Equals(contractId) && x.File.FolderId.Equals(Guid.Parse(folderId))) || (x.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description()) && getFolderContract && x.ContractorId.Equals(contractorId))).OrderByDescending(o => o.RegisterDate);
+                .Where(x => x.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.RESPUESTASOLICITUDCOMITE.Description()) || (x.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.SOLICITUDCOMITE.Description())) || (x.File.FolderId.Equals(Guid.Parse(folderId))  && x.ContractorId.Equals(contractorId) && x.File.ContractId.Equals(contractId)  && getFolderContract != null)).OrderByDescending(o => o.RegisterDate);
+
+            if (getFolderContract.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.PAGOSCODE.Description()))
+            {
+                result = result.Where(x => x.File.DocumentTypeNavigation.TypeCode.Equals("PG")).OrderByDescending(o => o.RegisterDate);
+            }
+
             return await result
                 .OrderByDescending(o => o.RegisterDate)
                 .GroupBy(f => new { f.FileId,f.File.FilesName,
@@ -300,6 +306,76 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
 
         }
+
+
+        public async Task<IGenericResponse<string>> AddFileContractorPayment(FilePaymentDto modelFileDto)
+        {
+            Guid folderId = Guid.Empty;
+            bool documentExist = false;
+            var getContractorPayment = _context.ContractorPayments.OrderByDescending(o => o.Consecutive).Where(x => x.DetailContractorNavigation.ContractorId.Equals(modelFileDto.ContractorId) && x.DetailContractorNavigation.ContractId.Equals(modelFileDto.ContractId)).Count();
+            var getDataFile = _context.DetailFile.OrderByDescending(o => o.RegisterDate).FirstOrDefault(x => x.File.DocumentTypeNavigation.Id.Equals(modelFileDto.DocumentType) && x.ContractorId.Equals(modelFileDto.ContractorId) && x.File.ContractId.Equals(modelFileDto.ContractId));
+            var getFolderId = _context.FolderType.FirstOrDefault(x => x.Code.Equals(FolderTypeCodeEnum.PAGOSCODE.Description()));
+            var getEconomicDataContractor = _context.EconomicdataContractor.FirstOrDefault(w => w.DetailContractor.ContractorId.Equals(modelFileDto.ContractorId) && w.DetailContractor.ContractId.Equals(modelFileDto.ContractId) && w.EnableChargeAccount==true && w.EnableEjecution == true);
+            var getUser = _context.AssigmentContract.FirstOrDefault(x => x.ContractId.Equals(modelFileDto.ContractId) && x.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.CONTRACTUALCONTRATO.Description()));
+
+            if (getEconomicDataContractor != null)
+            {
+                getEconomicDataContractor.EnableEjecution = false;
+                getEconomicDataContractor.EnableChargeAccount = false;
+                _context.EconomicdataContractor.Update(getEconomicDataContractor);
+            }
+            var getFolder = _context.Folder.FirstOrDefault(x => x.FolderTypeNavigation.Code.Equals(FolderTypeCodeEnum.PAGOSCODE.Description()) && x.RegisterDate.Month.Equals(modelFileDto) && x.ContractorId.Equals(modelFileDto.ContractorId));
+            if (getFolder == null)
+            {
+                Folder folderPago = new Folder();
+                folderPago.Id = Guid.NewGuid();
+                folderPago.FolderType = getFolderId.Id;
+                folderPago.FolderName = PAGO;
+                folderPago.DescriptionProject = modelFileDto.DescriptionFile;
+                folderPago.ContractorId = modelFileDto.ContractorId;
+                folderPago.ContractId = modelFileDto.ContractId;
+                folderPago.RegisterDate = DateTime.Now;
+                folderPago.ModifyDate = DateTime.Now;
+                folderPago.Consutive = getContractorPayment;
+                _context.Folder.Add(folderPago);
+                folderId = folderPago.Id;
+            }
+            else
+            {
+                folderId = getFolder.Id;
+            }
+            var map = _mapper.Map<Files>(modelFileDto);
+            map.Id = Guid.NewGuid();
+            map.FolderId = folderId;
+            _context.Files.Add(map);
+            DetailFileDto detailFileDto = new();
+            detailFileDto.Passed = false;
+            detailFileDto.RegisterDate = modelFileDto.RegisterDate;
+            detailFileDto.FileId = map.Id;
+            detailFileDto.ContractorId = modelFileDto.ContractorId;
+            if (modelFileDto.UserId != Guid.Empty && modelFileDto.UserId != null)
+            {
+                detailFileDto.UserId = modelFileDto.UserId;
+            }
+            else
+            {
+                detailFileDto.UserId = getUser.UserId;
+            }
+
+
+            var resultDetail = await CreateDetail(detailFileDto, true, documentExist, false);
+            if (resultDetail)
+            {
+                return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
+            }
+            else
+            {
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.ERRORDETAILFILE);
+
+            }
+
+        }
+
 
         public async Task<IGenericResponse<string>> AddFileContract(FileContractDto model)
         {
@@ -546,12 +622,10 @@ namespace WebApiHiringItm.CORE.Core.FileCore
         
         public async Task<IGenericResponse<string>> CreateDetailCommittee(DetailFileDto model)
         {
-            var getDetailFileList = _context.DetailFile.OrderByDescending(o => o.RegisterDate).Where(w => w.FileId.Equals(model.FileId)).ToList();
-            foreach (var detail in getDetailFileList)
-            {
-                detail.StatusFileId = model.StatusFileId;
-            }
-            _context.DetailFile.UpdateRange(getDetailFileList);
+            var getDetailFile = _context.DetailFile.OrderByDescending(o => o.RegisterDate).Where(w => w.FileId.Equals(model.FileId) && w.ContractorId.Equals(model.ContractorId)).FirstOrDefault();
+            getDetailFile.StatusFileId = model.StatusFileId;
+
+            _context.DetailFile.Update(getDetailFile);
             await _context.SaveChangesAsync();
             return ApiResponseHelper.CreateResponse<string>(null, true, Resource.UPDATESUCCESSFULL);
 
@@ -863,7 +937,6 @@ namespace WebApiHiringItm.CORE.Core.FileCore
             }
 
         }
-
         #endregion
         #region PRIVATE METHODS
         private async Task<bool> DeleteDetail(string id)

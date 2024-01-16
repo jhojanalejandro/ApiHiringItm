@@ -54,15 +54,16 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
         public async Task<string> ImportarExcelContractor(FileRequest model)
         {
             List<DetailContractor> listDetail = new List<DetailContractor>();
-            string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", model.Excel.FileName);
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
+            //string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcel\", model.Excel.FileName);
+            //if (!Directory.Exists(path))
+            //{
+            //    Directory.CreateDirectory(path);
+            //}
+            string fileName = model.Excel.FileName;
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
             //Save the uploaded Excel file.
-            string fileName = Path.GetFileName(model.Excel.FileName);
-            string filePath = Path.Combine(path, fileName);
+            //string fileName = Path.GetFileName(model.Excel.FileName);
+            //string filePath = Path.Combine(path, fileName);
             using (FileStream stream = new FileStream(filePath, FileMode.Create))
             {
                 model.Excel.CopyTo(stream);

@@ -8,6 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
 {
     public class MinuteModifyDataDto
     {
+        public string Id { get; set; }
         public string ContractorName { get; set; }
         public string ContractorIdentification { get; set; }
         public string Object { get; set; }
@@ -34,6 +35,8 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public DateTime FinalDateContract { get; set; }
         public decimal UnitValueContract { get; set; }
         public decimal? InitialValue { get; set; }
+        public string? AdditionalText { get; set; }
+        public string? ObligationType { get; set; }
 
     }
 }

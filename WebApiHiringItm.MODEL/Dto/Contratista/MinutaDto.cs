@@ -10,6 +10,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
 {
     public class MinutaDto
     {
+        public string Id { get; set; } 
         public Guid? ContractorId { get; set; }
         public DateTime? FinalContractDate { get; set; }
         public string? Compromiso { get; set; }

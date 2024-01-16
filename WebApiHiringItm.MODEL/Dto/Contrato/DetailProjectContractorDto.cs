@@ -16,6 +16,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public string Cpc { get; set; }
         public string? Nombre { get; set; }
         public string? Identificacion { get; set; }
+        public string? ObjetoElemento { get; set; }
         public string? ObjetoConvenio { get; set; }
         public decimal ValorTotal { get; set; }
         public decimal UnitValue { get; set; }
@@ -34,6 +35,11 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public string? ContractorMail { get; set; }
         public string? PhoneNumber { get; set; }
         public string? ContractorAddress { get; set; }
+        public string? EmailManager { get; set; }
+        public string? UserManager { get; set; }
+        public string? IdentificationManager { get; set; }
+        public string? ChargeManager { get; set; }
+
 
 
     }

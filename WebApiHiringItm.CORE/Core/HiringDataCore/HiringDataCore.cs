@@ -123,6 +123,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
             List<HiringData> hiringDataListUpdate = new List<HiringData>();
             List<HiringData> hiringDataListAdd = new List<HiringData>();
             List<DetailContractor> detailDataListAdd = new List<DetailContractor>();
+
             var getData = _context.DetailContractor
                 .Where(x => x.ContractId == model[0].ContractId)
                 .Include(dt => dt.HiringData)
@@ -142,6 +143,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                     hiringDataListUpdate.Add(mapData);
                     mapHiring.Remove(mapHiring[i]);
                     i--;
+                    
                 }
                 else
                 {
@@ -161,6 +163,7 @@ namespace WebApiHiringItm.CORE.Core.HiringDataCore
                         DetailContractor.ComponentId = hiring.ComponentId;
                         DetailContractor.ActivityId = hiring.ActivityId;
                         DetailContractor.StatusContractor = stattusId;
+                        DetailContractor.Consecutive = hiring.Consecutive;
                         DetailContractor.Id = hiring.Id;
                         detailDataListAdd.Add(DetailContractor);
                         hiringDataListAdd.Add(mapHiring[i]);

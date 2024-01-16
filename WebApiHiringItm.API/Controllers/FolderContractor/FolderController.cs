@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiHiringItm.CORE.Core.FoldersContractorCore.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 
 namespace WebApiHiringItm.API.Controllers.Folder
@@ -39,10 +40,7 @@ namespace WebApiHiringItm.API.Controllers.Folder
         {
             try
             {
-                //Obtenemos todos los registros.
                 var Data = await _folder.GetById(id);
-
-                //Retornamos datos.
                 return Data != null ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
@@ -85,20 +83,26 @@ namespace WebApiHiringItm.API.Controllers.Folder
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> Delete(string id)
+        [HttpDelete]
+        public async Task<IActionResult> Delete(string folderId)
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _folder.Delete(id);
-
-                //Retornamos datos.
-                return Data != false ? Ok(Data) : NoContent();
+                var isSuccess = await _folder.Delete(folderId);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error", ex);
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
     }

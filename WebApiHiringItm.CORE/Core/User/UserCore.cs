@@ -82,11 +82,18 @@ namespace WebApiHiringItm.Core.User
             {
                 var getUser = _context.UserT
                     .Include(r => r.Roll)
-                    .FirstOrDefault(x => x.UserEmail.Equals(model.Username) && x.UserPassword.Equals(model.Password) && !x.Roll.Code.Equals(RollEnum.Desactivada.Description()));
+                    .FirstOrDefault(x => x.UserEmail.Equals(model.Username)  && !x.Roll.Code.Equals(RollEnum.Desactivada.Description()));
 
                 if (getUser == null)
                 {
                     return ApiResponseHelper.CreateErrorResponse<AuthenticateResponse>(Resource.ERRORAUTENTICATE);
+                }
+                else {
+                    var password = GenericCore.Descrypt(getUser.UserPassword);
+                    if (!model.Password.Equals(password))
+                    {
+                        return ApiResponseHelper.CreateErrorResponse<AuthenticateResponse>(Resource.ERRORAUTENTICATE);
+                    }
                 }
                 var map = _mapper.Map<AuthDto>(getUser);
 
@@ -247,8 +254,12 @@ namespace WebApiHiringItm.Core.User
         {
             var password = GenericCore.Encrypt(model.UserPassword);
             var passwordMail = GenericCore.Encrypt(model.PasswordMail);
-
+            var cantUser = _context.UserT.ToList().Count();
             var getRoll = _context.Roll.FirstOrDefault(x => x.Code.Equals(RollEnum.Desactivada.Description()));
+            if (cantUser == 0)
+            {
+                getRoll = _context.Roll.FirstOrDefault(x => x.Code.Equals(RollEnum.Admin.Description()));
+            }
             var userupdate = _context.UserT.FirstOrDefault(x => x.UserEmail.Equals(model.UserEmail));
             if (userupdate != null)
             {

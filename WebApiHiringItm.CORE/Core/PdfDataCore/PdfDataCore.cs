@@ -131,6 +131,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
 
             var mapJob = getJob.Select(s => new PersonalInChargeDto
             {
+                Id = s.Id.ToString(),
                 UserName = s.UserName,
                 UserCharge = s.Professionalposition,
                 UserIdentification = s.Identification,
@@ -237,6 +238,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
 
             return await result.Select(report => new MinuteModifyDataDto
             {
+                Id= report.Id.ToString(),
                 ContractorName = report.DetailContractor.Contractor.Nombres + " " + report.DetailContractor.Contractor.Apellidos,
                 ContractNumber = report.DetailContractor.Contract.NumberProject,
                 ContractorId = report.DetailContractor.Contractor.Id.ToString().ToLower(),
@@ -294,6 +296,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
             .Include(i => i.StatusFile);
             return await contractor.Select(ct => new MinutaDto
             {
+                Id = ct.Id.ToString(),
                 ContractorId = ct.ContractorId,
                 FinalContractDate = ct.HiringData.FechaFinalizacionConvenio,
                 InitialDateContract = ct.HiringData.FechaRealDeInicio,

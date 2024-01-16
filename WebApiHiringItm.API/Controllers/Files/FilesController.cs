@@ -364,7 +364,30 @@ namespace WebApiHiringItm.API.Controllers.Files
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SaveFilePayment(FilePaymentDto modelFile)
+        {
 
+            
+            try
+            {
+                var isSuccess = await _file.AddFileContractorPayment(modelFile);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
+            }
+        }
         #endregion
 
     }

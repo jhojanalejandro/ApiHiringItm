@@ -8,6 +8,7 @@ namespace WebApiHiringItm.MODEL.Dto
 {
     public class PersonalInChargeDto
     {
+        public string Id { get; set; } 
         public string UserName { get; set; }
         public string UserCharge { get; set; }
         public string UserIdentification { get; set; }

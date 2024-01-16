@@ -9,6 +9,9 @@ using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.FoldersContractorCore.Interface;
 using WebApiHiringItm.CORE.Helpers.Enums;
 using WebApiHiringItm.CORE.Helpers.Enums.FolderType;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Properties;
 using WebApiHiringItm.MODEL.Dto.Contratista;
 using WebApiHiringItm.MODEL.Entities;
 
@@ -56,23 +59,21 @@ namespace WebApiHiringItm.CORE.Core.FoldersContractorCore
             return await Task.FromResult(map);
         }
 
-        public async Task<bool> Delete(string id)
+        public async Task<IGenericResponse<string>> Delete(string folderId)
         {
             try
             {
-                var resultData = _context.Folder.Where(x => x.Id.Equals(Guid.Parse(id))).FirstOrDefault();
+                var resultData = _context.Folder.Where(x => x.Id.Equals(Guid.Parse(folderId))).FirstOrDefault();
                 if (resultData != null)
                 {
                     var result = _context.Folder.Remove(resultData);
                     await _context.SaveChangesAsync();
-
                 }
-                return true;
-
+                return ApiResponseHelper.CreateResponse<string>(null, true, Resource.REGISTERSUCCESSFULL);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error", ex);
+                return ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
             }
         }
 

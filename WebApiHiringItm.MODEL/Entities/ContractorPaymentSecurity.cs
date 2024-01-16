@@ -14,6 +14,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public decimal PaymentPension { get; set; }
         public decimal PaymentArl { get; set; }
         public decimal PaymentEps { get; set; }
+        public decimal PaymentAFp { get; set; }
         public DateTime RegisterDate { get; set; }
         public int Consecutive { get; set; }
         public string PayrollNumber { get; set; }

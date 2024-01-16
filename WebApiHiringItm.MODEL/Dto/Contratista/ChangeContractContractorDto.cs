@@ -34,7 +34,7 @@ namespace WebApiHiringItm.MODEL.Dto.Contratista
         public DateTime? InitialAdditionDate { get; set; }
         public DateTime? FinalAdditionDate { get; set; }
         public string? NoAddition { get; set; }
-
-
+        public string? AdditionalText { get; set; }
+        public string? ObligationType { get; set; }
     }
 }
