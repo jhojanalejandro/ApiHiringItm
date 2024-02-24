@@ -14,6 +14,7 @@ namespace WebApiHiringItm.MODEL.Entities
             DetailContract = new HashSet<DetailContract>();
             DetailFile = new HashSet<DetailFile>();
             HiringData = new HashSet<HiringData>();
+            SessionPanel = new HashSet<SessionPanel>();
             UserFile = new HashSet<UserFile>();
         }
 
@@ -35,6 +36,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual ICollection<DetailContract> DetailContract { get; set; }
         public virtual ICollection<DetailFile> DetailFile { get; set; }
         public virtual ICollection<HiringData> HiringData { get; set; }
+        public virtual ICollection<SessionPanel> SessionPanel { get; set; }
         public virtual ICollection<UserFile> UserFile { get; set; }
     }
 }

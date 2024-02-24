@@ -16,10 +16,24 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? DetailType { get; set; }
         public DateTime RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
+        public decimal? ResourceContract { get; set; }
+        public decimal? ValorContrato { get; set; }
+        public decimal? GastosOperativos { get; set; }
+        public decimal? ValorSubTotal { get; set; }
+        public decimal? RecursosAdicionales { get; set; }
+        public decimal? TotalLiberado { get; set; }
+        public int? ContractorsCant { get; set; }
         public Guid UserId { get; set; }
+        public Guid? StatusContractId { get; set; }
+        public DateTime? RegisterDateContract { get; set; }
+        public Guid? Rubro { get; set; }
+        public string FuenteRubro { get; set; }
+        public bool Activate { get; set; }
 
         public virtual ContractFolder Contract { get; set; }
         public virtual DetailType DetailTypeNavigation { get; set; }
+        public virtual RubroType RubroNavigation { get; set; }
+        public virtual StatusContract StatusContract { get; set; }
         public virtual UserT User { get; set; }
     }
 }

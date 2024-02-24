@@ -81,12 +81,12 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 ValorPorDia = element.ValorPorDia,
                 ValorTotal = element.ValorTotal,
                 ValorUnidad = element.ValorUnidad,
-                Recursos = element.DetailContractor.Select(s => s.Contract).FirstOrDefault()!.ResourceContract,
+                Recursos = element.DetailContractor.Select(s => s.Contract.DetailContract.Select(s => s.ResourceContract).FirstOrDefault()).FirstOrDefault()!,
                 Consecutivo = element.Consecutivo,
                 ObligacionesEspecificas = element.ObligacionesEspecificas,
                 ObligacionesGenerales = element.ObligacionesGenerales,
-                PerfilRequeridoAcademico = element.PerfilRequeridoAcademico,
-                PerfilRequeridoExperiencia = element.PerfilRequeridoExperiencia,
+                PerfilRequeridoAcademico = element.PerfilAcademicoRequerido,
+                PerfilRequeridoExperiencia = element.PerfilExperienciaRequerido,
                 CantidadDias = element.CantidadDias,
 
             }).AsNoTracking()

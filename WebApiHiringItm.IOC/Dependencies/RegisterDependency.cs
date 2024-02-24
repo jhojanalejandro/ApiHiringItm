@@ -30,6 +30,9 @@ using WebApiHiringItm.CORE.Core.MessageHandlingCore;
 using WebApiHiringItm.CORE.Core.ContractFolders;
 using WebApiHiringItm.CORE.Core.FileMnager.Interface;
 using WebApiHiringItm.CORE.Core.FileMnager;
+using Microsoft.AspNetCore.Http;
+using WebApiHiringItm.CORE.Core.Share.Interface;
+using WebApiHiringItm.CORE.Core.Share;
 
 namespace WebApiHiringItm.IOC.Dependencies
 {
@@ -55,6 +58,7 @@ namespace WebApiHiringItm.IOC.Dependencies
             services.AddScoped<IImportExcelCore, ImportExcelCore>();
             services.AddScoped<IMessageHandlingCore, MessageHandlingCore>();
             services.AddScoped<IFileManagerCore, FileManagerCore>();
+            services.AddScoped<IGenericCore, GenericCore>();
 
         }
     }

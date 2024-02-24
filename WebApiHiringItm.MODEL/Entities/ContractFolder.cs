@@ -23,27 +23,13 @@ namespace WebApiHiringItm.MODEL.Entities
         public string CompanyName { get; set; }
         public string ProjectName { get; set; }
         public string ObjectContract { get; set; }
-        public bool Activate { get; set; }
         public bool EnableProject { get; set; }
-        public int? ContractorsCant { get; set; }
-        public decimal? ValorContrato { get; set; }
-        public decimal? GastosOperativos { get; set; }
-        public decimal? ValorSubTotal { get; set; }
-        public decimal? RecursosAdicionales { get; set; }
-        public decimal? TotalLiberado { get; set; }
         public string NumberProject { get; set; }
         public string Project { get; set; }
-        public Guid? Rubro { get; set; }
-        public Guid? StatusContractId { get; set; }
-        public string FuenteRubro { get; set; }
         public string DescriptionContract { get; set; }
-        public decimal? ResourceContract { get; set; }
         public string DutyContract { get; set; }
         public string AreaCode { get; set; }
-        public DateTime? RegisterDateContract { get; set; }
 
-        public virtual RubroType RubroNavigation { get; set; }
-        public virtual StatusContract StatusContract { get; set; }
         public virtual ICollection<AssigmentContract> AssigmentContract { get; set; }
         public virtual ICollection<Component> Component { get; set; }
         public virtual ICollection<DetailContract> DetailContract { get; set; }

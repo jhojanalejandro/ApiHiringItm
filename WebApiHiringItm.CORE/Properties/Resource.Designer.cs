@@ -196,6 +196,15 @@ namespace WebApiHiringItm.CORE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Otro usuario con el mismo perfil tuyo se encuentra realizando cambios en este contrato.
+        /// </summary>
+        internal static string INTERACTIVECOMPONENT {
+            get {
+                return ResourceManager.GetString("INTERACTIVECOMPONENT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a El correo proporcionado no esta registrado.
         /// </summary>
         internal static string MAILNOTEXIST {
@@ -210,6 +219,24 @@ namespace WebApiHiringItm.CORE.Properties {
         internal static string MAILSENDSUCCESS {
             get {
                 return ResourceManager.GetString("MAILSENDSUCCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a No hay personal para contratar.
+        /// </summary>
+        internal static string NOBODYHIRING {
+            get {
+                return ResourceManager.GetString("NOBODYHIRING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Contraseña no actualizadea, recargue la pagina y vuelva a intentarlo.
+        /// </summary>
+        internal static string PASSWORDNOTUPDATE {
+            get {
+                return ResourceManager.GetString("PASSWORDNOTUPDATE", resourceCulture);
             }
         }
         

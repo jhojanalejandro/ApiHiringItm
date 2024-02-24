@@ -162,11 +162,20 @@
   <data name="INFORMATIONEMPTY" xml:space="preserve">
     <value>No se encontro información</value>
   </data>
+  <data name="INTERACTIVECOMPONENT" xml:space="preserve">
+    <value>Otro usuario con el mismo perfil tuyo se encuentra realizando cambios en este contrato</value>
+  </data>
   <data name="MAILNOTEXIST" xml:space="preserve">
     <value>El correo proporcionado no esta registrado</value>
   </data>
   <data name="MAILSENDSUCCESS" xml:space="preserve">
     <value>Invitación envida exitosamente</value>
+  </data>
+  <data name="NOBODYHIRING" xml:space="preserve">
+    <value>No hay personal para contratar</value>
+  </data>
+  <data name="PASSWORDNOTUPDATE" xml:space="preserve">
+    <value>Contraseña no actualizadea, recargue la pagina y vuelva a intentarlo</value>
   </data>
   <data name="PAYMENTERROR" xml:space="preserve">
     <value>Error al registrar la información de pago</value>

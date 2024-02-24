@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Contracts;
 using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.ContractFolders;
 using WebApiHiringItm.CORE.Core.PdfDataCore.InterfaceCore;
@@ -79,7 +80,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 PeriodInitialDate = report.FechaContrato,
                 PeriodFinalDate = report.FechaFinalizacion,
                 Object = report.Contract.ObjectContract,
-                TotalValueContract = report.Contract.ValorContrato,
+                TotalValueContract = report.ValorContrato,
                 CompanyName = report.Contract.CompanyName
             })
             .AsNoTracking()
@@ -166,7 +167,6 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
 
             return await result.Select(study => new PreviusStudyDto
             {
-                RequiredProfile = study.Element.PerfilRequeridoAcademico,
                 ElementObject = study.Element.ObjetoElemento,
                 ContractorId = study.ContractorId.ToString(),
                 ContractorName = study.Contractor.Nombres + " " + study.Contractor.Apellidos,
@@ -177,9 +177,9 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 ContractInitialDate = study.Contractor.HiringData.Select(s => s.FechaRealDeInicio).FirstOrDefault(),
                 ContractFinalDate = study.Contractor.HiringData.Select(s => s.FechaFinalizacionConvenio).FirstOrDefault(),
                 TotalValue = Math.Ceiling(study.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(study.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.TotalValue).FirstOrDefault()),
-                UnifiedProfile = study.Element.PerfilRequeridoAcademico + " " + study.Element.PerfilRequeridoExperiencia,
-                RequiredProfileAcademic = study.Element.PerfilRequeridoAcademico,
-                RequiredProfileExperience = study.Element.PerfilRequeridoExperiencia,
+                UnifiedProfile = study.Element.PerfilAcademicoRequerido + " " + study.Element.PerfilExperienciaRequerido,
+                RequiredProfileAcademic = study.Element.PerfilAcademicoRequerido,
+                RequiredProfileExperience = study.Element.PerfilExperienciaRequerido,
                 ActivityContractor = study.HiringData.ActividadContratista,
                 DutyContract = study.Contract.DutyContract,
                 PoliceRequire = study.HiringData.RequierePoliza,
@@ -220,7 +220,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 ContractInitialDate = study.ContractorPayments.OrderByDescending(d => d.FromDate).Select(s => s.FromDate.ToString()).FirstOrDefault(),
                 ContractFinalDate = study.ContractorPayments.OrderByDescending(d => d.ToDate).Select(s => s.ToDate.ToString()).FirstOrDefault(),
                 TotalValue = Math.Ceiling(study.ContractorPayments.OrderByDescending(d => d.FromDate.ToString()).Select(s => s.Paymentcant).FirstOrDefault()),
-                ProfileRequire = study.Element.PerfilRequeridoAcademico != null && study.Element.PerfilRequeridoExperiencia != null ? study.Element.PerfilRequeridoAcademico  + " " + study.Element.PerfilRequeridoExperiencia : null,
+                ProfileRequire = study.Element.PerfilAcademicoRequerido != null && study.Element.PerfilExperienciaRequerido != null ? study.Element.PerfilAcademicoRequerido  + " " + study.Element.PerfilExperienciaRequerido : null,
                 LegalprocessAprove = getStatusFiles.Where(w => w.File.ContractId.Equals(study.ContractId) && w.ContractorId.Equals(study.ContractorId)
                  && w.StatusFile.Code.Equals(StatusFileEnum.APROBADO.Description()) && ((w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.EXAMENESPREOCUPACIONALESCODE.Description())
                  || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.DOCUMENTOSCONTRATACION.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.HOJADEVIDACODE.Description()) || w.File.DocumentTypeNavigation.Code.Equals(DocumentTypeEnum.REGISTROSECOPCODE.Description())))).ToList().Count >= 4
@@ -257,7 +257,7 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 SpecificObligations = report.SpecificObligations,
                 GeneralObligations = report.GeneralObligations,
                 NumberModify = report.Consecutive,
-                RubroContract = report.DetailContractor.Contract.RubroNavigation.RubroNumber,
+                RubroContract = report.DetailContractor.Contract.DetailContract.OrderByDescending(o => o.Consecutive).Select(s => s.RubroNavigation.RubroNumber).FirstOrDefault(),
                 TypeModify = report.MinuteTypeNavigation.Code,
                 AdditionValue =  report.EconomicdataContractorNavigation.AdditionalValue,
                 InitialValue = report.EconomicdataContractorNavigation.TotalValue - report.EconomicdataContractorNavigation.AdditionalValue,
@@ -273,16 +273,16 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
             DataContractDto dto = new DataContractDto();
             var getDataContract = _context.DetailContract
             .Include(i => i.Contract)
-                .ThenInclude(ti => ti.RubroNavigation)
+            .Include(ti => ti.RubroNavigation)
             .Where(w => w.ContractId.Equals(contractId)).OrderByDescending(o => o.Consecutive).FirstOrDefault();
             dto.RegisterDate = getDataContract.RegisterDate;
             dto.ContractNumber = getDataContract.Contract.NumberProject;
             dto.ProjectName = getDataContract.Contract.ProjectName;
             dto.CompanyName = getDataContract.Contract.CompanyName;
             dto.ContractObject = getDataContract.Contract.ObjectContract;
-            dto.Rubro = getDataContract.Contract.RubroNavigation.RubroNumber;
-            dto.RubroName = getDataContract.Contract.RubroNavigation.Rubro;
-            dto.RubroOrigin = getDataContract.Contract.FuenteRubro;
+            dto.Rubro = getDataContract.RubroNavigation.RubroNumber;
+            dto.RubroName = getDataContract.RubroNavigation.Rubro;
+            dto.RubroOrigin = getDataContract.FuenteRubro;
             return dto;
         }
         
@@ -302,9 +302,9 @@ namespace WebApiHiringItm.CORE.Core.PdfDataCore
                 InitialDateContract = ct.HiringData.FechaRealDeInicio,
                 Compromiso = ct.HiringData.Compromiso,
                 ComiteDate = ct.HiringData.FechaDeComite,
-                Rubro = ct.Contract.RubroNavigation.RubroNumber,
-                RUbroName = ct.Contract.RubroNavigation.Rubro,
-                RubroOrigin = ct.Contract.FuenteRubro,
+                Rubro = ct.Contract.DetailContract.OrderByDescending(o => o.Consecutive).Select(s => s.RubroNavigation.RubroNumber).FirstOrDefault(),
+                RUbroName = ct.Contract.DetailContract.OrderByDescending(o => o.Consecutive).Select(s => s.RubroNavigation.Rubro).FirstOrDefault(),
+                RubroOrigin = ct.Contract.DetailContract.OrderByDescending(o => o.Consecutive).Select(s => s.FuenteRubro).FirstOrDefault(),
                 NumeroActa = ct.HiringData.NumeroActa,
                 ElementName = ct.Element.NombreElemento,
                 GeneralObligations = ct.Element.ObligacionesGenerales,

@@ -9,6 +9,7 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
 {
     public class DetailProjectContractorDto
     {
+        public string Id { get; set; }
         public string ContractorId { get; set; }
         public string Convenio { get; set; }
         public string CompanyName { get; set; }

@@ -144,6 +144,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[SessionPanel]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[StatusContract]",
          "ObjectType": 0
       },

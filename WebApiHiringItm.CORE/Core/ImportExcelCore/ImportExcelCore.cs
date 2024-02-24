@@ -326,15 +326,9 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
         public async Task<IGenericResponse<string>> ImportElement(FileRequest model)
         {
 
-            string path = Path.Combine(@"D:\Trabajo\PROYECTOS\ITMHIRINGPROJECT\PruebaExcelElemento\", model.Excel.FileName);
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
             //Save the uploaded Excel file.
-            string fileName = Path.GetFileName(model.Excel.FileName);
-            string filePath = Path.Combine(path, fileName);
+            string fileName = model.Excel.FileName;
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
             using (FileStream stream = new FileStream(filePath, FileMode.Create))
             {
                 model.Excel.CopyTo(stream);
@@ -348,7 +342,12 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             DataTable dataTable = worksheet.Cells.ExportDataTable(0, 0, worksheet.Cells.MaxRow + 1, worksheet.Cells.LastCell.Column + 1, true);
             dataTable.TableName = "ElementComponent";
             List<ElementComponent> elementDataList = new();
-            dataTable.Columns[0].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[0].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
+            for (int i = 0; i < dataTable.Columns.Count; i++)
+            {
+                dataTable.Columns[i].ColumnName = ToCamelCase(Regex.Replace(Regex.Replace(dataTable.Columns[i].ColumnName.Trim().Replace("(dd/mm/aaaa)", "").ToLowerInvariant(), @"\s", "_").ToLowerInvariant().Normalize(NormalizationForm.FormD), @"[^a-zA-z0-9 ]+", ""));
+            }
+
+
             var columna = dataTable.Columns[0].ColumnName;
             var listaHring = _context.Contractor.ToList();
 
@@ -356,6 +355,7 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
             {
                 for (int j = 0; j < dataTable.Rows.Count; j++)
                 {
+
                     int posicion = j;
                     if (dataTable.Rows.Count == 1)
                     {
@@ -371,13 +371,13 @@ namespace WebApiHiringItm.CORE.Core.ImportExcelCore
                         var resultado = _context.ElementComponent.FirstOrDefault(x => x.Id.Equals(Guid.Parse(idValor)));
                         if (resultado != null)
                         {
-                            if (dataTable.Rows[j]["Perfil Academico Requerido"] != null && dataTable.Rows[j]["Perfil Experiencia Requerido"] != null)
+                            if (dataTable.Columns[6].ColumnName == dataTable.Rows[j]["PerfilAcademicoRequerido"] != null && dataTable.Rows[j]["PerfilExperienciaRequerido"] != null)
                             {
-                                var perfilAcademico = dataTable.Rows[j]["Perfil Academico Requerido"];
-                                var perfilExperiencia = dataTable.Rows[j]["Perfil Experiencia Requerido"];
+                                var perfilAcademico = dataTable.Rows[j]["PerfilAcademicoRequerido"];
+                                var perfilExperiencia = dataTable.Rows[j]["PerfilExperienciaRequerido"];
 
-                                resultado.PerfilRequeridoAcademico = Convert.ToString(perfilAcademico);
-                                resultado.PerfilRequeridoExperiencia = Convert.ToString(perfilExperiencia);
+                                resultado.PerfilAcademicoRequerido = Convert.ToString(perfilAcademico);
+                                resultado.PerfilExperienciaRequerido = Convert.ToString(perfilExperiencia);
 
                                 elementDataList.Add(resultado);
                             }

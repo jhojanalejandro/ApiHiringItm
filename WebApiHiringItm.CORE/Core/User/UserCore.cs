@@ -210,20 +210,24 @@ namespace WebApiHiringItm.Core.User
             return ApiResponseHelper.CreateResponse<string>(null, true, Resource.UPDATESUCCESSFULL);
         }
 
-        public async Task<bool> UpdatePassword(UserUpdatePasswordDto model)
+        public async Task<IGenericResponse<string>> UpdatePassword(UserUpdatePasswordDto model)
         {
-            if (model.Id != null)
-            {
-                var userupdate = _context.UserT.FirstOrDefault(x => x.Id == model.Id);
-                var map = _mapper.Map(model, userupdate);
-                _context.UserT.Update(map);
-                var res = await _context.SaveChangesAsync();
-                return res != 0 ? true : false;
+            if (model.Id == null || model.Id == Guid.Empty)
+                return ApiResponseHelper.CreateErrorResponse<string>(Resource.GUIDNOTVALID);
 
-            }
-            return false;
+            var userupdate = _context.UserT.FirstOrDefault(x => x.Id == model.Id);
+            var password = PasswEncrypt(model.UserPassword);
+            var passwordMail = PasswEncrypt(model.PasswordMail);
+
+            var map = _mapper.Map(model, userupdate);
+            map.UserPassword = password;
+            map.PasswordMail = passwordMail;
+
+            _context.UserT.Update(map);
+            await _context.SaveChangesAsync();
+            return ApiResponseHelper.CreateResponse<string>(null, true, Resource.UPDATESUCCESSFULL);
         }
-        
+
         public async Task<bool> UpdateRoll(UpdateRollDto model)
         {
             if (model.Id != null)
@@ -252,8 +256,9 @@ namespace WebApiHiringItm.Core.User
         
         public async Task<IGenericResponse<string>> SignUp(UserTDto model)
         {
-            var password = GenericCore.Encrypt(model.UserPassword);
-            var passwordMail = GenericCore.Encrypt(model.PasswordMail);
+
+            var password = PasswEncrypt(model.UserPassword);
+            var passwordMail = PasswEncrypt(model.PasswordMail);
             var cantUser = _context.UserT.ToList().Count();
             var getRoll = _context.Roll.FirstOrDefault(x => x.Code.Equals(RollEnum.Desactivada.Description()));
             if (cantUser == 0)
@@ -306,19 +311,19 @@ namespace WebApiHiringItm.Core.User
 
         public async Task<IGenericResponse<string>> ResetPasswordUser(ResetPasswordRequest updatePassword)
         {
-            var userId = GenericCore.Descrypt(updatePassword.Id.ToString());
-            var userupdate = _context.UserT.FirstOrDefault(x => x.Id.Equals(Guid.Parse(userId)) && x.EnableChangePassword == true);
-            var contractorupdate = _context.Contractor.FirstOrDefault(x => x.Id.Equals(Guid.Parse(userId)) && x.EnableChangePassword == true);
+            var password = PasswEncrypt(updatePassword.Password);
+            var userupdate = _context.UserT.FirstOrDefault(x => x.Id.Equals(Guid.Parse(updatePassword.Id.ToString())) && x.EnableChangePassword == true);
+            var contractorupdate = _context.Contractor.FirstOrDefault(x => x.Id.Equals(Guid.Parse(updatePassword.Id.ToString())) && x.EnableChangePassword == true);
 
             if (userupdate != null)
             {
                 userupdate.EnableChangePassword = false;
-                userupdate.PasswordMail = updatePassword.Password;
+                userupdate.UserPassword = password;
                 _context.UserT.Update(userupdate);
             }else if (contractorupdate != null)
             {
                 contractorupdate.EnableChangePassword = false;
-                contractorupdate.ClaveUsuario = updatePassword.Password;
+                contractorupdate.ClaveUsuario = password;
                 _context.Contractor.Update(contractorupdate);
             }
             if (userupdate == null)
@@ -374,6 +379,18 @@ namespace WebApiHiringItm.Core.User
             }
         }
 
+
+        private string PasswEncrypt(string password)
+        {
+            return GenericCore.Encrypt(password);
+
+        }
+
+        private string PasswDencrypt(string password)
+        {
+            return GenericCore.Descrypt(password);
+
+        }
         #endregion
     }
 }

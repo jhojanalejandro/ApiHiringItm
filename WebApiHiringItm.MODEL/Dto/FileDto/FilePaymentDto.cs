@@ -14,7 +14,7 @@ namespace WebApiHiringItm.MODEL.Dto.FileDto
         public string Filedata { get; set; }
         public string FileType { get; set; }
         public Guid? DocumentType { get; set; }
-        public string DescriptionFile { get; set; }
+        public string? DescriptionFile { get; set; }
         public Guid? UserId { get; set; }
         public DateTime RegisterDate { get; set; }
         public string? MonthPayment { get; set; }

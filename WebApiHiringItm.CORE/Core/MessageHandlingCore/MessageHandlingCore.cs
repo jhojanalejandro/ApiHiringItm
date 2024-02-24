@@ -1,36 +1,26 @@
-﻿using AutoMapper;
-using MailKit.Security;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Net;
-using WebApiHiringItm.CONTEXT.Context;
-using WebApiHiringItm.CORE.Core.MessageHandlingCore.Interface;
-using WebApiHiringItm.CORE.Helpers;
-using WebApiHiringItm.CORE.Helpers.Enums;
-using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
-using WebApiHiringItm.MODEL.Entities;
-using WebApiHiringItm.MODEL.Models;
-using Outlook = Microsoft.Office.Interop.Outlook;
-using System;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Security;
-using System.Diagnostics.Metrics;
-using Microsoft.EntityFrameworkCore;
-using WebApiHiringItm.CORE.Helpers.Enums.File;
-using NPOI.SS.Formula.Functions;
-using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
-using WebApiHiringItm.CORE.Helpers.GenericResponse;
-using WebApiHiringItm.CORE.Properties;
-using WebApiHiringItm.CORE.Helpers.GenericValidation;
-using WebApiHiringItm.MODEL.Dto.MessageDto;
+using WebApiHiringItm.CONTEXT.Context;
 using WebApiHiringItm.CORE.Core.Contractors.Interface;
-using WebApiHiringItm.MODEL.Dto.Contratista;
-using WebApiHiringItm.CORE.Helpers.Enums.Hiring;
-using System.Data.Entity.Core.Metadata.Edm;
-using MimeKit;
-using DocumentFormat.OpenXml.Spreadsheet;
+using WebApiHiringItm.CORE.Core.MessageHandlingCore.Interface;
 using WebApiHiringItm.CORE.Core.Share;
-using Google.Protobuf;
+using WebApiHiringItm.CORE.Helpers;
+using WebApiHiringItm.CORE.Helpers.Enums;
+using WebApiHiringItm.CORE.Helpers.Enums.File;
+using WebApiHiringItm.CORE.Helpers.Enums.Hiring;
+using WebApiHiringItm.CORE.Helpers.Enums.StatusContractor;
+using WebApiHiringItm.CORE.Helpers.GenericResponse;
+using WebApiHiringItm.CORE.Helpers.GenericResponse.Interface;
+using WebApiHiringItm.CORE.Helpers.GenericValidation;
+using WebApiHiringItm.CORE.Properties;
+using WebApiHiringItm.MODEL.Dto.Contratista;
+using WebApiHiringItm.MODEL.Dto.MessageDto;
+using WebApiHiringItm.MODEL.Entities;
+using WebApiHiringItm.MODEL.Models;
 
 namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
 {
@@ -407,12 +397,13 @@ namespace WebApiHiringItm.CORE.Core.MessageHandlingCore
             cuerpoHTML += "</ul>" +
                     "<p>Tener en cuenta las siguientes observaciones:</p>" +
                     mailRequest.Body +
-                    "<h1>Recuerde que los docuemntos se cargan por la plataforma de la misma manera que se hacde incialmente</h1>" +
+                    "<h1>Recuerde que los docuemntos se cargan por la plataforma de la misma manera que se accede incialmente</h1>" +
                     "<br>" +
                     "<br>" +
                     "<p> Cordialmente:</p>" +
                     "<img src=\"cid:firma\" />" +
                         "</body> </html>";
+            // Crea un nuevo correo electrónico
             // Crea un nuevo correo electrónico
             // Crea un nuevo correo electrónico
             using (MailMessage correo = new MailMessage(remitente, destinatario, asunto, cuerpoHTML))

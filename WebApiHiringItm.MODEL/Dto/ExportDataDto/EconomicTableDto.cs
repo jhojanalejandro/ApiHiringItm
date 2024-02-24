@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.JsonPatch.Operations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebApiHiringItm.MODEL.Dto.Componentes;
+﻿using WebApiHiringItm.MODEL.Dto.Componentes;
 using WebApiHiringItm.MODEL.Entities;
 
 namespace WebApiHiringItm.MODEL.Dto.ExportDataDto

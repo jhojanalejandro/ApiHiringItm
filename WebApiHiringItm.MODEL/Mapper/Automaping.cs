@@ -12,6 +12,7 @@ using WebApiHiringItm.MODEL.Dto.ContratoDto;
 using WebApiHiringItm.MODEL.Dto.FileDto;
 using WebApiHiringItm.MODEL.Dto.MasterDataDto;
 using WebApiHiringItm.MODEL.Dto.Security;
+using WebApiHiringItm.MODEL.Dto.Share;
 using WebApiHiringItm.MODEL.Dto.Usuario;
 using WebApiHiringItm.MODEL.Entities;
 
@@ -34,29 +35,33 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<ContractorPayments, ContractorPaymentsDto>().ReverseMap();
             CreateMap<EconomicdataContractor, EconomicdataContractorDto>().ReverseMap(); 
             CreateMap<ComponentDto, Component>().ReverseMap();
-            CreateMap<ElementComponentDto, ElementComponent>().ReverseMap();
+            CreateMap<ElementComponentDto, ElementComponent>()
+                .ForMember(c => c.PerfilExperienciaRequerido, cd => cd.MapFrom(src => src.PerfilRequeridoExperiencia))
+                .ForMember(c => c.PerfilAcademicoRequerido, cd => cd.MapFrom(src => src.PerfilRequeridoAcademico)).ReverseMap();
             CreateMap<DetailContractDto, DetailContract>()
                 .ForMember(c => c.Id, cd => cd.MapFrom(src => src.Id))
-                .ForMember(c => c.UserId, cd => cd.MapFrom(src => Guid.Parse(src.UserId))).ReverseMap();
+                .ForMember(c => c.UserId, cd => cd.MapFrom(src => Guid.Parse(src.UserId)))
+                .ForMember(c => c.Rubro, cd => cd.MapFrom(src => Guid.Parse(src.Rubro)))
+                .ForMember(c => c.StatusContractId, cd => cd.MapFrom(src => Guid.Parse(src.StatusContractId)))
+                .ForMember(c => c.ContractorsCant, cd => cd.MapFrom(src => src.ContractorsCant))
+                .ForMember(c => c.Activate, cd => cd.MapFrom(src => src.Activate))
+                .ForMember(c => c.FuenteRubro, cd => cd.MapFrom(src => src.FuenteRubro))
+                .ForMember(c => c.ResourceContract, cd => cd.MapFrom(src => src.ResourceContract))
+                .ForMember(c => c.RegisterDateContract, cd => cd.MapFrom(src => src.RegisterDateContract)).ReverseMap();
             CreateMap<UserFileDto, UserFile>().ReverseMap();
             CreateMap<RProjectForlderDto, ContractFolder>()
                 .ForMember(c => c.Id, cd => cd.MapFrom(src => src.Id))
-                .ForMember(c => c.Rubro, cd => cd.MapFrom(src => Guid.Parse(src.Rubro)))
-                .ForMember(c => c.StatusContractId, cd => cd.MapFrom(src => Guid.Parse(src.StatusContractId)))
+              
                 .ForMember(c => c.ObjectContract, cd => cd.MapFrom(src => src.ObjectContract))
-                .ForMember(c => c.ContractorsCant, cd => cd.MapFrom(src => src.ContractorsCant))
-                .ForMember(c => c.Activate, cd => cd.MapFrom(src => src.Activate))
+                
                 .ForMember(c => c.EnableProject, cd => cd.MapFrom(src => src.EnableProject))
                 .ForMember(c => c.CompanyName, cd => cd.MapFrom(src => src.CompanyName))
                 .ForMember(c => c.ProjectName, cd => cd.MapFrom(src => src.ProjectName))
-                .ForMember(c => c.Project, cd => cd.MapFrom(src => src.Project))
-                .ForMember(c => c.FuenteRubro, cd => cd.MapFrom(src => src.FuenteRubro))
+                .ForMember(c => c.Project, cd => cd.MapFrom(src => src.Project))               
                 .ForMember(c => c.NumberProject, cd => cd.MapFrom(src => src.NumberProject))
                 .ForMember(c => c.DutyContract, cd => cd.MapFrom(src => src.DutyContract))
-                .ForMember(c => c.ResourceContract, cd => cd.MapFrom(src => src.ResourceContract))
-                .ForMember(c => c.RegisterDateContract, cd => cd.MapFrom(src => src.RegisterDateContract))
                 .ReverseMap();
-            CreateMap<ProjectFolderCostsDto, ContractFolder>().ReverseMap();
+            CreateMap<ProjectFolderCostsDto, DetailContract>().ReverseMap();
             CreateMap<DetailFileDto, DetailFile>().ReverseMap();
             CreateMap<Activity, ActivityDto>().ReverseMap();
             CreateMap<AuthDto, UserT>().ReverseMap();
@@ -89,6 +94,7 @@ namespace WebApiHiringItm.MODEL.Mapper
             CreateMap<NewnessTypeDto, NewnessType>().ReverseMap();
             CreateMap<ObservationFileRequest, DetailFile>().ReverseMap();
             CreateMap<FilePaymentDto, Files>().ReverseMap();
+            CreateMap<SessionPanelDto, SessionPanel>().ReverseMap();
 
 
         }

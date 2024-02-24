@@ -10,5 +10,7 @@ namespace WebApiHiringItm.MODEL.Dto.Usuario
     {
         public Guid Id { get; set; }
         public string UserPassword { get; set; }
+        public string PasswordMail { get; set; }
+
     }
 }

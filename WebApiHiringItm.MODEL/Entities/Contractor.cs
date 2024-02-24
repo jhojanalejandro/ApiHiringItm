@@ -15,6 +15,7 @@ namespace WebApiHiringItm.MODEL.Entities
             Folder = new HashSet<Folder>();
             HiringData = new HashSet<HiringData>();
             NewnessContractor = new HashSet<NewnessContractor>();
+            SessionPanel = new HashSet<SessionPanel>();
         }
 
         public Guid Id { get; set; }
@@ -36,6 +37,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public string TipoCuenta { get; set; }
         public Guid? EntidadCuentaBancaria { get; set; }
         public Guid UserId { get; set; }
+        public string ClaveUsuario { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaActualizacion { get; set; }
         public Guid RollId { get; set; }
@@ -44,7 +46,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public Guid? Afp { get; set; }
         public bool? EnableEdit { get; set; }
         public bool? EnableChangePassword { get; set; }
-        public string ClaveUsuario { get; set; }
 
         public virtual EntityHealth AfpNavigation { get; set; }
         public virtual EntityHealth ArlNavigation { get; set; }
@@ -57,5 +58,6 @@ namespace WebApiHiringItm.MODEL.Entities
         public virtual ICollection<Folder> Folder { get; set; }
         public virtual ICollection<HiringData> HiringData { get; set; }
         public virtual ICollection<NewnessContractor> NewnessContractor { get; set; }
+        public virtual ICollection<SessionPanel> SessionPanel { get; set; }
     }
 }

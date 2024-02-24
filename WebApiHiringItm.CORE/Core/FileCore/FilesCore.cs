@@ -336,7 +336,7 @@ namespace WebApiHiringItm.CORE.Core.FileCore
                 folderPago.ContractId = modelFileDto.ContractId;
                 folderPago.RegisterDate = DateTime.Now;
                 folderPago.ModifyDate = DateTime.Now;
-                folderPago.Consutive = getContractorPayment;
+                folderPago.Consutive = getContractorPayment == 0 ? 1 : getContractorPayment;
                 _context.Folder.Add(folderPago);
                 folderId = folderPago.Id;
             }

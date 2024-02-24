@@ -17,7 +17,20 @@ namespace WebApiHiringItm.MODEL.Dto.ContratoDto
         public DateTime? RegisterDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string UserId { get; set; }
-        public int? Consecutive { get; set; }
 
+        public string? Rubro { get; set; }
+        public string? FuenteRubro { get; set; }
+        public string? StatusContractId { get; set; }
+        public int? Consecutive { get; set; }
+        public DateTime? RegisterDateContract { get; set; }
+        public bool Activate { get; set; }
+
+        public decimal? ResourceContract { get; set; }
+        public decimal? ValorContrato { get; set; }
+        public decimal? GastosOperativos { get; set; }
+        public decimal? ValorSubTotal { get; set; }
+        public decimal? RecursosAdicionales { get; set; }
+        public decimal? TotalLiberado { get; set; }
+        public int? ContractorsCant { get; set; }
     }
 }

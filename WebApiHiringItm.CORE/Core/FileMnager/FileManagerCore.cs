@@ -43,7 +43,7 @@ namespace WebApiHiringItm.CORE.Core.FileMnager
             var contractor = _context.DetailContract
                 .Include(dt => dt.Contract)
                 .OrderBy(o => o.RegisterDate)
-                .Where(w => !w.Contract.StatusContractId.Equals(getStatusContract) && w.Contract.Activate);
+                .Where(w => !w.StatusContractId.Equals(getStatusContract) && w.Activate);
             var contracts =  await contractor
                 .GroupBy(g => new
                 {

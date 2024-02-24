@@ -21,7 +21,6 @@ namespace WebApiHiringItm.MODEL.Dto.PdfDto
         public decimal TotalValue { get; set; }
         public string MinuteNumber { get; set; }
         public string UnifiedProfile { get; set; }
-        public string? RequiredProfile { get; set; }
         public string? RequiredProfileAcademic { get; set; }
         public string? RequiredProfileExperience { get; set; }
         public string? ActivityContractor { get; set; }

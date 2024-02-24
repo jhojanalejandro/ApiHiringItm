@@ -125,16 +125,20 @@ namespace WebApiHiringItm.API.Controllers.User
         {
             try
             {
-                //Obtenemos todos los registros.
-                var Data = await _user.UpdatePassword(model);
-
-                //Retornamos datos.
-                return Data != false ? Ok(Data) : NoContent();
+                var isSuccess = await _user.UpdatePassword(model);
+                if (isSuccess.Success)
+                {
+                    return Ok(isSuccess);
+                }
+                else
+                {
+                    return BadRequest(isSuccess);
+                }
             }
             catch (Exception ex)
             {
-
-                throw new Exception("Error", ex);
+                var response = ApiResponseHelper.CreateErrorResponse<string>(ex.Message);
+                return BadRequest(response);
             }
         }
 

@@ -89,27 +89,28 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
 
                 row = 2;
                 var data = _context.EconomicdataContractor
-                            .Where(x => x.DetailContractor.ContractId == ContractId);
-                var dataList = data.Select(w => new DetailProjectContractorDto()
+                            .Where(x => x.DetailContractor.ContractId.Equals(ContractId));
+                var dataList = data.OrderByDescending(o => o.DetailContractor.Consecutive).GroupBy(g => g.DetailContractor.ContractorId).Select(w => new DetailProjectContractorDto()
                 {
-                    ContractorId = w.DetailContractor.ContractorId.ToString(),
-                    NombreComponente = w.DetailContractor.Component.NombreComponente,
-                    Nombre = w.DetailContractor.Contractor.Nombres + " " + w.DetailContractor.Contractor.Apellidos,
-                    Identificacion = w.DetailContractor.Contractor.Identificacion,
-                    ObjetoElemento = w.DetailContractor.Element.ObjetoElemento,
-                    ValorTotal = Math.Ceiling(w.TotalValue),
-                    NombreElemento = w.DetailContractor.Element.NombreElemento,
-                    GeneralObligation = w.DetailContractor.Element.ObligacionesGenerales,
-                    SpecificObligation = w.DetailContractor.Element.ObligacionesEspecificas,
-                    InitialDate = w.DetailContractor.HiringData.FechaRealDeInicio,
-                    FinalDate = w.DetailContractor.HiringData.FechaFinalizacionConvenio,
-                    Convenio = w.DetailContractor.Contract.ProjectName,
-                    ContractorAddress = w.DetailContractor.Contractor.Direccion,
-                    ContractorMail = w.DetailContractor.Contractor.Correo,
-                    Eps = w.DetailContractor.Contractor.EpsNavigation.EntityHealthDescription,
-                    Arl = w.DetailContractor.Contractor.ArlNavigation.EntityHealthDescription,
-                    Afp = w.DetailContractor.Contractor.AfpNavigation.EntityHealthDescription,
-                    BirthDate = w.DetailContractor.Contractor.FechaNacimiento
+                    Id = w.First().DetailContractor.ContractId.ToString(),
+                    ContractorId = w.First().DetailContractor.ContractorId.ToString(),
+                    NombreComponente = w.First().DetailContractor.Component.NombreComponente,
+                    Nombre = w.First().DetailContractor.Contractor.Nombres + " " + w.First().DetailContractor.Contractor.Apellidos,
+                    Identificacion = w.First().DetailContractor.Contractor.Identificacion,
+                    ObjetoElemento = w.First().DetailContractor.Element.ObjetoElemento,
+                    ValorTotal = Math.Ceiling(w.First().TotalValue),
+                    NombreElemento = w.First().DetailContractor.Element.NombreElemento,
+                    GeneralObligation = w.First().DetailContractor.Element.ObligacionesGenerales,
+                    SpecificObligation = w.First().DetailContractor.Element.ObligacionesEspecificas,
+                    InitialDate = w.First().DetailContractor.HiringData.FechaRealDeInicio,
+                    FinalDate = w.First().DetailContractor.HiringData.FechaFinalizacionConvenio,
+                    Convenio = w.First().DetailContractor.Contract.ProjectName,
+                    ContractorAddress = w.First().DetailContractor.Contractor.Direccion,
+                    ContractorMail = w.First().DetailContractor.Contractor.Correo,
+                    Eps = w.First().DetailContractor.Contractor.EpsNavigation.EntityHealthDescription,
+                    Arl = w.First().DetailContractor.Contractor.ArlNavigation.EntityHealthDescription,
+                    Afp = w.First().DetailContractor.Contractor.AfpNavigation.EntityHealthDescription,
+                    BirthDate = w.First().DetailContractor.Contractor.FechaNacimiento
                 })
                 .AsNoTracking()
                 .ToList();
@@ -173,7 +174,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                 .Include(x => x.HiringData)
                 .Include(x => x.Component)
                 .Include(x => x.Contract)
-                .Where(x => x.ContractId == ContractId);
+                .Where(x => x.ContractId.Equals(ContractId));
             var stream = new MemoryStream();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var xlPackage = new ExcelPackage(stream))
@@ -304,7 +305,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     NumeroConvenio = w.DetailContractor.Contract.NumberProject,
                     CedulaSupervisor = w.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.Identification).FirstOrDefault(),
                     NombreSupervisor = w.DetailContractor.Contract.AssigmentContract.Where(w => w.AssignmentTypeNavigation.Code.Equals(AssignmentEnum.SUPERVISORCONTRATO.Description())).Select(s => s.User.UserName).FirstOrDefault(),
-                    Rubro = w.DetailContractor.Contract.RubroNavigation.RubroNumber,
+                    Rubro = w.DetailContractor.Contract.DetailContract.OrderByDescending(c => c.Consecutive).Select(s => s.RubroNavigation.Rubro).FirstOrDefault(),
                     Cpc = w.DetailContractor.Element.Cpc.CpcNumber,
                     Projecto = w.DetailContractor.Contract.Project,
                     Nombre = w.DetailContractor.Contractor.Nombres,
@@ -920,7 +921,7 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
 
                             AreaCode = w.DetailContractorNavigation.Contract.AreaCode,
                                             
-                            AreaName = w.DetailContractorNavigation.Contract.NumberProject+ ' ' + w.DetailContractorNavigation.Contract.ProjectName + ' ' + w.DetailContractorNavigation.Contract.RegisterDateContract.Value.Year ,
+                            AreaName = w.DetailContractorNavigation.Contract.NumberProject+ ' ' + w.DetailContractorNavigation.Contract.ProjectName + ' ' + w.DetailContractorNavigation.Contract.DetailContract.Select(s => s.RegisterDateContract.Value.Year).FirstOrDefault(),
                             PayrollNumber = w.PayrollNumber
                             //UnitValue = Math.Ceiling(w.EconomicdataContractor.Where(w => w.DetailContractorId.Equals(w.Id)).OrderByDescending(o => o.Consecutive).Select(s => s.UnitValue.Value).FirstOrDefault()),
                         })
@@ -1023,9 +1024,9 @@ namespace WebApiHiringItm.CORE.Core.ExportToExcel
                     .Select(w => new EconomicTableDto()
                     {
                         ProjecName = w.Contract.ProjectName,
-                        TotalValue = w.Contract.ValorContrato,
-                        SubTotal = w.Contract.ValorSubTotal,
-                        OperatingExpenses = w.Contract.GastosOperativos,
+                        TotalValue = w.ValorContrato,
+                        SubTotal = w.ValorSubTotal,
+                        OperatingExpenses = w.GastosOperativos,
                         CompanyName = w.Contract.CompanyName
                     })
                     .AsNoTracking()

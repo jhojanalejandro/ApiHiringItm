@@ -290,13 +290,14 @@ namespace WebApiHiringItm.API.Controllers.Contractor
             }
         }
 
+
         [HttpGet]
-        public async Task<IActionResult> GetStatusContractor(string contractorId, string contractId)
+        public async Task<IActionResult> GetPersonalData(string contractorId, string contractId)
         {
             try
             {
-                var Data = await _contactor.GetStatusContractor(contractorId, contractId);
-                return Data != null ? Ok(Data) : NoContent();
+                var Data = await _contactor.GetPersonalData(contractorId, contractId);
+                return Data != false ? Ok(Data) : NoContent();
             }
             catch (Exception ex)
             {

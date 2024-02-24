@@ -25,6 +25,6 @@ namespace WebApiHiringItm.CORE.Core.Contractors.Interface
         Task<IGenericResponse<ContractorByContractDto>> GetContractorByContract(string contractId, string contractorId);
         Task<List<NewnessContractorDto>?> GetNewnessContractor(Guid contractId, Guid contractorId);
         Task<IGenericResponse<string>> AddNewnessList(List<NewnessContractorDto> modelList);
-        Task<bool> GetStatusContractor(string contractorId, string contractId);
+        Task<bool> GetPersonalData(string contractorId, string contractId);
     }
 }

@@ -26,8 +26,8 @@ namespace WebApiHiringItm.MODEL.Entities
         public DateTime? ModifyDate { get; set; }
         public int Consecutive { get; set; }
         public decimal? AdditionalValue { get; set; }
-        public bool? EnableChargeAccount { get; set; }
         public bool? EnableEjecution { get; set; }
+        public bool? EnableChargeAccount { get; set; }
 
         public virtual DetailContractor DetailContractor { get; set; }
         public virtual ICollection<ChangeContractContractor> ChangeContractContractor { get; set; }

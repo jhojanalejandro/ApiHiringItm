@@ -9,13 +9,13 @@ namespace WebApiHiringItm.MODEL.Entities
     {
         public StatusContract()
         {
-            ContractFolder = new HashSet<ContractFolder>();
+            DetailContract = new HashSet<DetailContract>();
         }
 
         public Guid Id { get; set; }
         public string StatusContractDescription { get; set; }
         public string Code { get; set; }
 
-        public virtual ICollection<ContractFolder> ContractFolder { get; set; }
+        public virtual ICollection<DetailContract> DetailContract { get; set; }
     }
 }

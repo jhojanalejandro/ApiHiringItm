@@ -27,23 +27,9 @@ namespace WebApiHiringItm.API.Controllers.Files
         #endregion
 
         #region PUBLIC METOHODS
-        [HttpPost]
-        public async Task<IActionResult> Update(FilesDto model)
-        {
-            try
-            {
-                var Data = await _file.AddFileContractor(model);
-                return Data != null ? Ok(Data) : NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error", ex);
-            }
-        }
 
         [HttpPost]
-        public async Task<IActionResult> AddFileContractor(FilesDto model)
+        public async Task<IActionResult> AddOrUpdateFileContractor(FilesDto model)
         {
             try
             {

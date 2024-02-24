@@ -39,18 +39,21 @@ namespace WebApiHiringItm.CORE.Core.Componentes
 
             if (exist == null)
             {
-                model.Id = Guid.NewGuid();
-                var map = _mapper.Map<Component>(model);
-                _context.Component.Add(map);
-                var resp = await _save.SaveChangesDB();
-                if (resp)
+                try
                 {
+                    model.Id = Guid.NewGuid();
+                    var map = _mapper.Map<Component>(model);
+                    _context.Component.Add(map);
+                    await _save.SaveChangesDB();
+             
                     return ApiResponseHelper.CreateResponse(Resource.REGISTERSUCCESSFULL);
                 }
-                else
+                catch(Exception ex)
                 {
                     return ApiResponseHelper.CreateErrorResponse<string>(Resource.INFORMATIONEMPTY);
+
                 }
+
             }
             else
             {
@@ -249,7 +252,7 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 CantidadDias = s.CantidadDias,
                 CpcId = s.CpcId,
                 NombreCpc = s.Cpc.CpcName,
-                Recursos = s.DetailContractor.Select(s => s.Contract).FirstOrDefault()!.ResourceContract,
+                Recursos = s.DetailContractor.Select(s => s.Contract.DetailContract.Select(s => s.ResourceContract).FirstOrDefault()).FirstOrDefault(),
                 ValorPorDia = s.ValorPorDia,
                 ValorPorDiaContratista = s.ValorPorDiaContratista,
                 ValorTotal = s.ValorTotal,
@@ -264,8 +267,8 @@ namespace WebApiHiringItm.CORE.Core.Componentes
                 ComponentId = s.ComponentId.Value,
                 ActivityId = s.ActivityId.Value,
                 CantidadEnable = s.CantidadContratistas - _context.DetailContractor.Where(w => w.ElementId.Equals(s.Id)).Count(),
-                PerfilRequeridoAcademico = s.PerfilRequeridoAcademico,
-                PerfilRequeridoExperiencia = s.PerfilRequeridoExperiencia
+                PerfilRequeridoAcademico = s.PerfilAcademicoRequerido,
+                PerfilRequeridoExperiencia = s.PerfilExperienciaRequerido
             })
             .AsNoTracking()
             .ToList();

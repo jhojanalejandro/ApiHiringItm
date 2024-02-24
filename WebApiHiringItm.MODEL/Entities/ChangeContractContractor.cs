@@ -28,7 +28,7 @@ namespace WebApiHiringItm.MODEL.Entities
         public string PerfilRequeridoAcademico { get; set; }
         public string PerfilRequeridoExperiencia { get; set; }
         public string AdditionalText { get; set; }
-        public string ObligationType { get; set; }
+        public string ObligationEtype { get; set; }
 
         public virtual DetailContractor DetailContractor { get; set; }
         public virtual EconomicdataContractor EconomicdataContractorNavigation { get; set; }
